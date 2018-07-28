@@ -32,6 +32,3 @@ exports = {
         return res.body.url;
     }
 }
-// Ok I'll push to Git now, I'll make it a private repo for time being until it is done
-// Do you want to do all of the copyright headers quick?
-// to where? What you mean? oh right, add myself? yes alright then
