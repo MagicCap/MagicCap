@@ -28,7 +28,7 @@ exports = {
                 }
                 throw new Error(`Server returned the status ${res.status}.`);
             }
-		}
+	}
         return res.body.url;
     }
 }
