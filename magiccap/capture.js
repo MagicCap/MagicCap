@@ -9,7 +9,7 @@ const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const { clipboard } = require("electron");
 
-class CaptureHandler {
+exports = class CaptureHandler {
     async createCapture(file_path) {
         let args = [];
         switch(process.platform) {
@@ -94,7 +94,7 @@ class CaptureHandler {
                     throw new Error(
                         "A required config option is missing."
                     );
-                } 
+                }
             }
             url = await uploader.upload(buffer);
         }
