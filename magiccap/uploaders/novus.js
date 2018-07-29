@@ -5,30 +5,30 @@
 const { post } = require("snekfetch");
 
 exports = {
-    name: "i.novus",
-    icon: "novus.png",
-    config_options: {
-        "API Token": "novus_token"
-    },
-    upload: async(buffer) => {
-        let res = await post("https://i.novuscommunity.co/api/upload")
-            .set("Authorization", "Bearer " + config.novus_token)
-            .attach("file", buffer, "oof.png");
-        switch(res.status) {
-            case 200: { break; }
-            case 403: {
-                throw new Error("Your key is invalid");
-            }
-            case 429: {
-                throw new Error("You have been ratelimited!");
-            }
-            default: {
-                if (500 <= res.status <= 599) {
-                    throw new Error("There are currently server issues.");
-                }
-                throw new Error(`Server returned the status ${res.status}.`);
-            }
+	name: "i.novus",
+	icon: "novus.png",
+	config_options: {
+		"API Token": "novus_token",
+	},
+	upload: async buffer => {
+		let res = await post("https://i.novuscommunity.co/api/upload")
+			.set("Authorization", `Bearer ${config.novus_token}`)
+			.attach("file", buffer, "oof.png");
+		switch (res.status) {
+			case 200: break;
+			case 403: {
+				throw new Error("Your key is invalid");
+			}
+			case 429: {
+				throw new Error("You have been ratelimited!");
+			}
+			default: {
+				if (res.status >= 500 <= 599) {
+					throw new Error("There are currently server issues.");
+				}
+				throw new Error(`Server returned the status ${res.status}.`);
+			}
 		}
-        return res.body.url;
-    }
-}
+		return res.body.url;
+	},
+};
