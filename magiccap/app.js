@@ -9,7 +9,7 @@ const { app, Tray, Menu } = require("electron");
 function initialiseScript() {
     const tray = new Tray("./icons/taskbar.png");
     const contextMenu = Menu.buildFromTemplate([
-		{label: "Exit", type: normal, role: "quit"}
+		  {label: "Exit", type: normal, role: "quit"}
     ]);
     tray.setContextMenu(contextMenu);
 }
