@@ -11,6 +11,5 @@ Add-Type @"
 "@
 
 $proc_id = [WindowHandler]::GetForegroundWindow()
-$process = get-process | ? { $_.mainwindowhandle -eq $proc_id }
+$process = get-process | Where-Object { $_.mainwindowhandle -eq $proc_id }
 Write-Host -NoNewline $process.ProcessName
-Write-Host -NoNewline "hi"
