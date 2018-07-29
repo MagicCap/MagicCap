@@ -5,7 +5,6 @@
 const child_process = require("child_process");
 const async_child_process = require("async-child-process");
 const os = require("os");
-const activeWindow = require("./get-active-window.js");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const fs = require("fs");
@@ -15,13 +14,11 @@ let captures = global.captures;
 
 module.exports = class CaptureHandler {
 	static async createCaptureFilename() {
-		let filename = "%focused_proc%_%date%_%time%";
+		let filename = "screenshot_%date%_%time%";
 		if (config.file_naming_pattern) {
 			filename = config.file_naming_pattern;
 		}
-		let active_window_name = await activeWindow.get();
 		filename = filename
-			.replace("%focused_proc%", active_window_name)
 			.replace("%date%", moment().format("DD-MM-YYYY"))
 			.replace("%time%", moment().format("HH-mm-ss"));
 		return `${filename}.png`;
