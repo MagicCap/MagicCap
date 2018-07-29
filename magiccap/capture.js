@@ -13,6 +13,20 @@ const { clipboard } = require("electron");
 let captures = global.captures;
 
 exports = class CaptureHandler {
+	createCaptureFilename() {
+		let filename = "%focused_proc%_%date%_%time%";
+		if (config.file_naming_pattern) {
+			filename = config.file_naming_pattern;
+		}
+		let active_window = processWindows.getActiveWindow();
+		filename
+			.replace("%focused_proc%", active_window.processName)
+			.replace("%date%", moment().format("DD-MM-YYYY"))
+			.replace("%time%", moment().format("HH-mm-ss"));
+		return `${filename}.png`;
+	}
+	// Makes a nice filename for screen captures.
+
 	async logUpload(filename, success, url, file_path) {
 		captures.captures.push({
 			filename: filename,
@@ -64,20 +78,6 @@ exports = class CaptureHandler {
 		});
 	}
 	// Creates a screen capture.
-
-	createCaptureFilename() {
-		let filename = "%focused_proc%_%date%_%time%";
-		if (config.file_naming_pattern) {
-			filename = config.file_naming_pattern;
-		}
-		let active_window = processWindows.getActiveWindow();
-		filename
-			.replace("%focused_proc%", active_window.processName)
-			.replace("%date%", moment().format("DD-MM-YYYY"))
-			.replace("%time%", moment().format("HH-mm-ss"));
-		return `${filename}.png`;
-	}
-	// Makes a nice filename for screen captures.
 
 	async handleScreenshotting(filename) {
 		let delete_after = true;
