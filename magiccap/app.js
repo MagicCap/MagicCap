@@ -33,14 +33,14 @@ const { app, Tray, Menu, dialog, Notification } = require("electron");
 
 async function runCapture() {
 	let filename = capture.createCaptureFilename();
-	let result;
-	try {
-		result = await capture.handleScreenshotting(filename);
-		Notification("MagicCap", { body: result });
-	} catch (err) {
-		await capture.logUpload(filename, false, null, null);
-		dialog.showErrorBox("MagicCap", `${err}`);
-	}
+	await capture.handleScreenshotting(filename)
+		.then(async res => {
+			throw new Notification("MagicCap", { body: res });
+		})
+		.catch(async err => {
+			await capture.logUpload(filename, 0, undefined, undefined);
+			dialog.showErrorBox("MagicCap", `${err}`);
+		});
 }
 // Runs the capture.
 
