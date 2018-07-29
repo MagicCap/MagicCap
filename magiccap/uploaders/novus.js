@@ -4,7 +4,7 @@
 
 const { post } = require("snekfetch");
 
-exports = {
+module.exports = {
 	name: "i.novus",
 	icon: "novus.png",
 	config_options: {
