@@ -6,8 +6,6 @@
     "author": "Jake Gealer & Rhys O'Kane",
     "license": "MPL-2.0",
     "dependencies": {
-        "electron-rebuild": "^1.8.1",
-        "sqlite3": "^4.0.2",
         "electron": "2.0.5",
         "snekfetch": "^4.0.4",
         "fs-nextra": "0.3.5",
