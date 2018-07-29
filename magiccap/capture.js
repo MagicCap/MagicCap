@@ -7,6 +7,7 @@ const os = require("os");
 const processWindows = require("node-process-windows");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
+const fs = require("fs");
 const { clipboard } = require("electron");
 
 exports = class CaptureHandler {
@@ -25,6 +26,7 @@ exports = class CaptureHandler {
             db.run("INSERT INTO captures VALUES (" + sql_question_marks + ")", args);
         })
     }
+    // Logs the upload.
 
     async createCapture(file_path) {
         let args = [];
@@ -89,7 +91,7 @@ exports = class CaptureHandler {
             save_path = `${os.tmpdir()}/${filename}`;
             delete_after = false;
         }
-        let buffer = createCapture(save_path);
+        let buffer = this.createCapture(save_path);
         if (config.upload_capture) {
             uploader_type = config.uploader_type;
             uploader_file = `./uploaders/${uploader_type}.js`
@@ -133,7 +135,9 @@ exports = class CaptureHandler {
         }
         if (delete_after) {
             await fsnextra.unlink(uploader_file + ".js").catch(async() => new Error("Could not delete capture."));
+            file_path = null;
         }
+        this.logUpload(filename, 1, url, file_path);
         return "Image successfully captured.";
     }
     // Handle screenshots.
