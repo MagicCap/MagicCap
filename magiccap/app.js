@@ -30,12 +30,22 @@ const captures = global.captures = require(`${require("os").homedir()}/magiccap_
 const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 const capture = require("./capture.js");
 const { app, Tray, Menu, dialog, Notification } = require("electron");
+const notifier = require("node-notifier");
+
+let tray;
+
+function throwNotification(result) {
+	notifier.notify({
+		title: "MagicCap",
+		message: result,
+	});
+}
 
 async function runCapture() {
 	const filename = await capture.createCaptureFilename();
 	try {
 		const result = await capture.handleScreenshotting(filename);
-		throw new Notification("MagicCap", { body: result });
+		throwNotification(result);
 	} catch (err) {
 		await capture.logUpload(filename, false, null, null);
 		dialog.showErrorBox("MagicCap", `${err.message}`);
@@ -44,7 +54,7 @@ async function runCapture() {
 // Runs the capture.
 
 function initialiseScript() {
-	const tray = new Tray(`${__dirname}/icons/taskbar.png`);
+	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: "Exit", type: "normal", role: "quit" },
 		{ label: "Capture", type: "normal", click: runCapture },

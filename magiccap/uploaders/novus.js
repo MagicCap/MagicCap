@@ -14,7 +14,7 @@ module.exports = {
 		let res = await post("https://i.novuscommunity.co/api/upload")
 			.set("Authorization", `Bearer ${config.novus_token}`)
 			.attach("file", buffer, "oof.png");
-		switch (res.status) {
+		switch (res.statusCode) {
 			case 200: break;
 			case 403: {
 				throw new Error("Your key is invalid");
@@ -23,10 +23,10 @@ module.exports = {
 				throw new Error("You have been ratelimited!");
 			}
 			default: {
-				if (res.status >= 500 <= 599) {
+				if (res.statusCode >= 500 <= 599) {
 					throw new Error("There are currently server issues.");
 				}
-				throw new Error(`Server returned the status ${res.status}.`);
+				throw new Error(`Server returned the status ${res.statusCode}.`);
 			}
 		}
 		return res.body.url;

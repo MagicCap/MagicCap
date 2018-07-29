@@ -91,7 +91,7 @@ module.exports = class CaptureHandler {
 			uploader_type = config.uploader_type;
 			uploader_file = `./uploaders/${uploader_type}.js`;
 			let lstatres = await fsnextra.lstat(uploader_file).catch(() => new Error("Uploader not found."));
-			if (!lstatres.isFile()) throw new Error("Uploader not found.");
+			if (!lstatres.isFile()) { throw new Error("Uploader not found."); }
 			uploader = require(uploader_file);
 			for (key in uploader.config_options) {
 				if (!config[uploader.config_options[key]]) {
@@ -129,7 +129,7 @@ module.exports = class CaptureHandler {
 			await fsnextra.unlink(save_path).catch(async() => new Error("Could not delete capture."));
 			save_path = null;
 		}
-		this.logUpload(filename, true, url, save_path);
+		await this.logUpload(filename, true, url, save_path);
 		return "Image successfully captured.";
 	}
 	// Handle screenshots.
