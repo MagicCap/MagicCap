@@ -12,7 +12,7 @@ const { clipboard } = require("electron");
 
 let captures = global.captures;
 
-exports = class CaptureHandler {
+module.exports = class CaptureHandler {
 	createCaptureFilename() {
 		let filename = "%focused_proc%_%date%_%time%";
 		if (config.file_naming_pattern) {
