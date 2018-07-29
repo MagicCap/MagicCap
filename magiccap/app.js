@@ -39,7 +39,7 @@ function runCapture() {
 		})
 		.catch(async err => {
 			await capture.logUpload(filename, false, null, null);
-			dialog.showErrorBox("MagicCap", `${err}`);
+			dialog.showErrorBox("MagicCap", `${err.message}`);
 		});
 }
 // Runs the capture.

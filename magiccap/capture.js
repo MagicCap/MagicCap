@@ -20,9 +20,11 @@ module.exports = class CaptureHandler {
 		}
 		let active_window_name = "";
 		processWindows.getActiveWindow((err, processInfo) => {
-			if (!err) { active_window_name = processInfo.processName; }
+			if (!err) {
+				active_window_name = processInfo.processName;
+			} else { console.log(`Error getting process name: ${err}`); }
 		});
-		filename
+		filename = filename
 			.replace("%focused_proc%", active_window_name)
 			.replace("%date%", moment().format("DD-MM-YYYY"))
 			.replace("%time%", moment().format("HH-mm-ss"));
