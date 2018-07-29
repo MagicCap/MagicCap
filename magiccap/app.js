@@ -32,6 +32,8 @@ const capture = require("./capture.js");
 const { app, Tray, Menu, dialog, Notification } = require("electron");
 const notifier = require("node-notifier");
 
+if (app.dock) app.dock.hide();
+
 let tray;
 
 function throwNotification(result) {
