@@ -24,7 +24,8 @@ exports = class CaptureHandler {
                 break;
             }
             case "win32": {
-                cap_location = "./win/capture.exe";
+                cap_location = "powershell";
+                args.push("./capture-win.ps1");
                 break;
             }
             default: {
