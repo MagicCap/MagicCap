@@ -28,7 +28,7 @@ const { stat, writeJSON } = require("fs-nextra");
 const captures = global.captures = require(`${require("os").homedir()}/magiccap_captures.json`);
 
 const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
-const capture = require(`${__dirname}/capture.js`);
+const capture = require("./capture.js");
 const { app, Tray, Menu, dialog, Notification } = require("electron");
 
 function runCapture() {

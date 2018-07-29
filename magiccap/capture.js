@@ -13,7 +13,7 @@ const { clipboard } = require("electron");
 let captures = global.captures;
 
 module.exports = class CaptureHandler {
-	createCaptureFilename() {
+	static createCaptureFilename() {
 		let filename = "%focused_proc%_%date%_%time%";
 		if (config.file_naming_pattern) {
 			filename = config.file_naming_pattern;
@@ -27,7 +27,7 @@ module.exports = class CaptureHandler {
 	}
 	// Makes a nice filename for screen captures.
 
-	async logUpload(filename, success, url, file_path) {
+	static async logUpload(filename, success, url, file_path) {
 		captures.captures.push({
 			filename: filename,
 			success: success,
@@ -40,7 +40,7 @@ module.exports = class CaptureHandler {
 	}
 	// Logs uploads.
 
-	async createCapture(file_path) {
+	static async createCapture(file_path) {
 		let cap_location;
 		let args = [];
 		switch (process.platform) {
@@ -79,7 +79,7 @@ module.exports = class CaptureHandler {
 	}
 	// Creates a screen capture.
 
-	async handleScreenshotting(filename) {
+	static async handleScreenshotting(filename) {
 		let delete_after = true;
 		let save_path, uploader_type, uploader_file, url, uploader, key;
 		if (config.save_capture) {
