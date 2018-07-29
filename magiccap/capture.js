@@ -18,9 +18,12 @@ module.exports = class CaptureHandler {
 		if (config.file_naming_pattern) {
 			filename = config.file_naming_pattern;
 		}
-		let active_window = processWindows.getActiveWindow();
+		let active_window_name = "";
+		processWindows.getActiveWindow((err, processInfo) => {
+			if (!err) { active_window_name = processInfo.processName; }
+		});
 		filename
-			.replace("%focused_proc%", active_window.processName)
+			.replace("%focused_proc%", active_window_name)
 			.replace("%date%", moment().format("DD-MM-YYYY"))
 			.replace("%time%", moment().format("HH-mm-ss"));
 		return `${filename}.png`;
@@ -55,7 +58,8 @@ module.exports = class CaptureHandler {
 				break;
 			}
 			case "win32": {
-				cap_location = "./win/capture.exe";
+				cap_location = "powershell";
+				args.push("./capture-win.ps1");
 				break;
 			}
 			default: {
