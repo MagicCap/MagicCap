@@ -73,7 +73,7 @@ exports = class CaptureHandler {
 	async handleScreenshotting() {
 		let delete_after = true;
 		let filename = await this.createCaptureFilename();
-		let save_path, uploader_type, uploader_file, url, uploader;
+		let save_path, uploader_type, uploader_file, url, uploader, file_path;
 		if (config.save_capture) {
 			save_path = config.save_path + filename;
 		} else {
@@ -84,71 +84,48 @@ exports = class CaptureHandler {
 		if (config.upload_capture) {
 			uploader_type = config.uploader_type;
 			uploader_file = `./uploaders/${uploader_type}.js`;
-			// if (!fs.lstatSync(uploader_file).isFile()) {
-			// 	throw new Error(
-			// 		"Uploader not found."
-			// 	);
-			// }
 			let lstatres = await fsnextra.lstat(uploader_file).catch(() => new Error("Uploader not found."));
 			if (!lstatres.isFile()) throw new Error("Uploader not found.");
 
-    async handleScreenshotting(filename) {
-        let delete_after = true;
-        let save_path, uploader_type, uploader_file, url, uploader;
-        if(config.save_capture) {
-            save_path = config.save_path + filename;
-        } else {
-            save_path = `${os.tmpdir()}/${filename}`;
-            delete_after = false;
-        }
-        let buffer = this.createCapture(save_path);
-        if (config.upload_capture) {
-            uploader_type = config.uploader_type;
-            uploader_file = `./uploaders/${uploader_type}.js`
-            if(!fs.lstatSync(uploader_file).isFile()){
-                throw new Error(
-                    "Uploader not found."
-                );
-            }
-            uploader = require(uploader_file);
-            for(key in uploader.config_options) {
-                if(!(config[uploader.config_options[key]])) {
-                    throw new Error(
-                        "A required config option is missing."
-                    );
-                }
-            }
-            url = await uploader.upload(buffer);
-        }
-        if(config.clipboard_action) {
-            switch(config.clipboard_action) {
-                case 0: { break; }
-                case 1: {
-                    clipboard.writeBuffer(buffer);
-                    break;
-                }
-                case 2: {
-                    if(!url) {
-                        throw new Error(
-                            "URL not found to put into the clipboard. Do you have uploading on?"
-                        );
-                    }
-                    clipboard.writeText(url);
-                    break;
-                }
-                default: {
-                    throw new Error(
-                        "Unknown clipboard action."
-                    );
-                }
-            }
-        }
-        if (delete_after) {
-            await fsnextra.unlink(uploader_file + ".js").catch(async() => new Error("Could not delete capture."));
-            file_path = null;
-        }
-        this.logUpload(filename, 1, url, file_path);
-        return "Image successfully captured.";
-    }
-    // Handle screenshots.
-}
+			uploader = require(uploader_file);
+			for (let key in uploader.config_options) {
+				if (!config[uploader.config_options[key]]) {
+					throw new Error(
+						"A required config option is missing."
+					);
+				}
+			}
+			url = await uploader.upload(buffer);
+		}
+		if (config.clipboard_action) {
+			switch (config.clipboard_action) {
+				case 0: { break; }
+				case 1: {
+					clipboard.writeBuffer(buffer);
+					break;
+				}
+				case 2: {
+					if (!url) {
+						throw new Error(
+							"URL not found to put into the clipboard. Do you have uploading on?"
+						);
+					}
+					clipboard.writeText(url);
+					break;
+				}
+				default: {
+					throw new Error(
+						"Unknown clipboard action."
+					);
+				}
+			}
+		}
+		if (delete_after) {
+			await fsnextra.unlink(`${uploader_file}.js`).catch(async() => new Error("Could not delete capture."));
+			file_path = null;
+		}
+		this.logUpload(filename, 1, url, file_path);
+		return "Image successfully captured.";
+	}
+	// Handle screenshots.
+};
