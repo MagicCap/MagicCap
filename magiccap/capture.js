@@ -10,6 +10,22 @@ const fsnextra = require("fs-nextra");
 const { clipboard } = require("electron");
 
 exports = class CaptureHandler {
+    async logUpload(file_name, success, url, file_path) {
+        let sql_question_marks = "?, ?, ?";
+        let args = [success, Date.getTime(), file_name];
+        if(url) {
+            sql_question_marks += ", ?";
+            args.push(url);
+        }
+        if(file_path) {
+            sql_question_marks += ", ?";
+            args.push(file_path);
+        }
+        db.serialize(function() {
+            db.run("INSERT INTO captures VALUES (" + sql_question_marks + ")", args);
+        })
+    }
+
     async createCapture(file_path) {
         let args = [];
         switch(process.platform) {
@@ -43,12 +59,6 @@ exports = class CaptureHandler {
                     "The screenshot capturing/saving failed."
                 );
             }
-            // fs.readFile(location, function(err, buffer) {
-            //     if(err) {
-            //         throw new Error("Could not read created screenshot.");
-            //     }
-            //     return buffer;
-            // });
             let result = await fsnextra.readFile(location).catch(async() => new Error("Could not read created screenshot."));
             if (result) return result;
         });
@@ -70,9 +80,8 @@ exports = class CaptureHandler {
     }
     // Makes a nice filename for screen captures.
 
-    async handleScreenshotting() {
+    async handleScreenshotting(filename) {
         let delete_after = true;
-        let filename = await createCaptureFilename();
         let save_path, uploader_type, uploader_file, url, uploader;
         if(config.save_capture) {
             save_path = config.save_path + filename;
