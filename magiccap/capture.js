@@ -11,6 +11,19 @@ const fs = require("fs");
 const { clipboard } = require("electron");
 
 exports = class CaptureHandler {
+    async logUpload(filename, success, url, file_path) {
+        captures.captures.push({
+            filename: filename,
+            success: success,
+            url: url,
+            file_path: file_path
+        })
+        fsnextra.writeJSON(`${require("os").homedir()}/magiccap_captures.json`, captures).catch(async() => {
+			throw new Error("Could not update the capture logging file.");
+		});
+    }
+    // Logs uploads.
+
 	async createCapture(file_path) {
 		let cap_location;
 		let args = [];
@@ -44,12 +57,6 @@ exports = class CaptureHandler {
 					"The screenshot capturing/saving failed."
 				);
 			}
-			// fs.readFile(location, function(err, buffer) {
-			//     if(err) {
-			//         throw new Error("Could not read created screenshot.");
-			//     }
-			//     return buffer;
-			// });
 			let result = await fsnextra.readFile(file_path).catch(async() => new Error("Could not read created screenshot."));
 			if (result) return result;
 		});
@@ -70,30 +77,8 @@ exports = class CaptureHandler {
 	}
 	// Makes a nice filename for screen captures.
 
-	async handleScreenshotting() {
-		let delete_after = true;
-		let filename = await this.createCaptureFilename();
-		let save_path, uploader_type, uploader_file, url, uploader;
-		if (config.save_capture) {
-			save_path = config.save_path + filename;
-		} else {
-			save_path = `${os.tmpdir()}/${filename}`;
-			delete_after = false;
-		}
-		let buffer = this.createCapture(save_path);
-		if (config.upload_capture) {
-			uploader_type = config.uploader_type;
-			uploader_file = `./uploaders/${uploader_type}.js`;
-			// if (!fs.lstatSync(uploader_file).isFile()) {
-			// 	throw new Error(
-			// 		"Uploader not found."
-			// 	);
-			// }
-			let lstatres = await fsnextra.lstat(uploader_file).catch(() => new Error("Uploader not found."));
-			if (!lstatres.isFile()) throw new Error("Uploader not found.");
-
     async handleScreenshotting(filename) {
-        let delete_after = true;
+		let delete_after = true;
         let save_path, uploader_type, uploader_file, url, uploader;
         if(config.save_capture) {
             save_path = config.save_path + filename;
@@ -105,11 +90,8 @@ exports = class CaptureHandler {
         if (config.upload_capture) {
             uploader_type = config.uploader_type;
             uploader_file = `./uploaders/${uploader_type}.js`
-            if(!fs.lstatSync(uploader_file).isFile()){
-                throw new Error(
-                    "Uploader not found."
-                );
-            }
+            let lstatres = await fsnextra.lstat(uploader_file).catch(() => new Error("Uploader not found."));
+			if (!lstatres.isFile()) throw new Error("Uploader not found.");
             uploader = require(uploader_file);
             for(key in uploader.config_options) {
                 if(!(config[uploader.config_options[key]])) {
@@ -147,7 +129,7 @@ exports = class CaptureHandler {
             await fsnextra.unlink(uploader_file + ".js").catch(async() => new Error("Could not delete capture."));
             file_path = null;
         }
-        this.logUpload(filename, 1, url, file_path);
+        this.logUpload(filename, true, url, file_path);
         return "Image successfully captured.";
     }
     // Handle screenshots.
