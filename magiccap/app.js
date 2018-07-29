@@ -19,7 +19,27 @@ const { stat, writeJSON } = require("fs-nextra");
 
 const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 const capture = require("./capture.js");
-const { app, Tray, Menu } = require("electron");
+const { app, Tray, Menu, dialog } = require("electron");
+const sqlite3 = require('sqlite3').verbose();
+
+global.db = new sqlite3.Database(`${homedir}/magiccap.db`);
+db.serialize(function() {
+    db.run("CREATE TABLE IF NOT EXISTS `captures` (`success`	INTEGER NOT NULL,	`utc_timestamp`	INTEGER NOT NULL,	`filename`	TEXT NOT NULL,	`url`	TEXT,	`file_path`	TEXT);");
+});
+// Prepares the DB.
+
+async function runCapture() {
+    let filename = capture.createCaptureFilename();
+    let result;
+    try {
+        result = await capture.handleScreenshotting(filename);
+        new Notification("MagicCap", {body: result})
+    } catch(err) {
+        await capture.logUpload(filename, 0, undefined, undefined);
+        dialog.showErrorBox("MagicCap", `${err}`);
+    }
+}
+// Runs the capture.
 
 function initialiseScript() {
 	const tray = new Tray(`${__dirname}/icons/taskbar.png`);
