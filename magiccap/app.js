@@ -31,16 +31,15 @@ const config = global.config = require(`${require("os").homedir()}/magiccap.json
 const capture = require("./capture.js");
 const { app, Tray, Menu, dialog, Notification } = require("electron");
 
-function runCapture() {
-	let filename = capture.createCaptureFilename();
-	capture.handleScreenshotting(filename)
-		.then(async res => {
-			throw new Notification("MagicCap", { body: res });
-		})
-		.catch(async err => {
-			await capture.logUpload(filename, false, null, null);
-			dialog.showErrorBox("MagicCap", `${err.message}`);
-		});
+async function runCapture() {
+	const filename = await capture.createCaptureFilename();
+	try {
+		const result = await capture.handleScreenshotting(filename);
+		throw new Notification("MagicCap", { body: result });
+	} catch (err) {
+		await capture.logUpload(filename, false, null, null);
+		dialog.showErrorBox("MagicCap", `${err.message}`);
+	}
 }
 // Runs the capture.
 

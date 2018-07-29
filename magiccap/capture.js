@@ -3,8 +3,9 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 const child_process = require("child_process");
+const async_child_process = require("async-child-process");
 const os = require("os");
-const processWindows = require("node-process-windows");
+const activeWindow = require("./get-active-window.js");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const fs = require("fs");
@@ -13,17 +14,12 @@ const { clipboard } = require("electron");
 let captures = global.captures;
 
 module.exports = class CaptureHandler {
-	static createCaptureFilename() {
+	static async createCaptureFilename() {
 		let filename = "%focused_proc%_%date%_%time%";
 		if (config.file_naming_pattern) {
 			filename = config.file_naming_pattern;
 		}
-		let active_window_name = "";
-		processWindows.getActiveWindow((err, processInfo) => {
-			if (!err) {
-				active_window_name = processInfo.processName;
-			} else { console.log(`Error getting process name: ${err}`); }
-		});
+		let active_window_name = await activeWindow.get();
 		filename = filename
 			.replace("%focused_proc%", active_window_name)
 			.replace("%date%", moment().format("DD-MM-YYYY"))
@@ -72,16 +68,15 @@ module.exports = class CaptureHandler {
 		}
 		args.push(file_path);
 		let capture = child_process.spawn(cap_location, args);
-		capture.stderr.on("close", async code => {
-			if (code != 0) {
-				// Oh no! That's not good.
-				throw new Error(
-					"The screenshot capturing/saving failed."
-				);
-			}
-			let result = await fsnextra.readFile(file_path).catch(async() => new Error("Could not read created screenshot."));
-			if (result) return result;
-		});
+		try {
+			await async_child_process.join(capture);
+		} catch (_) {
+			throw new Error(
+				"The screenshot capturing/saving failed."
+			);
+		}
+		let result = await fsnextra.readFile(file_path).catch(async() => new Error("Could not read created screenshot."));
+		if (result) return result;
 	}
 	// Creates a screen capture.
 
