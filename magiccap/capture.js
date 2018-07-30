@@ -99,9 +99,13 @@ module.exports = class CaptureHandler {
 			uploader = require(uploader_file);
 			for (key in uploader.config_options) {
 				if (!config[uploader.config_options[key].value]) {
-					throw new Error(
-						"A required config option is missing."
-					);
+					if (uploader.config_options[key].default) {
+						config[uploader.config_options[key].value] = uploader.config_options[key].default;
+					} else {
+						throw new Error(
+							"A required config option is missing."
+						);
+					}
 				}
 			}
 			url = await uploader.upload(buffer);
