@@ -8,33 +8,37 @@ const configtemplate = {
 };
 
 const { stat, writeJSON } = require("fs-nextra");
-
-(async() => {
-	let fileExists = await stat(`${require("os").homedir()}/magiccap.json`).catch(async() => {
-		writeJSON(`${require("os").homedir()}/magiccap.json`, configtemplate).catch(async() => {
-			throw new Error("Could not find or create config file.");
-		});
-	});
-})();
-
-(async() => {
-	let fileExists = await stat(`${require("os").homedir()}/magiccap_captures.json`).catch(async() => {
-		writeJSON(`${require("os").homedir()}/magiccap_captures.json`, { captures: [] }).catch(async() => {
-			throw new Error("Could not find or create capture logging file.");
-		});
-	});
-})();
-
-const captures = global.captures = require(`${require("os").homedir()}/magiccap_captures.json`);
-
-const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 const capture = require("./capture.js");
 const { app, Tray, Menu, dialog, Notification } = require("electron");
 const notifier = require("node-notifier");
+// Main imports.
+
+async function createConfigs() {
+	await stat(`${require("os").homedir()}/magiccap.json`).then(async() => {
+		const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
+	}).catch(async() => {
+		const config = global.config = configtemplate;
+		writeJSON(`${require("os").homedir()}/magiccap.json`, configtemplate).catch(async() => {
+			throw new Error("Could not find or create the config file.");
+		});
+	});
+	await stat(`${require("os").homedir()}/magiccap_captures.json`).then(async() => {
+		const captures = global.captures = require(`${require("os").homedir()}/magiccap_captures.json`);
+	}).catch(async() => {
+		const captures = global.captures = { captures: [] };
+		writeJSON(`${require("os").homedir()}/magiccap_captures.json`, { captures: [] }).catch(async() => {
+			throw new Error("Could not find or create the capture logging file.");
+		});
+	});
+}
+createConfigs();
+// Creates the configs
 
 if (app.dock) app.dock.hide();
+// Hides the dock icon.
 
 let tray;
+// Predefines the task tray.
 
 function throwNotification(result) {
 	notifier.notify({
@@ -42,6 +46,7 @@ function throwNotification(result) {
 		message: result,
 	});
 }
+// Throws a notification.
 
 async function runCapture() {
 	const filename = await capture.createCaptureFilename();
