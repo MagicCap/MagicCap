@@ -4,7 +4,7 @@
 
 const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require("./capture.js");
-const { app, Tray, Menu, dialog, Notification, globalShortcut } = require("electron");
+const { app, Tray, Menu, dialog, globalShortcut } = require("electron");
 const notifier = require("node-notifier");
 // Main imports.
 
