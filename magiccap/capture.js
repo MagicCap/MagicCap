@@ -38,22 +38,41 @@ module.exports = class CaptureHandler {
 	// Logs uploads.
 
 	static async createCapture(file_path) {
-		let cap_location;
+		let cap_location, clipboard_before, clipboard_after, result;
 		let args = [];
 		switch (process.platform) {
+			case "linux":
 			case "darwin": {
-				cap_location = "/usr/sbin/screencapture";
-				args.push("-iox");
-				break;
-			}
-			case "linux": {
-				cap_location = "maim";
-				args.push("-s");
+				if (process.platform === "darwin") {
+					cap_location = "/usr/sbin/screencapture";
+					args.push("-s");
+				} else {
+					cap_location = "maim";
+					args.push("-iox");
+				}
+				args.push(file_path);
+				let capture = child_process.spawn(cap_location, args);
+				try {
+					await async_child_process.join(capture);
+				} catch (_) {
+					throw new Error(
+						"The screenshot capturing/saving failed."
+					);
+				}
+				result = await fsnextra.readFile(file_path).catch(async() => {
+					throw new Error("Could not read created screenshot. This can happen if you cancelled the screenshot.");
+				});
 				break;
 			}
 			case "win32": {
-				cap_location = "powershell";
-				args.push("./capture-win.ps1");
+				try {
+					await async_child_process.execAsync("snippingtool /clip");
+					clipboard_after = clipboard.readImage();
+				} catch (_) { break; }
+				result = clipboard_after.toPNG();
+				await fsnextra.writeFile(file_path, result).catch(async() => {
+					throw new Error("Failed to write captured file.");
+				});
 				break;
 			}
 			default: {
@@ -62,18 +81,6 @@ module.exports = class CaptureHandler {
 				);
 			}
 		}
-		args.push(file_path);
-		let capture = child_process.spawn(cap_location, args);
-		try {
-			await async_child_process.join(capture);
-		} catch (_) {
-			throw new Error(
-				"The screenshot capturing/saving failed."
-			);
-		}
-		let result = await fsnextra.readFile(file_path).catch(async() => {
-			throw new Error("Could not read created screenshot. This can happen if you cancelled the screenshot.");
-		});
 		if (result) return result;
 	}
 	// Creates a screen capture.
@@ -111,7 +118,6 @@ module.exports = class CaptureHandler {
 		}
 		if (config.clipboard_action) {
 			switch (config.clipboard_action) {
-				case 0: { break; }
 				case 1: {
 					clipboard.writeBuffer(buffer);
 					break;
