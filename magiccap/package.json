@@ -6,11 +6,11 @@
     "author": "Jake Gealer & Rhys O'Kane",
     "license": "MPL-2.0",
     "dependencies": {
+        "async-child-process": "1.1.1",
         "electron": "2.0.5",
         "fetchain": "KingDGrizzle/fetchain",
         "fs-nextra": "0.3.5",
         "moment": "^2.22.2",
-        "async-child-process": "1.1.1",
         "node-notifier": "5.2.1"
     }
 }
