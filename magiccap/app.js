@@ -32,7 +32,7 @@ async function createConfigs() {
 	});
 }
 createConfigs();
-// Creates the configs
+// Creates the configs.
 
 if (app.dock) app.dock.hide();
 // Hides the dock icon.
