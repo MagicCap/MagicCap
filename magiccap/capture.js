@@ -26,7 +26,7 @@ module.exports = class CaptureHandler {
 	// Makes a nice filename for screen captures.
 
 	static async logUpload(filename, success, url, file_path) {
-		captures.captures.push({
+		captures.push({
 			filename: filename,
 			success: success,
 			url: url,

@@ -25,8 +25,8 @@ async function createConfigs() {
 	await stat(`${require("os").homedir()}/magiccap_captures.json`).then(async() => {
 		const captures = global.captures = require(`${require("os").homedir()}/magiccap_captures.json`);
 	}).catch(async() => {
-		const captures = global.captures = { captures: [] };
-		writeJSON(`${require("os").homedir()}/magiccap_captures.json`, { captures: [] }).catch(async() => {
+		const captures = global.captures = [];
+		writeJSON(`${require("os").homedir()}/magiccap_captures.json`, []).catch(async() => {
 			throw new Error("Could not find or create the capture logging file.");
 		});
 	});
