@@ -20,7 +20,7 @@ module.exports = {
 		switch (res.status) {
 			case 200: break;
 			case 403: {
-				throw new Error("Your key is invalid");
+				throw new Error("Your key is invalid.");
 			}
 			case 429: {
 				throw new Error("You have been ratelimited!");
