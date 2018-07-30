@@ -9,7 +9,6 @@ const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const fs = require("fs");
 const { clipboard } = require("electron");
-let captures = global.captures;
 // Imports go here.
 
 module.exports = class CaptureHandler {
