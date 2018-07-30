@@ -3,17 +3,17 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 const configtemplate = {
-	hotkey: "",
+	hotkey: "PrintScreen",
 	novus_token: "",
 };
 
 const { stat, writeJSON } = require("fs-nextra");
 const capture = require("./capture.js");
-const { app, Tray, Menu, dialog, Notification } = require("electron");
+const { app, Tray, Menu, dialog, Notification, globalShortcut } = require("electron");
 const notifier = require("node-notifier");
 // Main imports.
 
-async function createConfigs() {
+(async() => {
 	await stat(`${require("os").homedir()}/magiccap.json`).then(async() => {
 		const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 	}).catch(async() => {
@@ -30,8 +30,8 @@ async function createConfigs() {
 			throw new Error("Could not find or create the capture logging file.");
 		});
 	});
-}
-createConfigs();
+	globalShortcut.register(config.hotkey, runCapture);
+})();
 // Creates the configs.
 
 if (app.dock) app.dock.hide();
