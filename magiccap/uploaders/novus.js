@@ -8,7 +8,10 @@ module.exports = {
 	name: "i.novus",
 	icon: "novus.png",
 	config_options: {
-		"API Token": "novus_token",
+		"API Token": {
+			value: "novus_token",
+			type: "text",
+		},
 	},
 	upload: async buffer => {
 		let res = await post("https://i.novuscommunity.co/api/upload")
