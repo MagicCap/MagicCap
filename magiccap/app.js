@@ -2,23 +2,47 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const configtemplate = {
-	hotkey: "PrintScreen",
-	novus_token: "",
-};
-
-const { stat, writeJSON } = require("fs-nextra");
+const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require("./capture.js");
 const { app, Tray, Menu, dialog, Notification, globalShortcut } = require("electron");
 const notifier = require("node-notifier");
 // Main imports.
 
+async function getDefaultConfig() {
+	let pics_dir = app.getPath("pictures");
+	switch (process.platform) {
+		case "linux":
+		case "darwin": {
+			pics_dir += "/MagicCap/";
+			break;
+		}
+		default: {
+			pics_dir += "\\MagicCap\\";
+		}
+	}
+	let config = {
+		hotkey: null,
+		upload_capture: true,
+		uploader_type: "imgur",
+		clipboard_action: 2,
+		save_capture: true,
+		save_path: pics_dir,
+	};
+	await mkdir(config.save_path).catch(async error => {
+		if (error.errno !== -4075) {
+			config.Remove("save_path");
+		}
+	});
+	return config;
+}
+// Creates the default config.
+
 (async() => {
 	await stat(`${require("os").homedir()}/magiccap.json`).then(async() => {
 		const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 	}).catch(async() => {
-		const config = global.config = configtemplate;
-		writeJSON(`${require("os").homedir()}/magiccap.json`, configtemplate).catch(async() => {
+		const config = global.config = await getDefaultConfig();
+		writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
 			throw new Error("Could not find or create the config file.");
 		});
 	});
@@ -30,7 +54,9 @@ const notifier = require("node-notifier");
 			throw new Error("Could not find or create the capture logging file.");
 		});
 	});
-	globalShortcut.register(config.hotkey, runCapture);
+	if (config.hotkey) {
+		globalShortcut.register(config.hotkey, runCapture);
+	}
 })();
 // Creates the configs.
 
