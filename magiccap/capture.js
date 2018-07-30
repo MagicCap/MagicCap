@@ -72,7 +72,9 @@ module.exports = class CaptureHandler {
 				"The screenshot capturing/saving failed."
 			);
 		}
-		let result = await fsnextra.readFile(file_path).catch(async() => new Error("Could not read created screenshot."));
+		let result = await fsnextra.readFile(file_path).catch(async() => {
+			throw new Error("Could not read created screenshot. This can happen if you cancelled the screenshot.");
+		});
 		if (result) return result;
 	}
 	// Creates a screen capture.
@@ -90,7 +92,9 @@ module.exports = class CaptureHandler {
 		if (config.upload_capture) {
 			uploader_type = config.uploader_type;
 			uploader_file = `./uploaders/${uploader_type}.js`;
-			let lstatres = await fsnextra.lstat(uploader_file).catch(() => new Error("Uploader not found."));
+			let lstatres = await fsnextra.lstat(uploader_file).catch(async() => {
+				throw new Error("Uploader not found.");
+			});
 			if (!lstatres.isFile()) { throw new Error("Uploader not found."); }
 			uploader = require(uploader_file);
 			for (key in uploader.config_options) {
@@ -126,7 +130,7 @@ module.exports = class CaptureHandler {
 			}
 		}
 		if (delete_after) {
-			await fsnextra.unlink(save_path).catch(async() => new Error("Could not delete capture."));
+			await fsnextra.unlink(save_path).catch(async() => { throw new Error("Could not delete capture."); });
 			save_path = null;
 		}
 		await this.logUpload(filename, true, url, save_path);
