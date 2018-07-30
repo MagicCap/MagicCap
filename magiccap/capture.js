@@ -84,9 +84,9 @@ module.exports = class CaptureHandler {
 		let save_path, uploader_type, uploader_file, url, uploader, key;
 		if (config.save_capture) {
 			save_path = config.save_path + filename;
+			delete_after = false;
 		} else {
 			save_path = `${os.tmpdir()}/${filename}`;
-			delete_after = false;
 		}
 		let buffer = await this.createCapture(save_path);
 		if (config.upload_capture) {
