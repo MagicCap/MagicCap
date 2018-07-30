@@ -7,7 +7,7 @@
     "license": "MPL-2.0",
     "dependencies": {
         "electron": "2.0.5",
-        "snekfetch": "^4.0.4",
+        "fetchain": "KingDGrizzle/fetchain",
         "fs-nextra": "0.3.5",
         "moment": "^2.22.2",
         "node-process-windows": "0.0.2",

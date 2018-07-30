@@ -2,7 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const { post } = require("snekfetch");
+const { post } = require("fetchain");
 
 module.exports = {
 	name: "i.novus",
@@ -17,7 +17,7 @@ module.exports = {
 		let res = await post("https://i.novuscommunity.co/api/upload")
 			.set("Authorization", `Bearer ${config.novus_token}`)
 			.attach("file", buffer, "oof.png");
-		switch (res.statusCode) {
+		switch (res.status) {
 			case 200: break;
 			case 403: {
 				throw new Error("Your key is invalid");
@@ -26,10 +26,10 @@ module.exports = {
 				throw new Error("You have been ratelimited!");
 			}
 			default: {
-				if (res.statusCode >= 500 <= 599) {
+				if (res.status >= 500 <= 599) {
 					throw new Error("There are currently server issues.");
 				}
-				throw new Error(`Server returned the status ${res.statusCode}.`);
+				throw new Error(`Server returned the status ${res.status}.`);
 			}
 		}
 		return res.body.url;
