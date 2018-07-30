@@ -8,16 +8,8 @@ module.exports = {
 		node: true,
 	},
 	globals: {
-		Database: true,
-		Domains: true,
-		Images: true,
-		Users: true,
-		client: true,
 		config: true,
-		getAuthUser: true,
-		reload: true,
-		server: true,
-		winston: true,
+		captures: true,
 	},
 	rules: {
 		"no-compare-neg-zero": "error",

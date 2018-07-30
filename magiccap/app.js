@@ -72,3 +72,5 @@ function initialiseScript() {
 
 app.on("ready", initialiseScript);
 // The app is ready to rock!
+
+process.on("unhandledRejection", async err => console.error(err));
