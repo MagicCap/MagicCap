@@ -4,7 +4,7 @@
 
 const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require("./capture.js");
-const { app, Tray, Menu, dialog, globalShortcut } = require("electron");
+const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow } = require("electron");
 const notifier = require("node-notifier");
 // Main imports.
 
@@ -63,8 +63,8 @@ async function getDefaultConfig() {
 if (app.dock) app.dock.hide();
 // Hides the dock icon.
 
-let tray;
-// Predefines the task tray.
+let tray, window;
+// Predefines the task tray and window.
 
 function throwNotification(result) {
 	notifier.notify({
@@ -86,10 +86,41 @@ async function runCapture() {
 }
 // Runs the capture.
 
+function openConfig() {
+	if (window) {
+		window.show();
+		return;
+	}
+
+	if (app.dock) app.dock.show();
+
+	window = new BrowserWindow({
+		width: 800, height: 600,
+	});
+	window.loadFile("./gui/index.html");
+
+	window.on("closed", () => {
+		window = null;
+		if (app.dock) app.dock.hide();
+	});
+}
+// Opens the config.
+
+app.on("activate", () => {
+	openConfig();
+});
+// Opens up the config when clicked in the dock.
+
+app.on("window-all-closed", () => {
+	// Nothing should happen here.
+});
+// Stays alive.
+
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: "Exit", type: "normal", role: "quit" },
+		{ label: "Config", type: "normal", click: openConfig },
 		{ label: "Capture", type: "normal", click: runCapture },
 	]);
 	tray.setContextMenu(contextMenu);
@@ -100,3 +131,4 @@ app.on("ready", initialiseScript);
 // The app is ready to rock!
 
 process.on("unhandledRejection", async err => console.error(err));
+// Handles unhandled rejections.
