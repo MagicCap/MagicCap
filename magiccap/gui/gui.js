@@ -46,8 +46,8 @@ async function showClipboardAction() {
 		config.clipboard_action = action;
 		await saveConfig();
 	}
-	$(`#clipboardActionID${action}`).prop("checked", true);
-	$("#clipboardAction").addClass("is-active");
+	await $(`#clipboardActionID${action}`).prop("checked", true);
+	await $("#clipboardAction").addClass("is-active");
 }
 // Shows the clipboard action settings page.
 
