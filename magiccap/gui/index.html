@@ -2,14 +2,41 @@
 <html>
     <head>
         <title>MagicCap</title>
-        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="../node_modules/bulma/css/bulma.css">
     </head>
 
     <body>
-        <h1>Hello World!</h1>
-        <script src="../node_modules/jquery/dist/jquery.js"></script>
-        <script src="../node_modules/popper.js/dist/popper.min.js"></script>
-        <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="renderer.js"></script>
+        <div class="columns">
+            <aside class="column is-2 aside hero is-fullheight">
+                <aside class="menu">
+                        <ul class="menu-list">
+                            <li>
+                                <a href="javascript:showAbout()">About</a>
+                            </li>
+                            <li>
+                                <a href="javascript:hotkeyConfigButton()">Hotkey</a>
+                            </li>
+                        </ul>
+                </aside>
+            </aside>
+            <div class="column is-4 messages hero is-fullheight" id="main-part">
+                <h1>Hello World!</h1>
+            </div>
+        </div>
+        <div class="modal" id="about">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">About</p>
+                    <button class="delete" aria-label="close" id="aboutClose"></button>
+                </header>
+                <section class="modal-card-body">
+                    <h1 class="title">MagicCap</h1>
+                    <p>Copyright (C) Jake Gealer and Rhys O'Kane 2018.</p>
+                    <p>This software is licensed under the <a href="javascript:openMPL()">MPL-2.0</a> license.</p>
+                </section>
+            </div>
+        </div>
+        <script src="gui.js"></script>
     </body>
 </html>
