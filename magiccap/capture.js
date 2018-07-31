@@ -8,7 +8,7 @@ const os = require("os");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const fs = require("fs");
-const { clipboard } = require("electron");
+const { clipboard, nativeImage } = require("electron");
 // Imports go here.
 
 module.exports = class CaptureHandler {
@@ -122,7 +122,9 @@ module.exports = class CaptureHandler {
 		if (config.clipboard_action) {
 			switch (config.clipboard_action) {
 				case 1: {
-					clipboard.writeBuffer(buffer);
+					clipboard.writeImage(
+						nativeImage.createFromBuffer(buffer)
+					);
 					break;
 				}
 				case 2: {
