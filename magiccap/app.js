@@ -97,6 +97,7 @@ function openConfig() {
 	window = new BrowserWindow({
 		width: 800, height: 600,
 	});
+	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
 
 	window.on("closed", () => {
