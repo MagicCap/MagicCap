@@ -14,7 +14,7 @@
                                 <a href="javascript:showAbout()">About</a>
                             </li>
                             <li>
-                                <a href="javascript:hotkeyConfigButton()">Hotkey</a>
+                                <a href="javascript:showClipboardAction()">Clipboard Action</a>
                             </li>
                         </ul>
                 </aside>
@@ -34,6 +34,19 @@
                     <h1 class="title">MagicCap</h1>
                     <p>Copyright (C) Jake Gealer and Rhys O'Kane 2018.</p>
                     <p>This software is licensed under the <a href="javascript:openMPL()">MPL-2.0</a> license.</p>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="clipboardAction">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Clipboard Action</p>
+                    <button class="delete" aria-label="close" id="clipboardActionClose"></button>
+                </header>
+                <section class="modal-card-body">
+                    <input type="radio" name="clipboardActionRadio" id="clipboardActionID2"> Copy the uploaded URL to the clipboard (requires file uploads to be on).<br>
+                    <input type="radio" name="clipboardActionRadio" id="clipboardActionID1"> Copy the image to the clipboard.
                 </section>
             </div>
         </div>
