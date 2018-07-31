@@ -30,6 +30,7 @@ module.exports = class CaptureHandler {
 			success: success,
 			url: url,
 			file_path: file_path,
+			timestamp: new Date().getTime(),
 		});
 		fsnextra.writeJSON(`${require("os").homedir()}/magiccap_captures.json`, captures).catch(async() => {
 			throw new Error("Could not update the capture logging file.");
