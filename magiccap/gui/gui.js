@@ -8,6 +8,31 @@ const fsnextra = require("fs-nextra");
 let config = global.config;
 // Imports go here.
 
+async function saveConfig() {
+	fsnextra.writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
+		console.log("Could not update the config.");
+	});
+	for (const key in config) {
+		remote.getGlobal("config")[key] = config[key];
+	}
+}
+// Saves the config.
+
+let clipboardAction = 2;
+if (config.clipboard_action) {
+	if (config.clipboard_action <= 0 || config.clipboard_action >= 3) {
+		config.clipboard_action = clipboardAction;
+		saveConfig();
+	} else {
+		clipboardAction = config.clipboard_action;
+	}
+} else {
+	config.clipboard_action = clipboardAction;
+	saveConfig();
+}
+$(`#clipboardActionID${clipboardAction}`).prop("checked", true);
+// Preloads the clipboard action.
+
 function openMPL() {
 	shell.openExternal("https://www.mozilla.org/en-US/MPL/2.0");
 }
@@ -23,31 +48,8 @@ $("#aboutClose").click(async() => {
 });
 // Handles the about close button.
 
-async function saveConfig() {
-	fsnextra.writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
-		console.log("Could not update the config.");
-	});
-	for (const key in config) {
-		remote.getGlobal("config")[key] = config[key];
-	}
-}
-// Saves the config.
-
-async function showClipboardAction() {
-	let action = 2;
-	if (config.clipboard_action) {
-		if (config.clipboard_action <= 0 || config.clipboard_action >= 3) {
-			config.clipboard_action = action;
-			await saveConfig();
-		} else {
-			action = config.clipboard_action;
-		}
-	} else {
-		config.clipboard_action = action;
-		await saveConfig();
-	}
-	await $(`#clipboardActionID${action}`).prop("checked", true);
-	await $("#clipboardAction").addClass("is-active");
+function showClipboardAction() {
+	$("#clipboardAction").addClass("is-active");
 }
 // Shows the clipboard action settings page.
 
