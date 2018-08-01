@@ -2,6 +2,10 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
+const sqlite3 = require("sqlite3").verbose();
+let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("os").homedir()}/magiccap_captures.db`);
+// Defines the capture database.
+
 const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require("./capture.js");
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow } = require("electron");
@@ -46,19 +50,14 @@ async function getDefaultConfig() {
 			throw new Error("Could not find or create the config file.");
 		});
 	});
-	await stat(`${require("os").homedir()}/magiccap_captures.json`).then(async() => {
-		const captures = global.captures = require(`${require("os").homedir()}/magiccap_captures.json`);
-	}).catch(async() => {
-		const captures = global.captures = [];
-		writeJSON(`${require("os").homedir()}/magiccap_captures.json`, []).catch(async() => {
-			throw new Error("Could not find or create the capture logging file.");
-		});
-	});
 	if (config.hotkey) {
 		globalShortcut.register(config.hotkey, runCapture);
 	}
 })();
-// Creates the configs.
+// Creates the config.
+
+captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER, `url` TEXT, `file_path` TEXT);");
+// Runs capture database preperation.
 
 if (app.dock) app.dock.hide();
 // Hides the dock icon.

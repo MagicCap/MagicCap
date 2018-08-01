@@ -13,6 +13,11 @@
         "moment": "^2.22.2",
         "node-notifier": "5.2.1",
         "bulmaswatch": "0.7.1",
-        "jquery": "3.2.1"
+        "jquery": "3.2.1",
+        "sqlite3": "4.0.2",
+        "electron-builder": "20.26.1"
+    },
+    "scripts": {
+        "postinstall": "install-app-deps"
     }
 }

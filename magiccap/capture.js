@@ -25,16 +25,14 @@ module.exports = class CaptureHandler {
 	// Makes a nice filename for screen captures.
 
 	static async logUpload(filename, success, url, file_path) {
-		captures.push({
-			filename: filename,
-			success: success,
-			url: url,
-			file_path: file_path,
-			timestamp: new Date().getTime(),
-		});
-		fsnextra.writeJSON(`${require("os").homedir()}/magiccap_captures.json`, captures).catch(async() => {
-			throw new Error("Could not update the capture logging file.");
-		});
+		const captureSuccessMap = {
+			false: 0,
+			true: 1,
+		};
+		await captureDatabase.run(
+			"INSERT INTO captures VALUES (?, ?, ?, ?, ?)",
+			[filename, captureSuccessMap[success], new Date().getTime(), url, file_path]
+		);
 	}
 	// Logs uploads.
 

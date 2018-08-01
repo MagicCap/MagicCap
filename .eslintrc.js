@@ -10,7 +10,7 @@ module.exports = {
 	},
 	globals: {
 		config: true,
-		captures: true,
+		captureDatabase: true,
 	},
 	rules: {
 		"no-compare-neg-zero": "error",
