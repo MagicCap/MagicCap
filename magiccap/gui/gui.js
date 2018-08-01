@@ -5,7 +5,7 @@
 const { shell, remote } = require("electron");
 const $ = require("jquery");
 const fsnextra = require("fs-nextra");
-let config = require(`${require("os").homedir()}/magiccap.json`);
+let config = global.config;
 // Imports go here.
 
 function openMPL() {
