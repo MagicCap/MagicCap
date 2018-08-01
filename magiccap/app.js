@@ -53,11 +53,9 @@ async function getDefaultConfig() {
 	if (config.hotkey) {
 		globalShortcut.register(config.hotkey, runCapture);
 	}
+	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER, `url` TEXT, `file_path` TEXT);");
 })();
-// Creates the config.
-
-captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER, `url` TEXT, `file_path` TEXT);");
-// Runs capture database preperation.
+// Creates the config/capture DB table.
 
 if (app.dock) app.dock.hide();
 // Hides the dock icon.
