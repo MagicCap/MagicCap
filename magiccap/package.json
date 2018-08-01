@@ -15,7 +15,8 @@
         "bulmaswatch": "0.7.1",
         "jquery": "3.2.1",
         "sqlite3": "4.0.2",
-        "electron-builder": "20.26.1"
+        "electron-builder": "20.26.1",
+        "xss-filters": "1.2.7"
     },
     "scripts": {
         "postinstall": "install-app-deps"

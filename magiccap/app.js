@@ -81,6 +81,7 @@ async function runCapture() {
 		dialog.showErrorBox("MagicCap", `${err.message}`);
 	}
 }
+global.runCapture = runCapture;
 // Runs the capture.
 
 function openConfig() {
@@ -92,7 +93,7 @@ function openConfig() {
 	if (app.dock) app.dock.show();
 
 	window = new BrowserWindow({
-		width: 800, height: 600,
+		width: 1200, height: 600,
 	});
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");

@@ -5,7 +5,10 @@
 const { shell, remote } = require("electron");
 const $ = require("jquery");
 const fsnextra = require("fs-nextra");
+const xssfilters = require("xss-filters");
 let config = global.config;
+let lastTimestamp = 0;
+let filePathMap = {};
 // Imports go here.
 
 async function saveConfig() {
@@ -80,3 +83,67 @@ $(window).on("load", async() => {
 	await $("body").show();
 });
 // Unhides the body when the page has loaded.
+
+async function runCapture() {
+	await remote.getGlobal("runCapture")();
+}
+// Runs the capture.
+
+const successEmojiMap = {
+	0: "Error",
+	1: "Success",
+};
+// The map for capture success emojis.
+
+function openScreenshot(url) {
+	shell.openExternal(url);
+}
+// Opens a screenshot.
+
+let db = remote.getGlobal("captureDatabase");
+// Defines the DB.
+
+async function deleteScreenshotDB(timestamp) {
+	await db.run(
+		"DELETE FROM captures WHERE timestamp = ?",
+		[timestamp]
+	);
+	location.reload();
+}
+// Deletes a screenshot from the DB.
+
+async function viewScreenshotFile(timestamp) {
+	await shell.openItem(filePathMap[timestamp]);
+}
+// Opens up a screenshot.
+
+async function addToCaptureTable(row) {
+	const date_time = xssfilters.inHTMLData(new Date(row.timestamp).toLocaleString());
+	const emoji = successEmojiMap[row.success];
+	const filename = xssfilters.inHTMLData(row.filename);
+	let parts = [
+		`<td>${emoji}</td>`,
+		`<td>${filename}</td>`,
+		`<td>${date_time}</td>`,
+	];
+	if (row.url) {
+		parts.push(`<td><a href="javascript:openScreenshot('${xssfilters.uriInHTMLData(row.url)}')">${xssfilters.uriInHTMLData(row.url)}</a></td>`);
+	} else {
+		parts.push("<td></td>");
+	}
+	if (row.file_path) {
+		parts.push(`<td><a class="button is-primary" href="javascript:viewScreenshotFile('${row.timestamp}')">View</a></td>`);
+		filePathMap[row.timestamp] = row.file_path;
+	} else {
+		parts.push("<td>File wasn't saved.</td>");
+	}
+	parts.push(`<td><a class="button is-danger" href="javascript:deleteScreenshotDB(${row.timestamp})">Remove</a></td>`);
+	await $("#mainTableBody").append(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
+}
+// Adds screenshots to the capture table.
+
+db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDER BY timestamp ASC", async(err, row) => {
+	if (err) { console.log(err); }
+	await addToCaptureTable(row);
+});
+// Goes through the last 20 captures.

@@ -17,12 +17,15 @@
     </head>
 
     <body style="display: none">
-        <div class="columns">
-            <aside class="column is-2 aside hero is-fullheight">
+        <div class="columns is-gapless">
+            <aside class="column is-2 aside hero is-fullheight" style="position: fixed; width: 200px;">
                 <aside class="menu">
                     <ul class="menu-list">
                         <li>
                             <a href="javascript:showAbout()">About</a>
+                        </li>
+                        <li>
+                            <a href="javascript:runCapture()">Capture</a>
                         </li>
                         <li>
                             <a href="javascript:showClipboardAction()">Clipboard Action</a>
@@ -33,6 +36,12 @@
                     </ul>
                 </aside>
             </aside>
+            <div class="column is-10" style="margin-left: 200px;">
+                <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
+                    <tbody id="mainTableBody"></tbody>
+                </table>
+            </div>
+            
         </div>
         <div class="modal" id="about">
             <div class="modal-background"></div>
