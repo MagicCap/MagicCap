@@ -64,3 +64,14 @@ $('[id^="clipboardActionID"]').click(async event => {
 	await saveConfig();
 });
 // Handles clipboard action clicking.
+
+async function toggleTheme() {
+	if (config.light_theme) {
+		config.light_theme = false;
+	} else {
+		config.light_theme = true;
+	}
+	await saveConfig();
+	location.reload();
+}
+// Toggles the theme.
