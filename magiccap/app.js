@@ -53,7 +53,7 @@ async function getDefaultConfig() {
 	if (config.hotkey) {
 		globalShortcut.register(config.hotkey, runCapture);
 	}
-	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER, `url` TEXT, `file_path` TEXT);");
+	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
 })();
 // Creates the config/capture DB table.
 
