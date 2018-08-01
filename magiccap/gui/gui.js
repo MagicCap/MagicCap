@@ -75,3 +75,8 @@ async function toggleTheme() {
 	location.reload();
 }
 // Toggles the theme.
+
+$(window).on("load", async() => {
+	await $("body").show();
+});
+// Unhides the body when the page has loaded.
