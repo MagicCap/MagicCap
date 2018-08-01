@@ -93,7 +93,7 @@ function openConfig() {
 	if (app.dock) app.dock.show();
 
 	window = new BrowserWindow({
-		width: 1200, height: 600,
+		width: 1250, height: 600,
 	});
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
