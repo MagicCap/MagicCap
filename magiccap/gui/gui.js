@@ -161,8 +161,7 @@ if (config.light_theme) {
 ipcRenderer.on("screenshot-upload", async(event, data) => {
 	await addToCaptureTable(data, "#mainTableBody");
 	const tableChildren = await $("#mainTableBody").children();
-	const arrLength = tableChildren.length;
-	if (arrLength === 21) {
+	if (tableChildren.length === 21) {
 		await tableChildren[0].remove();
 	}
 });
