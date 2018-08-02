@@ -16,6 +16,14 @@
         </script>
     </head>
 
+    <style>
+        .divider {
+            width:5px;
+            height:auto;
+            display:inline-block;
+        }
+    </style>
+
     <body style="display: none">
         <div class="columns is-gapless">
             <aside class="column is-2 aside hero is-fullheight" style="position: fixed; width: 15%" id="sidebar">
@@ -29,6 +37,9 @@
                         </li>
                         <li>
                             <a href="javascript:showClipboardAction()">Clipboard Action</a>
+                        </li>
+                        <li>
+                            <a href="javascript:showUploaderConfig()">Uploader Configuration</a>
                         </li>
                         <li>
                             <a href="javascript:toggleTheme()">Toggle Theme</a>
@@ -66,6 +77,22 @@
                 <section class="modal-card-body">
                     <input type="radio" name="clipboardActionRadio" id="clipboardActionID2"> Copy the uploaded URL to the clipboard (requires file uploads to be on).<br>
                     <input type="radio" name="clipboardActionRadio" id="clipboardActionID1"> Copy the image to the clipboard.
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="uploaderConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Uploader Configuration</p>
+                    <button class="delete" aria-label="close" id="uploaderConfigClose"></button>
+                </header>
+                <section class="modal-card-body" id="uploaderConfigBody">
+                    <label class="checkbox">
+                        <input type="checkbox" id="uploaderConfigCheckbox">
+                        Make files upload after capturing.
+                    </label>
+                    <br><br>
                 </section>
             </div>
         </div>

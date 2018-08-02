@@ -166,3 +166,48 @@ ipcRenderer.on("screenshot-upload", async(event, data) => {
 	}
 });
 // Handles new screenshots.
+
+let importedUploaders = {};
+// A list of imported uploaders.
+
+(async() => {
+	const files = await fsnextra.readdir("./uploaders");
+	for (const file in files) {
+		const import_ = require(`../uploaders/${files[file]}`);
+		importedUploaders[import_.name] = import_;
+	}
+	for (const uploader in importedUploaders) {
+		await $("#uploaderConfigBody").append(`<a class="button" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`);
+	}
+})();
+// Renders the uploader config buttons.
+
+function showUploaderConfig() {
+	$("#uploaderConfig").addClass("is-active");
+}
+// Shows the uploader config page.
+
+$("#uploaderConfigClose").click(async() => {
+	await $("#uploaderConfig").removeClass("is-active");
+});
+// Handles the uploader config close button.
+
+if (config.upload_capture) {
+	$("#uploaderConfigCheckbox").prop("checked", true);
+}
+// Toggles the uploader config checkbox.
+
+$("#uploaderConfigCheckbox").click(async() => {
+	if (config.upload_capture) {
+		config.upload_capture = false;
+	} else {
+		config.upload_capture = true;
+	}
+	await saveConfig();
+});
+// Change the uploader capture toggling.
+
+async function renderUploader(uploaderName) {
+	await $("#uploaderConfig").removeClass("is-active");
+}
+// Renders the uploader.
