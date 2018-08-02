@@ -147,3 +147,10 @@ db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDE
 	await addToCaptureTable(row);
 });
 // Goes through the last 20 captures.
+
+if (config.light_theme) {
+	$("#sidebar").css("background-color", "#e6e6e6");
+} else {
+	$("#sidebar").css("background-color", "#171819");
+}
+// Changes the colour scheme.
