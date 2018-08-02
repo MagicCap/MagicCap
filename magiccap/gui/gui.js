@@ -117,7 +117,7 @@ async function viewScreenshotFile(timestamp) {
 }
 // Opens up a screenshot.
 
-async function addToCaptureTable(row) {
+async function addToCaptureTable(row, elementName) {
 	const date_time = xssfilters.inHTMLData(new Date(row.timestamp).toLocaleString());
 	const emoji = successEmojiMap[row.success];
 	const filename = xssfilters.inHTMLData(row.filename);
@@ -138,13 +138,13 @@ async function addToCaptureTable(row) {
 		parts.push("<td></td>");
 	}
 	parts.push(`<td><a class="button is-danger" href="javascript:deleteScreenshotDB(${row.timestamp})">Remove</a></td>`);
-	await $("#mainTableBody").append(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
+	await $(elementName).append(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
 }
 // Adds screenshots to the capture table.
 
 db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDER BY timestamp ASC", async(err, row) => {
 	if (err) { console.log(err); }
-	await addToCaptureTable(row);
+	await addToCaptureTable(row, "#mainTableBody");
 });
 // Goes through the last 20 captures.
 
