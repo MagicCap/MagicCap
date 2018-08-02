@@ -97,6 +97,7 @@ function openConfig() {
 	});
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
+	global.window = window;
 
 	window.on("closed", () => {
 		window = null;

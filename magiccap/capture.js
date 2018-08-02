@@ -8,7 +8,7 @@ const os = require("os");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const fs = require("fs");
-const { clipboard, nativeImage } = require("electron");
+const { clipboard, nativeImage, ipcMain } = require("electron");
 // Imports go here.
 
 module.exports = class CaptureHandler {
@@ -29,10 +29,22 @@ module.exports = class CaptureHandler {
 			false: 0,
 			true: 1,
 		};
+		const timestamp = new Date().getTime();
 		await captureDatabase.run(
 			"INSERT INTO captures VALUES (?, ?, ?, ?, ?)",
-			[filename, captureSuccessMap[success], new Date().getTime(), url, file_path]
+			[filename, captureSuccessMap[success], timestamp, url, file_path]
 		);
+		try {
+			global.window.webContents.send("screenshot-upload", {
+				filename: filename,
+				success: captureSuccessMap[success],
+				timestamp: timestamp,
+				url: url,
+				file_path: file_path,
+			});
+		} catch (err) {
+			// This isn't too important, we should just ignore.
+		}
 	}
 	// Logs uploads.
 

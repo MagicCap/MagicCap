@@ -2,12 +2,11 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const { shell, remote } = require("electron");
+const { shell, remote, ipcRenderer } = require("electron");
 const $ = require("jquery");
 const fsnextra = require("fs-nextra");
 const xssfilters = require("xss-filters");
 let config = global.config;
-let lastTimestamp = 0;
 let filePathMap = {};
 // Imports go here.
 
@@ -103,12 +102,22 @@ function openScreenshot(url) {
 let db = remote.getGlobal("captureDatabase");
 // Defines the DB.
 
+async function loadCaptureTable() {
+	await db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDER BY timestamp ASC", async(err, row) => {
+		if (err) { console.log(err); }
+		await addToCaptureTable(row, "#mainTableBody");
+	});
+}
+loadCaptureTable();
+// Goes through the last 20 captures.
+
 async function deleteScreenshotDB(timestamp) {
 	await db.run(
 		"DELETE FROM captures WHERE timestamp = ?",
 		[timestamp]
 	);
-	location.reload();
+	await $("#mainTableBody").empty();
+	await loadCaptureTable();
 }
 // Deletes a screenshot from the DB.
 
@@ -142,15 +151,19 @@ async function addToCaptureTable(row, elementName) {
 }
 // Adds screenshots to the capture table.
 
-db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDER BY timestamp ASC", async(err, row) => {
-	if (err) { console.log(err); }
-	await addToCaptureTable(row, "#mainTableBody");
-});
-// Goes through the last 20 captures.
-
 if (config.light_theme) {
 	$("#sidebar").css("background-color", "#e6e6e6");
 } else {
 	$("#sidebar").css("background-color", "#171819");
 }
 // Changes the colour scheme.
+
+ipcRenderer.on("screenshot-upload", async(event, data) => {
+	await addToCaptureTable(data, "#mainTableBody");
+	const tableChildren = await $("#mainTableBody").children();
+	const arrLength = tableChildren.length;
+	if (arrLength === 21) {
+		await tableChildren[0].remove();
+	}
+});
+// Handles new screenshots.
