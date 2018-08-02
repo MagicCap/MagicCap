@@ -132,10 +132,10 @@ async function addToCaptureTable(row) {
 		parts.push("<td></td>");
 	}
 	if (row.file_path) {
-		parts.push(`<td><a class="button is-primary" href="javascript:viewScreenshotFile('${row.timestamp}')">View</a></td>`);
+		parts.push(`<td><a class="button is-primary" href="javascript:viewScreenshotFile(${row.timestamp})">View</a></td>`);
 		filePathMap[row.timestamp] = row.file_path;
 	} else {
-		parts.push("<td>File wasn't saved.</td>");
+		parts.push("<td></td>");
 	}
 	parts.push(`<td><a class="button is-danger" href="javascript:deleteScreenshotDB(${row.timestamp})">Remove</a></td>`);
 	await $("#mainTableBody").append(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
