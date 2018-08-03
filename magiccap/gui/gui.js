@@ -14,9 +14,7 @@ async function saveConfig() {
 	fsnextra.writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
 		console.log("Could not update the config.");
 	});
-	for (const key in config) {
-		remote.getGlobal("config")[key] = config[key];
-	}
+	ipcRenderer.send("config-edit", config);
 }
 // Saves the config.
 
@@ -177,7 +175,7 @@ let importedUploaders = {};
 		importedUploaders[import_.name] = import_;
 	}
 	for (const uploader in importedUploaders) {
-		await $("#uploaderConfigBody").append(`<a class="button" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`);
+		await $("#uploaderConfigBody").append(`<a class="button" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img class="rounded-img" src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`);
 	}
 })();
 // Renders the uploader config buttons.
@@ -207,7 +205,136 @@ $("#uploaderConfigCheckbox").click(async() => {
 });
 // Change the uploader capture toggling.
 
+function getDefaultValue(option, uploader) {
+	if (config[option.value]) { return config[option.value]; }
+	if (option.default) { return option.default; }
+	return "";
+}
+// Gets the default value.
+
 async function renderUploader(uploaderName) {
+	let parts = [
+		'<article class="message is-danger is-hidden" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>',
+		'<article class="message is-danger is-hidden" id="notAIntYouGiddyGoat"><div class="message-body">You provided a invalid integer.</div></article>',
+		'<article class="message is-success is-hidden" id="ayyyyDefaultSaved"><div class="message-body">Default uploader successfully saved.</div></article>',
+	];
+	const uploader = importedUploaders[uploaderName];
+	for (const configOptionName in uploader.config_options) {
+		const optionData = uploader.config_options[configOptionName];
+		switch (optionData.type.toLowerCase()) {
+			case "text":
+			case "integer": {
+				parts.push(`<div class="field"><label class="label">${xssfilters.inHTMLData(configOptionName)}:</label><div class="control"><input class="input" type="text" id="${optionData.value}" placeholder="${xssfilters.inHTMLData(configOptionName)}" value="${getDefaultValue(optionData, uploader)}"></div></div>`);
+				break;
+			}
+			case "password": {
+				parts.push(`<div class="field"><label class="label">${xssfilters.inHTMLData(configOptionName)}:</label><div class="control"><input class="input" type="password" id="${optionData.value}" placeholder="${xssfilters.inHTMLData(configOptionName)}" value="${getDefaultValue(optionData, uploader)}"></div></div>`);
+				break;
+			}
+			case "boolean": {
+				const type = getDefaultValue(optionData, uploader);
+				let extra = "";
+				if (type === true) {
+					extra = " checked";
+				}
+				parts.push(`<div class="field"><label class="label">${xssfilters.inHTMLData(configOptionName)}:</label><label class="checkbox"><input type="checkbox" id="${optionData.value}"${extra}> ${xssfilters.inHTMLData(configOptionName)}</label></label></div>`);
+				break;
+			}
+		}
+	}
+	if (parts.length === 3) {
+		parts.push("<p>There are no configuration options for this uploader.</p><br>");
+	}
+	parts.push(`<a class="button is-success" href="javascript:setDefaultUploader('${xssfilters.inHTMLData(uploader.name)}')">Set As Default Uploader</a>`);
+	await $("body").append(`<div class="modal is-active" id="activeUploaderConfig"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">${xssfilters.inHTMLData(uploader.name)}</p><button class="delete" aria-label="close" id="activeUploaderConfigClose"></button></header><section class="modal-card-body" id="activeUploaderConfigBody">${parts.join("")}</section></div></div>`);
+	$("#activeUploaderConfigClose").click(async() => {
+		await $("#activeUploaderConfig").remove();
+	});
+	for (const configOptionName in uploader.config_options) {
+		const optionData = uploader.config_options[configOptionName];
+		switch (optionData.type.toLowerCase()) {
+			case "boolean": {
+				$(`#${optionData.value}`).click(async() => {
+					if (config[optionData.value]) {
+						config[optionData.value] = false;
+					} else {
+						config[optionData.value] = true;
+					}
+					await saveConfig();
+				});
+				break;
+			}
+			default: {
+				$(`#${optionData.value}`).on("input", async() => {
+					config[optionData.value] = await $(`#${optionData.value}`).val();
+					await saveConfig();
+				});
+			}
+		}
+	}
 	await $("#uploaderConfig").removeClass("is-active");
 }
 // Renders the uploader.
+
+async function displayUploaderMessage(toDisplay) {
+	const msgs = [
+		"#notAIntYouGiddyGoat",
+		"#requiredStuffMissing",
+		"#ayyyyDefaultSaved",
+	];
+	for (const msg in msgs) {
+		if (msgs[msg] === toDisplay) { continue; }
+		const jq = await $(msgs[msg]);
+		if (await jq.hasClass("is-hidden")) { continue; }
+		await jq.addClass("is-hidden");
+	}
+	if (await $(toDisplay).hasClass("is-hidden")) { await $(toDisplay).removeClass("is-hidden"); }
+}
+// Displays the appropriate uploader message.
+
+async function setDefaultUploader(uploaderName) {
+	const uploader = importedUploaders[uploaderName];
+	let configRemap = {};
+	for (const configKey in uploader.config_options) {
+		const option = uploader.config_options[configKey];
+		configRemap[option.value] = option;
+	}
+	for (const value in configRemap) {
+		const jqueryObject = await $(`#${value}`);
+		const objValue = await jqueryObject.val();
+		switch (configRemap[value].type) {
+			case "text":
+			case "password": {
+				if (objValue === "" && configRemap[value].required) {
+					await displayUploaderMessage("#requiredStuffMissing");
+					return;
+				}
+				break;
+			}
+			case "integer": {
+				if (objValue === "" && configRemap[value].required) {
+					await displayUploaderMessage("#requiredStuffMissing");
+					return;
+				}
+				if (isNaN(objValue)) {
+					await displayUploaderMessage("#notAIntYouGiddyGoat");
+					return;
+				}
+				break;
+			}
+		}
+	}
+	let filename;
+	const files = await fsnextra.readdir("./uploaders");
+	for (const file in files) {
+		const import_ = require(`../uploaders/${files[file]}`);
+		if (import_.name === uploaderName) {
+			filename = files[file].substring(0, files[file].length - 3);
+			break;
+		}
+	}
+	config.uploader_type = filename;
+	await saveConfig();
+	await displayUploaderMessage("#ayyyyDefaultSaved");
+}
+// Sets the default uploader.

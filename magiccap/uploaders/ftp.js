@@ -11,30 +11,39 @@ module.exports = {
 		Hostname: {
 			value: "ftp_hostname",
 			type: "text",
+			required: true,
 		},
 		Port: {
 			value: "ftp_port",
-			type: "text",
+			type: "integer",
+			default: 21,
+			required: true,
 		},
 		Username: {
 			value: "ftp_username",
 			type: "text",
+			required: true,
 		},
 		Password: {
 			value: "ftp_password",
-			type: "text",
+			type: "password",
+			required: true,
 		},
 		Directory: {
 			value: "ftp_directory",
 			type: "text",
+			default: "/",
+			required: true,
 		},
-		Secure: {
+		"Secure Connection": {
 			value: "ftp_secure",
-			type: "Boolean",
+			type: "boolean",
+			required: true,
 		},
 		Domain: {
 			value: "ftp_domain",
 			type: "text",
+			required: true,
 		},
 	},
 	upload: async(buffer, filename) => {

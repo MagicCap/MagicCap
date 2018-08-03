@@ -8,7 +8,7 @@ let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("
 
 const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require("./capture.js");
-const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow } = require("electron");
+const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = require("electron");
 const notifier = require("node-notifier");
 // Main imports.
 
@@ -43,9 +43,9 @@ async function getDefaultConfig() {
 
 (async() => {
 	await stat(`${require("os").homedir()}/magiccap.json`).then(async() => {
-		const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
+		global.config = require(`${require("os").homedir()}/magiccap.json`);
 	}).catch(async() => {
-		const config = global.config = await getDefaultConfig();
+		global.config = await getDefaultConfig();
 		writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
 			throw new Error("Could not find or create the config file.");
 		});
@@ -126,6 +126,11 @@ function initialiseScript() {
 	tray.setContextMenu(contextMenu);
 }
 // Initialises the script.
+
+ipcMain.on("config-edit", async(event, data) => {
+	global.config = data;
+});
+// When the config changes, this does.
 
 app.on("ready", initialiseScript);
 // The app is ready to rock!

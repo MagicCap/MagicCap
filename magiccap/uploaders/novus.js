@@ -11,6 +11,7 @@ module.exports = {
 		"API Token": {
 			value: "novus_token",
 			type: "text",
+			required: true,
 		},
 	},
 	upload: async buffer => {
