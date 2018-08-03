@@ -18,6 +18,9 @@
         "electron-builder": "20.26.1",
         "xss-filters": "1.2.7"
     },
+    "devDependencies": {
+        "electron-packager": "12.1.0"
+    },
     "scripts": {
         "postinstall": "install-app-deps"
     }
