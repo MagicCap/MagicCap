@@ -2,7 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const { post } = require("fetchain");
+const { post } = require("chainfetch");
 
 module.exports = {
 	name: "FTP",

@@ -8,7 +8,7 @@
     "dependencies": {
         "async-child-process": "1.1.1",
         "electron": "2.0.5",
-        "fetchain": "KingDGrizzle/fetchain",
+        "chainfetch": "1.1.0",
         "fs-nextra": "0.3.5",
         "moment": "^2.22.2",
         "node-notifier": "5.2.1",
