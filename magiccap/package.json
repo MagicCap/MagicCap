@@ -31,9 +31,10 @@
         "build": "electron-builder"
     },
     "build": {
-        "extraFiles": [
+        "files": [
             "uploaders/**/*",
-            "icons/**/*"
+            "icons/**/*",
+            "**/*"
         ]
     }
 }
