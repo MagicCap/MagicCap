@@ -29,5 +29,11 @@
         "postinstall": "electron-builder install-app-deps",
         "lint": "eslint \"./**/*.js\"",
         "build": "electron-builder"
+    },
+    "build": {
+        "files": [
+            "uploaders/**/*",
+            "icons/**/*"
+        ]
     }
 }
