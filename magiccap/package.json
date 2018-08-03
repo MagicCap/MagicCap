@@ -1,5 +1,5 @@
 {
-    "name": "magiccap",
+    "name": "MagicCap",
     "version": "0.1.0",
     "description": "A cross platform image capturing suite.",
     "main": "app.js",
