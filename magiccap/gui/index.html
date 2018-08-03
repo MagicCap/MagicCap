@@ -46,6 +46,9 @@
                             <a href="javascript:showUploaderConfig()">Uploader Configuration</a>
                         </li>
                         <li>
+                            <a href="javascript:showFileConfig()">File Configuration</a>
+                        </li>
+                        <li>
                             <a href="javascript:toggleTheme()">Toggle Theme</a>
                         </li>
                     </ul>
@@ -97,6 +100,33 @@
                         Make files upload after capturing.
                     </label>
                     <br><br>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="fileConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">File Configuration</p>
+                    <button class="delete" aria-label="close" id="fileConfigClose"></button>
+                </header>
+                <section class="modal-card-body" id="fileConfigBody">
+                    <div class="field">
+                        <label class="checkbox">
+                            <input type="checkbox" id="fileConfigCheckbox">
+                            Make files save after capturing.<br><br>
+                        </label>
+                        <label class="label">File Naming Pattern:</label>
+                        <p>You can use %date% for the date and %time% for the time.</p><br>
+                        <div class="control">
+                            <input class="input" type="text" id="fileNamingPattern" placeholder="File Naming Pattern">
+                        </div>
+                        <br>
+                        <label class="label">File Save Folder:</label>
+                        <div class="control">
+                            <input class="input" type="text" id="fileSaveFolder" placeholder="File Save Folder">
+                        </div>
+                    </div>
                 </section>
             </div>
         </div>

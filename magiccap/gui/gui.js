@@ -338,3 +338,67 @@ async function setDefaultUploader(uploaderName) {
 	await displayUploaderMessage("#ayyyyDefaultSaved");
 }
 // Sets the default uploader.
+
+function showFileConfig() {
+	$("#fileConfig").addClass("is-active");
+}
+// Shows the file config.
+
+if (config.file_naming_pattern) {
+	$("#fileNamingPattern").val(config.file_naming_pattern);
+} else {
+	$("#fileNamingPattern").val("screenshot_%date%_%time%");
+}
+// Fills in the file naming pattern.
+
+$("#fileNamingPattern").on("input", async() => {
+	config.file_naming_pattern = await $("#fileNamingPattern").val();
+	await saveConfig();
+});
+// Saves the file naming pattern.
+
+if (config.save_capture) {
+	$("#fileConfigCheckbox").prop("checked", true);
+}
+// Handles ticking the file config checkbox.
+
+$("#fileConfigCheckbox").click(async() => {
+	if (config.save_capture) {
+		config.save_capture = false;
+	} else {
+		config.save_capture = true;
+	}
+	await saveConfig();
+});
+// Handles saving the file config checkbox.
+
+$("#fileConfigClose").click(async() => {
+	await $("#fileConfig").removeClass("is-active");
+});
+// Closes the file config.
+
+if (config.save_path) {
+	$("#fileSaveFolder").val(config.save_path);
+}
+// Sets the folder save path.
+
+$("#fileSaveFolder").on("input", async() => {
+	let savePath = await $("#fileSaveFolder").val();
+	let slashType;
+	switch (process.platform) {
+		case "darwin":
+		case "linux": {
+			slashType = "/";
+			break;
+		}
+		case "win32": {
+			slashType = "\\";
+		}
+	}
+	if (!savePath.endsWith(slashType)) {
+		savePath += slashType;
+	}
+	config.save_path = savePath;
+	await saveConfig();
+});
+// Saves the file naming pattern.
