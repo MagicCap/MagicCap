@@ -32,8 +32,7 @@
     },
     "build": {
         "files": [
-            "uploaders/**/*",
-            "icons/**/*"
+            "./**/*"
         ]
     }
 }
