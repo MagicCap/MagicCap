@@ -101,7 +101,7 @@ let db = remote.getGlobal("captureDatabase");
 // Defines the DB.
 
 async function loadCaptureTable() {
-	await db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDER BY timestamp ASC", async(err, row) => {
+	await db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDER BY timestamp DESC", async(err, row) => {
 		if (err) { console.log(err); }
 		await addToCaptureTable(row, "#mainTableBody");
 	});
@@ -169,9 +169,9 @@ let importedUploaders = {};
 // A list of imported uploaders.
 
 (async() => {
-	const files = await fsnextra.readdir("./uploaders");
+	const files = await fsnextra.readdir(`${__dirname}/../uploaders`);
 	for (const file in files) {
-		const import_ = require(`../uploaders/${files[file]}`);
+		const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
 		importedUploaders[import_.name] = import_;
 	}
 	for (const uploader in importedUploaders) {
@@ -325,9 +325,9 @@ async function setDefaultUploader(uploaderName) {
 		}
 	}
 	let filename;
-	const files = await fsnextra.readdir("./uploaders");
+	const files = await fsnextra.readdir(`${__dirname}/../uploaders`);
 	for (const file in files) {
-		const import_ = require(`../uploaders/${files[file]}`);
+		const import_ = require(`${__dirname}/../uploaders${files[file]}`);
 		if (import_.name === uploaderName) {
 			filename = files[file].substring(0, files[file].length - 3);
 			break;

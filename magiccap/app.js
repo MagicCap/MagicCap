@@ -7,7 +7,7 @@ let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("
 // Defines the capture database.
 
 const { stat, writeJSON, mkdir } = require("fs-nextra");
-const capture = require("./capture.js");
+const capture = require(`${__dirname}/capture.js`);
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = require("electron");
 const notifier = require("node-notifier");
 // Main imports.
@@ -99,6 +99,7 @@ function openConfig() {
 	window = new BrowserWindow({
 		width: 1250, height: 600,
 	});
+	window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
 	global.window = window;

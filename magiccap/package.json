@@ -34,7 +34,7 @@
         "files": [
             "uploaders/**/*",
             "icons/**/*",
-            "node_modules/**/*",            
+            "node_modules/**/*",
             "**/*"
         ]
     }

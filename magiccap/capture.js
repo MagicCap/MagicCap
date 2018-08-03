@@ -84,7 +84,7 @@ module.exports = class CaptureHandler {
 				await fsnextra.writeFile(file_path, result).catch(async() => {
 					throw new Error("Failed to write captured file.");
 				});
-				if (result.length === 0) {
+				if (result.length == 0) {
 					throw new Error("Screenshot cancelled.");
 				}
 				break;
