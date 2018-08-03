@@ -124,9 +124,9 @@ app.on("window-all-closed", () => {
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	const contextMenu = Menu.buildFromTemplate([
-		{ label: "Exit", type: "normal", role: "quit" },
-		{ label: "Config", type: "normal", click: openConfig },
 		{ label: "Capture", type: "normal", click: runCapture },
+		{ label: "Config", type: "normal", click: openConfig },
+		{ label: "Exit", type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
 }

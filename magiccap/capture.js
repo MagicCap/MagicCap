@@ -111,7 +111,7 @@ module.exports = class CaptureHandler {
 		let buffer = await this.createCapture(save_path);
 		if (config.upload_capture) {
 			uploader_type = config.uploader_type;
-			uploader_file = `./uploaders/${uploader_type}.js`;
+			uploader_file = `${__dirname}/uploaders/${uploader_type}.js`;
 			let lstatres = await fsnextra.lstat(uploader_file).catch(async() => {
 				throw new Error("Uploader not found.");
 			});
