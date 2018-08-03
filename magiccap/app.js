@@ -51,7 +51,11 @@ async function getDefaultConfig() {
 		});
 	});
 	if (config.hotkey) {
-		globalShortcut.register(config.hotkey, runCapture);
+		try {
+			globalShortcut.register(config.hotkey, runCapture);
+		} catch (_) {
+			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+		}
 	}
 	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
 })();
@@ -131,6 +135,20 @@ ipcMain.on("config-edit", async(event, data) => {
 	global.config = data;
 });
 // When the config changes, this does.
+
+ipcMain.on("hotkey-change", async(event, hotkey) => {
+	try {
+		globalShortcut.register(hotkey, runCapture);
+	} catch (_) {
+		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+	}
+});
+// Handles the hotkey changing.
+
+ipcMain.on("hotkey-unregister", async event => {
+	globalShortcut.unregisterAll();
+});
+// Unregisters all hotkeys.
 
 app.on("ready", initialiseScript);
 // The app is ready to rock!

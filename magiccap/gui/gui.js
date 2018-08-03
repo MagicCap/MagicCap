@@ -402,3 +402,36 @@ $("#fileSaveFolder").on("input", async() => {
 	await saveConfig();
 });
 // Saves the file naming pattern.
+
+function showHotkeyConfig() {
+	$("#hotkeyConfig").addClass("is-active");
+}
+// Shows the hotkey config.
+
+if (config.hotkey) {
+	$("#screenshotHotkey").val(config.hotkey);
+}
+// Sets the value of the hotkey textbox.
+
+$("#hotkeyConfigClose").click(async() => {
+	const text = await $("#screenshotHotkey").val();
+	if (config.hotkey !== text) {
+		if (text === "") {
+			ipcRenderer.send("hotkey-unregister");
+			config.hotkey = null;
+			await saveConfig();
+		} else {
+			ipcRenderer.send("hotkey-unregister");
+			config.hotkey = text;
+			await saveConfig();
+			ipcRenderer.send("hotkey-change", text);
+		}
+	}
+	await $("#hotkeyConfig").removeClass("is-active");
+});
+// Allows you to close the hotkey config.
+
+function openAcceleratorDocs() {
+	shell.openExternal("https://electronjs.org/docs/api/accelerator");
+}
+// Opens the Electron accelerator documentation.

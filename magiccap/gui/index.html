@@ -46,6 +46,9 @@
                             <a href="javascript:showFileConfig()">File Configuration</a>
                         </li>
                         <li>
+                            <a href="javascript:showHotkeyConfig()">Hotkey Configuration</a>
+                        </li>
+                        <li>
                             <a href="javascript:showUploaderConfig()">Uploader Configuration</a>
                         </li>
                         <li>
@@ -114,17 +117,39 @@
                     <div class="field">
                         <label class="checkbox">
                             <input type="checkbox" id="fileConfigCheckbox">
-                            Make files save after capturing.<br><br>
+                            Make files save after capturing.
                         </label>
+                    </div>
+                    <div class="field">
                         <label class="label">File Naming Pattern:</label>
-                        <p>You can use %date% for the date and %time% for the time.</p><br>
+                        <p style="padding-bottom: 10px">You can use %date% for the date and %time% for the time.</p>
                         <div class="control">
                             <input class="input" type="text" id="fileNamingPattern" placeholder="File Naming Pattern">
                         </div>
-                        <br>
+                    </div>
+                    <div class="field">
                         <label class="label">File Save Folder:</label>
                         <div class="control">
                             <input class="input" type="text" id="fileSaveFolder" placeholder="File Save Folder">
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="hotkeyConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Hotkey Configuration</p>
+                    <button class="delete" aria-label="close" id="hotkeyConfigClose"></button>
+                </header>
+                <section class="modal-card-body" id="hotkeyConfigBody">
+                    <p>You can use <a href="javascript:openAcceleratorDocs()">this documentation</a> in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.</p>
+                    <br>
+                    <div class="field">
+                        <label class="label">Screenshot Hotkey:</label>
+                        <div class="control">
+                            <input class="input" type="text" id="screenshotHotkey" placeholder="Screenshot Hotkey">
                         </div>
                     </div>
                 </section>
