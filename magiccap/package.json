@@ -5,6 +5,10 @@
     "main": "app.js",
     "author": "Jake Gealer & Rhys O'Kane",
     "license": "MPL-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/JakeMakesStuff/MagicCap.git"
+    },
     "dependencies": {
         "async-child-process": "1.1.1",
         "chainfetch": "1.1.0",
