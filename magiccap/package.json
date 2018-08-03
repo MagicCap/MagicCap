@@ -26,9 +26,7 @@
         "electron": "2.0.5"
     },
     "scripts": {
-        "postinstall": "electron-builder install-app-deps",
-        "lint": "eslint \"./**/*.js\"",
-        "build": "electron-builder"
+        "lint": "eslint \"./**/*.js\""
     },
     "build": {
         "files": [
