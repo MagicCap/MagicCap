@@ -29,7 +29,8 @@
 		"builder": "electron-builder install-app-deps",
 		"lint": "eslint \"./**/*.js\"",
 		"windowscompile": "electron-packager . MagicCap --arch x64 --platform windows --out ./outoutout --overwrite --icon icons/app.ico",
-		"maccompile": "electron-packager . MagicCap --platform darwin --out ./outoutout --overwrite --icon icons/app.ico"
+		"maccompile": "electron-packager . MagicCap --platform darwin --out ./outoutout --overwrite --icon icons/app.icns",
+		"linuxcompile": "electron-packager . MagicCap --platform linux --out ./outoutout --overwrite --icon icons/app.ico"
     },
     "build": {
         "files": [

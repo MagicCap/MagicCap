@@ -58,8 +58,8 @@ module.exports = class CaptureHandler {
 					cap_location = "/usr/sbin/screencapture";
 					args.push("-s");
 				} else {
-					cap_location = "maim";
-					args.push("-iox");
+					cap_location = "scrot";
+					args.push("-bs");
 				}
 				args.push(file_path);
 				let capture = child_process.spawn(cap_location, args);
