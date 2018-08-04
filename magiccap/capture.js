@@ -118,7 +118,7 @@ module.exports = class CaptureHandler {
 			if (!lstatres.isFile()) { throw new Error("Uploader not found."); }
 			uploader = require(uploader_file);
 			for (key in uploader.config_options) {
-				if (!config[uploader.config_options[key].value]) {
+				if (config[uploader.config_options[key].value] === undefined) {
 					if (uploader.config_options[key].default) {
 						config[uploader.config_options[key].value] = uploader.config_options[key].default;
 					} else {
