@@ -1,0 +1,7 @@
+language: node_js
+before_script:
+  - cd ./magiccap
+  - npm i --only=dev
+script:
+  - npm run lint
+  - npm run linuxcompile
