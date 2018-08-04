@@ -99,7 +99,7 @@ function openConfig() {
 	window = new BrowserWindow({
 		width: 1250, height: 600,
 	});
-	window.setIcon(`${__dirname}/icons/taskbar.png`);
+	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
 	global.window = window;

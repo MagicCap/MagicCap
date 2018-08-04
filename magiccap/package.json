@@ -1,5 +1,5 @@
 {
-    "name": "MagicCap",
+    "name": "magiccap",
     "version": "0.1.0",
     "description": "A cross platform image capturing suite.",
     "main": "app.js",
@@ -26,6 +26,7 @@
         "electron": "2.0.5"
     },
     "scripts": {
+		"builder": "electron-builder install-app-deps",
         "lint": "eslint \"./**/*.js\""
     },
     "build": {
