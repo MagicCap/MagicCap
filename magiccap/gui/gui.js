@@ -234,6 +234,9 @@ async function renderUploader(uploaderName) {
 			case "boolean": {
 				const type = getDefaultValue(optionData, uploader);
 				let extra = "";
+				if (config[optionData.value] === undefined) {
+					config[optionData.value] = false;
+				}
 				if (type === true) {
 					extra = " checked";
 				}
@@ -273,6 +276,7 @@ async function renderUploader(uploaderName) {
 		}
 	}
 	await $("#uploaderConfig").removeClass("is-active");
+	await saveConfig();
 }
 // Renders the uploader.
 
