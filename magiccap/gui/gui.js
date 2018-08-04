@@ -327,7 +327,7 @@ async function setDefaultUploader(uploaderName) {
 	let filename;
 	const files = await fsnextra.readdir(`${__dirname}/../uploaders`);
 	for (const file in files) {
-		const import_ = require(`${__dirname}/../uploaders${files[file]}`);
+		const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
 		if (import_.name === uploaderName) {
 			filename = files[file].substring(0, files[file].length - 3);
 			break;
