@@ -12,6 +12,61 @@ const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = requ
 const notifier = require("node-notifier");
 // Main imports.
 
+function createMenu() {
+	const application = {
+		label: "Application",
+		submenu: [
+			{
+				label: "Quit",
+				accelerator: "Command+Q",
+				click: () => {
+					app.quit();
+				},
+			},
+		],
+	};
+	const edit = {
+		label: "Edit",
+		submenu: [
+			{
+				label: "Undo",
+				accelerator: "CmdOrCtrl+Z",
+				selector: "undo:",
+			},
+			{
+				label: "Redo",
+				accelerator: "Shift+CmdOrCtrl+Z",
+				selector: "redo:",
+			},
+			{
+				type: "separator",
+			},
+			{
+				label: "Cut",
+				accelerator: "CmdOrCtrl+X",
+				selector: "cut:",
+			},
+			{
+				label: "Copy",
+				accelerator: "CmdOrCtrl+C",
+				selector: "copy:",
+			},
+			{
+				label: "Paste",
+				accelerator: "CmdOrCtrl+V",
+				selector: "paste:",
+			},
+			{
+				label: "Select All",
+				accelerator: "CmdOrCtrl+A",
+				selector: "selectAll:",
+			},
+		],
+	};
+	Menu.setApplicationMenu(Menu.buildFromTemplate([application, edit]));
+}
+// Creates a menu on Mac.
+
 async function getDefaultConfig() {
 	let pics_dir = app.getPath("pictures");
 	switch (process.platform) {
@@ -129,6 +184,11 @@ function initialiseScript() {
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
+	switch (process.platform) {
+		case "darwin": {
+			createMenu();
+		}
+	}
 }
 // Initialises the script.
 
