@@ -25,7 +25,7 @@ The following people have done a ton to help in the creation of MagicCap. If you
 - Harrison (AO554) - Helped us test for Mac.
 - Jake (JakeMakesStuff) - Made the majority of the GUI/capture code for MagicCap.
 - Jake (techfan36) - Helped us test for Linux.
-- Rhys (SunburntRock89) - Helped me with the structure and fixing bugs.
+- Rhys (SunburntRock89) - Helped me with the structure and fixing bugs. Also fixed FTP.
 - Sam (REC) - Made the FTP logo.
 
 # Building
