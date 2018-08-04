@@ -23,7 +23,8 @@
     "devDependencies": {
         "electron-builder": "20.26.1",
         "electron-packager": "12.1.0",
-        "electron": "2.0.5"
+        "electron": "2.0.5",
+        "eslint": "5.3.0"
     },
     "scripts": {
 		"postinstall": "electron-builder install-app-deps",
