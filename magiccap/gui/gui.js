@@ -271,6 +271,15 @@ async function renderUploader(uploaderName) {
 				});
 				break;
 			}
+			case "integer": {
+				$(`#${optionData.value}`).on("input", async() => {
+					const val = await $(`#${optionData.value}`).val();
+					if (isNaN(val)) { return; }
+					config[optionData.value] = parseInt(val);
+					await saveConfig();
+				});
+				break;
+			}
 			default: {
 				$(`#${optionData.value}`).on("input", async() => {
 					config[optionData.value] = await $(`#${optionData.value}`).val();
