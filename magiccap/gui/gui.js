@@ -235,7 +235,11 @@ async function renderUploader(uploaderName) {
 				const type = getDefaultValue(optionData, uploader);
 				let extra = "";
 				if (config[optionData.value] === undefined) {
-					config[optionData.value] = false;
+					if (type === true) {
+						config[optionData.value] = true;
+					} else {
+						config[optionData.value] = false;
+					}
 				}
 				if (type === true) {
 					extra = " checked";
