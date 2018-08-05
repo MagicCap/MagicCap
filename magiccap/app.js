@@ -201,7 +201,9 @@ ipcMain.on("config-edit", async(event, data) => {
 
 ipcMain.on("hotkey-change", async(event, hotkey) => {
 	try {
-		globalShortcut.register(hotkey, runCapture);
+		globalShortcut.register(hotkey, async() => {
+			await runCapture();
+		});
 	} catch (_) {
 		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
 	}
