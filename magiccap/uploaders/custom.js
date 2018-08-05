@@ -23,7 +23,7 @@ module.exports = {
 		"Response Key": {
 			value: "custom_response",
 			type: "text",
-			required: true,
+			required: false,
 		},
 		Headers: {
 			value: "custom_headers",
@@ -42,7 +42,7 @@ module.exports = {
 			.send(config.custom_body)
 			.attach("file", buffer, filename);
 
-		console.log(res.body[config.custom_response]);
+		if (!config.custom_response) return res.body;
 		return res.body[config.custom_response];
 	},
 };
