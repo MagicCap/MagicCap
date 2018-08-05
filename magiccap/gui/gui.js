@@ -335,6 +335,7 @@ async function renderUploader(uploaderName) {
 				});
 				break;
 			}
+			case "dictionary": { break; }
 			default: {
 				$(`#${optionData.value}`).on("input", async() => {
 					config[optionData.value] = await $(`#${optionData.value}`).val();
