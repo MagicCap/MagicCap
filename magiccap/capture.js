@@ -71,7 +71,7 @@ module.exports = class CaptureHandler {
 					);
 				}
 				result = await fsnextra.readFile(file_path).catch(async() => {
-					throw new Error("Could not read created screenshot. This can happen if you cancelled the screenshot.");
+					throw new Error("Screenshot cancelled.");
 				});
 				break;
 			}
