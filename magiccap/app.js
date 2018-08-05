@@ -107,7 +107,9 @@ async function getDefaultConfig() {
 	});
 	if (config.hotkey) {
 		try {
-			globalShortcut.register(config.hotkey, runCapture);
+			globalShortcut.register(config.hotkey, async() => {
+				await runCapture();
+			});
 		} catch (_) {
 			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
 		}
