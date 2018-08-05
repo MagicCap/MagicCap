@@ -51,10 +51,8 @@ module.exports = {
 			password: config.ftp_password,
 		});
 
-
-		await client.list(config.ftp_directory).catch(() => new Error("FTP directory does not exist. Please create it."));
-		await client.put(buffer, config.ftp_directory.endsWith("/") ? `${config.ftp_directory}${filename}` : `${config.ftp_directory}/${filename}`);
-		client.end();
+		await client.put(buffer, config.ftp_directory.endsWith("/") ? `${config.ftp_directory}${filename}` : `${config.ftp_directory}/${filename}`).catch(() => new Error("Failed to upload image to the FTP."));
+		await client.end();
 
 
 		return `${config.ftp_domain}/${filename}`;
