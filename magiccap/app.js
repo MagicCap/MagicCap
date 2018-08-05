@@ -12,6 +12,10 @@ const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = requ
 const notifier = require("node-notifier");
 // Main imports.
 
+function thisShouldFixMacIssuesAndIdkWhy() {
+	// Fuck knows why this works.
+}
+
 function createMenu() {
 	const application = {
 		label: "Application",
@@ -108,6 +112,7 @@ async function getDefaultConfig() {
 	if (config.hotkey) {
 		try {
 			globalShortcut.register(config.hotkey, async() => {
+				thisShouldFixMacIssuesAndIdkWhy();
 				await runCapture();
 			});
 		} catch (_) {
@@ -204,6 +209,7 @@ ipcMain.on("config-edit", async(event, data) => {
 ipcMain.on("hotkey-change", async(event, hotkey) => {
 	try {
 		globalShortcut.register(hotkey, async() => {
+			thisShouldFixMacIssuesAndIdkWhy();
 			await runCapture();
 		});
 	} catch (_) {
