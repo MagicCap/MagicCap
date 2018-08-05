@@ -212,9 +212,60 @@ function getDefaultValue(option, uploader) {
 }
 // Gets the default value.
 
+async function deleteRow(optionName, key, index) {
+	const dictKey = key.replace("^^$", "'").replace("$^!", '"');
+	delete config[optionName][dictKey];
+	await $(`#${optionName}Value${index}`).remove();
+	await saveConfig();
+}
+// Deletes a row from the dict.
+
+async function addToTable(optionName) {
+	const key = await $(`#KeyValue${optionName}`).val();
+	const value = await $(`#ValueValue${optionName}`).val();
+	if (key in config[optionName]) {
+		await displayUploaderMessage("#keyAlreadyUsed");
+		return;
+	}
+	if (key === "") {
+		await displayUploaderMessage("#blankKey");
+		return;
+	}
+	await $(`#KeyValue${optionName}`).val("");
+	await $(`#ValueValue${optionName}`).val("");
+	config[optionName][key] = value;
+	await saveConfig();
+	const length = $(`#${optionName}`).length;
+	await $(`#${optionName}`).append(`<tr id="${optionName}Value${length}"><td>${xssfilters.inHTMLData(key)}</td><td>${xssfilters.inHTMLData(config[optionName][key])}</td><td><a class="button is-danger" href="javascript:deleteRow('${optionName}', '${xssfilters.inHTMLData(key).replace("'", "^^$").replace('"', "$^!")}', ${length})">Delete Row</a></td>`);
+}
+// Adds to a row.
+
+function renderDict(optionData, configOptionName) {
+	if (config[optionData.value] === undefined) {
+		if (optionData.default) {
+			config[optionData.value] = optionData.default;
+		} else {
+			config[optionData.value] = {};
+		}
+	}
+	let index = 0;
+	let parts = [
+		`<div class="field"><label class="label">${xssfilters.inHTMLData(configOptionName)}:</label><table class="table is-bordered is-striped is-fullwidth"><tbody id="${optionData.value}">`,
+	];
+	for (const key in config[optionData.value]) {
+		parts.push(`<tr id="${optionData.value}Value${index}"><td>${xssfilters.inHTMLData(key)}</td><td>${xssfilters.inHTMLData(config[optionData.value][key])}</td><td><a class="button is-danger" href="javascript:deleteRow('${optionData.value}', '${xssfilters.inHTMLData(key).replace("'", "^^$").replace('"', "$^!")}', ${index})">Delete Row</a></td>`);
+		index += 1;
+	}
+	parts.push(`</tbody><tfoot><tr><th><input name="name" class="input" id="KeyValue${optionData.value}" type="text" placeholder="Name"></th><th><input name="value" class="input" id="ValueValue${optionData.value}" type="text" placeholder="Value"></th><th><a class="button is-primary" href="javascript:addToTable('${optionData.value}')">Add</a></th></tr></tfoot></table>`);
+	return `${parts.join("")}</div>`;
+}
+// Renders dictionaries.
+
 async function renderUploader(uploaderName) {
 	let parts = [
 		'<article class="message is-danger is-hidden" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>',
+		'<article class="message is-danger is-hidden" id="blankKey"><div class="message-body">The key you gave was blank.</div></article>',
+		'<article class="message is-danger is-hidden" id="keyAlreadyUsed"><div class="message-body">The key you gave was already used.</div></article>',
 		'<article class="message is-danger is-hidden" id="notAIntYouGiddyGoat"><div class="message-body">You provided a invalid integer.</div></article>',
 		'<article class="message is-success is-hidden" id="ayyyyDefaultSaved"><div class="message-body">Default uploader successfully saved.</div></article>',
 	];
@@ -229,6 +280,10 @@ async function renderUploader(uploaderName) {
 			}
 			case "password": {
 				parts.push(`<div class="field"><label class="label">${xssfilters.inHTMLData(configOptionName)}:</label><div class="control"><input class="input" type="password" id="${optionData.value}" placeholder="${xssfilters.inHTMLData(configOptionName)}" value="${getDefaultValue(optionData, uploader)}"></div></div>`);
+				break;
+			}
+			case "dictionary": {
+				parts.push(renderDict(optionData, configOptionName));
 				break;
 			}
 			case "boolean": {
@@ -249,7 +304,7 @@ async function renderUploader(uploaderName) {
 			}
 		}
 	}
-	if (parts.length === 3) {
+	if (parts.length === 5) {
 		parts.push("<p>There are no configuration options for this uploader.</p><br>");
 	}
 	parts.push(`<a class="button is-success" href="javascript:setDefaultUploader('${xssfilters.inHTMLData(uploader.name)}')">Set As Default Uploader</a>`);
@@ -298,6 +353,8 @@ async function displayUploaderMessage(toDisplay) {
 		"#notAIntYouGiddyGoat",
 		"#requiredStuffMissing",
 		"#ayyyyDefaultSaved",
+		"#keyAlreadyUsed",
+		"#blankKey",
 	];
 	for (const msg in msgs) {
 		if (msgs[msg] === toDisplay) { continue; }
