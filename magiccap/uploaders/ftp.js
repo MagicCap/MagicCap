@@ -52,7 +52,7 @@ module.exports = {
 		});
 
 		await client.put(buffer, config.ftp_directory.endsWith("/") ? `${config.ftp_directory}${filename}` : `${config.ftp_directory}/${filename}`).catch(() => new Error("Failed to upload image to the FTP."));
-		client.end();
+		await client.end();
 
 
 		return `${config.ftp_domain}/${filename}`;
