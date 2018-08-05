@@ -136,8 +136,10 @@ async function runCapture() {
 		const result = await capture.handleScreenshotting(filename);
 		throwNotification(result);
 	} catch (err) {
-		await capture.logUpload(filename, false, null, null);
-		dialog.showErrorBox("MagicCap", `${err.message}`);
+		if (err.message !== "Screenshot cancelled.") {
+			await capture.logUpload(filename, false, null, null);
+			dialog.showErrorBox("MagicCap", `${err.message}`);
+		}
 	}
 }
 global.runCapture = runCapture;
