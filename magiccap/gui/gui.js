@@ -282,7 +282,7 @@ async function renderUploader(uploaderName) {
 				parts.push(`<div class="field"><label class="label">${xssfilters.inHTMLData(configOptionName)}:</label><div class="control"><input class="input" type="password" id="${optionData.value}" placeholder="${xssfilters.inHTMLData(configOptionName)}" value="${getDefaultValue(optionData, uploader)}"></div></div>`);
 				break;
 			}
-			case "dictionary": {
+			case "object": {
 				parts.push(renderDict(optionData, configOptionName));
 				break;
 			}
@@ -335,7 +335,7 @@ async function renderUploader(uploaderName) {
 				});
 				break;
 			}
-			case "dictionary": { break; }
+			case "object": { break; }
 			default: {
 				$(`#${optionData.value}`).on("input", async() => {
 					config[optionData.value] = await $(`#${optionData.value}`).val();
