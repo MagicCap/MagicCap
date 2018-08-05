@@ -16,6 +16,7 @@ Linux requires `scrot` for this to work.
 # Supported Uploaders
 MagicCap supports the following uploaders (this list will expand over time):
 - FTP
+- Pomf
 - imgur
 - i.novus
 
