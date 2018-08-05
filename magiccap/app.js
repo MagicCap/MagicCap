@@ -13,7 +13,7 @@ const notifier = require("node-notifier");
 // Main imports.
 
 function thisShouldFixMacIssuesAndIdkWhy() {
-	console.log("Running capture.");
+	console.log("Running capture hotkey.");
 }
 
 function createMenu() {
