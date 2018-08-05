@@ -12,14 +12,32 @@ const { clipboard, nativeImage, ipcMain } = require("electron");
 // Imports go here.
 
 module.exports = class CaptureHandler {
+	static renderRandomChars(filename) {
+		const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		if (filename.includes('"')) {
+			let finalFilename = "";
+			const filenameSplit = filename.split(/(")/);
+			for (const part in filenameSplit) {
+				if (filenameSplit[part] === '"') {
+					finalFilename += charset.charAt(Math.floor(Math.random() * charset.length));
+				} else {
+					finalFilename += filenameSplit[part];
+				}
+			}
+			return finalFilename;
+		}
+		return filename;
+	}
+	// Generates the random characters.
+
 	static async createCaptureFilename() {
 		let filename = "screenshot_%date%_%time%";
 		if (config.file_naming_pattern) {
 			filename = config.file_naming_pattern;
 		}
-		filename = filename
+		filename = this.renderRandomChars(filename
 			.replace("%date%", moment().format("DD-MM-YYYY"))
-			.replace("%time%", moment().format("HH-mm-ss"));
+			.replace("%time%", moment().format("HH-mm-ss")));
 		return `${filename}.png`;
 	}
 	// Makes a nice filename for screen captures.
