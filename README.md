@@ -11,7 +11,7 @@ MagicCap is a multiplatform image capture suite. You can get a precompiled copy 
 - Very flexible. You can choose to upload to whatever service you want to or just save the file.
 
 # Requirements
-Linux requires `scrot` for this to work.
+Linux requires `scrot` for this to work. and not to run as root 
 
 # Supported Uploaders
 MagicCap supports the following uploaders (this list will expand over time):
