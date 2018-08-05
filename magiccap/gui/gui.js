@@ -81,11 +81,6 @@ $(window).on("load", async() => {
 });
 // Unhides the body when the page has loaded.
 
-async function runCapture() {
-	await remote.getGlobal("runCapture")();
-}
-// Runs the capture.
-
 const successEmojiMap = {
 	0: "Error",
 	1: "Success",
