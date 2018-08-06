@@ -6,4 +6,3 @@ before_install:
 script:
   - npm run lint
   - npm run linuxcompile
-  - npm run maccompile
