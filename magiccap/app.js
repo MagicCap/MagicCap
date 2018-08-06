@@ -133,6 +133,7 @@ function throwNotification(result) {
 	notifier.notify({
 		title: "MagicCap",
 		message: result,
+		icon: `${__dirname}/icons/taskbar@2x.png`,
 	});
 }
 // Throws a notification.
