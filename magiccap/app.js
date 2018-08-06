@@ -228,3 +228,11 @@ app.on("ready", initialiseScript);
 
 process.on("unhandledRejection", async err => console.error(err));
 // Handles unhandled rejections.
+
+const shouldExit = app.makeSingleInstance(async() => {
+	openConfig();
+});
+if (shouldExit) {
+	app.quit();
+}
+// Makes the app a single instance app.
