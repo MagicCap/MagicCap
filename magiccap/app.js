@@ -138,10 +138,10 @@ function throwNotification(result) {
 }
 // Throws a notification.
 
-async function runCapture() {
+async function runCapture(windowedCapture = false) {
 	const filename = await capture.createCaptureFilename();
 	try {
-		const result = await capture.handleScreenshotting(filename);
+		const result = await capture.handleScreenshotting(filename, windowedCapture);
 		throwNotification(result);
 	} catch (err) {
 		if (err.message !== "Screenshot cancelled.") {
