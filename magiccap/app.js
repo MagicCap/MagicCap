@@ -163,10 +163,12 @@ function openConfig() {
 
 	window = new BrowserWindow({
 		width: 1250, height: 600,
+		show: false,
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
+	window.hide();
 	global.window = window;
 
 	window.on("closed", () => {
@@ -185,6 +187,11 @@ app.on("window-all-closed", () => {
 	// Nothing should happen here.
 });
 // Stays alive.
+
+ipcMain.on("window-show", () => {
+	window.show();
+});
+// Shows the window.
 
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);

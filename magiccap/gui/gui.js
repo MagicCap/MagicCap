@@ -78,8 +78,9 @@ async function toggleTheme() {
 
 $(window).on("load", async() => {
 	await $("body").show();
+	ipcRenderer.send("window-show");
 });
-// Unhides the body when the page has loaded.
+// Unhides the body/window when the page has loaded.
 
 
 async function runCapture() {
