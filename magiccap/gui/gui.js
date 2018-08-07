@@ -88,6 +88,11 @@ async function runCapture() {
 }
 // Runs the capture.
 
+async function runWindowCapture() {
+	await remote.getGlobal("runCapture")(true);
+}
+// Runs the window capture.
+
 const successEmojiMap = {
 	0: "Error",
 	1: "Success",
@@ -225,6 +230,11 @@ $("#uploaderConfigClose").click(async() => {
 		await $("#screenshotHotkey").val(config.hotkey);
 	}
 	// Sets the value of the hotkey textbox.
+
+	if (config.window_hotkey) {
+		await $("#windowScreenshotHotkey").val(config.window_hotkey);
+	}
+	// Sets the value of the window hotkey textbox.
 })();
 
 $("#uploaderConfigCheckbox").click(async() => {
@@ -505,6 +515,7 @@ function showHotkeyConfig() {
 
 $("#hotkeyConfigClose").click(async() => {
 	const text = await $("#screenshotHotkey").val();
+	const windowText = await $("#windowScreenshotHotkey").val();
 	if (config.hotkey !== text) {
 		if (text === "") {
 			ipcRenderer.send("hotkey-unregister");
@@ -515,6 +526,24 @@ $("#hotkeyConfigClose").click(async() => {
 			config.hotkey = text;
 			await saveConfig();
 			ipcRenderer.send("hotkey-change", text);
+		}
+		if (config.window_hotkey) {
+			ipcRenderer.send("window-hotkey-change", config.window_hotkey);
+		}
+	}
+	if (config.window_hotkey !== windowText) {
+		if (windowText === "") {
+			ipcRenderer.send("hotkey-unregister");
+			config.window_hotkey = null;
+			await saveConfig();
+		} else {
+			ipcRenderer.send("hotkey-unregister");
+			config.hotkey = text;
+			await saveConfig();
+			ipcRenderer.send("window-hotkey-change", text);
+		}
+		if (config.hotkey) {
+			ipcRenderer.send("hotkey-change", config.hotkey);
 		}
 	}
 	await $("#hotkeyConfig").removeClass("is-active");

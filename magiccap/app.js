@@ -119,6 +119,16 @@ async function getDefaultConfig() {
 			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
 		}
 	}
+	if (config.window_hotkey) {
+		try {
+			globalShortcut.register(config.window_hotkey, async() => {
+				thisShouldFixMacIssuesAndIdkWhy();
+				await runCapture(true);
+			});
+		} catch (_) {
+			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+		}
+	}
 	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
 })();
 // Creates the config/capture DB table.
@@ -192,10 +202,16 @@ ipcMain.on("window-show", () => {
 });
 // Shows the window.
 
+async function runWindowCapture() {
+	await runCapture(true);
+}
+// Runs the window capture.
+
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	const contextMenu = Menu.buildFromTemplate([
-		{ label: "Capture", type: "normal", click: runCapture },
+		{ label: "Selection Capture", type: "normal", click: runCapture },
+		{ label: "Window Capture", type: "normal", click: runWindowCapture },
 		{ label: "Config", type: "normal", click: openConfig },
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
@@ -224,6 +240,18 @@ ipcMain.on("hotkey-change", async(event, hotkey) => {
 	}
 });
 // Handles the hotkey changing.
+
+ipcMain.on("window-hotkey-change", async(event, hotkey) => {
+	try {
+		globalShortcut.register(hotkey, async() => {
+			thisShouldFixMacIssuesAndIdkWhy();
+			await runCapture(true);
+		});
+	} catch (_) {
+		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+	}
+});
+// Handles the window hotkey changing.
 
 ipcMain.on("hotkey-unregister", async event => {
 	globalShortcut.unregisterAll();

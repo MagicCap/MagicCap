@@ -81,7 +81,11 @@ module.exports = class CaptureHandler {
 					}
 				} else {
 					cap_location = "gnome-screenshot";
-					args.push("-bap");
+					if (windowedCapture) {
+						args.push("-bwp");
+					} else {
+						args.push("-bap");
+					}
 					args.push("-f");
 				}
 				args.push(file_path);
