@@ -75,9 +75,7 @@ module.exports = class CaptureHandler {
 				if (process.platform === "darwin") {
 					cap_location = "/usr/sbin/screencapture";
 					if (windowedCapture) {
-						args.push("-c");
 						args.push("-W");
-						args.push("-P");
 					} else {
 						args.push("-s");
 					}
