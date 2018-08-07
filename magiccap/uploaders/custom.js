@@ -2,7 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-// eslint-disabl no-inline-comments
+// eslint-disable no-inline-comments
 
 const { post } = require("chainfetch");
 

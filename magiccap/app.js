@@ -10,6 +10,7 @@ const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require(`${__dirname}/capture.js`);
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = require("electron");
 const notifier = require("node-notifier");
+const { sep } = require("path");
 // Main imports.
 
 function thisShouldFixMacIssuesAndIdkWhy() {
@@ -73,16 +74,7 @@ function createMenu() {
 
 async function getDefaultConfig() {
 	let pics_dir = app.getPath("pictures");
-	switch (process.platform) {
-		case "linux":
-		case "darwin": {
-			pics_dir += "/MagicCap/";
-			break;
-		}
-		default: {
-			pics_dir += "\\MagicCap\\";
-		}
-	}
+	pics_dir = `${sep}MagicCap${sep}`;
 	let config = {
 		hotkey: null,
 		upload_capture: true,
@@ -211,11 +203,7 @@ function initialiseScript() {
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
-	switch (process.platform) {
-		case "darwin": {
-			createMenu();
-		}
-	}
+	if (process.platform === "darwin") createMenu();
 }
 // Initialises the script.
 
