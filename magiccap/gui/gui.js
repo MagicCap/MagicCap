@@ -6,7 +6,7 @@ const { shell, remote, ipcRenderer } = require("electron");
 const $ = require("jquery");
 const fsnextra = require("fs-nextra");
 const xssfilters = require("xss-filters");
-let config = global.config;
+let config = require(`${require("os").homedir()}/magiccap.json`);
 let filePathMap = {};
 // Imports go here.
 
@@ -127,26 +127,26 @@ async function viewScreenshotFile(timestamp) {
 // Opens up a screenshot.
 
 async function addToCaptureTable(row, elementName, top = false) {
-	const date_time = xssfilters.inHTMLData(new Date(row.timestamp).toLocaleString());
+	const date_time = await xssfilters.inHTMLData(await new Date(row.timestamp).toLocaleString());
 	const emoji = successEmojiMap[row.success];
-	const filename = xssfilters.inHTMLData(row.filename);
+	const filename = await xssfilters.inHTMLData(row.filename);
 	let parts = [
 		`<td>${emoji}</td>`,
 		`<td>${filename}</td>`,
 		`<td>${date_time}</td>`,
 	];
 	if (row.url) {
-		parts.push(`<td><a href="javascript:openScreenshot('${xssfilters.uriInHTMLData(row.url)}')">${xssfilters.uriInHTMLData(row.url)}</a></td>`);
+		await parts.push(`<td><a href="javascript:openScreenshot('${xssfilters.uriInHTMLData(row.url)}')">${xssfilters.uriInHTMLData(row.url)}</a></td>`);
 	} else {
-		parts.push("<td></td>");
+		await parts.push("<td></td>");
 	}
 	if (row.file_path) {
-		parts.push(`<td><a class="button is-primary" href="javascript:viewScreenshotFile(${row.timestamp})">View</a></td>`);
+		await parts.push(`<td><a class="button is-primary" href="javascript:viewScreenshotFile(${row.timestamp})">View</a></td>`);
 		filePathMap[row.timestamp] = row.file_path;
 	} else {
-		parts.push("<td></td>");
+		await parts.push("<td></td>");
 	}
-	parts.push(`<td><a class="button is-danger" href="javascript:deleteScreenshotDB(${row.timestamp})">Remove</a></td>`);
+	await parts.push(`<td><a class="button is-danger" href="javascript:deleteScreenshotDB(${row.timestamp})">Remove</a></td>`);
 	if (top) {
 		await $(elementName).prepend(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
 	} else {
@@ -154,13 +154,6 @@ async function addToCaptureTable(row, elementName, top = false) {
 	}
 }
 // Adds screenshots to the capture table.
-
-if (config.light_theme) {
-	$("#sidebar").css("background-color", "#e6e6e6");
-} else {
-	$("#sidebar").css("background-color", "#171819");
-}
-// Changes the colour scheme.
 
 ipcRenderer.on("screenshot-upload", async(event, data) => {
 	await addToCaptureTable(data, "#mainTableBody", true);
@@ -174,18 +167,6 @@ ipcRenderer.on("screenshot-upload", async(event, data) => {
 let importedUploaders = {};
 // A list of imported uploaders.
 
-(async() => {
-	const files = await fsnextra.readdir(`${__dirname}/../uploaders`);
-	for (const file in files) {
-		const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
-		importedUploaders[import_.name] = import_;
-	}
-	for (const uploader in importedUploaders) {
-		await $("#uploaderConfigBody").append(`<a class="button" style="margin-bottom:5px;" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img class="rounded-img" src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`);
-	}
-})();
-// Renders the uploader config buttons.
-
 function showUploaderConfig() {
 	$("#uploaderConfig").addClass("is-active");
 }
@@ -196,10 +177,55 @@ $("#uploaderConfigClose").click(async() => {
 });
 // Handles the uploader config close button.
 
-if (config.upload_capture) {
-	$("#uploaderConfigCheckbox").prop("checked", true);
-}
-// Toggles the uploader config checkbox.
+(async() => {
+	if (config.light_theme) {
+		await $("head").append(`<link rel="stylesheet" type="text/css" href="../node_modules/bulmaswatch/default/bulmaswatch.min.css">`);
+		await $("#sidebar").css("background-color", "#e6e6e6");
+	} else {
+		await $("head").append(`<link rel="stylesheet" type="text/css" href="../node_modules/bulmaswatch/darkly/bulmaswatch.min.css">`);
+		await $("#sidebar").css("background-color", "#171819");
+	}
+	// Changes the colour scheme.
+
+	await new Promise(async(resolve, reject) => {
+		const files = await fsnextra.readdir(`${__dirname}/../uploaders`);
+		resolve(files);
+	}).then(files => {
+		for (const file in files) {
+			const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
+			importedUploaders[import_.name] = import_;
+		}
+	}).then(async() => {
+		let longHTMLText = "";
+		for (const uploader in importedUploaders) {
+			longHTMLText += `<a class="button" style="margin-bottom:5px;" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img class="rounded-img" src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`;
+		}
+		await $("#uploaderConfigBody").append(longHTMLText);
+	});
+	// Renders the uploader config buttons.
+
+	if (config.upload_capture) {
+		await $("#uploaderConfigCheckbox").prop("checked", true);
+	}
+	// Toggles the uploader config checkbox.
+
+	if (config.save_path) {
+		await $("#fileSaveFolder").val(config.save_path);
+	}
+	// Sets the folder save path.
+
+	if (config.file_naming_pattern) {
+		await $("#fileNamingPattern").val(config.file_naming_pattern);
+	} else {
+		await $("#fileNamingPattern").val("screenshot_%date%_%time%");
+	}
+	// Fills in the file naming pattern.
+
+	if (config.hotkey) {
+		await $("#screenshotHotkey").val(config.hotkey);
+	}
+	// Sets the value of the hotkey textbox.
+})();
 
 $("#uploaderConfigCheckbox").click(async() => {
 	if (config.upload_capture) {
@@ -425,13 +451,6 @@ function showFileConfig() {
 }
 // Shows the file config.
 
-if (config.file_naming_pattern) {
-	$("#fileNamingPattern").val(config.file_naming_pattern);
-} else {
-	$("#fileNamingPattern").val("screenshot_%date%_%time%");
-}
-// Fills in the file naming pattern.
-
 $("#fileNamingPattern").on("input", async() => {
 	config.file_naming_pattern = await $("#fileNamingPattern").val();
 	await saveConfig();
@@ -458,11 +477,6 @@ $("#fileConfigClose").click(async() => {
 });
 // Closes the file config.
 
-if (config.save_path) {
-	$("#fileSaveFolder").val(config.save_path);
-}
-// Sets the folder save path.
-
 $("#fileSaveFolder").on("input", async() => {
 	let savePath = await $("#fileSaveFolder").val();
 	let slashType;
@@ -488,11 +502,6 @@ function showHotkeyConfig() {
 	$("#hotkeyConfig").addClass("is-active");
 }
 // Shows the hotkey config.
-
-if (config.hotkey) {
-	$("#screenshotHotkey").val(config.hotkey);
-}
-// Sets the value of the hotkey textbox.
 
 $("#hotkeyConfigClose").click(async() => {
 	const text = await $("#screenshotHotkey").val();

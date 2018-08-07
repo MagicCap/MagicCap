@@ -2,18 +2,6 @@
 <html>
     <head>
         <title>MagicCap</title>
-        <script>
-            global.config = require(`${require("os").homedir()}/magiccap.json`);
-            let link = document.createElement("link");
-            link.type = "text/css";
-            link.rel = "stylesheet";
-            if (config.light_theme) {
-                link.href = "../node_modules/bulmaswatch/default/bulmaswatch.min.css";
-            } else {
-                link.href = "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css";
-            }
-            document.getElementsByTagName("head")[0].appendChild(link);
-        </script>
     </head>
 
     <style>
