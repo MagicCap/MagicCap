@@ -125,7 +125,7 @@ async function viewScreenshotFile(timestamp) {
 }
 // Opens up a screenshot.
 
-async function addToCaptureTable(row, elementName) {
+async function addToCaptureTable(row, elementName, top = false) {
 	const date_time = xssfilters.inHTMLData(new Date(row.timestamp).toLocaleString());
 	const emoji = successEmojiMap[row.success];
 	const filename = xssfilters.inHTMLData(row.filename);
@@ -146,7 +146,11 @@ async function addToCaptureTable(row, elementName) {
 		parts.push("<td></td>");
 	}
 	parts.push(`<td><a class="button is-danger" href="javascript:deleteScreenshotDB(${row.timestamp})">Remove</a></td>`);
-	await $(elementName).append(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
+	if (top) {
+		await $(elementName).prepend(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
+	} else {
+		await $(elementName).append(`<tr id="ScreenshotTimestamped${row.timestamp}">${parts.join("")}</tr>`);
+	}
 }
 // Adds screenshots to the capture table.
 
@@ -158,10 +162,10 @@ if (config.light_theme) {
 // Changes the colour scheme.
 
 ipcRenderer.on("screenshot-upload", async(event, data) => {
-	await addToCaptureTable(data, "#mainTableBody");
+	await addToCaptureTable(data, "#mainTableBody", true);
 	const tableChildren = await $("#mainTableBody").children();
 	if (tableChildren.length === 21) {
-		await tableChildren[0].remove();
+		await tableChildren.pop().remove();
 	}
 });
 // Handles new screenshots.
