@@ -25,7 +25,10 @@
                             <a href="javascript:showAbout()">About</a>
                         </li>
                         <li>
-                            <a href="javascript:runCapture()">Capture</a>
+                            <a href="javascript:runCapture()">Selection Capture</a>
+                        </li>
+                        <li>
+                            <a href="javascript:runWindowCapture()">Window Capture</a>
                         </li>
                         <li>
                             <a href="javascript:showClipboardAction()">Clipboard Action</a>
@@ -135,9 +138,15 @@
                     <p>You can use <a href="javascript:openAcceleratorDocs()">this documentation</a> in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.</p>
                     <br>
                     <div class="field">
-                        <label class="label">Screenshot Hotkey:</label>
+                        <label class="label">Selection Screenshot Hotkey:</label>
                         <div class="control">
-                            <input class="input" type="text" id="screenshotHotkey" placeholder="Screenshot Hotkey">
+                            <input class="input" type="text" id="screenshotHotkey" placeholder="Selection Screenshot Hotkey">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Window Screenshot Hotkey:</label>
+                        <div class="control">
+                            <input class="input" type="text" id="windowScreenshotHotkey" placeholder="Window Screenshot Hotkey">
                         </div>
                     </div>
                 </section>

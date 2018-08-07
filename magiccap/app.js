@@ -113,7 +113,17 @@ async function getDefaultConfig() {
 		try {
 			globalShortcut.register(config.hotkey, async() => {
 				thisShouldFixMacIssuesAndIdkWhy();
-				await runCapture();
+				await runCapture(false);
+			});
+		} catch (_) {
+			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+		}
+	}
+	if (config.window_hotkey) {
+		try {
+			globalShortcut.register(config.window_hotkey, async() => {
+				thisShouldFixMacIssuesAndIdkWhy();
+				await runCapture(true);
 			});
 		} catch (_) {
 			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
@@ -138,10 +148,10 @@ function throwNotification(result) {
 }
 // Throws a notification.
 
-async function runCapture() {
+async function runCapture(windowedCapture) {
 	const filename = await capture.createCaptureFilename();
 	try {
-		const result = await capture.handleScreenshotting(filename);
+		const result = await capture.handleScreenshotting(filename, windowedCapture);
 		throwNotification(result);
 	} catch (err) {
 		if (err.message !== "Screenshot cancelled.") {
@@ -195,7 +205,8 @@ ipcMain.on("window-show", () => {
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	const contextMenu = Menu.buildFromTemplate([
-		{ label: "Capture", type: "normal", click: runCapture },
+		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
+		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },
 		{ label: "Config", type: "normal", click: openConfig },
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
@@ -217,13 +228,25 @@ ipcMain.on("hotkey-change", async(event, hotkey) => {
 	try {
 		globalShortcut.register(hotkey, async() => {
 			thisShouldFixMacIssuesAndIdkWhy();
-			await runCapture();
+			await runCapture(false);
 		});
 	} catch (_) {
 		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
 	}
 });
 // Handles the hotkey changing.
+
+ipcMain.on("window-hotkey-change", async(event, hotkey) => {
+	try {
+		globalShortcut.register(hotkey, async() => {
+			thisShouldFixMacIssuesAndIdkWhy();
+			await runCapture(true);
+		});
+	} catch (_) {
+		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+	}
+});
+// Handles the window hotkey changing.
 
 ipcMain.on("hotkey-unregister", async event => {
 	globalShortcut.unregisterAll();

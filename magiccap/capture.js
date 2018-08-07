@@ -66,7 +66,7 @@ module.exports = class CaptureHandler {
 	}
 	// Logs uploads.
 
-	static async createCapture(file_path) {
+	static async createCapture(file_path, windowedCapture) {
 		let cap_location, clipboard_before, clipboard_after, result;
 		let args = [];
 		switch (process.platform) {
@@ -74,10 +74,18 @@ module.exports = class CaptureHandler {
 			case "darwin": {
 				if (process.platform === "darwin") {
 					cap_location = "/usr/sbin/screencapture";
-					args.push("-s");
+					if (windowedCapture) {
+						args.push("-W");
+					} else {
+						args.push("-s");
+					}
 				} else {
 					cap_location = "gnome-screenshot";
-					args.push("-bap");
+					if (windowedCapture) {
+						args.push("-bwp");
+					} else {
+						args.push("-bap");
+					}
 					args.push("-f");
 				}
 				args.push(file_path);
@@ -120,7 +128,7 @@ module.exports = class CaptureHandler {
 	}
 	// Creates a screen capture.
 
-	static async handleScreenshotting(filename) {
+	static async handleScreenshotting(filename, windowedCapture) {
 		let delete_after = true;
 		let save_path, uploader_type, uploader_file, url, uploader, key;
 		if (config.save_capture) {
@@ -129,7 +137,7 @@ module.exports = class CaptureHandler {
 		} else {
 			save_path = `${os.tmpdir()}/${filename}`;
 		}
-		let buffer = await this.createCapture(save_path);
+		let buffer = await this.createCapture(save_path, windowedCapture);
 		if (config.upload_capture) {
 			uploader_type = config.uploader_type;
 			uploader_file = `${__dirname}/uploaders/${uploader_type}.js`;
