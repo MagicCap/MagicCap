@@ -540,7 +540,7 @@ $("#hotkeyConfigClose").click(async() => {
 			ipcRenderer.send("hotkey-unregister");
 			config.window_hotkey = windowText;
 			await saveConfig();
-			ipcRenderer.send("window-hotkey-change", text);
+			ipcRenderer.send("window-hotkey-change", windowText);
 		}
 		if (config.hotkey) {
 			ipcRenderer.send("hotkey-change", config.hotkey);
