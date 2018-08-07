@@ -113,7 +113,7 @@ async function getDefaultConfig() {
 		try {
 			globalShortcut.register(config.hotkey, async() => {
 				thisShouldFixMacIssuesAndIdkWhy();
-				await runCapture();
+				await runCapture(false);
 			});
 		} catch (_) {
 			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
@@ -148,7 +148,7 @@ function throwNotification(result) {
 }
 // Throws a notification.
 
-async function runCapture(windowedCapture = false) {
+async function runCapture(windowedCapture) {
 	const filename = await capture.createCaptureFilename();
 	try {
 		const result = await capture.handleScreenshotting(filename, windowedCapture);
@@ -202,16 +202,11 @@ ipcMain.on("window-show", () => {
 });
 // Shows the window.
 
-async function runWindowCapture() {
-	await runCapture(true);
-}
-// Runs the window capture.
-
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	const contextMenu = Menu.buildFromTemplate([
-		{ label: "Selection Capture", type: "normal", click: runCapture },
-		{ label: "Window Capture", type: "normal", click: runWindowCapture },
+		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
+		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },
 		{ label: "Config", type: "normal", click: openConfig },
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
@@ -233,7 +228,7 @@ ipcMain.on("hotkey-change", async(event, hotkey) => {
 	try {
 		globalShortcut.register(hotkey, async() => {
 			thisShouldFixMacIssuesAndIdkWhy();
-			await runCapture();
+			await runCapture(false);
 		});
 	} catch (_) {
 		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
