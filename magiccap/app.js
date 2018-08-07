@@ -168,7 +168,6 @@ function openConfig() {
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
-	window.hide();
 	global.window = window;
 
 	window.on("closed", () => {
