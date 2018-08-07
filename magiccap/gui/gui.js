@@ -538,7 +538,7 @@ $("#hotkeyConfigClose").click(async() => {
 			await saveConfig();
 		} else {
 			ipcRenderer.send("hotkey-unregister");
-			config.hotkey = text;
+			config.window_hotkey = text;
 			await saveConfig();
 			ipcRenderer.send("window-hotkey-change", text);
 		}
