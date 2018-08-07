@@ -74,7 +74,13 @@ module.exports = class CaptureHandler {
 			case "darwin": {
 				if (process.platform === "darwin") {
 					cap_location = "/usr/sbin/screencapture";
-					args.push("-s");
+					if (windowedCapture) {
+						args.push("-c");
+						args.push("-W");
+						args.push("-P");
+					} else {
+						args.push("-s");
+					}
 				} else {
 					cap_location = "gnome-screenshot";
 					args.push("-bap");
