@@ -36,26 +36,22 @@ module.exports = class CaptureHandler {
 			filename = config.file_naming_pattern;
 		}
 		filename = this.renderRandomChars(filename
-			.replace("%date%", moment().format("DD-MM-YYYY"))
-			.replace("%time%", moment().format("HH-mm-ss")));
+			.replace(/%date%/g, moment().format("DD-MM-YYYY"))
+			.replace(/%time%/g, moment().format("HH-mm-ss")));
 		return `${filename}.png`;
 	}
 	// Makes a nice filename for screen captures.
 
 	static async logUpload(filename, success, url, file_path) {
-		const captureSuccessMap = {
-			false: 0,
-			true: 1,
-		};
 		const timestamp = new Date().getTime();
 		await captureDatabase.run(
 			"INSERT INTO captures VALUES (?, ?, ?, ?, ?)",
-			[filename, captureSuccessMap[success], timestamp, url, file_path]
+			[filename, Number(success), timestamp, url, file_path]
 		);
 		try {
 			global.window.webContents.send("screenshot-upload", {
 				filename: filename,
-				success: captureSuccessMap[success],
+				success: Number(success),
 				timestamp: timestamp,
 				url: url,
 				file_path: file_path,
