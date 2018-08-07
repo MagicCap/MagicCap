@@ -18,10 +18,11 @@ module.exports = {
 			type: "text",
 			required: true,
 		},
-		Region: {
-			value: "s3_region",
+		Endpoint: {
+			value: "s3_endpoint",
 			type: "text",
 			required: true,
+			default: "https://s3.eu-west-2.amazonaws.com",
 		},
 		"Bucket Name": {
 			value: "s3_bucket_name",
@@ -36,24 +37,28 @@ module.exports = {
 	},
 	upload: async(buffer, filename) => {
 		AWS.config.update({
-			accessKeyId: config.s3_access_key_id,
-			secretAccessKey: config.s3_secret_access_key,
-			region: config.s3_region,
+			accessKeyId: config.s3_access_key_id.trim(),
+			secretAccessKey: config.s3_secret_access_key.trim(),
 		});
 		const s3 = new AWS.S3({
-			apiVersion: "2006-03-01",
-			params: { Bucket: config.s3_bucket_name },
+			endpoint: new AWS.Endpoint(config.s3_endpoint),
 		});
 		await s3.upload({
 			Key: filename,
 			Body: buffer,
 			ACL: "public-read",
+			Bucket: config.s3_bucket_name,
 		}, error => {
-			throw new Error(`Could not upload: ${error}`);
+			if (error) {
+				throw new Error(`Could not upload: ${error}`);
+			}
 		});
 		let url = config.s3_bucket_url;
 		if (!url.endsWith("/")) {
 			url += "/";
+		}
+		if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+			url = `https://${url}`;
 		}
 		return `${url}${filename}`;
 	},

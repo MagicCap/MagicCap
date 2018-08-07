@@ -176,7 +176,7 @@ let importedUploaders = {};
 		importedUploaders[import_.name] = import_;
 	}
 	for (const uploader in importedUploaders) {
-		await $("#uploaderConfigBody").append(`<a class="button" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img class="rounded-img" src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`);
+		await $("#uploaderConfigBody").append(`<a class="button" style="margin-bottom:5px;" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img class="rounded-img" src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`);
 	}
 })();
 // Renders the uploader config buttons.
