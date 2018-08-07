@@ -85,9 +85,11 @@ module.exports = class CaptureHandler {
 				try {
 					await async_child_process.join(capture);
 				} catch (_) {
-					throw new Error(
-						"The screenshot capturing/saving failed."
-					);
+					if (!(process.platform === "darwin" && _.code === 1)) {
+						throw new Error(
+							"The screenshot capturing/saving failed."
+						);
+					}
 				}
 				result = await fsnextra.readFile(file_path).catch(async() => {
 					throw new Error("Screenshot cancelled.");
