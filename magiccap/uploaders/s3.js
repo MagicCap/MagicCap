@@ -48,6 +48,7 @@ module.exports = {
 			Body: buffer,
 			ACL: "public-read",
 			Bucket: config.s3_bucket_name,
+			ContentType: "image/png",
 		}, error => {
 			if (error) {
 				throw new Error(`Could not upload: ${error}`);
