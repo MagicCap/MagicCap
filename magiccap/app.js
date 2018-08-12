@@ -74,7 +74,7 @@ function createMenu() {
 
 async function getDefaultConfig() {
 	let pics_dir = app.getPath("pictures");
-	pics_dir = `${sep}MagicCap${sep}`;
+	pics_dir += `${sep}MagicCap${sep}`;
 	let config = {
 		hotkey: null,
 		upload_capture: true,
