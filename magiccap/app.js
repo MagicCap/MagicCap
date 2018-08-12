@@ -84,7 +84,7 @@ async function getDefaultConfig() {
 		save_path: pics_dir,
 	};
 	await mkdir(config.save_path).catch(async error => {
-		if (error.errno !== -4075) {
+		if (!(error.errno === -4075 || error.errno === -17)) {
 			config.Remove("save_path");
 		}
 	});
@@ -167,6 +167,7 @@ function openConfig() {
 		width: 1250, height: 600,
 		show: false,
 	});
+	window.webContents.openDevTools();
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
