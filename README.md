@@ -1,6 +1,6 @@
 <img src="https://i.imgur.com/3YKOjAF.png" alt="logo" width="50%" height="50%" href="#">
 
-[![Build Status](https://travis-ci.com/JakeMakesStuff/MagicCap.svg?token=yBHKwe8ZjU1umyhbmu9D&branch=master)](https://travis-ci.com/JakeMakesStuff/MagicCap)
+[![Build Status](https://travis-ci.com/JakeMakesStuff/MagicCap.svg?token=yBHKwe8ZjU1umyhbmu9D&branch=dark_menubar)](https://travis-ci.com/JakeMakesStuff/MagicCap)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 
 MagicCap is a multiplatform image capture suite. You can get a precompiled copy from the releases page of this GitHub page. It has the following features:
@@ -11,7 +11,8 @@ MagicCap is a multiplatform image capture suite. You can get a precompiled copy 
 - Very flexible. You can choose to upload to whatever service you want to or just save the file.
 
 # Requirements
-Linux requires `gnome-screenshot` for this to work. The application should not be ran as root.
+- Linux requires `gnome-screenshot` for this to work. The application should not be ran as root.
+- If you are on Mac, you'll need to download XCode.
 
 # Supported Uploaders
 MagicCap supports the following uploaders (this list will expand over time):
@@ -37,6 +38,3 @@ In order to download needed packages, run `npm i`. This will get all of the need
 - `npm run windowscompile` - Compiles for Windows. This requires Wine on systems that are not running Windows.
 - `npm run maccompile` - Compiles for Mac.
 - `npm run linuxcompile` - Compiles for Linux.
-
-## Mac Note
-If you are on Mac, you'll need to download XCode.
