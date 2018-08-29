@@ -11,7 +11,8 @@ MagicCap is a multiplatform image capture suite. You can get a precompiled copy 
 - Very flexible. You can choose to upload to whatever service you want to or just save the file.
 
 # Requirements
-Linux requires `gnome-screenshot` for this to work. The application should not be ran as root.
+- Linux requires `gnome-screenshot` for this to work. The application should not be ran as root.
+- If you are on Mac, you'll need to download XCode.
 
 # Supported Uploaders
 MagicCap supports the following uploaders (this list will expand over time):
@@ -37,6 +38,3 @@ In order to download needed packages, run `npm i`. This will get all of the need
 - `npm run windowscompile` - Compiles for Windows. This requires Wine on systems that are not running Windows.
 - `npm run maccompile` - Compiles for Mac.
 - `npm run linuxcompile` - Compiles for Linux.
-
-## Mac Note
-If you are on Mac, you'll need to download XCode.
