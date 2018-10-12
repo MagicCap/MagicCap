@@ -44,16 +44,18 @@ module.exports = {
 	upload: async(buffer, filename) => {
 		const client = new (require("promise-ftp"));
 
-		await client.connect({
-			host: config.ftp_hostname,
-			port: config.ftp_port,
-			user: config.ftp_username,
-			password: config.ftp_password,
-		});
-
-		await client.put(buffer, config.ftp_directory.endsWith("/") ? `${config.ftp_directory}${filename}` : `${config.ftp_directory}/${filename}`).catch(() => new Error("Failed to upload image to the FTP."));
+		try {
+			await client.connect({
+				host: config.ftp_hostname,
+				port: config.ftp_port,
+				user: config.ftp_username,
+				password: config.ftp_password,
+			});
+			await client.put(buffer, config.ftp_directory.endsWith("/") ? `${config.ftp_directory}${filename}` : `${config.ftp_directory}/${filename}`);
+		} catch (err) {
+			throw new Error(`Could not upload to FTP: ${err}`);
+		}
 		await client.end();
-
 
 		return `${config.ftp_domain}/${filename}`;
 	},
