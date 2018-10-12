@@ -16,6 +16,7 @@ Linux requires `gnome-screenshot` for this to work. The application should not b
 
 # Supported Uploaders
 MagicCap supports the following uploaders (this list will expand over time):
+- Bread.moe
 - Custom HTTP POST
 - elixi.re
 - FTP
