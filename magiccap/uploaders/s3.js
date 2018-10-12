@@ -5,21 +5,23 @@
 const AWS = require("aws-sdk");
 
 function s3Promise(s3, bucketName, filename, buffer) {
-	return new Promise(function(resolve, reject) {
+	const s3Function = (resolve, reject) => {
+		const s3Handler = (err, data) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(data);
+			}
+		};
 		s3.upload({
 			Key: filename,
 			Body: buffer,
 			ACL: "public-read",
 			Bucket: bucketName,
 			ContentType: "image/png",
-		}, function(err, data) {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(data);
-			}
-		});
-	});
+		}, s3Handler);
+	};
+	return new Promise(s3Function);
 }
 // The S3 upload promise that works with the rest of this code properly.
 
@@ -64,7 +66,7 @@ module.exports = {
 		});
 		try {
 			await s3Promise(s3, config.s3_bucket_name, filename, buffer);
-		} catch(err) {
+		} catch (err) {
 			throw new Error(`Failed to upload to S3: ${err}`);
 		}
 		let url = config.s3_bucket_url;
