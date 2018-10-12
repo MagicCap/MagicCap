@@ -108,7 +108,7 @@ let db = remote.getGlobal("captureDatabase");
 // Defines the DB.
 
 async function loadCaptureTable() {
-	await db.each("SELECT * FROM (SELECT * FROM captures ORDER BY timestamp LIMIT 20) ORDER BY timestamp DESC", async(err, row) => {
+	await db.each("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20", async(err, row) => {
 		if (err) { console.log(err); }
 		await addToCaptureTable(row, "#mainTableBody");
 	});
