@@ -136,11 +136,11 @@ module.exports = class CaptureHandler {
 		if (config.upload_capture) {
 			uploader_type = config.uploader_type;
 			uploader_file = `${__dirname}/uploaders/${uploader_type}.js`;
-			let lstatres = await fsnextra.lstat(uploader_file).catch(async() => {
+			const uploaderName = nameUploaderMap[uploader_type];
+			if (uploaderName === undefined) {
 				throw new Error("Uploader not found.");
-			});
-			if (!lstatres.isFile()) { throw new Error("Uploader not found."); }
-			uploader = require(uploader_file);
+			}
+			uploader = importedUploaders[uploaderName];
 			for (key in uploader.config_options) {
 				if (config[uploader.config_options[key].value] === undefined) {
 					if (uploader.config_options[key].default) {

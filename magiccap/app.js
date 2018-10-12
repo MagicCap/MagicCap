@@ -11,7 +11,22 @@ const capture = require(`${__dirname}/capture.js`);
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = require("electron");
 const notifier = require("node-notifier");
 const { sep } = require("path");
+const { readdir } = require("fs-nextra");
 // Main imports.
+
+global.importedUploaders = {};
+global.nameUploaderMap = {};
+// All of the loaded uploaders.
+
+(async() => {
+	const files = await readdir(`${__dirname}/uploaders`);
+	for (const file in files) {
+		const import_ = require(`${__dirname}/uploaders/${files[file]}`);
+		importedUploaders[import_.name] = import_;
+		nameUploaderMap[files[file].split(".").shift()] = import_.name;
+	}
+})();
+// Loads all of the uploaders.
 
 function thisShouldFixMacIssuesAndIdkWhy() {
 	console.log("Running capture hotkey.");
@@ -235,6 +250,9 @@ ipcMain.on("window-hotkey-change", async(event, hotkey) => {
 	}
 });
 // Handles the window hotkey changing.
+
+ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders; });
+// The get uploaders IPC.
 
 ipcMain.on("hotkey-unregister", async event => {
 	globalShortcut.unregisterAll();
