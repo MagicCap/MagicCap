@@ -3,15 +3,15 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 const { shell, remote, ipcRenderer } = require("electron");
-const $ = require("jquery");
-const fsnextra = require("fs-nextra");
+const $ = require("jquery/dist/jquery.slim");
+const { readdir, writeJSON } = require("fs-nextra");
 const xssfilters = require("xss-filters");
 let config = require(`${require("os").homedir()}/magiccap.json`);
 let filePathMap = {};
 // Imports go here.
 
 async function saveConfig() {
-	fsnextra.writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
+	writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
 		console.log("Could not update the config.");
 	});
 	ipcRenderer.send("config-edit", config);
@@ -76,10 +76,10 @@ async function toggleTheme() {
 }
 // Toggles the theme.
 
-$(window).on("load", async() => {
+window.onload = async() => {
 	await $("body").show();
 	ipcRenderer.send("window-show");
-});
+};
 // Unhides the body/window when the page has loaded.
 
 
@@ -169,9 +169,6 @@ ipcRenderer.on("screenshot-upload", async(event, data) => {
 });
 // Handles new screenshots.
 
-let importedUploaders = {};
-// A list of imported uploaders.
-
 function showUploaderConfig() {
 	$("#uploaderConfig").addClass("is-active");
 }
@@ -181,6 +178,9 @@ $("#uploaderConfigClose").click(async() => {
 	await $("#uploaderConfig").removeClass("is-active");
 });
 // Handles the uploader config close button.
+
+let importedUploaders = {};
+// The ready dictionary.
 
 (async() => {
 	if (config.light_theme) {
@@ -192,21 +192,14 @@ $("#uploaderConfigClose").click(async() => {
 	}
 	// Changes the colour scheme.
 
-	await new Promise(async(resolve, reject) => {
-		const files = await fsnextra.readdir(`${__dirname}/../uploaders`);
-		resolve(files);
-	}).then(files => {
-		for (const file in files) {
-			const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
-			importedUploaders[import_.name] = import_;
-		}
-	}).then(async() => {
-		let longHTMLText = "";
-		for (const uploader in importedUploaders) {
-			longHTMLText += `<a class="button" style="margin-bottom:5px;" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img class="rounded-img" src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`;
-		}
-		await $("#uploaderConfigBody").append(longHTMLText);
-	});
+	importedUploaders = await ipcRenderer.sendSync("get-uploaders");
+	// All of the imported uploaders.
+
+	let longHTMLText = "";
+	for (const uploader in importedUploaders) {
+		longHTMLText += `<a class="button" style="margin-bottom:5px;" href="javascript:renderUploader('${uploader}')"><span class="icon is-medium"><img class="rounded-img" src="../icons/${importedUploaders[uploader].icon}"></span><p>${uploader}</p></a><div class="divider"/>`;
+	}
+	await $("#uploaderConfigBody").append(longHTMLText);
 	// Renders the uploader config buttons.
 
 	if (config.upload_capture) {
@@ -442,7 +435,7 @@ async function setDefaultUploader(uploaderName) {
 		}
 	}
 	let filename;
-	const files = await fsnextra.readdir(`${__dirname}/../uploaders`);
+	const files = await readdir(`${__dirname}/../uploaders`);
 	for (const file in files) {
 		const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
 		if (import_.name === uploaderName) {

@@ -11,6 +11,8 @@ module.exports = {
 	globals: {
 		config: true,
 		captureDatabase: true,
+		importedUploaders: true,
+		nameUploaderMap: true,
 	},
 	rules: {
 		"no-compare-neg-zero": "error",
