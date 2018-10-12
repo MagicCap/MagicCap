@@ -32,10 +32,10 @@
     },
     "scripts": {
         "postinstall": "electron-builder install-app-deps",
-        "install-linux-deps": "electron-builder install-app-deps --platform linux",
+        "install-linux-deps": "electron-builder install-app-deps --arch x64 --platform linux",
         "lint": "eslint \"./**/*.js\"",
         "windowscompile": "electron-packager . MagicCap --arch x64 --platform win32 --out ./build --overwrite --icon icons/app.ico",
-        "maccompile": "electron-packager . MagicCap --platform darwin --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
-        "linuxcompile": "electron-packager . MagicCap --platform linux --out ./build --overwrite --icon icons/app.ico"
+        "maccompile": "electron-packager . MagicCap --platform darwin --arch x64 --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
+        "linuxcompile": "electron-packager . MagicCap --platform linux --arch x64 --out ./build --overwrite --icon icons/app.ico"
     }
 }
