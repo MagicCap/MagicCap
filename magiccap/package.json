@@ -31,7 +31,7 @@
         "eslint": "5.3.0"
     },
     "scripts": {
-        "postinstall": "electron-builder install-app-deps",
+        "postinstall": "electron-builder install-app-deps --arch x64",
         "install-linux-deps": "electron-builder install-app-deps --arch x64 --platform linux",
         "lint": "eslint \"./**/*.js\"",
         "windowscompile": "electron-packager . MagicCap --arch x64 --platform win32 --out ./build --overwrite --icon icons/app.ico",
