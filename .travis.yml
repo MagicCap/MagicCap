@@ -23,4 +23,4 @@ deploy:
     - magiccap/build/magiccap-mac.dmg
   skip_cleanup: true
   on:
-    tags: false
+    tags: true
