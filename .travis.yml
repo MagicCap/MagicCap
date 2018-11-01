@@ -15,3 +15,12 @@ script:
   - cd ./MagicCap-linux-x64
   - 7z a ../magiccap-linux.zip *
   - cd ../
+deploy:
+  provider: releases
+  api_key: $GH_TOKEN
+  file:
+    - magiccap/build/magiccap-linux.zip
+    - magiccap/build/magiccap-mac.dmg
+  skip_cleanup: true
+  on:
+    tags: false
