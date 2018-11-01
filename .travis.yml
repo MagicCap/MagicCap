@@ -19,8 +19,8 @@ deploy:
   provider: releases
   api_key: $GH_TOKEN
   file:
-    - magiccap/build/magiccap-linux.zip
-    - magiccap/build/magiccap-mac.dmg
+    - magiccap-linux.zip
+    - magiccap-mac.dmg
   skip_cleanup: true
   on:
     tags: true
