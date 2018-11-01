@@ -11,3 +11,6 @@ script:
   - npm run linuxcompile
   - cd ./build
   - mv ./MagicCap.dmg ./magiccap-mac.dmg
+  - cd ./MagicCap-linux-x64
+  - 7z a ../magiccap-linux.zip *
+  - cd ../
