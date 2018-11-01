@@ -7,7 +7,7 @@
 
 MagicCap is a multiplatform image capture suite. You can get a precompiled copy from the releases page of this GitHub page. It has the following features:
 
-- Very cross compatible. You should get the same experience on Mac, Windows and Linux.
+- Very cross compatible. You should get the same experience on Mac and Linux.
 - Very easy to add to. You don't need to faff around with modifying HTML; instead you write a small file that includes all of the config options and the upload script (most of this is handled by `capture.js` anyway).
 - Very fast. Captures are optimised to be as fast as possible.
 - Very flexible. You can choose to upload to whatever service you want to or just save the file.
@@ -37,7 +37,6 @@ The following people have done a ton to help in the creation of MagicCap. If you
 
 # Building
 In order to download needed packages, run `npm i`. This will get all of the needed packages. You can then run one of the following commands:
-- `npm run windowscompile` - Compiles for Windows. This requires Wine on systems that are not running Windows.
 - `npm run maccompile` - Compiles for Mac.
 - `npm run linuxcompile` - Compiles for Linux.
 
