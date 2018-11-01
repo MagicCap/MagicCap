@@ -4,7 +4,7 @@ node_js:
   - "8"
 before_install:
   - cd ./magiccap
-  - brew install 7z
+  - brew install p7zip
 script:
   - npm run lint
   - npm run maccompile
