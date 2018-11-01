@@ -59,18 +59,13 @@ $("#clipboardActionClose").click(async() => {
 // Handles the clipboard action close button.
 
 $('[id^="clipboardActionID"]').click(async event => {
-	const actionID = parseInt(event.target.id.substring(17));
-	config.clipboard_action = actionID;
+	config.clipboard_action = parseInt(event.target.id.substring(17));
 	await saveConfig();
 });
 // Handles clipboard action clicking.
 
 async function toggleTheme() {
-	if (config.light_theme) {
-		config.light_theme = false;
-	} else {
-		config.light_theme = true;
-	}
+	config.light_theme = !config.light_theme;
 	await saveConfig();
 	location.reload();
 }
@@ -231,11 +226,7 @@ let importedUploaders = {};
 })();
 
 $("#uploaderConfigCheckbox").click(async() => {
-	if (config.upload_capture) {
-		config.upload_capture = false;
-	} else {
-		config.upload_capture = true;
-	}
+	config.upload_capture = !config.upload_capture;
 	await saveConfig();
 });
 // Change the uploader capture toggling.
@@ -325,11 +316,7 @@ async function renderUploader(uploaderName) {
 				const type = getDefaultValue(optionData, uploader);
 				let extra = "";
 				if (config[optionData.value] === undefined) {
-					if (type === true) {
-						config[optionData.value] = true;
-					} else {
-						config[optionData.value] = false;
-					}
+					config[optionData.value] = type === true;
 				}
 				if (type === true) {
 					extra = " checked";
@@ -352,11 +339,7 @@ async function renderUploader(uploaderName) {
 		switch (optionData.type.toLowerCase()) {
 			case "boolean": {
 				$(`#${optionData.value}`).click(async() => {
-					if (config[optionData.value]) {
-						config[optionData.value] = false;
-					} else {
-						config[optionData.value] = true;
-					}
+					config[optionData.value] = !config[optionData.value];
 					await saveConfig();
 				});
 				break;
