@@ -52,7 +52,7 @@ This toggles between the light and dark theme.
 
 You'll need to download the MagicCap repository and run `cd ./magiccap`. In order to download needed packages, run `npm i`. This will get all of the needed packages. You can then run one of the following commands:
 
-- `npm run windowscompile` - Compiles for Windows. This requires Wine on systems that are not running Windows.
+- `npm run windowscompile` - Compiles for Windows. This requires Wine on systems that are not running Windows. **This is for development only. We will NOT release for Windows.**
 - `npm run maccompile` - Compiles for Mac.
 - `npm run linuxcompile` - Compiles for Linux.
 
