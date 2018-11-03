@@ -10,9 +10,8 @@ script:
   - npm run maccompile
   - npm run install-linux-deps
   - npm run linuxcompile
-  - cd ./build
-  - mv ./MagicCap.dmg ./magiccap-mac.dmg
-  - cd ./MagicCap-linux-x64
+  - mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
+  - cd ./build/MagicCap-linux-x64
   - 7z a ../magiccap-linux.zip *
   - cd ../
 deploy:
