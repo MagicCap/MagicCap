@@ -11,6 +11,7 @@ script:
   - npm run install-linux-deps
   - npm run linuxcompile
   - mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
+  - find build/ -type f -name "*.deb" -exec mv {} ./build/magiccap-linux.deb \;
   - cd ./build/MagicCap-linux-x64
   - 7z a ../magiccap-linux.zip *
   - cd ../
@@ -19,6 +20,7 @@ deploy:
   api_key: $GH_TOKEN
   file:
     - magiccap-linux.zip
+    - magiccap-linux.deb
     - magiccap-mac.dmg
   skip_cleanup: true
   on:
