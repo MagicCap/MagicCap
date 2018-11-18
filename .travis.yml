@@ -15,7 +15,7 @@ script:
   - find build/ -type f -name "*.deb" -exec mv {} ./build/magiccap-linux.deb \;
   - cd ./build/MagicCap-linux-x64
   - 7z a ../magiccap-linux.zip *
-  - cd ./build/MagicCap-darwin-x64
+  - cd ../MagicCap-mac-x64
   - 7z a ../magiccap-mac.zip *
   - cd ../
 deploy:
