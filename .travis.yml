@@ -11,20 +11,21 @@ script:
   - npm run maccompile
   - npm run install-linux-deps
   - npm run linuxcompile
-  - mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
-  - find build/ -type f -name "*.deb" -exec mv {} ./build/magiccap-linux.deb \;
+  - mkdir deployment
+  - mv ./build/MagicCap.dmg ./deployment/magiccap-mac.dmg
+  - find build/ -type f -name "*.deb" -exec mv {} ./deployment/magiccap-linux.deb \;
   - cd ./build/MagicCap-linux-x64
-  - 7z a ../magiccap-linux.zip *
+  - 7z a ../../deployment/magiccap-linux.zip *
   - cd ../MagicCap-darwin-x64
-  - 7z a ../magiccap-mac.zip *
+  - 7z a ../../deployment/magiccap-mac.zip *
   - cd ../
 deploy:
   - provider: releases
     api_key: $GH_TOKEN
     file:
-      - magiccap-linux.zip
-      - magiccap-linux.deb
-      - magiccap-mac.dmg
+      - deployment/magiccap-linux.zip
+      - deployment/magiccap-linux.deb
+      - deployment/magiccap-mac.dmg
     skip_cleanup: true
     on:
       tags: true
@@ -34,11 +35,7 @@ deploy:
     bucket: "s3.magiccap.me"
     upload-dir: upgrades/$TRAVIS_TAG
     acl: public_read
-    before_deploy:
-      - mkdir s3_deployment
-      - mv magiccap-linux.zip ./s3_deployment/magiccap-linux.zip
-      - mv magiccap-mac.zip ./s3_deployment/magiccap-mac.zip
-    local_dir: s3_deployment
+    local_dir: deployment
     skip_cleanup: true
     on:
       tags: true
