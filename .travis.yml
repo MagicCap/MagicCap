@@ -15,14 +15,30 @@ script:
   - find build/ -type f -name "*.deb" -exec mv {} ./build/magiccap-linux.deb \;
   - cd ./build/MagicCap-linux-x64
   - 7z a ../magiccap-linux.zip *
+  - cd ../MagicCap-darwin-x64
+  - 7z a ../magiccap-mac.zip *
   - cd ../
 deploy:
-  provider: releases
-  api_key: $GH_TOKEN
-  file:
-    - magiccap-linux.zip
-    - magiccap-linux.deb
-    - magiccap-mac.dmg
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: releases
+    api_key: $GH_TOKEN
+    file:
+      - magiccap-linux.zip
+      - magiccap-linux.deb
+      - magiccap-mac.dmg
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: "s3.magiccap.me"
+    upload-dir: upgrades/$TRAVIS_TAG
+    acl: public_read
+    file:
+      - magiccap-linux.zip
+      - magiccap-mac.zip
+    skip_cleanup: true
+    on:
+      tags: true
+    after_deploy:
+      - curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
