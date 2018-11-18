@@ -34,6 +34,9 @@ deploy:
     bucket: "s3.magiccap.me"
     upload-dir: upgrades/$TRAVIS_TAG
     acl: public_read
+    file:
+      - magiccap-linux.zip
+      - magiccap-mac.zip
     skip_cleanup: true
     on:
       tags: true
