@@ -1,6 +1,6 @@
 {
     "name": "magiccap",
-    "version": "0.3.9",
+    "version": "0.3.10",
     "description": "A cross platform image capturing suite.",
     "main": "app.js",
     "author": "Jake Gealer & Rhys O'Kane",
