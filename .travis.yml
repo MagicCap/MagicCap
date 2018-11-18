@@ -2,7 +2,7 @@ language: node_js
 cache: npm
 os: osx
 node_js:
-  - "8"
+  - "10"
 before_install:
   - cd ./magiccap
   - brew install p7zip fakeroot dpkg
