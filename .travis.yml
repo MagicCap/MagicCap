@@ -39,5 +39,8 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-    after_deploy:
-      - curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
+    region: eu-west-2
+  - provider: script
+    script: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
+    on:
+      tags: true
