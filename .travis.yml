@@ -11,6 +11,7 @@ script:
   - npm run maccompile
   - npm run install-linux-deps
   - npm run linuxcompile
+after_script:
   - mkdir deployment
   - mv ./build/MagicCap.dmg ./deployment/magiccap-mac.dmg
   - find build/ -type f -name "*.deb" -exec mv {} ./deployment/magiccap-linux.deb \;
