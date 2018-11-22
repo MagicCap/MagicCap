@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ "$ALREADY_RAN_PACKAGER" != "true" ]; then
+if [  ! -d "./deployment" ]; then
   mkdir deployment
   mv ./build/MagicCap.dmg ./deployment/magiccap-mac.dmg
   find build/ -type f -name "*.deb" -exec mv {} ./deployment/magiccap-linux.deb \;
