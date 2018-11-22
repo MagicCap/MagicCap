@@ -11,15 +11,8 @@ script:
   - npm run maccompile
   - npm run install-linux-deps
   - npm run linuxcompile
-after_script:
-  - mkdir deployment
-  - mv ./build/MagicCap.dmg ./deployment/magiccap-mac.dmg
-  - find build/ -type f -name "*.deb" -exec mv {} ./deployment/magiccap-linux.deb \;
-  - cd ./build/MagicCap-linux-x64
-  - 7z a ../../deployment/magiccap-linux.zip *
-  - cd ../MagicCap-darwin-x64
-  - 7z a ../../deployment/magiccap-mac.zip *
-  - cd ../../
+before_deploy:
+  - ./create_deployment_ready_folder.sh
 deploy:
   - provider: releases
     api_key: $GH_TOKEN
