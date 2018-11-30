@@ -19,11 +19,11 @@ module.exports = {
 			required: true,
 		},
 	},
-	upload: async buffer => {
+	upload: async(buffer, fileType) => {
 		let res = await post("https://api-allowed.bread.moe/api/v1/upload")
 			.attach("domain", config.bread_domain)
 			.set("Authorization", `Bearer ${config.bread_key}`)
-			.attach("file", buffer, "oof.png");
+			.attach("file", buffer, `oof.${fileType}`);
 		switch (res.status) {
 			case 200: break;
 			case 403: {

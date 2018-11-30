@@ -14,10 +14,10 @@ module.exports = {
 			required: true,
 		},
 	},
-	upload: async buffer => {
+	upload: async(buffer, fileType) => {
 		let res = await post("https://i.novuscommunity.co/api/upload")
 			.set("Authorization", `Bearer ${config.novus_token}`)
-			.attach("file", buffer, "oof.png");
+			.attach("file", buffer, `oof.${fileType}`);
 		switch (res.status) {
 			case 200: break;
 			case 403: {

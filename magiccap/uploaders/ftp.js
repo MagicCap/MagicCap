@@ -41,7 +41,7 @@ module.exports = {
 			required: true,
 		},
 	},
-	upload: async(buffer, filename) => {
+	upload: async(buffer, _, filename) => {
 		const client = new (require("promise-ftp"));
 
 		try {

@@ -19,15 +19,15 @@ module.exports = {
 			required: false,
 		},
 	},
-	upload: async buffer => {
+	upload: async(buffer, fileType) => {
 		let res;
 		if (config.pomf_token) {
 			res = await post(config.pomf_domain)
 				.set("token", `${config.pomf_token}`)
-				.attach("files[]", buffer, "pomf.png");
+				.attach("files[]", buffer, `pomf.${fileType}`);
 		} else {
 			res = await post(config.pomf_domain)
-				.attach("files[]", buffer, "pomf.png");
+				.attach("files[]", buffer, `pomf.${fileType}`);
 		}
 		switch (res.status) {
 			case 200: break;

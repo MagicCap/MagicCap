@@ -56,7 +56,7 @@ module.exports = {
 			required: true,
 		},
 	},
-	upload: async(buffer, filename) => {
+	upload: async(buffer, _, filename) => {
 		AWS.config.update({
 			accessKeyId: config.s3_access_key_id.trim(),
 			secretAccessKey: config.s3_secret_access_key.trim(),
