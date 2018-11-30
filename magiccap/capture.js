@@ -152,7 +152,7 @@ module.exports = class CaptureHandler {
 					}
 				}
 			}
-			url = await uploader.upload(buffer, filename);
+			url = await uploader.upload(buffer, "png", filename);
 		}
 		if (config.clipboard_action) {
 			switch (config.clipboard_action) {

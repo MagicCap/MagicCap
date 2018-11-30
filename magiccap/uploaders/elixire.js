@@ -14,10 +14,10 @@ module.exports = {
 			required: true,
 		},
 	},
-	upload: async buffer => {
+	upload: async(buffer, fileType) => {
 		let res = await post("https://elixi.re/api/upload")
 			.set("Authorization", config.elixire_token)
-			.attach("f", buffer, "oof.png");
+			.attach("f", buffer, `oof.${fileType}`);
 		switch (res.status) {
 			case 200: break;
 			case 403: {

@@ -36,7 +36,7 @@ module.exports = {
 			required: false,
 		},
 	},
-	upload: async(buffer, filename) => {
+	upload: async(buffer, _, filename) => {
 		let res = await post(config.custom_url)
 			.set(config.custom_headers)
 			.send(config.custom_body)
