@@ -247,7 +247,7 @@ function createContextMenu() {
 			{
 				label: `${defaultRealName} (Default)`,
 				type: "normal",
-				click: async() => { await dropdownMenuUpload(importedUploaders[defaultRealName].upload); },
+				click: async() => { await dropdownMenuUpload(importedUploaders[defaultRealName]); },
 			}
 		);
 	}
@@ -256,7 +256,7 @@ function createContextMenu() {
 			{
 				label: uploader.name,
 				type: "normal",
-				click: async() => { await dropdownMenuUpload(uploader.upload); },
+				click: async() => { await dropdownMenuUpload(uploader); },
 			}
 		);
 	}
