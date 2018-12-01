@@ -8,10 +8,10 @@ let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("
 
 const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require(`${__dirname}/capture.js`);
-const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = require("electron");
+const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = require("electron");
 const notifier = require("node-notifier");
 const { sep } = require("path");
-const { readdir } = require("fs-nextra");
+const { readdir, readFile } = require("fs-nextra");
 // Main imports.
 
 global.importedUploaders = {};
@@ -109,15 +109,17 @@ async function getDefaultConfig() {
 
 // Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
 function getConfiguredUploaders() {
-	const default_uploader = config.uploader_type;
+	const default_uploader = nameUploaderMap[config.uploader_type];
 	let configured = [];
-	for (const uploader of importedUploaders) {
+	for (const uploaderName in importedUploaders) {
+		const uploader = importedUploaders[uploaderName];
 		if (default_uploader == uploader.name) {
 			continue;
 		}
 		let allOptions = true;
-		for (const option of uploader.config_options) {
-			if (!(option.value in config) && option.required) {
+		for (const optionName in uploader.config_options) {
+			const option = uploader.config_options[optionName];
+			if (!(option.value in config) && option.required && !option.default) {
 				allOptions = false;
 				break;
 			}
@@ -231,21 +233,83 @@ ipcMain.on("window-show", () => {
 });
 // Shows the window.
 
-function initialiseScript() {
-	tray = new Tray(`${__dirname}/icons/taskbar.png`);
+// Does the dropdown menu uploads.
+async function dropdownMenuUpload(uploader) {
+	await dialog.showOpenDialog({
+		title: "Select file...",
+		multiSelections: false,
+		openDirectory: false,
+	}, async filePaths => {
+		if (filePaths) {
+			const path = filePaths[0];
+			const extension = path.split(".").pop().toLowerCase();
+			const buffer = await readFile(path);
+			const filename = path
+				.split("\\")
+				.pop()
+				.split("/")
+				.pop();
+			let url;
+			try {
+				url = await uploader.upload(buffer, extension, filename);
+			} catch (err) {
+				if (err.message !== "Screenshot cancelled.") {
+					await capture.logUpload(filename, false, null, null);
+					dialog.showErrorBox("MagicCap", `${err.message}`);
+				}
+				return;
+			}
+			throwNotification("The file specified was uploaded successfully.");
+			if (config.clipboard_action == 2) {
+				clipboard.writeText(url);
+			}
+			await capture.logUpload(filename, true, url, path);
+		}
+	});
+}
+
+// Creates the context menu.
+function createContextMenu() {
+	let uploadDropdown = [];
+	if (nameUploaderMap[config.uploader_type] in importedUploaders) {
+		const defaultRealName = nameUploaderMap[config.uploader_type];
+		uploadDropdown.push(
+			{
+				label: `${defaultRealName} (Default)`,
+				type: "normal",
+				click: async() => { await dropdownMenuUpload(importedUploaders[defaultRealName]); },
+			}
+		);
+	}
+	for (const uploader of getConfiguredUploaders()) {
+		uploadDropdown.push(
+			{
+				label: uploader.name,
+				type: "normal",
+				click: async() => { await dropdownMenuUpload(uploader); },
+			}
+		);
+	}
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
 		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },
 		{ label: "Config", type: "normal", click: openConfig },
+		{ label: "Upload to...", submenu: uploadDropdown },
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
+}
+
+function initialiseScript() {
+	tray = new Tray(`${__dirname}/icons/taskbar.png`);
+	createContextMenu();
 	if (process.platform === "darwin") createMenu();
 }
 // Initialises the script.
 
 ipcMain.on("config-edit", async(event, data) => {
 	global.config = data;
+	createContextMenu();
 });
 // When the config changes, this does.
 
