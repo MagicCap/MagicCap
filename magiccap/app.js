@@ -231,15 +231,45 @@ ipcMain.on("window-show", () => {
 });
 // Shows the window.
 
-function initialiseScript() {
-	global.tray = new Tray(`${__dirname}/icons/taskbar.png`);
+// Does the dropdown menu uploads.
+async function dropdownMenuUpload(uploader) {
+	// nothing yet
+}
+
+// Creates the context menu.
+function createContextMenu() {
+	const uploadDropdown = [];
+	if (config.uploader_type in importedUploaders) {
+		uploadDropdown.push(
+			{
+				label: `${config.uploader_type} (Default)`,
+				type: "normal",
+				click: async() => { await dropdownMenuUpload(importedUploaders[config.uploader_type]); },
+			}
+		);
+	}
+	for (const uploader of importedUploaders) {
+		uploadDropdown.push(
+			{
+				label: uploader.name,
+				type: "normal",
+				click: async() => { await dropdownMenuUpload(uploader.upload); },
+			}
+		);
+	}
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
 		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },
 		{ label: "Config", type: "normal", click: openConfig },
+		{ label: "Upload to...", submenu: uploadDropdown },
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
+}
+
+function initialiseScript() {
+	global.tray = new Tray(`${__dirname}/icons/taskbar.png`);
+	createContextMenu();
 	if (process.platform === "darwin") createMenu();
 }
 // Initialises the script.
