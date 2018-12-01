@@ -8,10 +8,10 @@ let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("
 
 const { stat, writeJSON, mkdir } = require("fs-nextra");
 const capture = require(`${__dirname}/capture.js`);
-const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = require("electron");
+const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = require("electron");
 const notifier = require("node-notifier");
 const { sep } = require("path");
-const { readdir } = require("fs-nextra");
+const { readdir, readFile } = require("fs-nextra");
 // Main imports.
 
 global.importedUploaders = {};
@@ -235,7 +235,37 @@ ipcMain.on("window-show", () => {
 
 // Does the dropdown menu uploads.
 async function dropdownMenuUpload(uploader) {
-	console.log(uploader);
+	await dialog.showOpenDialog({
+		title: "Select file...",
+		multiSelections: false,
+		openDirectory: false,
+	}, async filePaths => {
+		if (filePaths) {
+			const path = filePaths[0];
+			const extension = path.split(".").pop().toLowerCase();
+			const buffer = await readFile(path);
+			const filename = path
+				.split("\\")
+				.pop()
+				.split("/")
+				.pop();
+			let url;
+			try {
+				url = await uploader.upload(buffer, extension, filename);
+			} catch (err) {
+				if (err.message !== "Screenshot cancelled.") {
+					await capture.logUpload(filename, false, null, null);
+					dialog.showErrorBox("MagicCap", `${err.message}`);
+				}
+				return;
+			}
+			throwNotification("The file specified was uploaded successfully.");
+			if (config.clipboard_action == 2) {
+				clipboard.writeText(url);
+			}
+			await capture.logUpload(filename, true, url, path);
+		}
+	});
 }
 
 // Creates the context menu.
