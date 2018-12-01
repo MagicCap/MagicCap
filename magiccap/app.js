@@ -111,7 +111,8 @@ async function getDefaultConfig() {
 function getConfiguredUploaders() {
 	const default_uploader = config.uploader_type;
 	let configured = [];
-	for (const uploader of importedUploaders) {
+	for (const uploaderName in importedUploaders) {
+		const uploader = importedUploaders[uploaderName];
 		if (default_uploader == uploader.name) {
 			continue;
 		}
