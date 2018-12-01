@@ -240,7 +240,7 @@ async function dropdownMenuUpload(uploader) {
 
 // Creates the context menu.
 function createContextMenu() {
-	const uploadDropdown = [];
+	let uploadDropdown = [];
 	if (nameUploaderMap[config.uploader_type] in importedUploaders) {
 		const defaultRealName = nameUploaderMap[config.uploader_type];
 		uploadDropdown.push(
