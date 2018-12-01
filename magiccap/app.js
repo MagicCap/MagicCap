@@ -279,6 +279,7 @@ function initialiseScript() {
 
 ipcMain.on("config-edit", async(event, data) => {
 	global.config = data;
+	createContextMenu();
 });
 // When the config changes, this does.
 
