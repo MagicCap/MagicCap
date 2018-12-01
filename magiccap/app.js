@@ -272,7 +272,7 @@ function createContextMenu() {
 
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
-	createContextMenu(tray);
+	createContextMenu();
 	if (process.platform === "darwin") createMenu();
 }
 // Initialises the script.
