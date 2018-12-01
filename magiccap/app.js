@@ -119,7 +119,7 @@ function getConfiguredUploaders() {
 		let allOptions = true;
 		for (const optionName in uploader.config_options) {
 			const option = uploader.config_options[optionName];
-			if (!(option.value in config) && option.required) {
+			if (!(option.value in config) && option.required && !option.default) {
 				allOptions = false;
 				break;
 			}
@@ -272,7 +272,7 @@ function createContextMenu() {
 
 function initialiseScript() {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
-	createContextMenu();
+	createContextMenu(tray);
 	if (process.platform === "darwin") createMenu();
 }
 // Initialises the script.
