@@ -235,7 +235,7 @@ ipcMain.on("window-show", () => {
 
 // Does the dropdown menu uploads.
 async function dropdownMenuUpload(uploader) {
-	// nothing yet
+	console.log(uploader);
 }
 
 // Creates the context menu.
@@ -247,7 +247,7 @@ function createContextMenu() {
 			{
 				label: `${defaultRealName} (Default)`,
 				type: "normal",
-				click: async() => { await dropdownMenuUpload(defaultRealName); },
+				click: async() => { await dropdownMenuUpload(importedUploaders[defaultRealName].upload); },
 			}
 		);
 	}
