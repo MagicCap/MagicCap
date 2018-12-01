@@ -232,7 +232,7 @@ ipcMain.on("window-show", () => {
 // Shows the window.
 
 function initialiseScript() {
-	tray = new Tray(`${__dirname}/icons/taskbar.png`);
+	global.tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
 		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },

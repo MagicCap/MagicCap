@@ -13,6 +13,7 @@ module.exports = {
 		captureDatabase: true,
 		importedUploaders: true,
 		nameUploaderMap: true,
+		tray: true,
 	},
 	rules: {
 		"no-compare-neg-zero": "error",
