@@ -248,8 +248,7 @@ function createContextMenu() {
 			}
 		);
 	}
-	for (const uploaderName in importedUploaders) {
-		const uploader = importedUploaders[uploaderName];
+	for (const uploader of getConfiguredUploaders()) {
 		uploadDropdown.push(
 			{
 				label: uploader.name,
