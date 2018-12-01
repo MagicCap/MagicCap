@@ -107,6 +107,28 @@ async function getDefaultConfig() {
 }
 // Creates the default config.
 
+// Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
+function getConfiguredUploaders() {
+	const default_uploader = config.uploader_type;
+	let configured = [];
+	for (const uploader of importedUploaders) {
+		if (default_uploader == uploader.name) {
+			continue;
+		}
+		let allOptions = true;
+		for (const option of uploader.config_options) {
+			if (!(option.value in config) && option.required) {
+				allOptions = false;
+				break;
+			}
+		}
+		if (allOptions) {
+			configured.push(uploader);
+		}
+	}
+	return configured;
+}
+
 (async() => {
 	await stat(`${require("os").homedir()}/magiccap.json`).then(async() => {
 		global.config = require(`${require("os").homedir()}/magiccap.json`);
