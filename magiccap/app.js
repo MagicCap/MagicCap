@@ -268,8 +268,8 @@ function createContextMenu() {
 }
 
 function initialiseScript() {
-	global.tray = new Tray(`${__dirname}/icons/taskbar.png`);
-	createContextMenu();
+	tray = new Tray(`${__dirname}/icons/taskbar.png`);
+	createContextMenu(tray);
 	if (process.platform === "darwin") createMenu();
 }
 // Initialises the script.
