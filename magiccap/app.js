@@ -117,7 +117,8 @@ function getConfiguredUploaders() {
 			continue;
 		}
 		let allOptions = true;
-		for (const option of uploader.config_options) {
+		for (const optionName in uploader.config_options) {
+			const option = uploader.config_options[optionName];
 			if (!(option.value in config) && option.required) {
 				allOptions = false;
 				break;
