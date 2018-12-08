@@ -101,7 +101,7 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
         type: "warning",
         buttons: ["Update Now", "Not Now", "Skip Release"],
         title: "MagicCap",
-        message: "A new version of MagicCap is avaliable.",
+        message: "A new version of MagicCap is available.",
         detail: `You are on v${app.getVersion()} and the latest is v${updateInfo.current}. Here are the changelogs since your current release:\n\n${updateInfo.changelogs}`,
     }, async response => {
         switch (response) {
