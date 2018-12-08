@@ -1,8 +1,8 @@
-const { stat } = require("fs-nextra");
-const { dialog } = require("electron");
+const { stat, writeFile } = require("fs-nextra");
+const { app, dialog } = require("electron");
 const { get } = require("chainfetch");
-const { writeFile } = require("fs-nextra");
 const async_child_process = require("async-child-process");
+const sudo = require("sudo-prompt");
 
 // Checks if the autoupdate binaries are installed.
 async function checkAutoupdateBin() {
@@ -12,6 +12,11 @@ async function checkAutoupdateBin() {
     } catch(_) {
         return false;
     }
+}
+
+// Makes the JS code sleep.
+const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
 
 // Downloads the needed autoupdate binaries.
@@ -36,6 +41,85 @@ async function downloadBin() {
             break;
         }
     }
+}
+
+// Checks for any updates.
+async function checkForUpdates() {
+    let res;
+    try {
+        res = await get("https://api.magiccap.me/version/check/" + app.getVersion()).toJSON();
+    } catch(_) {
+        return {
+            upToDate: true,
+        }
+    };
+    if (res.status != 200) {
+        return {
+            upToDate: true,
+        }
+    }
+    if (res.body.updated) {
+        return {
+            upToDate: true,
+        }
+    }
+    return {
+        upToDate: false,
+        current: res.body.latest.version,
+        changelogs: res.body.changelogs,
+    }
+}
+
+// Does the update.
+async function doUpdate(updateInfo) {
+    await (new Promise(res => {
+        sudo.exec(`magiccap-updater v${updateInfo.current}`, {
+            name: "MagicCap",
+        }, error => {
+            if (error) {
+                console.log(error);
+                throw error;
+            }
+            res();
+        });
+    }));
+}
+
+// Handles a new update.
+async function handleUpdate(updateInfo, config, tempIgnore) {
+    if (tempIgnore.indexOf(updateInfo.current) > -1) {
+        return;
+    }
+
+    if (config.ignored_updates !== undefined) {
+        if (config.ignored_updates.indexOf(updateInfo.current) > -1) {
+            return;
+        }
+    }
+
+    await dialog.showMessageBox({
+        type: "warning",
+        buttons: ["Update Now", "Not Now", "Skip Release"],
+        title: "MagicCap",
+        message: "A new version of MagicCap is avaliable.",
+        detail: `You are on v${app.getVersion()} and the latest is v${updateInfo.current}. Here are the changelogs since your current release:\n\n${updateInfo.changelogs}`,
+    }, async response => {
+        switch (response) {
+            case 2:
+                if (config.ignored_updates !== undefined) {
+                    config.ignored_updates.push(updateInfo.current);
+                } else {
+                    config.ignored_updates = [updateInfo.current];
+                }
+                // TODO: Config should save here.
+                break;
+            case 1:
+                tempIgnore.push(updateInfo.current);
+                break;
+            case 0:
+                await doUpdate(updateInfo);
+        }
+    });
 }
 
 // The actual autoupdate part.
@@ -69,5 +153,12 @@ module.exports = async function autoUpdateLoop(config) {
             return;
         }
     }
-    console.log("hi");
+    let tempIgnore = [];
+    while (true) {
+        const updateInfo = await checkForUpdates();
+        if (!updateInfo.upToDate) {
+            await handleUpdate(updateInfo, config, tempIgnore);
+        }
+        await sleep(600000);
+    }
 }
