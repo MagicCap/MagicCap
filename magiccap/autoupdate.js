@@ -12,15 +12,13 @@ async function checkAutoupdateBin() {
 	try {
 		await stat("/usr/local/bin/magiccap-updater");
 		return true;
-	} catch(_) {
+	} catch (_) {
 		return false;
 	}
 }
 
 // Makes the JS code sleep.
-const sleep = (milliseconds) => {
-	return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
+const sleep = milliseconds => { return new Promise(resolve => setTimeout(resolve, milliseconds)); };
 
 // Downloads the needed autoupdate binaries.
 async function downloadBin() {
@@ -50,22 +48,22 @@ async function downloadBin() {
 async function checkForUpdates() {
 	let res;
 	try {
-		res = await get("https://api.magiccap.me/version/check/" + app.getVersion()).toJSON();
-	} catch(_) {
+		res = await get(`https://api.magiccap.me/version/check/${app.getVersion()}`).toJSON();
+	} catch (_) {
 		return {
 			upToDate: true,
 		}
-	};
+	}
 	if (res.status != 200) {
 		return {
 			upToDate: true,
 		}
-	}
+	};
 	if (res.body.updated) {
 		return {
 			upToDate: true,
 		}
-	}
+	};
 	return {
 		upToDate: false,
 		current: res.body.latest.version,
