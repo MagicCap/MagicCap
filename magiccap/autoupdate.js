@@ -52,28 +52,28 @@ async function checkForUpdates() {
 	} catch (_) {
 		return {
 			upToDate: true,
-		}
+		};
 	}
 	if (res.status != 200) {
 		return {
 			upToDate: true,
-		}
-	};
+		};
+	}
 	if (res.body.updated) {
 		return {
 			upToDate: true,
-		}
-	};
+		};
+	}
 	return {
 		upToDate: false,
 		current: res.body.latest.version,
 		changelogs: res.body.changelogs,
-	}
+	};
 }
 
 // Does the update.
 async function doUpdate(updateInfo) {
-	await (new Promise(res => {
+	await new Promise(res => {
 		sudo.exec(`/usr/local/bin/magiccap-updater v${updateInfo.current}`, {
 			name: "MagicCap",
 		}, error => {
@@ -83,7 +83,7 @@ async function doUpdate(updateInfo) {
 			}
 			res();
 		});
-	}));
+	});
 }
 
 // Handles a new update.
@@ -140,10 +140,10 @@ module.exports = async function autoUpdateLoop(config) {
 				title: "MagicCap",
 				message: "In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.",
 			}, async response => {
-				let toContinue = true;
+				let toCont = true;
 				switch (response) {
 					case 2:
-						toContinue = false;
+						toCont = false;
 						config.autoupdate_on = false;
 						writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
 							console.log("Could not update the config.");
@@ -151,13 +151,13 @@ module.exports = async function autoUpdateLoop(config) {
 						global.config = config;
 						break;
 					case 1:
-						toContinue = false;
+						toCont = false;
 						break;
 					case 0:
 						await downloadBin();
 						break;
 				}
-				res(toContinue);
+				res(toCont);
 			});
 		});
 		if (!toContinue) {
@@ -165,7 +165,7 @@ module.exports = async function autoUpdateLoop(config) {
 		}
 	}
 	let tempIgnore = [];
-	while (true) {
+	for (;;) {
 		const updateInfo = await checkForUpdates();
 		if (!updateInfo.upToDate) {
 			await handleUpdate(updateInfo, config, tempIgnore);
