@@ -135,28 +135,32 @@ module.exports = async function autoUpdateLoop(config) {
     }
     const binExists = await checkAutoupdateBin();
     if (!binExists) {
-        let toContinue = true;
-        await dialog.showMessageBox({
-            type: "warning",
-            buttons: ["Yes", "No", "Don't ask again"],
-            title: "MagicCap",
-            message: "In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.",
-        }, async response => {
-            switch (response) {
-                case 2:
-                    toContinue = false;
-                    config.autoupdate_on = false;
-                    writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
-                        console.log("Could not update the config.");
-                    });
-                    global.config = config;
-                    break;
-                case 1:
-                    toContinue = false;
-                    break;
-                case 0:
-                    await downloadBin();
-            }
+        let toContinue = await new Promise(async res => {
+            await dialog.showMessageBox({
+                type: "warning",
+                buttons: ["Yes", "No", "Don't ask again"],
+                title: "MagicCap",
+                message: "In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.",
+            }, async response => {
+                let toContinue = true;
+                switch (response) {
+                    case 2:
+                        toContinue = false;
+                        config.autoupdate_on = false;
+                        writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
+                            console.log("Could not update the config.");
+                        });
+                        global.config = config;
+                        break;
+                    case 1:
+                        toContinue = false;
+                        break;
+                    case 0:
+                        await downloadBin();
+                        break;
+                }
+                res(toContinue);
+            });
         });
         if (!toContinue) {
             return;
