@@ -109,7 +109,7 @@ async function getDefaultConfig() {
 // Creates the default config.
 
 // Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
-function getConfiguredUploaders() {
+function getConfiguredUploaders(config) {
 	const default_uploader = nameUploaderMap[config.uploader_type];
 	let configured = [];
 	for (const uploaderName in importedUploaders) {
@@ -274,9 +274,17 @@ async function dropdownMenuUpload(uploader) {
 
 // Creates the context menu.
 function createContextMenu() {
+	let c = global.config;
+	try {
+		if (c === undefined) {
+			throw 1;
+		}
+	} catch (_) {
+		c = getDefaultConfig();
+	}
 	let uploadDropdown = [];
-	if (nameUploaderMap[config.uploader_type] in importedUploaders) {
-		const defaultRealName = nameUploaderMap[config.uploader_type];
+	if (nameUploaderMap[c.uploader_type] in importedUploaders) {
+		const defaultRealName = nameUploaderMap[c.uploader_type];
 		uploadDropdown.push(
 			{
 				label: `${defaultRealName} (Default)`,
@@ -285,7 +293,7 @@ function createContextMenu() {
 			}
 		);
 	}
-	for (const uploader of getConfiguredUploaders()) {
+	for (const uploader of getConfiguredUploaders(c)) {
 		uploadDropdown.push(
 			{
 				label: uploader.name,
