@@ -1,4 +1,4 @@
-const { stat, writeFile } = require("fs-nextra");
+const { stat, writeFile, writeJSON } = require("fs-nextra");
 const { app, dialog } = require("electron");
 const { get } = require("chainfetch");
 const async_child_process = require("async-child-process");
@@ -111,7 +111,10 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
                 } else {
                     config.ignored_updates = [updateInfo.current];
                 }
-                // TODO: Config should save here.
+                writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
+                    console.log("Could not update the config.");
+                });
+                global.config = config;
                 break;
             case 1:
                 tempIgnore.push(updateInfo.current);
@@ -140,7 +143,10 @@ module.exports = async function autoUpdateLoop(config) {
                 case 2:
                     toContinue = false;
                     config.autoupdate_on = false;
-                    // TODO: Config should save here.
+                    writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
+                        console.log("Could not update the config.");
+                    });
+                    global.config = config;
                     break;
                 case 1:
                     toContinue = false;
