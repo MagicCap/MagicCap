@@ -63,3 +63,5 @@ typings/
 \.vs/
 
 magiccap/build/
+
+\.DS_Store

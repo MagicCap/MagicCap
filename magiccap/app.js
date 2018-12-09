@@ -12,6 +12,7 @@ const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboa
 const notifier = require("node-notifier");
 const { sep } = require("path");
 const { readdir, readFile } = require("fs-nextra");
+const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
 // Main imports.
 
 global.importedUploaders = {};
@@ -161,6 +162,9 @@ function getConfiguredUploaders() {
 		}
 	}
 	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
+
+	autoUpdateLoop(config);
+	// Starts the autoupdate loop.
 })();
 // Creates the config/capture DB table.
 
