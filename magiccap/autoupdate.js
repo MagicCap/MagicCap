@@ -1,3 +1,6 @@
+// This code is a part of MagicCap which is a MPL-2.0 licensed project.
+// Copyright (C) Jake Gealer <jake@gealer.email> 2018.
+
 const { stat, writeFile, writeJSON } = require("fs-nextra");
 const { app, dialog } = require("electron");
 const { get } = require("chainfetch");
