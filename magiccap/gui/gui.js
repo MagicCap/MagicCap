@@ -223,6 +223,9 @@ let importedUploaders = {};
 		await $("#windowScreenshotHotkey").val(config.window_hotkey);
 	}
 	// Sets the value of the window hotkey textbox.
+
+	await $("#magiccap-ver").text(`MagicCap v${remote.app.getVersion()}`);
+	// Sets the MagicCap version.
 })();
 
 $("#uploaderConfigCheckbox").click(async() => {
