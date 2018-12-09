@@ -10,7 +10,7 @@ const sudo = require("sudo-prompt");
 // Checks if the autoupdate binaries are installed.
 async function checkAutoupdateBin() {
 	try {
-		await stat("/usr/local/bin/magiccap-updater");
+		await stat(`${require("os").homedir()}/magiccap-updater`);
 		return true;
 	} catch (_) {
 		return false;
@@ -37,8 +37,8 @@ async function downloadBin() {
 	for (const asset of latest.assets) {
 		if (asset.name == `magiccap-updater-${osPart}`) {
 			const updaterBuffer = await get(asset.browser_download_url).toBuffer();
-			await writeFile("/usr/local/bin/magiccap-updater", updaterBuffer.body);
-			await async_child_process.execAsync("chmod 777 /usr/local/bin/magiccap-updater");
+			await writeFile(`${require("os").homedir()}/magiccap-updater`, updaterBuffer.body);
+			await async_child_process.execAsync(`chmod 777 ${require("os").homedir()}/magiccap-updater`);
 			break;
 		}
 	}
@@ -74,7 +74,7 @@ async function checkForUpdates() {
 // Does the update.
 async function doUpdate(updateInfo) {
 	await new Promise(res => {
-		sudo.exec(`/usr/local/bin/magiccap-updater v${updateInfo.current}`, {
+		sudo.exec(`${require("os").homedir()}/magiccap-updater v${updateInfo.current}`, {
 			name: "MagicCap",
 		}, error => {
 			if (error) {
