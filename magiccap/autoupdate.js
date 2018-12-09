@@ -76,7 +76,7 @@ async function checkForUpdates() {
 // Does the update.
 async function doUpdate(updateInfo) {
     await (new Promise(res => {
-        sudo.exec(`magiccap-updater v${updateInfo.current}`, {
+        sudo.exec(`/usr/local/bin/magiccap-updater v${updateInfo.current}`, {
             name: "MagicCap",
         }, error => {
             if (error) {
