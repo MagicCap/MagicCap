@@ -18,7 +18,7 @@ async function checkAutoupdateBin() {
 }
 
 // Makes the JS code sleep.
-const sleep = milliseconds => { return new Promise(resolve => setTimeout(resolve, milliseconds)); };
+const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 // Downloads the needed autoupdate binaries.
 async function downloadBin() {
@@ -172,4 +172,4 @@ module.exports = async function autoUpdateLoop(config) {
 		}
 		await sleep(600000);
 	}
-}
+};
