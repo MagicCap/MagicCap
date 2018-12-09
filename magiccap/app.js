@@ -275,11 +275,7 @@ async function dropdownMenuUpload(uploader) {
 // Creates the context menu.
 function createContextMenu() {
 	let c = global.config;
-	try {
-		if (c === undefined) {
-			throw 1;
-		}
-	} catch (_) {
+	if (c === undefined) {
 		c = getDefaultConfig();
 	}
 	let uploadDropdown = [];
