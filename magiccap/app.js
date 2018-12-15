@@ -6,12 +6,11 @@ const sqlite3 = require("sqlite3").verbose();
 let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("os").homedir()}/magiccap_captures.db`);
 // Defines the capture database.
 
-const { stat, writeJSON, mkdir } = require("fs-nextra");
+const { stat, writeJSON, mkdir, readdir, readFile } = require("fs-nextra");
 const capture = require(`${__dirname}/capture.js`);
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = require("electron");
 const notifier = require("node-notifier");
 const { sep } = require("path");
-const { readdir, readFile } = require("fs-nextra");
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
 // Main imports.
 
