@@ -6,7 +6,7 @@ const sqlite3 = require("sqlite3").verbose();
 let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("os").homedir()}/magiccap_captures.db`);
 // Defines the capture database.
 
-const { stat, writeJSON, mkdir, readdir, readFile } = require("fs-nextra");
+const { stat, writeJSON, ensureDir, readdir, readFile } = require("fs-nextra");
 const capture = require(`${__dirname}/capture.js`);
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = require("electron");
 const notifier = require("node-notifier");
@@ -98,7 +98,7 @@ async function getDefaultConfig() {
 		save_capture: true,
 		save_path: pics_dir,
 	};
-	await mkdir(config.save_path).catch(async error => {
+	await ensureDir(config.save_path).catch(async error => {
 		if (!(error.errno === -4075 || error.errno === -17)) {
 			config.Remove("save_path");
 		}
