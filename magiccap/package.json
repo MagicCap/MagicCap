@@ -22,7 +22,8 @@
         "sqlite3": "4.0.3",
         "xss-filters": "1.2.7",
         "aws-sdk": "2.286.2",
-        "sudo-prompt": "^8.2.3"
+        "sudo-prompt": "^8.2.3",
+        "vue": "2.5.21"
     },
     "devDependencies": {
         "electron-builder": "20.26.1",
