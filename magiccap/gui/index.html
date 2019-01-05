@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>MagicCap</title>
+        <script src="../node_modules/vue/dist/vue.min.js"></script>
     </head>
 
     <style>
@@ -50,7 +51,24 @@
             </aside>
             <div class="column" style="margin-left: 15%;">
                 <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
-                    <tbody id="mainTableBody"></tbody>
+                    <tbody id="mainTableBody">
+                        <tr v-for="capture in captures" :key="capture.timestamp">
+                            <td>{{ successMap[capture.success] }}</td>
+                            <td>{{ capture.filename }}</td>
+                            <td>{{ new Date(capture.timestamp).toLocaleString() }}</td>
+                            <td v-if="capture.url === undefined"></td>
+                            <td v-else>
+                                <a v-on:click="openScreenshotURL(capture.url)">{{ capture.url }}</a>
+                            </td>
+                            <td v-if="capture.file_path === undefined"></td>
+                            <td v-else>
+                                    <a class="button is-primary" v-on:click="openScreenshotFile(capture.file_path)">View</a>
+                            </td>
+                            <td>
+                                <a class="button is-danger" v-on:click="delete(capture.timestamp)">Remove</a>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -152,6 +170,6 @@
                 </section>
             </div>
         </div>
-        <script src="gui.js"></script>
+        <script src="gui_2.0.js"></script>
     </body>
 </html>
