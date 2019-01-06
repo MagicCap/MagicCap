@@ -200,8 +200,8 @@ function openAcceleratorDocs() {
 new Vue({
     el: "#hotkeyConfigBody",
     data: {
-        screenshotHotkey: config.hotkey,
-        windowHotkey: config.window_hotkey,
+        screenshotHotkey: config.hotkey || "",
+        windowHotkey: config.window_hotkey || "",
     },
 });
 // Handles rendering the hotkey config body.
