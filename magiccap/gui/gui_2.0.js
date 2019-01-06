@@ -214,7 +214,23 @@ new Vue({
         fileSaveFolderI: config.save_path,
     },
     methods: {
-        saveItem: function (key, configKey, not) {
+        saveItem: function (key, configKey, not, path) {
+            if (path) {
+                let slashType;
+                switch (process.platform) {
+                    case "darwin":
+                    case "linux": {
+                        slashType = "/";
+                        break;
+                    }
+                    case "win32": {
+                        slashType = "\\";
+                    }
+                }
+                if (!this[key].endsWith(slashType)) {
+                    this[key] += slashType;
+                }
+            }
             if (not) {
                 this[key] = !this[key];
             }
