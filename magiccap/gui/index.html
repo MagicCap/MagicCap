@@ -81,7 +81,7 @@
                 </header>
                 <section class="modal-card-body">
                     <h1 class="title" id="magiccap-ver">MagicCap</h1>
-                    <p>Copyright (C) Jake Gealer and Rhys O'Kane 2018.</p>
+                    <p>Copyright (C) Jake Gealer and Rhys O'Kane 2018-2019.</p>
                     <p>This software is licensed under the <a href="javascript:openMPL()">MPL-2.0</a> license.</p>
                 </section>
             </div>
@@ -94,8 +94,8 @@
                     <button class="delete" aria-label="close" id="clipboardActionClose"></button>
                 </header>
                 <section class="modal-card-body">
-                    <input type="radio" name="clipboardActionRadio" id="clipboardActionID2"> Copy the uploaded URL to the clipboard (requires file uploads to be on).<br>
-                    <input type="radio" name="clipboardActionRadio" id="clipboardActionID1"> Copy the image to the clipboard.
+                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2"> Copy the uploaded URL to the clipboard (requires file uploads to be on).<br>
+                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1"> Copy the image to the clipboard.
                 </section>
             </div>
         </div>
@@ -158,13 +158,13 @@
                     <div class="field">
                         <label class="label">Selection Screenshot Hotkey:</label>
                         <div class="control">
-                            <input class="input" type="text" id="screenshotHotkey" placeholder="Selection Screenshot Hotkey">
+                            <input class="input" type="text" id="screenshotHotkey" placeholder="Selection Screenshot Hotkey" :value="screenshotHotkey">
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">Window Screenshot Hotkey:</label>
                         <div class="control">
-                            <input class="input" type="text" id="windowScreenshotHotkey" placeholder="Window Screenshot Hotkey">
+                            <input class="input" type="text" id="windowScreenshotHotkey" placeholder="Window Screenshot Hotkey" :value="windowHotkey">
                         </div>
                     </div>
                 </section>
