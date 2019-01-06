@@ -32,7 +32,7 @@ async function getCaptures() {
 getCaptures();
 // Handles each capture.
 
-const uploadList = new Vue({
+new Vue({
     el: "#mainTableBody",
     data: {
         captures: displayedCaptures,
@@ -47,8 +47,7 @@ const uploadList = new Vue({
                 "DELETE FROM captures WHERE timestamp = ?",
                 [timestamp],
             );
-            const c = await getCaptures();
-            this.captures = c;
+            await getCaptures();
         },
         openScreenshotURL: async url => {
             await shell.openExternal(url);
@@ -58,6 +57,12 @@ const uploadList = new Vue({
         },
     },
 });
+// Handles the upload list.
+
+ipcRenderer.on("screenshot-upload", async () => {
+    await getCaptures();
+});
+// Handles new screenshots.
 
 window.onload = async() => {
 	await $("body").show();
