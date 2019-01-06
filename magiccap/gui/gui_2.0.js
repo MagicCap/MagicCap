@@ -64,6 +64,16 @@ ipcRenderer.on("screenshot-upload", async () => {
 });
 // Handles new screenshots.
 
+async function runCapture() {
+	await remote.getGlobal("runCapture")();
+}
+// Runs the fullscreen capture.
+
+async function runWindowCapture() {
+	await remote.getGlobal("runCapture")(true);
+}
+// Runs the window capture.
+
 window.onload = async() => {
 	await $("body").show();
 	ipcRenderer.send("window-show");
