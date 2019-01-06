@@ -1,13 +1,15 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
-// TODO: Add version back to about screen.
 
 const $ = require("jquery/dist/jquery.slim");
 const { ipcRenderer, remote, shell } = require("electron");
 const { readdir, writeJSON } = require("fs-nextra");
 let config = require(`${require("os").homedir()}/magiccap.json`);
 // The needed imports.
+
+document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
+// Sets the MagicCap version.
 
 if (config.light_theme) {
     $("head").append(`<link rel="stylesheet" type="text/css" href="../node_modules/bulmaswatch/default/bulmaswatch.min.css">`);
@@ -236,7 +238,6 @@ new Vue({
             }
             config[configKey] = this[key];
             saveConfig();
-            // TODO: Path parsing here.
         },
     },
 });
