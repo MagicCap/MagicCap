@@ -23,6 +23,7 @@ let displayedCaptures = [];
 // A list of the displayed captures.
 
 async function getCaptures() {
+    displayedCaptures.length = 0;
     await db.each("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20", (err, row) => {
         if (err) { console.log(err); }
         displayedCaptures.push(row);
@@ -41,13 +42,13 @@ const uploadList = new Vue({
         },
     },
     methods: {
-        delete: async timestamp => {
+        rmCapture: async timestamp => {
             await db.run(
                 "DELETE FROM captures WHERE timestamp = ?",
                 [timestamp],
             );
-            await getCaptures();
-            this.$set(this, "captures", displayedCaptures);
+            const c = await getCaptures();
+            this.captures = c;
         },
         openScreenshotURL: async url => {
             await shell.openExternal(url);

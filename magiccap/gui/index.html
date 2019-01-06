@@ -60,12 +60,12 @@
                             <td v-else>
                                 <a v-on:click="openScreenshotURL(capture.url)">{{ capture.url }}</a>
                             </td>
-                            <td v-if="capture.file_path === undefined"></td>
+                            <td v-if="capture.file_path === undefined || capture.success === 0"></td>
                             <td v-else>
                                     <a class="button is-primary" v-on:click="openScreenshotFile(capture.file_path)">View</a>
                             </td>
                             <td>
-                                <a class="button is-danger" v-on:click="delete(capture.timestamp)">Remove</a>
+                                <a class="button is-danger" v-on:click="rmCapture(capture.timestamp)">Remove</a>
                             </td>
                         </tr>
                     </tbody>
