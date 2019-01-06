@@ -220,6 +220,7 @@ new Vue({
             }
             config[configKey] = this[key];
             saveConfig();
+            // TODO: Path parsing here.
         },
     },
 });
