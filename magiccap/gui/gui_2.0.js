@@ -205,3 +205,32 @@ new Vue({
     },
 });
 // Handles rendering the hotkey config body.
+
+new Vue({
+    el: "#fileConfig",
+    data: {
+        fileConfigCheckboxI: config.save_capture || false,
+        fileNamingPatternI: config.file_naming_pattern || "screenshot_%date%_%time%",
+        fileSaveFolderI: config.save_path,
+    },
+    methods: {
+        saveItem: function (key, configKey, not) {
+            if (not) {
+                this[key] = !this[key];
+            }
+            config[configKey] = this[key];
+            saveConfig();
+        },
+    },
+});
+// Handles the file config.
+
+function showFileConfig() {
+	$("#fileConfig").addClass("is-active");
+}
+// Shows the file config.
+
+$("#fileConfigClose").click(async() => {
+	await $("#fileConfig").removeClass("is-active");
+});
+// Closes the file config.
