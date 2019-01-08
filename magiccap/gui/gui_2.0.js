@@ -4,7 +4,7 @@
 
 const $ = require("jquery/dist/jquery.slim");
 const { ipcRenderer, remote, shell } = require("electron");
-const { writeJSON } = require("fs-nextra");
+const { writeJSON, readdir } = require("fs-nextra");
 let config = require(`${require("os").homedir()}/magiccap.json`);
 // The needed imports.
 
@@ -326,6 +326,42 @@ const activeUploaderConfig = new Vue({
         closeActiveConfig: function () {
             this.$set(this, "exception", "");
             document.getElementById("activeUploaderConfig").classList.remove("is-active");
+        },
+        setDefaultUploader: function () {
+            this.$set(this, "exception", "");
+            for (const optionKey in this.uploader.options) {
+                const option = this.uploader.options[optionKey];
+                const c = config[option.value];
+                if (c === undefined && option.required) {
+                    if (option.default) {
+                        config[option.value] = option.default;
+                        saveConfig();
+                    } else {
+                        if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
+                            this.exception += "notAIntYouGiddyGoat";
+                            return;
+                        } else {
+                            this.exception += "requiredStuffMissing";
+                            return;
+                        }
+                    }
+                }
+            }
+
+            let view = this;
+            readdir(`${__dirname}/../uploaders`).then(function (files) {
+                let filename = "";
+                for (const file in files) {
+                    const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
+                    if (import_.name === view.uploader.name) {
+                        filename = files[file].substring(0, files[file].length - 3);
+                        break;
+                    }
+                }
+                config.uploader_type = filename;
+                saveConfig();
+                view.exception += "ayyyyDefaultSaved";
+            });
         },
     }
 });
