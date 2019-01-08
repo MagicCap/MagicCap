@@ -19,7 +19,7 @@ if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
 	document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
-document.getElementsByTagName('head')[0].appendChild(stylesheet);
+document.getElementsByTagName("head")[0].appendChild(stylesheet);
 // Changes the colour scheme.
 
 let db = remote.getGlobal("captureDatabase");
