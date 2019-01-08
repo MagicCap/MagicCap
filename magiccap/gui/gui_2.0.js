@@ -327,6 +327,7 @@ new Vue({
                     case "text":
                     case "integer":
                     case "password":
+                    case "boolean":
                         options[optionKey] = {
                             type: option.type,
                             value: option.value,
