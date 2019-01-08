@@ -11,13 +11,16 @@ let config = require(`${require("os").homedir()}/magiccap.json`);
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
 // Sets the MagicCap version.
 
+let stylesheet = document.createElement('link');
+stylesheet.setAttribute('rel', 'stylesheet');
 if (config.light_theme) {
-    $("head").append(`<link rel="stylesheet" type="text/css" href="../node_modules/bulmaswatch/default/bulmaswatch.min.css">`);
-    $("#sidebar").css("background-color", "#e6e6e6");
+    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
+    document.getElementById("sidebar").style.backgroundColor = "#e6e6e6";
 } else {
-    $("head").append(`<link rel="stylesheet" type="text/css" href="../node_modules/bulmaswatch/darkly/bulmaswatch.min.css">`);
-    $("#sidebar").css("background-color", "#171819");
+    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
+    document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
+document.getElementsByTagName('head')[0].appendChild(stylesheet);
 // Changes the colour scheme.
 
 let db = remote.getGlobal("captureDatabase");
@@ -91,13 +94,13 @@ new Vue({
 });
 // Handles the clipboard actions.
 
-$("#clipboardActionClose").click(async() => {
-	await $("#clipboardAction").removeClass("is-active");
-});
+function closeClipboardConfig() {
+	document.getElementById("clipboardAction").classList.remove("is-active");
+}
 // Handles the clipboard action close button.
 
 function showClipboardAction() {
-	$("#clipboardAction").addClass("is-active");
+	document.getElementById("clipboardAction").classList.add("is-active");
 }
 // Shows the clipboard action settings page.
 
@@ -123,7 +126,7 @@ window.onload = async() => {
 // Unhides the body/window when the page has loaded.
 
 function showAbout() {
-	$("#about").addClass("is-active");
+    document.getElementById("about").classList.add("is-active");
 }
 // Shows the about page.
 

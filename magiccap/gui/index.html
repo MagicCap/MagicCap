@@ -173,7 +173,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Clipboard Action</p>
-                    <button class="delete" aria-label="close" id="clipboardActionClose"></button>
+                    <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeClipboardConfig()"></a>
                 </header>
                 <section class="modal-card-body">
                     <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2"> Copy the uploaded URL to the clipboard (requires file uploads to be on).<br>
