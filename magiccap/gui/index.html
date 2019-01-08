@@ -80,11 +80,11 @@
                     <button class="delete" aria-label="close" id="activeUploaderConfigClose"></button>
                 </header>
                 <section class="modal-card-body" id="activeUploaderConfigBody">
-                    <article class="message is-danger is-hidden" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>
-                    <article class="message is-danger is-hidden" id="blankKey"><div class="message-body">The key you gave was blank.</div></article>
-                    <article class="message is-danger is-hidden" id="keyAlreadyUsed"><div class="message-body">The key you gave was already used.</div></article>
-                    <article class="message is-danger is-hidden" id="notAIntYouGiddyGoat"><div class="message-body">You provided a invalid integer.</div></article>
-                    <article class="message is-success is-hidden" id="ayyyyDefaultSaved"><div class="message-body">Default uploader successfully saved.</div></article>
+                    <article class="message is-danger" v-if="exception === 'requiredStuffMissing'" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'blankKey'" id="blankKey"><div class="message-body">The key you gave was blank.</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'keyAlreadyUsed'" id="keyAlreadyUsed"><div class="message-body">The key you gave was already used.</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'notAIntYouGiddyGoat'" id="notAIntYouGiddyGoat"><div class="message-body">You provided a invalid integer.</div></article>
+                    <article class="message is-success" v-else-if="exception === 'ayyyyDefaultSaved'" id="ayyyyDefaultSaved"><div class="message-body">Default uploader successfully saved.</div></article>
                     <div v-if="uploader.options.length === 0">
                         <p>There are no configuration options for this uploader.</p><br>
                     </div>
@@ -115,7 +115,7 @@
                                                 <td>{{ key }}</td>
                                                 <td>{{ value }}</td>
                                                 <td>
-                                                    <a class="button is-danger" v-on:click="deleteRow(key, option)">Delete Row</a>
+                                                    <a class="button is-danger" v-on:click="deleteRow(key, option, optionKey)">Delete Row</a>
                                                 </td>
                                             </tr>
                                         </tbody>

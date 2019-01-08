@@ -260,6 +260,7 @@ const activeUploaderConfig = new Vue({
             name: "",
             options: {},
         },
+        exception: "",
     },
     methods: {
         getDefaultValue: function (option) {
@@ -282,20 +283,23 @@ const activeUploaderConfig = new Vue({
             config[option.value] = res;
             saveConfig();
         },
-        deleteRow: function (key, option) {
+        deleteRow: function (key, option, optionKey) {
             delete option.items[key];
+            this.$set(this.uploader.options, optionKey, option);
             config[option.value] = option.items;
             saveConfig();
         },
         addToTable: function (option) {
-            clearActiveUploaderErrors();
+            this.exception.length = 0;
             const key = document.getElementById(`Key${option.value}`).value || "";
             const value = document.getElementById(`Value${option.value}`).value || "";
             if (key === "") {
-                return throwActiveUploaderError("blankKey");
+                this.exception += "blankKey";
+                return;
             }
             if (option.items[key] !== undefined) {
-                return throwActiveUploaderError("keyAlreadyUsed");
+                this.exception += "keyAlreadyUsed";
+                return;
             }
             option.items[key] = value;
             config[option.value] = option.items;
@@ -336,13 +340,16 @@ new Vue({
                         };
                         break;
                     case "object":
+                        const i = config[option.value] || option.default || {};
                         options[optionKey] = {
                             type: option.type,
                             value: option.value,
                             default: option.default,
                             required: option.required,
-                            items: config[option.type] || {},
+                            items: i,
                         };
+                        config[option.value] = i;
+                        saveConfig();
                         break;
                 }
             }
