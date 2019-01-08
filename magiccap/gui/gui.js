@@ -10,8 +10,8 @@ let config = require(`${require("os").homedir()}/magiccap.json`);
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
 // Sets the MagicCap version.
 
-let stylesheet = document.createElement('link');
-stylesheet.setAttribute('rel', 'stylesheet');
+let stylesheet = document.createElement("link");
+stylesheet.setAttribute("rel", "stylesheet");
 if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
 	document.getElementById("sidebar").style.backgroundColor = "#e6e6e6";
