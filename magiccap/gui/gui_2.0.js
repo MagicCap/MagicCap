@@ -306,6 +306,10 @@ const activeUploaderConfig = new Vue({
             this.$forceUpdate();
             saveConfig();
         },
+        closeActiveConfig: function () {
+            this.$set(this, "exception", "");
+            document.getElementById("activeUploaderConfig").classList.remove("is-active");
+        },
     }
 });
 // Defines the active uploader config.

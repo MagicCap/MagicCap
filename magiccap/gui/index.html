@@ -77,7 +77,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">{{ uploader.name }}</p>
-                    <button class="delete" aria-label="close" id="activeUploaderConfigClose"></button>
+                    <button class="delete" aria-label="close" id="activeUploaderConfigClose" v-on:click="closeActiveConfig()"></button>
                 </header>
                 <section class="modal-card-body" id="activeUploaderConfigBody">
                     <article class="message is-danger" v-if="exception === 'requiredStuffMissing'" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>
