@@ -326,6 +326,7 @@ new Vue({
     el: "#uploaderConfigBody",
     data: {
         uploaders: importedUploaders,
+        checkUploadCheckbox: config.upload_capture,
     },
     methods: {
         renderUploader: function (uploader, uploaderKey) {
@@ -363,6 +364,16 @@ new Vue({
             document.getElementById("uploaderConfig").classList.remove("is-active");
             document.getElementById("activeUploaderConfig").classList.add("is-active");
         },
+        toggleCheckbox: function () {
+            this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox);
+            config.upload_capture = this.checkUploadCheckbox;
+            saveConfig();
+        },
     },
 });
 // Renders all of the uploaders.
+
+function hideUploaderConfig() {
+	document.getElementById("uploaderConfig").classList.remove("is-active");
+}
+// Hides the uploader config page.

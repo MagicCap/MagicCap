@@ -174,11 +174,11 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Uploader Configuration</p>
-                    <button class="delete" aria-label="close" id="uploaderConfigClose"></button>
+                    <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:hideUploaderConfig()"></a>
                 </header>
                 <section class="modal-card-body" id="uploaderConfigBody">
                     <label class="checkbox">
-                        <input type="checkbox" id="uploaderConfigCheckbox">
+                        <input type="checkbox" id="uploaderConfigCheckbox" :checked="checkUploadCheckbox" v-on:change="toggleCheckbox()">
                         Make files upload after capturing.
                     </label>
                     <br><br>
