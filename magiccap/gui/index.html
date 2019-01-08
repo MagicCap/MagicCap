@@ -106,6 +106,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div v-else-if="option.type === 'boolean'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <div class="control">
+                                        <label class="checkbox">
+                                            <input type="checkbox" :id="option.value" :checked="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                            {{ optionKey }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             <div v-else-if="option.type === 'object'">
                                 <div class="field">
                                     <label class="label">{{ optionKey }}:</label>

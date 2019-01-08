@@ -285,12 +285,17 @@ const activeUploaderConfig = new Vue({
             }
         },
         changeOption: function (option) {
-            const res = document.getElementById(option.value).value;
+            let res = document.getElementById(option.value).value;
             if (res === "") {
                 res = undefined;
             }
-            if (option.type === "integer") {
-                res = parseInt(res) || option.default || undefined;
+            switch(option.type) {
+                case "integer":
+                    res = parseInt(res) || option.default || undefined;
+                    break;
+                case "boolean":
+                    res = document.getElementById(option.value).checked;
+                    break;
             }
             config[option.value] = res;
             saveConfig();
@@ -356,6 +361,10 @@ new Vue({
                             default: option.default,
                             required: option.required,
                         };
+                        if (option.type === "boolean") {
+                            config[option.value] = config[option.value] || false;
+                            saveConfig();
+                        }
                         break;
                     case "object":
                         const i = config[option.value] || option.default || {};
