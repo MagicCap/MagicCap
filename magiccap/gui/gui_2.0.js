@@ -283,14 +283,14 @@ const activeUploaderConfig = new Vue({
             config[option.value] = res;
             saveConfig();
         },
-        deleteRow: function (key, option, optionKey) {
+        deleteRow: function (key, option) {
             delete option.items[key];
-            this.$set(this.uploader.options, optionKey, option);
             config[option.value] = option.items;
+            this.$forceUpdate();
             saveConfig();
         },
         addToTable: function (option) {
-            this.exception.length = 0;
+            this.$set(this, "exception", "");
             const key = document.getElementById(`Key${option.value}`).value || "";
             const value = document.getElementById(`Value${option.value}`).value || "";
             if (key === "") {
@@ -303,6 +303,7 @@ const activeUploaderConfig = new Vue({
             }
             option.items[key] = value;
             config[option.value] = option.items;
+            this.$forceUpdate();
             saveConfig();
         },
     }
