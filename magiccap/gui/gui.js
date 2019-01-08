@@ -10,8 +10,8 @@ let config = require(`${require("os").homedir()}/magiccap.json`);
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
 // Sets the MagicCap version.
 
-let stylesheet = document.createElement('link');
-stylesheet.setAttribute('rel', 'stylesheet');
+let stylesheet = document.createElement("link");
+stylesheet.setAttribute("rel", "stylesheet");
 if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
 	document.getElementById("sidebar").style.backgroundColor = "#e6e6e6";
@@ -19,7 +19,7 @@ if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
 	document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
-document.getElementsByTagName('head')[0].appendChild(stylesheet);
+document.getElementsByTagName("head")[0].appendChild(stylesheet);
 // Changes the colour scheme.
 
 let db = remote.getGlobal("captureDatabase");
@@ -34,11 +34,11 @@ async function getCaptures() {
 		if (err) { console.log(err); }
 		displayedCaptures.push(row);
 	});
-};
+}
 getCaptures();
 // Handles each capture.
 
-new Vue({
+new Vue({  // eslint-disable-line no-new
 	el: "#mainTableBody",
 	data: {
 		captures: displayedCaptures,
@@ -79,7 +79,7 @@ if (config.clipboard_action) {
 }
 // Defines the clipboard action.
 
-new Vue({
+new Vue({  // eslint-disable-line no-new
 	el: "#clipboardAction",
 	data: {
 		action: clipboardAction,
@@ -103,7 +103,7 @@ function showClipboardAction() {
 }
 // Shows the clipboard action settings page.
 
-ipcRenderer.on("screenshot-upload", async () => {
+ipcRenderer.on("screenshot-upload", async() => {  // eslint-disable-line func-names
 	await getCaptures();
 });
 // Handles new screenshots.
@@ -201,7 +201,7 @@ function openAcceleratorDocs() {
 }
 // Opens the Electron accelerator documentation.
 
-new Vue({
+new Vue({  // eslint-disable-line no-new
 	el: "#hotkeyConfigBody",
 	data: {
 		screenshotHotkey: config.hotkey || "",
@@ -210,7 +210,7 @@ new Vue({
 });
 // Handles rendering the hotkey config body.
 
-new Vue({
+new Vue({  // eslint-disable-line no-new
 	el: "#fileConfig",
 	data: {
 		fileConfigCheckboxI: config.save_capture || false,
@@ -218,7 +218,7 @@ new Vue({
 		fileSaveFolderI: config.save_path,
 	},
 	methods: {
-		saveItem: function (key, configKey, not, path) {
+		saveItem: function(key, configKey, not, path) {  // eslint-disable-line func-names
 			if (path) {
 				let slashType;
 				switch (process.platform) {
@@ -255,7 +255,7 @@ function closeFileConfig() {
 }
 // Closes the file config.
 
-const activeUploaderConfig = new Vue({
+const activeUploaderConfig = new Vue({  // eslint-disable-line no-new
 	el: "#activeUploaderConfig",
 	data: {
 		uploader: {
@@ -265,7 +265,7 @@ const activeUploaderConfig = new Vue({
 		exception: "",
 	},
 	methods: {
-		getDefaultValue: function (option) {
+		getDefaultValue: function(option) {  // eslint-disable-line func-names
 			switch (option.type) {
 				case "boolean":
 					const c = config[option.value];
@@ -286,7 +286,7 @@ const activeUploaderConfig = new Vue({
 					return "";
 			}
 		},
-		changeOption: function (option) {
+		changeOption: function(option) {  // eslint-disable-line func-names
 			let res = document.getElementById(option.value).value;
 			if (res === "") {
 				res = undefined;
@@ -302,13 +302,13 @@ const activeUploaderConfig = new Vue({
 			config[option.value] = res;
 			saveConfig();
 		},
-		deleteRow: function (key, option) {
+		deleteRow: function(key, option) {  // eslint-disable-line func-names
 			delete option.items[key];
 			config[option.value] = option.items;
 			this.$forceUpdate();
 			saveConfig();
 		},
-		addToTable: function (option) {
+		addToTable: function(option) {  // eslint-disable-line func-names
 			this.$set(this, "exception", "");
 			const key = document.getElementById(`Key${option.value}`).value || "";
 			const value = document.getElementById(`Value${option.value}`).value || "";
@@ -325,11 +325,11 @@ const activeUploaderConfig = new Vue({
 			this.$forceUpdate();
 			saveConfig();
 		},
-		closeActiveConfig: function () {
+		closeActiveConfig: function() {  // eslint-disable-line func-names
 			this.$set(this, "exception", "");
 			document.getElementById("activeUploaderConfig").classList.remove("is-active");
 		},
-		setDefaultUploader: function () {
+		setDefaultUploader: function() {  // eslint-disable-line func-names
 			this.$set(this, "exception", "");
 			for (const optionKey in this.uploader.options) {
 				const option = this.uploader.options[optionKey];
@@ -377,14 +377,14 @@ function showUploaderConfig() {
 importedUploaders = ipcRenderer.sendSync("get-uploaders");
 // All of the imported uploaders.
 
-new Vue({
+new Vue({  // eslint-disable-line no-new
 	el: "#uploaderConfigBody",
 	data: {
 		uploaders: importedUploaders,
 		checkUploadCheckbox: config.upload_capture,
 	},
 	methods: {
-		renderUploader: function (uploader, uploaderKey) {
+		renderUploader: function(uploader, uploaderKey) {
 			const options = {};
 			for (const optionKey in uploader.config_options) {
 				const option = uploader.config_options[optionKey];
@@ -392,7 +392,7 @@ new Vue({
 					case "text":
 					case "integer":
 					case "password":
-					case "boolean":
+					case "boolean": {
 						options[optionKey] = {
 							type: option.type,
 							value: option.value,
@@ -404,7 +404,8 @@ new Vue({
 							saveConfig();
 						}
 						break;
-					case "object":
+                    }
+					case "object": {
 						const i = config[option.value] || option.default || {};
 						options[optionKey] = {
 							type: option.type,
@@ -415,7 +416,8 @@ new Vue({
 						};
 						config[option.value] = i;
 						saveConfig();
-						break;
+                        break;
+                    }
 				}
 			}
 			activeUploaderConfig.$set(activeUploaderConfig.uploader, "name", uploaderKey);
@@ -423,7 +425,7 @@ new Vue({
 			document.getElementById("uploaderConfig").classList.remove("is-active");
 			document.getElementById("activeUploaderConfig").classList.add("is-active");
 		},
-		toggleCheckbox: function () {
+		toggleCheckbox: function() {
 			this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox);
 			config.upload_capture = this.checkUploadCheckbox;
 			saveConfig();
