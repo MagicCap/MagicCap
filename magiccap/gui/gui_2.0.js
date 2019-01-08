@@ -2,7 +2,6 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const $ = require("jquery/dist/jquery.slim");
 const { ipcRenderer, remote, shell } = require("electron");
 const { writeJSON, readdir } = require("fs-nextra");
 let config = require(`${require("os").homedir()}/magiccap.json`);
@@ -119,8 +118,8 @@ async function runWindowCapture() {
 }
 // Runs the window capture.
 
-window.onload = async() => {
-	await $("body").show();
+window.onload = function() {
+	document.body.style.display = "initial";
 	ipcRenderer.send("window-show");
 };
 // Unhides the body/window when the page has loaded.
@@ -130,9 +129,9 @@ function showAbout() {
 }
 // Shows the about page.
 
-$("#aboutClose").click(async() => {
-	await $("#about").removeClass("is-active");
-});
+function closeAbout() {
+	document.getElementById("about").classList.remove("is-active");
+}
 // Handles the about close button.
 
 function openMPL() {
@@ -156,13 +155,13 @@ async function toggleTheme() {
 // Toggles the theme.
 
 function showHotkeyConfig() {
-	$("#hotkeyConfig").addClass("is-active");
+    document.getElementById("hotkeyConfig").classList.add("is-active");
 }
 // Shows the hotkey config.
 
-$("#hotkeyConfigClose").click(async() => {
-	const text = await $("#screenshotHotkey").val();
-	const windowText = await $("#windowScreenshotHotkey").val();
+async function hotkeyConfigClose() {
+	const text = document.getElementById("screenshotHotkey").value;
+	const windowText = document.getElementById("windowScreenshotHotkey").value;
 	if (config.hotkey !== text) {
 		if (text === "") {
 			ipcRenderer.send("hotkey-unregister");
@@ -192,9 +191,9 @@ $("#hotkeyConfigClose").click(async() => {
 		if (config.hotkey) {
 			ipcRenderer.send("hotkey-change", config.hotkey);
 		}
-	}
-	await $("#hotkeyConfig").removeClass("is-active");
-});
+    }
+    document.getElementById("hotkeyConfig").classList.remove("is-active");
+}
 // Allows you to close the hotkey config.
 
 function openAcceleratorDocs() {
@@ -247,13 +246,13 @@ new Vue({
 // Handles the file config.
 
 function showFileConfig() {
-	$("#fileConfig").addClass("is-active");
+    document.getElementById("fileConfig").classList.add("is-active");
 }
 // Shows the file config.
 
-$("#fileConfigClose").click(async() => {
-	await $("#fileConfig").removeClass("is-active");
-});
+function closeFileConfig() {
+    document.getElementById("fileConfig").classList.remove("is-active");
+}
 // Closes the file config.
 
 const activeUploaderConfig = new Vue({
@@ -371,7 +370,7 @@ const activeUploaderConfig = new Vue({
 // Defines the active uploader config.
 
 function showUploaderConfig() {
-	$("#uploaderConfig").addClass("is-active");
+    document.getElementById("uploaderConfig").classList.add("is-active");
 }
 // Shows the uploader config page.
 
