@@ -264,13 +264,25 @@ const activeUploaderConfig = new Vue({
     },
     methods: {
         getDefaultValue: function (option) {
-            if (config[option.value]) {
-                return config[option.value];
+            switch (option.type) {
+                case "boolean":
+                    const c = config[option.value];
+                    if (c === undefined) {
+                        if (option.default !== undefined) {
+                            return option.default;
+                        }
+                        return false;
+                    }
+                    return c;
+                default:
+                    if (config[option.value]) {
+                        return config[option.value];
+                    }
+                    if (option.default !== undefined) {
+                        return option.default;
+                    }
+                    return "";
             }
-            if (option.default !== undefined) {
-                return option.default;
-            }
-            return "";
         },
         changeOption: function (option) {
             const res = document.getElementById(option.value).value;
