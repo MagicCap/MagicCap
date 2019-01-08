@@ -13,11 +13,11 @@ document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getV
 let stylesheet = document.createElement('link');
 stylesheet.setAttribute('rel', 'stylesheet');
 if (config.light_theme) {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
-    document.getElementById("sidebar").style.backgroundColor = "#e6e6e6";
+	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
+	document.getElementById("sidebar").style.backgroundColor = "#e6e6e6";
 } else {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
-    document.getElementById("sidebar").style.backgroundColor = "#171819";
+	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
+	document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
 document.getElementsByTagName('head')[0].appendChild(stylesheet);
 // Changes the colour scheme.
@@ -29,39 +29,39 @@ let displayedCaptures = [];
 // A list of the displayed captures.
 
 async function getCaptures() {
-    displayedCaptures.length = 0;
-    await db.each("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20", (err, row) => {
-        if (err) { console.log(err); }
-        displayedCaptures.push(row);
-    });
+	displayedCaptures.length = 0;
+	await db.each("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20", (err, row) => {
+		if (err) { console.log(err); }
+		displayedCaptures.push(row);
+	});
 };
 getCaptures();
 // Handles each capture.
 
 new Vue({
-    el: "#mainTableBody",
-    data: {
-        captures: displayedCaptures,
-        successMap: {
-            0: "Failure",
-            1: "Success",
-        },
-    },
-    methods: {
-        rmCapture: async timestamp => {
-            await db.run(
-                "DELETE FROM captures WHERE timestamp = ?",
-                [timestamp],
-            );
-            await getCaptures();
-        },
-        openScreenshotURL: async url => {
-            await shell.openExternal(url);
-        },
-        openScreenshotFile: async filePath => {
-            await shell.openItem(filePath);
-        },
-    },
+	el: "#mainTableBody",
+	data: {
+		captures: displayedCaptures,
+		successMap: {
+			0: "Failure",
+			1: "Success",
+		},
+	},
+	methods: {
+		rmCapture: async timestamp => {
+			await db.run(
+				"DELETE FROM captures WHERE timestamp = ?",
+				[timestamp],
+			);
+			await getCaptures();
+		},
+		openScreenshotURL: async url => {
+			await shell.openExternal(url);
+		},
+		openScreenshotFile: async filePath => {
+			await shell.openItem(filePath);
+		},
+	},
 });
 // Handles the upload list.
 
@@ -80,16 +80,16 @@ if (config.clipboard_action) {
 // Defines the clipboard action.
 
 new Vue({
-    el: "#clipboardAction",
-    data: {
-        action: clipboardAction,
-    },
-    methods: {
-        changeAction: async action => {
-            config.clipboard_action = action;
-            await saveConfig();
-        },
-    },
+	el: "#clipboardAction",
+	data: {
+		action: clipboardAction,
+	},
+	methods: {
+		changeAction: async action => {
+			config.clipboard_action = action;
+			await saveConfig();
+		},
+	},
 });
 // Handles the clipboard actions.
 
@@ -104,7 +104,7 @@ function showClipboardAction() {
 // Shows the clipboard action settings page.
 
 ipcRenderer.on("screenshot-upload", async () => {
-    await getCaptures();
+	await getCaptures();
 });
 // Handles new screenshots.
 
@@ -125,7 +125,7 @@ window.onload = function() {
 // Unhides the body/window when the page has loaded.
 
 function showAbout() {
-    document.getElementById("about").classList.add("is-active");
+	document.getElementById("about").classList.add("is-active");
 }
 // Shows the about page.
 
@@ -155,7 +155,7 @@ async function toggleTheme() {
 // Toggles the theme.
 
 function showHotkeyConfig() {
-    document.getElementById("hotkeyConfig").classList.add("is-active");
+	document.getElementById("hotkeyConfig").classList.add("is-active");
 }
 // Shows the hotkey config.
 
@@ -191,8 +191,8 @@ async function hotkeyConfigClose() {
 		if (config.hotkey) {
 			ipcRenderer.send("hotkey-change", config.hotkey);
 		}
-    }
-    document.getElementById("hotkeyConfig").classList.remove("is-active");
+	}
+	document.getElementById("hotkeyConfig").classList.remove("is-active");
 }
 // Allows you to close the hotkey config.
 
@@ -202,175 +202,175 @@ function openAcceleratorDocs() {
 // Opens the Electron accelerator documentation.
 
 new Vue({
-    el: "#hotkeyConfigBody",
-    data: {
-        screenshotHotkey: config.hotkey || "",
-        windowHotkey: config.window_hotkey || "",
-    },
+	el: "#hotkeyConfigBody",
+	data: {
+		screenshotHotkey: config.hotkey || "",
+		windowHotkey: config.window_hotkey || "",
+	},
 });
 // Handles rendering the hotkey config body.
 
 new Vue({
-    el: "#fileConfig",
-    data: {
-        fileConfigCheckboxI: config.save_capture || false,
-        fileNamingPatternI: config.file_naming_pattern || "screenshot_%date%_%time%",
-        fileSaveFolderI: config.save_path,
-    },
-    methods: {
-        saveItem: function (key, configKey, not, path) {
-            if (path) {
-                let slashType;
-                switch (process.platform) {
-                    case "darwin":
-                    case "linux": {
-                        slashType = "/";
-                        break;
-                    }
-                    case "win32": {
-                        slashType = "\\";
-                    }
-                }
-                if (!this[key].endsWith(slashType)) {
-                    this[key] += slashType;
-                }
-            }
-            if (not) {
-                this[key] = !this[key];
-            }
-            config[configKey] = this[key];
-            saveConfig();
-        },
-    },
+	el: "#fileConfig",
+	data: {
+		fileConfigCheckboxI: config.save_capture || false,
+		fileNamingPatternI: config.file_naming_pattern || "screenshot_%date%_%time%",
+		fileSaveFolderI: config.save_path,
+	},
+	methods: {
+		saveItem: function (key, configKey, not, path) {
+			if (path) {
+				let slashType;
+				switch (process.platform) {
+					case "darwin":
+					case "linux": {
+						slashType = "/";
+						break;
+					}
+					case "win32": {
+						slashType = "\\";
+					}
+				}
+				if (!this[key].endsWith(slashType)) {
+					this[key] += slashType;
+				}
+			}
+			if (not) {
+				this[key] = !this[key];
+			}
+			config[configKey] = this[key];
+			saveConfig();
+		},
+	},
 });
 // Handles the file config.
 
 function showFileConfig() {
-    document.getElementById("fileConfig").classList.add("is-active");
+	document.getElementById("fileConfig").classList.add("is-active");
 }
 // Shows the file config.
 
 function closeFileConfig() {
-    document.getElementById("fileConfig").classList.remove("is-active");
+	document.getElementById("fileConfig").classList.remove("is-active");
 }
 // Closes the file config.
 
 const activeUploaderConfig = new Vue({
-    el: "#activeUploaderConfig",
-    data: {
-        uploader: {
-            name: "",
-            options: {},
-        },
-        exception: "",
-    },
-    methods: {
-        getDefaultValue: function (option) {
-            switch (option.type) {
-                case "boolean":
-                    const c = config[option.value];
-                    if (c === undefined) {
-                        if (option.default !== undefined) {
-                            return option.default;
-                        }
-                        return false;
-                    }
-                    return c;
-                default:
-                    if (config[option.value]) {
-                        return config[option.value];
-                    }
-                    if (option.default !== undefined) {
-                        return option.default;
-                    }
-                    return "";
-            }
-        },
-        changeOption: function (option) {
-            let res = document.getElementById(option.value).value;
-            if (res === "") {
-                res = undefined;
-            }
-            switch(option.type) {
-                case "integer":
-                    res = parseInt(res) || option.default || undefined;
-                    break;
-                case "boolean":
-                    res = document.getElementById(option.value).checked;
-                    break;
-            }
-            config[option.value] = res;
-            saveConfig();
-        },
-        deleteRow: function (key, option) {
-            delete option.items[key];
-            config[option.value] = option.items;
-            this.$forceUpdate();
-            saveConfig();
-        },
-        addToTable: function (option) {
-            this.$set(this, "exception", "");
-            const key = document.getElementById(`Key${option.value}`).value || "";
-            const value = document.getElementById(`Value${option.value}`).value || "";
-            if (key === "") {
-                this.exception += "blankKey";
-                return;
-            }
-            if (option.items[key] !== undefined) {
-                this.exception += "keyAlreadyUsed";
-                return;
-            }
-            option.items[key] = value;
-            config[option.value] = option.items;
-            this.$forceUpdate();
-            saveConfig();
-        },
-        closeActiveConfig: function () {
-            this.$set(this, "exception", "");
-            document.getElementById("activeUploaderConfig").classList.remove("is-active");
-        },
-        setDefaultUploader: function () {
-            this.$set(this, "exception", "");
-            for (const optionKey in this.uploader.options) {
-                const option = this.uploader.options[optionKey];
-                const c = config[option.value];
-                if (c === undefined && option.required) {
-                    if (option.default) {
-                        config[option.value] = option.default;
-                        saveConfig();
-                    } else {
-                        if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
-                            this.exception += "notAIntYouGiddyGoat";
-                            return;
-                        } else {
-                            this.exception += "requiredStuffMissing";
-                            return;
-                        }
-                    }
-                }
-            }
+	el: "#activeUploaderConfig",
+	data: {
+		uploader: {
+			name: "",
+			options: {},
+		},
+		exception: "",
+	},
+	methods: {
+		getDefaultValue: function (option) {
+			switch (option.type) {
+				case "boolean":
+					const c = config[option.value];
+					if (c === undefined) {
+						if (option.default !== undefined) {
+							return option.default;
+						}
+						return false;
+					}
+					return c;
+				default:
+					if (config[option.value]) {
+						return config[option.value];
+					}
+					if (option.default !== undefined) {
+						return option.default;
+					}
+					return "";
+			}
+		},
+		changeOption: function (option) {
+			let res = document.getElementById(option.value).value;
+			if (res === "") {
+				res = undefined;
+			}
+			switch(option.type) {
+				case "integer":
+					res = parseInt(res) || option.default || undefined;
+					break;
+				case "boolean":
+					res = document.getElementById(option.value).checked;
+					break;
+			}
+			config[option.value] = res;
+			saveConfig();
+		},
+		deleteRow: function (key, option) {
+			delete option.items[key];
+			config[option.value] = option.items;
+			this.$forceUpdate();
+			saveConfig();
+		},
+		addToTable: function (option) {
+			this.$set(this, "exception", "");
+			const key = document.getElementById(`Key${option.value}`).value || "";
+			const value = document.getElementById(`Value${option.value}`).value || "";
+			if (key === "") {
+				this.exception += "blankKey";
+				return;
+			}
+			if (option.items[key] !== undefined) {
+				this.exception += "keyAlreadyUsed";
+				return;
+			}
+			option.items[key] = value;
+			config[option.value] = option.items;
+			this.$forceUpdate();
+			saveConfig();
+		},
+		closeActiveConfig: function () {
+			this.$set(this, "exception", "");
+			document.getElementById("activeUploaderConfig").classList.remove("is-active");
+		},
+		setDefaultUploader: function () {
+			this.$set(this, "exception", "");
+			for (const optionKey in this.uploader.options) {
+				const option = this.uploader.options[optionKey];
+				const c = config[option.value];
+				if (c === undefined && option.required) {
+					if (option.default) {
+						config[option.value] = option.default;
+						saveConfig();
+					} else {
+						if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
+							this.exception += "notAIntYouGiddyGoat";
+							return;
+						} else {
+							this.exception += "requiredStuffMissing";
+							return;
+						}
+					}
+				}
+			}
 
-            let view = this;
-            readdir(`${__dirname}/../uploaders`).then(function (files) {
-                let filename = "";
-                for (const file in files) {
-                    const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
-                    if (import_.name === view.uploader.name) {
-                        filename = files[file].substring(0, files[file].length - 3);
-                        break;
-                    }
-                }
-                config.uploader_type = filename;
-                saveConfig();
-                view.exception += "ayyyyDefaultSaved";
-            });
-        },
-    }
+			let view = this;
+			readdir(`${__dirname}/../uploaders`).then(function (files) {
+				let filename = "";
+				for (const file in files) {
+					const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
+					if (import_.name === view.uploader.name) {
+						filename = files[file].substring(0, files[file].length - 3);
+						break;
+					}
+				}
+				config.uploader_type = filename;
+				saveConfig();
+				view.exception += "ayyyyDefaultSaved";
+			});
+		},
+	}
 });
 // Defines the active uploader config.
 
 function showUploaderConfig() {
-    document.getElementById("uploaderConfig").classList.add("is-active");
+	document.getElementById("uploaderConfig").classList.add("is-active");
 }
 // Shows the uploader config page.
 
@@ -378,57 +378,57 @@ importedUploaders = ipcRenderer.sendSync("get-uploaders");
 // All of the imported uploaders.
 
 new Vue({
-    el: "#uploaderConfigBody",
-    data: {
-        uploaders: importedUploaders,
-        checkUploadCheckbox: config.upload_capture,
-    },
-    methods: {
-        renderUploader: function (uploader, uploaderKey) {
-            const options = {};
-            for (const optionKey in uploader.config_options) {
-                const option = uploader.config_options[optionKey];
-                switch (option.type) {
-                    case "text":
-                    case "integer":
-                    case "password":
-                    case "boolean":
-                        options[optionKey] = {
-                            type: option.type,
-                            value: option.value,
-                            default: option.default,
-                            required: option.required,
-                        };
-                        if (option.type === "boolean") {
-                            config[option.value] = config[option.value] || false;
-                            saveConfig();
-                        }
-                        break;
-                    case "object":
-                        const i = config[option.value] || option.default || {};
-                        options[optionKey] = {
-                            type: option.type,
-                            value: option.value,
-                            default: option.default,
-                            required: option.required,
-                            items: i,
-                        };
-                        config[option.value] = i;
-                        saveConfig();
-                        break;
-                }
-            }
-            activeUploaderConfig.$set(activeUploaderConfig.uploader, "name", uploaderKey);
-            activeUploaderConfig.$set(activeUploaderConfig.uploader, "options", options);
-            document.getElementById("uploaderConfig").classList.remove("is-active");
-            document.getElementById("activeUploaderConfig").classList.add("is-active");
-        },
-        toggleCheckbox: function () {
-            this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox);
-            config.upload_capture = this.checkUploadCheckbox;
-            saveConfig();
-        },
-    },
+	el: "#uploaderConfigBody",
+	data: {
+		uploaders: importedUploaders,
+		checkUploadCheckbox: config.upload_capture,
+	},
+	methods: {
+		renderUploader: function (uploader, uploaderKey) {
+			const options = {};
+			for (const optionKey in uploader.config_options) {
+				const option = uploader.config_options[optionKey];
+				switch (option.type) {
+					case "text":
+					case "integer":
+					case "password":
+					case "boolean":
+						options[optionKey] = {
+							type: option.type,
+							value: option.value,
+							default: option.default,
+							required: option.required,
+						};
+						if (option.type === "boolean") {
+							config[option.value] = config[option.value] || false;
+							saveConfig();
+						}
+						break;
+					case "object":
+						const i = config[option.value] || option.default || {};
+						options[optionKey] = {
+							type: option.type,
+							value: option.value,
+							default: option.default,
+							required: option.required,
+							items: i,
+						};
+						config[option.value] = i;
+						saveConfig();
+						break;
+				}
+			}
+			activeUploaderConfig.$set(activeUploaderConfig.uploader, "name", uploaderKey);
+			activeUploaderConfig.$set(activeUploaderConfig.uploader, "options", options);
+			document.getElementById("uploaderConfig").classList.remove("is-active");
+			document.getElementById("activeUploaderConfig").classList.add("is-active");
+		},
+		toggleCheckbox: function () {
+			this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox);
+			config.upload_capture = this.checkUploadCheckbox;
+			saveConfig();
+		},
+	},
 });
 // Renders all of the uploaders.
 
