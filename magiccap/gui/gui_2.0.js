@@ -4,7 +4,7 @@
 
 const $ = require("jquery/dist/jquery.slim");
 const { ipcRenderer, remote, shell } = require("electron");
-const { readdir, writeJSON } = require("fs-nextra");
+const { writeJSON } = require("fs-nextra");
 let config = require(`${require("os").homedir()}/magiccap.json`);
 // The needed imports.
 
