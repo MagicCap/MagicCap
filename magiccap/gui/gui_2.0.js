@@ -252,3 +252,104 @@ $("#fileConfigClose").click(async() => {
 	await $("#fileConfig").removeClass("is-active");
 });
 // Closes the file config.
+
+const activeUploaderConfig = new Vue({
+    el: "#activeUploaderConfig",
+    data: {
+        uploader: {
+            name: "",
+            options: {},
+        },
+    },
+    methods: {
+        getDefaultValue: function (option) {
+            if (config[option.value]) {
+                return config[option.value];
+            }
+            if (option.default !== undefined) {
+                return option.default;
+            }
+            return "";
+        },
+        changeOption: function (option) {
+            const res = document.getElementById(option.value).value;
+            if (res === "") {
+                res = undefined;
+            }
+            if (option.type === "integer") {
+                res = parseInt(res) || option.default || undefined;
+            }
+            config[option.value] = res;
+            saveConfig();
+        },
+        deleteRow: function (key, option) {
+            delete option.items[key];
+            config[option.value] = option.items;
+            saveConfig();
+        },
+        addToTable: function (option) {
+            clearActiveUploaderErrors();
+            const key = document.getElementById(`Key${option.value}`).value || "";
+            const value = document.getElementById(`Value${option.value}`).value || "";
+            if (key === "") {
+                return throwActiveUploaderError("blankKey");
+            }
+            if (option.items[key] !== undefined) {
+                return throwActiveUploaderError("keyAlreadyUsed");
+            }
+            option.items[key] = value;
+            config[option.value] = option.items;
+            saveConfig();
+        },
+    }
+});
+// Defines the active uploader config.
+
+function showUploaderConfig() {
+	$("#uploaderConfig").addClass("is-active");
+}
+// Shows the uploader config page.
+
+importedUploaders = ipcRenderer.sendSync("get-uploaders");
+// All of the imported uploaders.
+
+new Vue({
+    el: "#uploaderConfigBody",
+    data: {
+        uploaders: importedUploaders,
+    },
+    methods: {
+        renderUploader: function (uploader, uploaderKey) {
+            const options = {};
+            for (const optionKey in uploader.config_options) {
+                const option = uploader.config_options[optionKey];
+                switch (option.type) {
+                    case "text":
+                    case "integer":
+                    case "password":
+                        options[optionKey] = {
+                            type: option.type,
+                            value: option.value,
+                            default: option.default,
+                            required: option.required,
+                        };
+                        break;
+                    case "object":
+                        options[optionKey] = {
+                            type: option.type,
+                            value: option.value,
+                            default: option.default,
+                            required: option.required,
+                            items: config[option.type] || {},
+                        };
+                        break;
+                }
+            }
+            activeUploaderConfig.$set(activeUploaderConfig.uploader, "name", uploaderKey);
+            activeUploaderConfig.$set(activeUploaderConfig.uploader, "options", options);
+            document.getElementById("uploaderConfig").classList.remove("is-active");
+            document.getElementById("activeUploaderConfig").classList.add("is-active");
+        },
+    },
+});
+// Renders all of the uploaders.

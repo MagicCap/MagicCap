@@ -72,6 +72,76 @@
                 </table>
             </div>
         </div>
+        <div class="modal" id="activeUploaderConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">{{ uploader.name }}</p>
+                    <button class="delete" aria-label="close" id="activeUploaderConfigClose"></button>
+                </header>
+                <section class="modal-card-body" id="activeUploaderConfigBody">
+                    <article class="message is-danger is-hidden" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>
+                    <article class="message is-danger is-hidden" id="blankKey"><div class="message-body">The key you gave was blank.</div></article>
+                    <article class="message is-danger is-hidden" id="keyAlreadyUsed"><div class="message-body">The key you gave was already used.</div></article>
+                    <article class="message is-danger is-hidden" id="notAIntYouGiddyGoat"><div class="message-body">You provided a invalid integer.</div></article>
+                    <article class="message is-success is-hidden" id="ayyyyDefaultSaved"><div class="message-body">Default uploader successfully saved.</div></article>
+                    <div v-if="uploader.options.length === 0">
+                        <p>There are no configuration options for this uploader.</p><br>
+                    </div>
+                    <div v-else>
+                        <div v-for="(option, optionKey) in uploader.options" :key="optionKey">
+                            <div v-if="option.type === 'text' || option.type === 'integer'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" :id="option.value" :placeholder="optionKey" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'password'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <div class="control">
+                                        <input class="input" type="password" :id="option.value" :placeholder="optionKey" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'object'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <table class="table is-bordered is-striped is-fullwidth" :id="option.value">
+                                        <tbody>
+                                            <tr v-for="(value, key) in option.items">
+                                                <td>{{ key }}</td>
+                                                <td>{{ value }}</td>
+                                                <td>
+                                                    <a class="button is-danger" v-on:click="deleteRow(key, option)">Delete Row</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>
+                                                    <input name="name" class="input" :id="'Key' + option.value" type="text" placeholder="Name">
+                                                </th>
+                                                <th>
+                                                    <input name="value" class="input" :id="'Value' + option.value" type="text" placeholder="Value">
+                                                </th>
+                                                <th>
+                                                    <a class="button is-primary" v-on:click="addToTable(option)">Add</a>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <a class="button is-success" v-on:click="setDefaultUploader()">Set As Default Uploader</a>
+                </section>
+            </div>
+        </div>
         <div class="modal" id="about">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -112,6 +182,12 @@
                         Make files upload after capturing.
                     </label>
                     <br><br>
+                    <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploader, uploaderKey)" v-for="(uploader, uploaderKey) in uploaders">
+                        <span class="icon is-medium">
+                            <img class="rounded-img" :src="'../icons/' + uploader.icon">
+                        </span>
+                        <p>{{ uploaderKey }}</p>
+                    </a>
                 </section>
             </div>
         </div>
