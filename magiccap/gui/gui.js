@@ -212,6 +212,9 @@ new Vue({
 	},
 });
 
+// Repoints path for later.
+const pathRepoint = path;
+
 // Handles the file config.
 new Vue({
 	el: "#fileConfig",
@@ -223,7 +226,7 @@ new Vue({
 	methods: {
 		saveItem: function(key, configKey, not, path) {
 			if (path) {
-				const slashType = path.sep;
+				const slashType = pathRepoint.sep;
 				if (!this[key].endsWith(slashType)) {
 					this[key] += slashType;
 				}
