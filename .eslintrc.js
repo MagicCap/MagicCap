@@ -66,7 +66,7 @@ module.exports = {
 		"comma-spacing": "error",
 		"comma-style": "error",
 		"computed-property-spacing": "error",
-		"consistent-this": ["error", "$this"],
+		"consistent-this": "off",
 		"eol-last": "error",
 		"func-names": "off",
 		"func-name-matching": "error",
