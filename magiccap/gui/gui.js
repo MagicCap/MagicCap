@@ -23,10 +23,10 @@ if (config.light_theme) {
 document.getElementsByTagName("head")[0].appendChild(stylesheet);
 
 // Defines the DB.
-let db = remote.getGlobal("captureDatabase");
+const db = remote.getGlobal("captureDatabase");
 
 // A list of the displayed captures.
-let displayedCaptures = [];
+const displayedCaptures = [];
 
 // Handles each capture.
 async function getCaptures() {
