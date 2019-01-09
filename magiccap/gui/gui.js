@@ -288,7 +288,7 @@ const activeUploaderConfig = new Vue({
 				}
 			}
 		},
-		changeOption: function (option) {
+		changeOption: function(option) {
 			let res = document.getElementById(option.value).value;
 			if (res === "") {
 				res = undefined;
