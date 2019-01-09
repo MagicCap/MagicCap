@@ -143,9 +143,10 @@ function openMPL() {
 async function saveConfig() {
 	try {
 		await writeJSON(`${require("os").homedir()}/magiccap.json`, config);
-	} catch (_) {
-		ipcRenderer.send("config-edit", config);
+	} catch (err) {
+		console.log(err);
 	}
+	ipcRenderer.send("config-edit", config);
 }
 
 // Toggles the theme.
