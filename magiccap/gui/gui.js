@@ -11,7 +11,7 @@ const config = require(`${require("os").homedir()}/magiccap.json`);
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
 
 // Changes the colour scheme.
-let stylesheet = document.createElement("link");
+const stylesheet = document.createElement("link");
 stylesheet.setAttribute("rel", "stylesheet");
 if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
