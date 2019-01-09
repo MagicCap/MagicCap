@@ -141,10 +141,11 @@ function openMPL() {
 
 // Saves the config.
 async function saveConfig() {
-	writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
-		console.log("Could not update the config.");
-	});
-	ipcRenderer.send("config-edit", config);
+	try {
+		await writeJSON(`${require("os").homedir()}/magiccap.json`, config);
+	} catch (_) {
+		ipcRenderer.send("config-edit", config);
+	}
 }
 
 // Toggles the theme.
@@ -221,17 +222,7 @@ new Vue({
 	methods: {
 		saveItem: function(key, configKey, not, path) {
 			if (path) {
-				let slashType;
-				switch (process.platform) {
-					case "darwin":
-					case "linux": {
-						slashType = "/";
-						break;
-					}
-					case "win32": {
-						slashType = "\\";
-					}
-				}
+				const slashType = path.sep;
 				if (!this[key].endsWith(slashType)) {
 					this[key] += slashType;
 				}
