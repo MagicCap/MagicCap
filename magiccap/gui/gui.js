@@ -2,14 +2,15 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
+// The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
 const { writeJSON, readdir } = require("fs-nextra");
-let config = require(`${require("os").homedir()}/magiccap.json`);
-// The needed imports.
+const config = require(`${require("os").homedir()}/magiccap.json`);
 
-document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
 // Sets the MagicCap version.
+document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
 
+// Changes the colour scheme.
 let stylesheet = document.createElement("link");
 stylesheet.setAttribute("rel", "stylesheet");
 if (config.light_theme) {
@@ -20,14 +21,14 @@ if (config.light_theme) {
 	document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
 document.getElementsByTagName("head")[0].appendChild(stylesheet);
-// Changes the colour scheme.
 
-let db = remote.getGlobal("captureDatabase");
 // Defines the DB.
+let db = remote.getGlobal("captureDatabase");
 
-let displayedCaptures = [];
 // A list of the displayed captures.
+let displayedCaptures = [];
 
+// Handles each capture.
 async function getCaptures() {
 	displayedCaptures.length = 0;
 	await db.each("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20", (err, row) => {
@@ -36,8 +37,8 @@ async function getCaptures() {
 	});
 }
 getCaptures();
-// Handles each capture.
 
+// Handles the upload list.
 new Vue({
 	el: "#mainTableBody",
 	data: {
@@ -63,8 +64,8 @@ new Vue({
 		},
 	},
 });
-// Handles the upload list.
 
+// Defines the clipboard action.
 let clipboardAction = 2;
 if (config.clipboard_action) {
 	if (config.clipboard_action <= 0 || config.clipboard_action >= 3) {
@@ -77,8 +78,8 @@ if (config.clipboard_action) {
 	config.clipboard_action = clipboardAction;
 	saveConfig();
 }
-// Defines the clipboard action.
 
+// Handles the clipboard actions.
 new Vue({
 	el: "#clipboardAction",
 	data: {
@@ -91,74 +92,74 @@ new Vue({
 		},
 	},
 });
-// Handles the clipboard actions.
 
+// Handles the clipboard action close button.
 function closeClipboardConfig() {
 	document.getElementById("clipboardAction").classList.remove("is-active");
 }
-// Handles the clipboard action close button.
 
+// Shows the clipboard action settings page.
 function showClipboardAction() {
 	document.getElementById("clipboardAction").classList.add("is-active");
 }
-// Shows the clipboard action settings page.
 
+// Handles new screenshots.
 ipcRenderer.on("screenshot-upload", async() => {
 	await getCaptures();
 });
-// Handles new screenshots.
 
+// Runs the fullscreen capture.
 async function runCapture() {
 	await remote.getGlobal("runCapture")();
 }
-// Runs the fullscreen capture.
 
+// Runs the window capture.
 async function runWindowCapture() {
 	await remote.getGlobal("runCapture")(true);
 }
-// Runs the window capture.
 
+// Unhides the body/window when the page has loaded.
 window.onload = function() {
 	document.body.style.display = "initial";
 	ipcRenderer.send("window-show");
 };
-// Unhides the body/window when the page has loaded.
 
+// Shows the about page.
 function showAbout() {
 	document.getElementById("about").classList.add("is-active");
 }
-// Shows the about page.
 
+// Handles the about close button.
 function closeAbout() {
 	document.getElementById("about").classList.remove("is-active");
 }
-// Handles the about close button.
 
+// Opens the MPL 2.0 license in a browser.
 function openMPL() {
 	shell.openExternal("https://www.mozilla.org/en-US/MPL/2.0");
 }
-// Opens the MPL 2.0 license in a browser.
 
+// Saves the config.
 async function saveConfig() {
 	writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
 		console.log("Could not update the config.");
 	});
 	ipcRenderer.send("config-edit", config);
 }
-// Saves the config.
 
+// Toggles the theme.
 async function toggleTheme() {
 	config.light_theme = !config.light_theme;
 	await saveConfig();
 	location.reload();
 }
-// Toggles the theme.
 
+// Shows the hotkey config.
 function showHotkeyConfig() {
 	document.getElementById("hotkeyConfig").classList.add("is-active");
 }
-// Shows the hotkey config.
 
+// Allows you to close the hotkey config.
 async function hotkeyConfigClose() {
 	const text = document.getElementById("screenshotHotkey").value;
 	const windowText = document.getElementById("windowScreenshotHotkey").value;
@@ -194,13 +195,13 @@ async function hotkeyConfigClose() {
 	}
 	document.getElementById("hotkeyConfig").classList.remove("is-active");
 }
-// Allows you to close the hotkey config.
 
+// Opens the Electron accelerator documentation.
 function openAcceleratorDocs() {
 	shell.openExternal("https://electronjs.org/docs/api/accelerator");
 }
-// Opens the Electron accelerator documentation.
 
+// Handles rendering the hotkey config body.
 new Vue({
 	el: "#hotkeyConfigBody",
 	data: {
@@ -208,8 +209,8 @@ new Vue({
 		windowHotkey: config.window_hotkey || "",
 	},
 });
-// Handles rendering the hotkey config body.
 
+// Handles the file config.
 new Vue({
 	el: "#fileConfig",
 	data: {
@@ -243,18 +244,18 @@ new Vue({
 		},
 	},
 });
-// Handles the file config.
 
+// Shows the file config.
 function showFileConfig() {
 	document.getElementById("fileConfig").classList.add("is-active");
 }
-// Shows the file config.
 
+// Closes the file config.
 function closeFileConfig() {
 	document.getElementById("fileConfig").classList.remove("is-active");
 }
-// Closes the file config.
 
+// Defines the active uploader config.
 const activeUploaderConfig = new Vue({
 	el: "#activeUploaderConfig",
 	data: {
@@ -367,16 +368,16 @@ const activeUploaderConfig = new Vue({
 		},
 	},
 });
-// Defines the active uploader config.
 
+// Shows the uploader config page.
 function showUploaderConfig() {
 	document.getElementById("uploaderConfig").classList.add("is-active");
 }
-// Shows the uploader config page.
 
-importedUploaders = ipcRenderer.sendSync("get-uploaders");
 // All of the imported uploaders.
+importedUploaders = ipcRenderer.sendSync("get-uploaders");
 
+// Renders all of the uploaders.
 new Vue({
 	el: "#uploaderConfigBody",
 	data: {
@@ -432,9 +433,8 @@ new Vue({
 		},
 	},
 });
-// Renders all of the uploaders.
 
+// Hides the uploader config page.
 function hideUploaderConfig() {
 	document.getElementById("uploaderConfig").classList.remove("is-active");
 }
-// Hides the uploader config page.
