@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>MagicCap</title>
+        <script src="../node_modules/vue/dist/vue.min.js"></script>
     </head>
 
     <style>
@@ -50,8 +51,107 @@
             </aside>
             <div class="column" style="margin-left: 15%;">
                 <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
-                    <tbody id="mainTableBody"></tbody>
+                    <tbody id="mainTableBody">
+                        <tr v-for="capture in captures" :key="capture.timestamp">
+                            <td>{{ successMap[capture.success] }}</td>
+                            <td>{{ capture.filename }}</td>
+                            <td>{{ new Date(capture.timestamp).toLocaleString() }}</td>
+                            <td v-if="capture.url === undefined"></td>
+                            <td v-else>
+                                <a v-on:click="openScreenshotURL(capture.url)">{{ capture.url }}</a>
+                            </td>
+                            <td v-if="capture.file_path === undefined || capture.success === 0"></td>
+                            <td v-else>
+                                    <a class="button is-primary" v-on:click="openScreenshotFile(capture.file_path)">View</a>
+                            </td>
+                            <td>
+                                <a class="button is-danger" v-on:click="rmCapture(capture.timestamp)">Remove</a>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="modal" id="activeUploaderConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">{{ uploader.name }}</p>
+                    <button class="delete" aria-label="close" id="activeUploaderConfigClose" v-on:click="closeActiveConfig()"></button>
+                </header>
+                <section class="modal-card-body" id="activeUploaderConfigBody">
+                    <article class="message is-danger" v-if="exception === 'requiredStuffMissing'" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'blankKey'" id="blankKey"><div class="message-body">The key you gave was blank.</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'keyAlreadyUsed'" id="keyAlreadyUsed"><div class="message-body">The key you gave was already used.</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'notAIntYouGiddyGoat'" id="notAIntYouGiddyGoat"><div class="message-body">You provided a invalid integer.</div></article>
+                    <article class="message is-success" v-else-if="exception === 'ayyyyDefaultSaved'" id="ayyyyDefaultSaved"><div class="message-body">Default uploader successfully saved.</div></article>
+                    <div v-if="uploader.options.length === 0">
+                        <p>There are no configuration options for this uploader.</p><br>
+                    </div>
+                    <div v-else>
+                        <div v-for="(option, optionKey) in uploader.options" :key="optionKey">
+                            <div v-if="option.type === 'text' || option.type === 'integer'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" :id="option.value" :placeholder="optionKey" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'password'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <div class="control">
+                                        <input class="input" type="password" :id="option.value" :placeholder="optionKey" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'boolean'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <div class="control">
+                                        <label class="checkbox">
+                                            <input type="checkbox" :id="option.value" :checked="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                            {{ optionKey }}
+                                        </label>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'object'">
+                                <div class="field">
+                                    <label class="label">{{ optionKey }}:</label>
+                                    <table class="table is-bordered is-striped is-fullwidth" :id="option.value">
+                                        <tbody>
+                                            <tr v-for="(value, key) in option.items">
+                                                <td>{{ key }}</td>
+                                                <td>{{ value }}</td>
+                                                <td>
+                                                    <a class="button is-danger" v-on:click="deleteRow(key, option)">Delete Row</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>
+                                                    <input name="name" class="input" :id="'Key' + option.value" type="text" placeholder="Name">
+                                                </th>
+                                                <th>
+                                                    <input name="value" class="input" :id="'Value' + option.value" type="text" placeholder="Value">
+                                                </th>
+                                                <th>
+                                                    <a class="button is-primary" v-on:click="addToTable(option)">Add</a>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <a class="button is-success" v-on:click="setDefaultUploader()">Set As Default Uploader</a>
+                </section>
             </div>
         </div>
         <div class="modal" id="about">
@@ -59,11 +159,11 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">About</p>
-                    <button class="delete" aria-label="close" id="aboutClose"></button>
+                    <a class="delete" aria-label="close" id="aboutClose" href="javascript:closeAbout()"></a>
                 </header>
                 <section class="modal-card-body">
                     <h1 class="title" id="magiccap-ver">MagicCap</h1>
-                    <p>Copyright (C) Jake Gealer and Rhys O'Kane 2018.</p>
+                    <p>Copyright (C) Jake Gealer and Rhys O'Kane 2018-2019.</p>
                     <p>This software is licensed under the <a href="javascript:openMPL()">MPL-2.0</a> license.</p>
                 </section>
             </div>
@@ -73,11 +173,11 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Clipboard Action</p>
-                    <button class="delete" aria-label="close" id="clipboardActionClose"></button>
+                    <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeClipboardConfig()"></a>
                 </header>
                 <section class="modal-card-body">
-                    <input type="radio" name="clipboardActionRadio" id="clipboardActionID2"> Copy the uploaded URL to the clipboard (requires file uploads to be on).<br>
-                    <input type="radio" name="clipboardActionRadio" id="clipboardActionID1"> Copy the image to the clipboard.
+                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2"> Copy the uploaded URL to the clipboard (requires file uploads to be on).<br>
+                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1"> Copy the image to the clipboard.
                 </section>
             </div>
         </div>
@@ -86,14 +186,20 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Uploader Configuration</p>
-                    <button class="delete" aria-label="close" id="uploaderConfigClose"></button>
+                    <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:hideUploaderConfig()"></a>
                 </header>
                 <section class="modal-card-body" id="uploaderConfigBody">
                     <label class="checkbox">
-                        <input type="checkbox" id="uploaderConfigCheckbox">
+                        <input type="checkbox" id="uploaderConfigCheckbox" :checked="checkUploadCheckbox" v-on:change="toggleCheckbox()">
                         Make files upload after capturing.
                     </label>
                     <br><br>
+                    <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploader, uploaderKey)" v-for="(uploader, uploaderKey) in uploaders">
+                        <span class="icon is-medium">
+                            <img class="rounded-img" :src="'../icons/' + uploader.icon">
+                        </span>
+                        <p>{{ uploaderKey }}</p>
+                    </a>
                 </section>
             </div>
         </div>
@@ -102,12 +208,12 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">File Configuration</p>
-                    <button class="delete" aria-label="close" id="fileConfigClose"></button>
+                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:closeFileConfig()"></a>
                 </header>
                 <section class="modal-card-body" id="fileConfigBody">
                     <div class="field">
                         <label class="checkbox">
-                            <input type="checkbox" id="fileConfigCheckbox">
+                            <input type="checkbox" id="fileConfigCheckbox" v-model="fileConfigCheckboxI" v-on:click="saveItem('fileConfigCheckboxI', 'save_capture', true)" :checked="fileConfigCheckbox">
                             Make files save after capturing.
                         </label>
                     </div>
@@ -115,13 +221,13 @@
                         <label class="label">File Naming Pattern:</label>
                         <p style="padding-bottom: 10px">You can use &quot; to repersent a random character, %date% for the date and %time% for the time.</p>
                         <div class="control">
-                            <input class="input" type="text" id="fileNamingPattern" placeholder="File Naming Pattern">
+                            <input class="input" type="text" id="fileNamingPattern" placeholder="File Naming Pattern" v-model="fileNamingPatternI" v-on:change="saveItem('fileNamingPatternI', 'file_naming_pattern')">
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">File Save Folder:</label>
                         <div class="control">
-                            <input class="input" type="text" id="fileSaveFolder" placeholder="File Save Folder">
+                            <input class="input" type="text" id="fileSaveFolder" placeholder="File Save Folder" v-model="fileSaveFolderI" v-on:change="saveItem('fileSaveFolderI', 'save_path', false, true)">
                         </div>
                     </div>
                 </section>
@@ -132,7 +238,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">Hotkey Configuration</p>
-                    <button class="delete" aria-label="close" id="hotkeyConfigClose"></button>
+                    <a class="delete" aria-label="close" id="hotkeyConfigClose" href="javascript:hotkeyConfigClose()"></a>
                 </header>
                 <section class="modal-card-body" id="hotkeyConfigBody">
                     <p>You can use <a href="javascript:openAcceleratorDocs()">this documentation</a> in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.</p>
@@ -140,13 +246,13 @@
                     <div class="field">
                         <label class="label">Selection Screenshot Hotkey:</label>
                         <div class="control">
-                            <input class="input" type="text" id="screenshotHotkey" placeholder="Selection Screenshot Hotkey">
+                            <input class="input" type="text" id="screenshotHotkey" placeholder="Selection Screenshot Hotkey" :value="screenshotHotkey">
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">Window Screenshot Hotkey:</label>
                         <div class="control">
-                            <input class="input" type="text" id="windowScreenshotHotkey" placeholder="Window Screenshot Hotkey">
+                            <input class="input" type="text" id="windowScreenshotHotkey" placeholder="Window Screenshot Hotkey" :value="windowHotkey">
                         </div>
                     </div>
                 </section>
