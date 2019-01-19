@@ -1,6 +1,6 @@
 <img src="https://i.imgur.com/3YKOjAF.png" alt="logo" width="50%" height="50%" href="#">
 
-[![Build Status](https://travis-ci.com/JakeMakesStuff/MagicCap.svg?token=yBHKwe8ZjU1umyhbmu9D&branch=master)](https://travis-ci.com/JakeMakesStuff/MagicCap)
+[![Build Status](https://travis-ci.com/MagicCap/MagicCap.svg?branch=master)](https://travis-ci.com/MagicCap/MagicCap)
 [![Documentation Status](https://readthedocs.org/projects/magiccap/badge/?version=latest)](https://magiccap.readthedocs.io/en/latest/?badge=latest)
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 <span class="badge-patreon"><a href="https://patreon.com/jakemakesstuff" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-yellow.svg" alt="Patreon donate button" /></a></span>
