@@ -5,7 +5,7 @@
 
 const { post } = require("chainfetch");
 const { readFile } = require("fs-nextra");
-const safeEval = require("safeEval");
+const safeEval = require("safe-eval");
 
 // Defines image extensions for parsing.
 const imageExtensions = [
@@ -63,7 +63,7 @@ function parseShareXFile(parsedJson, fileType) {
 	parsed.url = parsedJson.RequestURL;
 	parsed.headers = parsedJson.Headers;
 	
-	if (parsedJson.type != "POST") {
+	if (parsedJson.RequestType != undefined && parsedJson.RequestType != "POST") {
 		throw new Error();
 	}
 
@@ -84,9 +84,7 @@ function parseShareXFile(parsedJson, fileType) {
 }
 
 // Parses the ShareX URL response.
-function parseShareXResult(parsedSxcu, res) {
-	const body = res.rawBody;
-
+function parseShareXResult(parsedSxcu, body) {
 	const parsing = {};
 
 	let result = parsedSxcu.resultUrl;
@@ -173,7 +171,7 @@ function parseShareXResult(parsedSxcu, res) {
 		}
 
 		const start = result.substring(0, reExec.index);
-		const end = result.substring(reExec.index + reResult.length - 1, result.length);
+		const end = result.substring(reExec.index + reResult.length + 2, result.length);
 
 		result = `${start}${res}${end}`;
 	}
@@ -222,21 +220,16 @@ module.exports = {
 			throw new Error("File type not allowed by this SXCU.");
 		}
 
-		let part = post(parsedSxcu.url);
-		if (parsedSxcu.headers) {
-			part = part.set(parsedSxcu.headers);
-		}
-		if (parsedSxcu.args) {
-			part = part.send(parsedSxcu.args);
-		}
-		part = part.attach(parsedSxcu.fileFormName, buffer, filename);
+		const res = await post(parsedSxcu.url)
+			.set(parsedSxcu.headers || {})
+			.attach(parsedSxcu.args || {})
+			.attach(parsedSxcu.fileFormName, buffer, filename);
 
-		const res = await part;
-
-		if (res.status !== 200) {
-			throw new Error(`Server returned ${res.status}.`);
+		let body = res.body;
+		if (typeof(res.body) !== "string") {
+			body = JSON.stringify(res.body);
 		}
 
-		return parseShareXResult(parsedSxcu, res);
+		return parseShareXResult(parsedSxcu, body);
 	},
 };
