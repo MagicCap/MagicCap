@@ -39,7 +39,7 @@ module.exports = {
 	upload: async(buffer, _, filename) => {
 		let res = await post(config.custom_url)
 			.set(config.custom_headers)
-			.send(config.custom_body)
+			.attach(config.custom_body)
 			.attach("file", buffer, filename);
 
 		if (!config.custom_response) return res.body;
