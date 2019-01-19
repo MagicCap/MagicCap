@@ -226,7 +226,7 @@ module.exports = {
 			.attach(parsedSxcu.fileFormName, buffer, filename);
 
 		let body = res.body;
-		if (typeof(res.body) !== "string") {
+		if (typeof res.body !== "string") {
 			body = JSON.stringify(res.body);
 		}
 
