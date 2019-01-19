@@ -9,12 +9,12 @@ const safeEval = require("safe-eval");
 
 // Defines image extensions for parsing.
 const imageExtensions = [
-	"jpg", "jpeg", "png", "gif"
+	"jpg", "jpeg", "png", "gif",
 ];
 
 // Defines text extensions for parsing.
 const textExtensions = [
-	"md", "txt"
+	"md", "txt",
 ];
 
 // Defines the ShareX parsing regex.
@@ -24,13 +24,13 @@ const shareXRegex = /(?!\\)\$[a-z]{3,5}:.+(?!\\)\$/g;
 function parseShareXFile(parsedJson, fileType) {
 	const parsed = {};
 	const fileTypeLower = fileType.toLowerCase();
-	
+
 	if (parsedJson.DestinationType === undefined) {
 		throw new Error();
 	}
 	const typeSplit = parsedJson.DestinationType.split(" ");
 	let typeAllowed = false;
-	for (uploadType of typeSplit) {
+	for (const uploadType of typeSplit) {
 		if (typeAllowed) {
 			break;
 		}
@@ -62,7 +62,7 @@ function parseShareXFile(parsedJson, fileType) {
 
 	parsed.url = parsedJson.RequestURL;
 	parsed.headers = parsedJson.Headers;
-	
+
 	if (parsedJson.RequestType != undefined && parsedJson.RequestType != "POST") {
 		throw new Error();
 	}
@@ -112,7 +112,7 @@ function parseShareXResult(parsedSxcu, body) {
 					try {
 						parsing.set = methodType;
 						parsing.parsed = JSON.parse(body);
-					} catch(_) {
+					} catch (_) {
 						throw new Error("Unable to parse to JSON.");
 					}
 				}
@@ -123,7 +123,7 @@ function parseShareXResult(parsedSxcu, body) {
 					if (res === undefined) {
 						throw new Error();
 					}
-				} catch(_) {
+				} catch (_) {
 					throw new Error("Could not get the argument specified.");
 				}
 				break;
@@ -138,20 +138,20 @@ function parseShareXResult(parsedSxcu, body) {
 						parsing.set = methodType;
 						const parser = new DOMParser();
 						parsing.parsed = parser.parseFromString(body, "text/xml");
-					} catch(_) {
+					} catch (_) {
 						throw new Error("Unable to parse to XML.");
 					}
 				}
 				try {
-					res = `${parsing.parsed.evaluate(body, parsing.parsed, null, XPathResult.ANY_TYPE).iterateNext().childNodes[0]}`
-				} catch(_) {
+					res = `${parsing.parsed.evaluate(body, parsing.parsed, null, XPathResult.ANY_TYPE).iterateNext().childNodes[0]}`;
+				} catch (_) {
 					throw new Error("Could not get the argument specified.");
 				}
 				break;
 			}
 			case "regex": {
 				const index = parseInt(methodArg);
-				if (index === NaN) {
+				if (isNaN(index)) {
 					throw new Error("Index couldn't be parsed to a integer.");
 				}
 				const indexRes = parsedSxcu.regexList[index - 1];
@@ -198,7 +198,7 @@ module.exports = {
 			} else {
 				openedFile = await readFile(sxcuPath);
 			}
-		} catch(_) {
+		} catch (_) {
 			throw new Error("SXCU file could not be opened.");
 		}
 
@@ -206,13 +206,13 @@ module.exports = {
 
 		try {
 			parsedJson = JSON.parse(openedFile);
-		} catch(_) {
+		} catch (_) {
 			throw new Error("Unable to JSON parse the SXCU file.");
 		}
 
 		try {
 			parsedSxcu = parseShareXFile(parsedJson, fileType);
-		} catch(_) {
+		} catch (_) {
 			throw new Error("Unable to parse the SXCU file.");
 		}
 
