@@ -85,7 +85,7 @@ const createMenu = async() => {
 		],
 	};
 	Menu.setApplicationMenu(Menu.buildFromTemplate([application, edit]));
-}
+};
 // Creates a menu on Mac.
 
 async function getDefaultConfig() {
@@ -310,13 +310,13 @@ const createContextMenu = async() => {
 		{ label: "Exit", type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
-}
+};
 
 const initialiseScript = async() => {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	await createContextMenu();
 	if (process.platform === "darwin") createMenu();
-}
+};
 // Initialises the script.
 
 ipcMain.on("config-edit", async(event, data) => {
