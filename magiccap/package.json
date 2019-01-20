@@ -38,6 +38,6 @@
         "lint": "eslint \"./**/*.js\"",
         "windowscompile": "electron-packager . MagicCap --arch x64 --platform win32 --out ./build --overwrite --icon icons/app.ico",
         "maccompile": "electron-packager . MagicCap --platform darwin --arch x64 --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
-        "linuxcompile": "electron-packager . MagicCap --platform linux --arch x64 --out ./build --overwrite --icon icons/app.ico && electron-installer-debian --config deb_packager_config.json"
+        "linuxcompile": "electron-packager . MagicCap --platform linux --arch x64 --out ./build --overwrite --icon icons/app.ico && electron-installer-debian --src ./build/MagicCap-linux-x64/ --dest ./build --arch amd64 --icon ./icons/app.icns —config deb_packager_config.json"
     }
 }
