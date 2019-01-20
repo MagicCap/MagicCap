@@ -5,16 +5,18 @@ node_js:
   - "10"
 before_install:
   - cd ./magiccap
+before_deploy:
   - brew install p7zip fakeroot dpkg
+  - npm run maccompile
+  - npm run install-linux-deps
+  - npm run linuxcompile
+  - bash ./create_deployment_ready_folder.sh
 jobs:
   include:
-    - script: npm run maccompile
-    - script: npm run install-linux-deps
-    - script: npm run linuxcompile
     - stage: test
       script: npm run lint
     - stage: deploy
-      script: bash ./create_deployment_ready_folder.sh
+      script: skip
       deploy:
         provider: s3
         access_key_id: $AWS_ACCESS_KEY_ID
@@ -28,7 +30,7 @@ jobs:
           tags: true
         region: eu-west-2
     - stage: deploy
-      script: bash ./create_deployment_ready_folder.sh
+      script: skip
       deploy:
         provider: releases
         api_key: $GH_TOKEN
@@ -40,7 +42,7 @@ jobs:
         on:
           tags: true
     - stage: deploy
-      script: bash ./create_deployment_ready_folder.sh
+      script: skip
       deploy:
         provider: script
         script: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
