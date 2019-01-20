@@ -6,6 +6,7 @@ const { app, dialog } = require("electron");
 const { get } = require("chainfetch");
 const async_child_process = require("async-child-process");
 const sudo = require("sudo-prompt");
+const i18n = require("./i18n");
 
 // Checks if the autoupdate binaries are installed.
 async function checkAutoupdateBin() {
@@ -98,12 +99,18 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
 		}
 	}
 
+	const updateNowi18n = await i18n.getPoPhrase("Update Now", "autoupdate");
+	const notNowi18n = await i18n.getPoPhrase("Not Now", "autoupdate");
+	const skipi18n = await i18n.getPoPhrase("Skip Release", "autoupdate");
+	const messagei18n = await i18n.getPoPhrase("A new version of MagicCap is available.", "autoupdate");
+	const detaili18n = await i18n.getPoPhrase("You are on {current} and the latest is {latest}. Here are the changelogs since your current release:\n\n{changelogs}", "autoupdate");
+
 	await dialog.showMessageBox({
 		type: "warning",
-		buttons: ["Update Now", "Not Now", "Skip Release"],
+		buttons: [updateNowi18n, notNowi18n, skipi18n],
 		title: "MagicCap",
-		message: "A new version of MagicCap is available.",
-		detail: `You are on v${app.getVersion()} and the latest is v${updateInfo.current}. Here are the changelogs since your current release:\n\n${updateInfo.changelogs}`,
+		message: messagei18n,
+		detail: detaili18n.replace("{current}", `v${app.getVersion()}`).replace("{latest}", `v${updateInfo.current}`).replace("{changelogs}", updateInfo.changelogs),
 	}, async response => {
 		switch (response) {
 			case 2:
@@ -134,11 +141,15 @@ module.exports = async function autoUpdateLoop(config) {
 	const binExists = await checkAutoupdateBin();
 	if (!binExists) {
 		let toContinue = await new Promise(async res => {
+			const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate");
+			const noi18n = await i18n.getPoPhrase("No", "autoupdate");
+			const dontAski18n = await i18n.getPoPhrase("Don't ask again", "autoupdate");
+			const messagei18n = await i18n.getPoPhrase("In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.", "autoupdate");
 			await dialog.showMessageBox({
 				type: "warning",
-				buttons: ["Yes", "No", "Don't ask again"],
+				buttons: [yesi18n, noi18n, dontAski18n],
 				title: "MagicCap",
-				message: "In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.",
+				message: messagei18n,
 			}, async response => {
 				let toCont = true;
 				switch (response) {
