@@ -30,9 +30,7 @@ global.nameUploaderMap = {};
 // Loads all of the uploaders.
 
 function thisShouldFixMacIssuesAndIdkWhy() {
-	i18n.getPoPhrase("Running capture hotkey.", "app").then(phrase => {
-		console.log(phrase);
-	})
+	console.log("Running capture hotkey.");
 }
 
 const createMenu = async() => {

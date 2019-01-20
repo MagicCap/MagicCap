@@ -1,7 +1,3 @@
-# app.js:33
-msgid "Running capture hotkey."
-msgstr ""
-
 # app.js:40
 msgid "Application"
 msgstr ""
