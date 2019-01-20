@@ -119,7 +119,7 @@ async function runWindowCapture() {
 }
 
 // Unhides the body/window when the page has loaded.
-window.onload = function () {
+window.onload = () => {
 	document.body.style.display = "initial";
 	ipcRenderer.send("window-show");
 };
@@ -322,11 +322,11 @@ const activeUploaderConfig = new Vue({
 			this.$forceUpdate();
 			saveConfig();
 		},
-		closeActiveConfig: function () {
+		closeActiveConfig() {
 			this.$set(this, "exception", "");
 			document.getElementById("activeUploaderConfig").classList.remove("is-active");
 		},
-		setDefaultUploader: function () {
+		setDefaultUploader() {
 			this.$set(this, "exception", "");
 			for (const optionKey in this.uploader.options) {
 				const option = this.uploader.options[optionKey];
@@ -420,7 +420,7 @@ new Vue({
 			document.getElementById("uploaderConfig").classList.remove("is-active");
 			document.getElementById("activeUploaderConfig").classList.add("is-active");
 		},
-		toggleCheckbox: function () {
+		toggleCheckbox() {
 			this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox);
 			config.upload_capture = this.checkUploadCheckbox;
 			saveConfig();
