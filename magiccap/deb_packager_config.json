@@ -1,0 +1,11 @@
+{
+    "src": "./build/MagicCap-linux-x64/",
+    "dest": "./build",
+    "arch": "amd64",
+    "icon": "./icons/app.icns",
+    "options.productName": "MagicCap",
+    "options.name": "magiccap",
+    "options.categories": [
+        "Office"
+    ]
+}
