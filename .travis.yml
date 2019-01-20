@@ -36,7 +36,6 @@ jobs:
         api_key: $GH_TOKEN
         file:
           - deployment/magiccap-linux.zip
-          - deployment/magiccap-linux.deb
           - deployment/magiccap-mac.dmg
         skip_cleanup: true
         on:
