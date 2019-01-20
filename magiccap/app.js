@@ -358,10 +358,13 @@ app.on("ready", initialiseScript);
 process.on("unhandledRejection", async err => console.error(err));
 // Handles unhandled rejections.
 
-const shouldExit = app.makeSingleInstance(async() => {
-	openConfig();
-});
+const shouldExit = !app.requestSingleInstanceLock();
 if (shouldExit) {
 	app.quit();
 }
 // Makes the app a single instance app.
+
+app.on("second-instance", () => {
+	openConfig();
+});
+// If a second instance is spawned, open the config.
