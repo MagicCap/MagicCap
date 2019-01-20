@@ -239,15 +239,8 @@ new Vue({
 	},
 });
 
-// Shows the file config.
-function showFileConfig() {
-	document.getElementById("fileConfig").classList.add("is-active");
-}
-
-// Closes the file config.
-function closeFileConfig() {
-	document.getElementById("fileConfig").classList.remove("is-active");
-}
+// Toggles the file config.
+const toggleFileConfig = (toggle = false) => document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active");
 
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
