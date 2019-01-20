@@ -35,7 +35,7 @@
                             <a href="javascript:showClipboardAction()">Clipboard Action</a>
                         </li>
                         <li>
-                            <a href="javascript:showFileConfig()">File Configuration</a>
+                            <a href="javascript:toggleFileConfig(true)">File Configuration</a>
                         </li>
                         <li>
                             <a href="javascript:showHotkeyConfig()">Hotkey Configuration</a>
@@ -208,7 +208,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">File Configuration</p>
-                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:closeFileConfig()"></a>
+                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:toggleFileConfig(false)"></a>
                 </header>
                 <section class="modal-card-body" id="fileConfigBody">
                     <div class="field">
