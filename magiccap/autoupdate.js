@@ -38,7 +38,7 @@ async function downloadBin() {
 		if (asset.name == `magiccap-updater-${osPart}`) {
 			const updaterBuffer = await get(asset.browser_download_url).toBuffer();
 			await writeFile(`${require("os").homedir()}/magiccap-updater`, updaterBuffer.body);
-			await async_child_process.execAsync(`chmod 777 ${require("os").homedir()}/magiccap-updater`);
+			await async_child_process.execAsync(`chmod 777 "${require("os").homedir()}/magiccap-updater"`);
 			break;
 		}
 	}
@@ -74,7 +74,7 @@ async function checkForUpdates() {
 // Does the update.
 async function doUpdate(updateInfo) {
 	await new Promise(res => {
-		sudo.exec(`${require("os").homedir()}/magiccap-updater v${updateInfo.current}`, {
+		sudo.exec(`"${require("os").homedir()}/magiccap-updater" v${updateInfo.current}`, {
 			name: "MagicCap",
 		}, error => {
 			if (error) {
