@@ -16,9 +16,10 @@ const getPoFile = async file => {
 
     const fp = `./i18n/${config.language || "en"}/${file}.po`;
     const _file = await readFile(fp);
-    const data = PO.parse(_file);
+    const data = PO.parse(_file.toString());
 
     poCache[file] = data;
+    return data;
 };
 
 // Used to get a translated phrase from the file specified.
@@ -33,8 +34,8 @@ const getPoPhrase = async (phrase, file) => {
 
     for (const poItem of poFile.items) {
         if (poItem.msgid === phrase) {
-            if (poItem.msgstr !== "") {
-                return poItem.msgstr;
+            if (poItem.msgstr[0] !== "") {
+                return poItem.msgstr[0];
             } else {
                 return phrase;
             }
