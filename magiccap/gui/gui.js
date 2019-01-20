@@ -119,7 +119,7 @@ async function runWindowCapture() {
 }
 
 // Unhides the body/window when the page has loaded.
-window.onload = function() {
+window.onload = () => {
 	document.body.style.display = "initial";
 	ipcRenderer.send("window-show");
 };
@@ -224,7 +224,7 @@ new Vue({
 		fileSaveFolderI: config.save_path,
 	},
 	methods: {
-		saveItem: function(key, configKey, not, path) {
+		saveItem: (key, configKey, not, path) => {
 			if (path) {
 				if (!this[key].endsWith(sep)) {
 					this[key] += sep;
@@ -260,7 +260,7 @@ const activeUploaderConfig = new Vue({
 		exception: "",
 	},
 	methods: {
-		getDefaultValue: function(option) {
+		getDefaultValue: option => {
 			switch (option.type) {
 				case "boolean": {
 					const c = config[option.value];
@@ -283,7 +283,7 @@ const activeUploaderConfig = new Vue({
 				}
 			}
 		},
-		changeOption: function(option) {
+		changeOption: option => {
 			let res = document.getElementById(option.value).value;
 			if (res === "") {
 				res = undefined;
@@ -299,13 +299,13 @@ const activeUploaderConfig = new Vue({
 			config[option.value] = res;
 			saveConfig();
 		},
-		deleteRow: function(key, option) {
+		deleteRow: (key, option) => {
 			delete option.items[key];
 			config[option.value] = option.items;
 			this.$forceUpdate();
 			saveConfig();
 		},
-		addToTable: function(option) {
+		addToTable: option => {
 			this.$set(this, "exception", "");
 			const key = document.getElementById(`Key${option.value}`).value || "";
 			const value = document.getElementById(`Value${option.value}`).value || "";
@@ -322,11 +322,11 @@ const activeUploaderConfig = new Vue({
 			this.$forceUpdate();
 			saveConfig();
 		},
-		closeActiveConfig: function() {
+		closeActiveConfig: () => {
 			this.$set(this, "exception", "");
 			document.getElementById("activeUploaderConfig").classList.remove("is-active");
 		},
-		setDefaultUploader: function() {
+		setDefaultUploader: () => {
 			this.$set(this, "exception", "");
 			for (const optionKey in this.uploader.options) {
 				const option = this.uploader.options[optionKey];
@@ -379,7 +379,7 @@ new Vue({
 		checkUploadCheckbox: config.upload_capture,
 	},
 	methods: {
-		renderUploader: function(uploader, uploaderKey) {
+		renderUploader: (uploader, uploaderKey) => {
 			const options = {};
 			for (const optionKey in uploader.config_options) {
 				const option = uploader.config_options[optionKey];
@@ -420,7 +420,7 @@ new Vue({
 			document.getElementById("uploaderConfig").classList.remove("is-active");
 			document.getElementById("activeUploaderConfig").classList.add("is-active");
 		},
-		toggleCheckbox: function() {
+		toggleCheckbox: () => {
 			this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox);
 			config.upload_capture = this.checkUploadCheckbox;
 			saveConfig();
