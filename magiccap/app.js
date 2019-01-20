@@ -85,7 +85,7 @@ const createMenu = async() => {
 		],
 	};
 	Menu.setApplicationMenu(Menu.buildFromTemplate([application, edit]));
-}
+};
 // Creates a menu on Mac.
 
 async function getDefaultConfig() {
@@ -302,21 +302,26 @@ const createContextMenu = async() => {
 			}
 		);
 	}
+	const i18nSelect = await i18n.getPoPhrase("Selection Capture", "app");
+	const i18nWindow = await i18n.getPoPhrase("Window Capture", "app");
+	const i18nConfig = await i18n.getPoPhrase("Config", "app");
+	const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app");
+	const i18nExit = await i18n.getPoPhrase("Exit", "app");
 	const contextMenu = Menu.buildFromTemplate([
-		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
-		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },
-		{ label: "Config", type: "normal", click: openConfig },
-		{ label: "Upload to...", submenu: uploadDropdown },
-		{ label: "Exit", type: "normal", role: "quit" },
+		{ label: i18nSelect, type: "normal", click: async() => { await runCapture(false); } },
+		{ label: i18nWindow, type: "normal", click: async() => { await runCapture(true); } },
+		{ label: i18nConfig, type: "normal", click: openConfig },
+		{ label: i18nUploadTo, submenu: uploadDropdown },
+		{ label: i18nExit, type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
-}
+};
 
 const initialiseScript = async() => {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	await createContextMenu();
 	if (process.platform === "darwin") createMenu();
-}
+};
 // Initialises the script.
 
 ipcMain.on("config-edit", async(event, data) => {
