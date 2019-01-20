@@ -6,36 +6,44 @@ node_js:
 before_install:
   - cd ./magiccap
   - brew install p7zip fakeroot dpkg
-script:
-  - npm run lint
-  - npm run maccompile
-  - npm run install-linux-deps
-  - npm run linuxcompile
-before_deploy:
-  - bash ./create_deployment_ready_folder.sh
-deploy:
-  - provider: releases
-    api_key: $GH_TOKEN
-    file:
-      - deployment/magiccap-linux.zip
-      - deployment/magiccap-linux.deb
-      - deployment/magiccap-mac.dmg
-    skip_cleanup: true
-    on:
-      tags: true
-  - provider: s3
-    access_key_id: $AWS_ACCESS_KEY_ID
-    secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: "s3.magiccap.me"
-    upload-dir: upgrades/$TRAVIS_TAG
-    acl: public_read
-    local_dir: deployment
-    skip_cleanup: true
-    on:
-      tags: true
-    region: eu-west-2
-  - provider: script
-    script: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
-    skip_cleanup: true
-    on:
-      tags: true
+jobs:
+  include:
+    - script: npm run maccompile
+    - script: npm run install-linux-deps
+    - script: npm run linuxcompile
+    - stage: test
+      script: npm run lint
+    - stage: deploy
+      script: bash ./create_deployment_ready_folder.sh
+      deploy:
+        provider: s3
+        access_key_id: $AWS_ACCESS_KEY_ID
+        secret_access_key: $AWS_SECRET_ACCESS_KEY
+        bucket: "s3.magiccap.me"
+        upload-dir: upgrades/$TRAVIS_TAG
+        acl: public_read
+        local_dir: deployment
+        skip_cleanup: true
+        on:
+          tags: true
+        region: eu-west-2
+    - stage: deploy
+      script: bash ./create_deployment_ready_folder.sh
+      deploy:
+        provider: releases
+        api_key: $GH_TOKEN
+        file:
+          - deployment/magiccap-linux.zip
+          - deployment/magiccap-linux.deb
+          - deployment/magiccap-mac.dmg
+        skip_cleanup: true
+        on:
+          tags: true
+    - stage: deploy
+      script: bash ./create_deployment_ready_folder.sh
+      deploy:
+        provider: script
+        script: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
+        skip_cleanup: true
+        on:
+          tags: true 
