@@ -1,0 +1,62 @@
+# app.js:33
+msgid "Running capture hotkey."
+msgstr ""
+
+# app.js:40
+msgid "Application"
+msgstr ""
+
+# app.js:43
+msgid "Quit"
+msgstr ""
+
+# app.js:52
+msgid "Edit"
+msgstr ""
+
+# app.js:55
+msgid "Undo"
+msgstr ""
+
+# app.js:60
+msgid "Redo"
+msgstr ""
+
+# app.js:68
+msgid "Cut"
+msgstr ""
+
+# app.js:73
+msgid "Copy"
+msgstr ""
+
+# app.js:78
+msgid "Paste"
+msgstr ""
+
+# app.js:83
+msgid "Select All"
+msgstr ""
+
+# app.js:143
+msgid "Could not find or create the config file."
+msgstr ""
+
+# app.js:154
+# app.js:164
+# app.js:337
+# app.js:349
+msgid "The hotkey you gave was invalid."
+msgstr ""
+
+# app.js:247
+msgid "Select file..."
+msgstr ""
+
+# app.js:270
+msgid "The file specified was uploaded successfully."
+msgstr ""
+
+# app.js:287
+msgid "(Default)"
+msgstr ""
