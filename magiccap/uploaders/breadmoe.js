@@ -3,6 +3,7 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 const { post } = require("chainfetch");
+const i18n = require("../i18n");
 
 module.exports = {
 	name: "bread.moe",
@@ -36,7 +37,8 @@ module.exports = {
 				if (res.status >= 500 <= 599) {
 					throw new Error("There are currently server issues.");
 				}
-				throw new Error(`Server returned the status ${res.status}.`);
+				const i18nEdgecase = await i18n.getPoPhrase("Server returned the status {status}.", "uploaders/exceptions");
+				throw new Error(i18nEdgecase.replace("{status}", `${res.status}`));
 			}
 		}
 		return res.body.url;

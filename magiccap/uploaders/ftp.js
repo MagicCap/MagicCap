@@ -2,7 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const { post } = require("chainfetch");
+const i18n = require("../i18n");
 
 module.exports = {
 	name: "FTP",
@@ -53,7 +53,8 @@ module.exports = {
 			});
 			await client.put(buffer, config.ftp_directory.endsWith("/") ? `${config.ftp_directory}${filename}` : `${config.ftp_directory}/${filename}`);
 		} catch (err) {
-			throw new Error(`Could not upload to FTP: ${err}`);
+			const nonFTPError = await i18n.getPoPhrase("Could not upload to FTP: {err}", "uploaders/exceptions");
+			throw new Error(nonFTPError.replace("{err}", `${err}`));
 		}
 		await client.end();
 

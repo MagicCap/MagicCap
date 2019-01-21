@@ -192,7 +192,8 @@ async function runCapture(windowedCapture) {
 	} catch (err) {
 		if (err.message !== "Screenshot cancelled.") {
 			await capture.logUpload(filename, false, null, null);
-			dialog.showErrorBox("MagicCap", `${err.message}`);
+			const translatedMessage = await i18n.getPoPhrase(`${err.message}`, "uploaders/exceptions");
+			dialog.showErrorBox("MagicCap", translatedMessage);
 		}
 	}
 }

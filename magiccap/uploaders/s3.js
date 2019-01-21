@@ -3,6 +3,7 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 const AWS = require("aws-sdk");
+const i18n = require("../i18n");
 
 function s3Promise(s3, bucketName, filename, buffer) {
 	const s3Function = (resolve, reject) => {
@@ -67,7 +68,8 @@ module.exports = {
 		try {
 			await s3Promise(s3, config.s3_bucket_name, filename, buffer);
 		} catch (err) {
-			throw new Error(`Failed to upload to S3: ${err}`);
+			const s3Faili18n = await i18n.getPoPhrase("Failed to upload to S3: {err}", "uploaders/exceptions");
+			throw new Error(s3Faili18n.replace("{err}", `${err}`));
 		}
 		let url = config.s3_bucket_url;
 		if (!url.endsWith("/")) {
