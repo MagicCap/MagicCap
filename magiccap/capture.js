@@ -184,7 +184,8 @@ module.exports = class CaptureHandler {
 			save_path = null;
 		}
 		await this.logUpload(filename, true, url, save_path);
-		return "Image successfully captured.";
+		const i18nResult = await i18n.getPoPhrase("Image successfully captured.", "capture");
+		return i18nResult;
 	}
 	// Handle screenshots.
 };
