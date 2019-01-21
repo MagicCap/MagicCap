@@ -373,45 +373,44 @@ new Vue({
 		checkUploadCheckbox: config.upload_capture,
 	},
 	methods: {
-		renderUploader: (uploader, uploaderKey) => {
+		renderUploader: async (uploader, uploaderKey) => {
 			const options = [];
 			for (const optionKey in uploader.config_options) {
 				const option = uploader.config_options[optionKey];
-				i18n.getPoPhrase(optionKey, "uploaders/option_names").then(translatedOption => {
-					switch (option.type) {
-						case "text":
-						case "integer":
-						case "password":
-						case "boolean": {
-							options.push({
-								type: option.type,
-								value: option.value,
-								default: option.default,
-								required: option.required,
-								translatedName: translatedOption,
-							});
-							if (option.type === "boolean") {
-								config[option.value] = config[option.value] || false;
-								saveConfig();
-							}
-							break;
-						}
-						case "object": {
-							const i = config[option.value] || option.default || {};
-							options.push({
-								type: option.type,
-								value: option.value,
-								default: option.default,
-								required: option.required,
-								items: i,
-								translatedName: translatedOption,
-							});
-							config[option.value] = i;
+				const translatedOption = await i18n.getPoPhrase(optionKey, "uploaders/option_names");
+				switch (option.type) {
+					case "text":
+					case "integer":
+					case "password":
+					case "boolean": {
+						options.push({
+							type: option.type,
+							value: option.value,
+							default: option.default,
+							required: option.required,
+							translatedName: translatedOption,
+						});
+						if (option.type === "boolean") {
+							config[option.value] = config[option.value] || false;
 							saveConfig();
-							break;
 						}
+						break;
 					}
-				});
+					case "object": {
+						const i = config[option.value] || option.default || {};
+						options.push({
+							type: option.type,
+							value: option.value,
+							default: option.default,
+							required: option.required,
+							items: i,
+							translatedName: translatedOption,
+						});
+						config[option.value] = i;
+						saveConfig();
+						break;
+					}
+				}
 			}
 			activeUploaderConfig.$set(activeUploaderConfig.uploader, "name", uploaderKey);
 			activeUploaderConfig.$set(activeUploaderConfig.uploader, "options", options);
