@@ -86,7 +86,7 @@
                     <article class="message is-danger" v-else-if="exception === 'notAIntYouGiddyGoat'" id="notAIntYouGiddyGoat"><div class="message-body">$You provided a invalid integer.$</div></article>
                     <article class="message is-success" v-else-if="exception === 'ayyyyDefaultSaved'" id="ayyyyDefaultSaved"><div class="message-body">$Default uploader successfully saved.$</div></article>
                     <div v-if="uploader.options.length === 0">
-                        <p>$There are no configuration options for this uploader$.</p><br>
+                        <p>$There are no configuration options for this uploader.$</p><br>
                     </div>
                     <div v-else>
                         <div v-for="option in uploader.options" :key="option.translatedName">
