@@ -214,12 +214,11 @@ async function openConfig() {
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
-	let pageContent = await readFile(`${__dirname}/gui/index.template.html`).toString();
+	let pageContent = (await readFile(`${__dirname}/gui/index.template.html`)).toString();
 	pageContent = await i18n.poParseHtml(pageContent);
 	window.loadURL('data:text/html;charset=UTF-8,' + encodeURIComponent(pageContent), {
-		baseURLForDataURL: `file://${__dirname}/gui/`
+		baseURLForDataURL: `file://${__dirname}/gui/`,
 	});
-	window.loadFile("./gui/index.html");
 	global.window = window;
 
 	window.on("closed", () => {

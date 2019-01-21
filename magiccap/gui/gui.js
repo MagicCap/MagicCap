@@ -5,7 +5,7 @@
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
 const { writeJSON, readdir } = require("fs-nextra");
-const i18n = require("../i18n");
+const i18n = require("./i18n");
 const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 
 // Sets the MagicCap version.
@@ -340,10 +340,10 @@ const activeUploaderConfig = new Vue({
 			}
 
 			let view = this;
-			readdir(`${__dirname}/../uploaders`).then(files => {
+			readdir(`${__dirname}/uploaders`).then(files => {
 				let filename = "";
 				for (const file in files) {
-					const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
+					const import_ = require(`${__dirname}/uploaders/${files[file]}`);
 					if (import_.name === view.uploader.name) {
 						filename = files[file].substring(0, files[file].length - 3);
 						break;

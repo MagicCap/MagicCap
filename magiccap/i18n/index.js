@@ -56,7 +56,7 @@ const poParseHtml = async htmlData => {
 			break;
 		}
 		const parseWithoutDollars = regexParse[0].substring(1, regexParse[0].length - 1);
-		const poParsed = await getPoPhrase(parseWithoutDollars, "gui")
+		const poParsed = (await getPoPhrase(parseWithoutDollars, "gui"))
 								.replace(/&/g,'&amp;')
 							   	.replace(/</g,'&lt;')
 							   	.replace(/>/g,'&gt;')
