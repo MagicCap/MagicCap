@@ -57,12 +57,12 @@ const poParseHtml = async htmlData => {
 		}
 		const parseWithoutDollars = regexParse[0].substring(1, regexParse[0].length - 1);
 		const poParsed = (await getPoPhrase(parseWithoutDollars, "gui"))
-								.replace(/&/g,'&amp;')
-							   	.replace(/</g,'&lt;')
-							   	.replace(/>/g,'&gt;')
-							   	.replace(/"/g, '&quot;')
-							   	.replace("{license}", '<a href="javascript:openMPL()">MPL-2.0</a>')
-							   	.replace("{acceleratorDocs}", `<a href="javascript:openAcceleratorDocs()">${i18nThisDocumentation}</a>`);
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace("{license}", '<a href="javascript:openMPL()">MPL-2.0</a>')
+			.replace("{acceleratorDocs}", `<a href="javascript:openAcceleratorDocs()">${i18nThisDocumentation}</a>`);
 		htmlDone = htmlDone.replace(regexParse[0], poParsed);
 	}
 	return htmlDone;
