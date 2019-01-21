@@ -11,7 +11,7 @@ try:
 except NameError:
     raw_input = input
 
-all_lower = re.compile("^[a-z]+$")
+all_lower = re.compile("^[a-z-]+$")
 
 print("MagicCap internationalisation toolkit. Copyright (C) Jake Gealer <jake@gealer.email> 2019.")
 
