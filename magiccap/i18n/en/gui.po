@@ -1,4 +1,5 @@
 # gui/index.template.html:26
+# gui/index.template.html:161
 msgid "About"
 msgstr ""
 
@@ -11,18 +12,22 @@ msgid "Window Capture"
 msgstr ""
 
 # gui/index.template.html:35
+# gui/index.template.html:175
 msgid "Clipboard Action"
 msgstr ""
 
 # gui/index.template.html:38
+# gui/index.template.html:210
 msgid "File Configuration"
 msgstr ""
 
 # gui/index.template.html:41
+# gui/index.template.html:240
 msgid "Hotkey Configuration"
 msgstr ""
 
 # gui/index.template.html:44
+# gui/index.template.html:188
 msgid "Uploader Configuration"
 msgstr ""
 
@@ -74,20 +79,12 @@ msgstr ""
 msgid "Set As Default Uploader"
 msgstr ""
 
-# gui/index.template.html:161
-msgid "About"
-msgstr ""
-
 # gui/index.template.html:166
 msgid "Copyright (C) Jake Gealer and Rhys O'Kane 2018-2019."
 msgstr ""
 
 # gui/index.template.html:167
 msgid "This software is licensed under the {license} license."
-msgstr ""
-
-# gui/index.template.html:175
-msgid "Clipboard Action"
 msgstr ""
 
 # gui/index.template.html:179
@@ -98,16 +95,8 @@ msgstr ""
 msgid "Copy the image to the clipboard."
 msgstr ""
 
-# gui/index.template.html:188
-msgid "Uploader Configuration"
-msgstr ""
-
 # gui/index.template.html:194
 msgid "Make files upload after capturing."
-msgstr ""
-
-# gui/index.template.html:210
-msgid "File Configuration"
 msgstr ""
 
 # gui/index.template.html:217
@@ -132,10 +121,6 @@ msgstr ""
 
 # gui/index.template.html:230
 msgid "File Save Folder"
-msgstr ""
-
-# gui/index.template.html:240
-msgid "Hotkey Configuration"
 msgstr ""
 
 # gui/index.template.html:244
