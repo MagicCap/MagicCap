@@ -89,30 +89,30 @@
                         <p>There are no configuration options for this uploader.</p><br>
                     </div>
                     <div v-else>
-                        <div v-for="(option, optionKey) in uploader.options" :key="optionKey">
+                        <div v-for="option in uploader.options" :key="option.translatedName">
                             <div v-if="option.type === 'text' || option.type === 'integer'">
                                 <div class="field">
-                                    <label class="label">{{ optionKey }}:</label>
+                                    <label class="label">{{ option.translatedName }}:</label>
                                     <div class="control">
-                                        <input class="input" type="text" :id="option.value" :placeholder="optionKey" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                        <input class="input" type="text" :id="option.value" :placeholder="option.translatedName" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
                                     </div>
                                 </div>
                             </div>
                             <div v-else-if="option.type === 'password'">
                                 <div class="field">
-                                    <label class="label">{{ optionKey }}:</label>
+                                    <label class="label">{{ option.translatedName }}:</label>
                                     <div class="control">
-                                        <input class="input" type="password" :id="option.value" :placeholder="optionKey" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                        <input class="input" type="password" :id="option.value" :placeholder="option.translatedName" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
                                     </div>
                                 </div>
                             </div>
                             <div v-else-if="option.type === 'boolean'">
                                 <div class="field">
-                                    <label class="label">{{ optionKey }}:</label>
+                                    <label class="label">{{ option.translatedName }}:</label>
                                     <div class="control">
                                         <label class="checkbox">
                                             <input type="checkbox" :id="option.value" :checked="getDefaultValue(option)" v-on:change="changeOption(option)">
-                                            {{ optionKey }}
+                                            {{ option.translatedName }}
                                         </label>
                                         <br>
                                     </div>
@@ -120,7 +120,7 @@
                             </div>
                             <div v-else-if="option.type === 'object'">
                                 <div class="field">
-                                    <label class="label">{{ optionKey }}:</label>
+                                    <label class="label">{{ option.translatedName }}:</label>
                                     <table class="table is-bordered is-striped is-fullwidth" :id="option.value">
                                         <tbody>
                                             <tr v-for="(value, key) in option.items">

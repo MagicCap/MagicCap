@@ -5,7 +5,8 @@
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
 const { writeJSON, readdir } = require("fs-nextra");
-const config = require(`${require("os").homedir()}/magiccap.json`);
+const i18n = require("../i18n");
+const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
@@ -373,20 +374,22 @@ new Vue({
 	},
 	methods: {
 		renderUploader: (uploader, uploaderKey) => {
-			const options = {};
+			const options = [];
 			for (const optionKey in uploader.config_options) {
 				const option = uploader.config_options[optionKey];
+				const translatedOption = await i18n.getPoPhrase(optionKey, "uploaders/option_names");
 				switch (option.type) {
 					case "text":
 					case "integer":
 					case "password":
 					case "boolean": {
-						options[optionKey] = {
+						options.push({
 							type: option.type,
 							value: option.value,
 							default: option.default,
 							required: option.required,
-						};
+							translatedName: translatedOption,
+						});
 						if (option.type === "boolean") {
 							config[option.value] = config[option.value] || false;
 							saveConfig();
@@ -395,13 +398,14 @@ new Vue({
 					}
 					case "object": {
 						const i = config[option.value] || option.default || {};
-						options[optionKey] = {
+						options.push({
 							type: option.type,
 							value: option.value,
 							default: option.default,
 							required: option.required,
 							items: i,
-						};
+							translatedName: translatedOption,
+						});
 						config[option.value] = i;
 						saveConfig();
 						break;
