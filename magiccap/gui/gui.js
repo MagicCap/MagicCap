@@ -373,7 +373,7 @@ new Vue({
 		checkUploadCheckbox: config.upload_capture,
 	},
 	methods: {
-		renderUploader: async (uploader, uploaderKey) => {
+		renderUploader: async(uploader, uploaderKey) => {
 			const options = [];
 			for (const optionKey in uploader.config_options) {
 				const option = uploader.config_options[optionKey];
