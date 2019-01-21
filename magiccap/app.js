@@ -216,7 +216,7 @@ async function openConfig() {
 	window.setTitle("MagicCap");
 	let pageContent = (await readFile(`${__dirname}/gui/index.template.html`)).toString();
 	pageContent = await i18n.poParseHtml(pageContent);
-	window.loadURL('data:text/html;charset=UTF-8,' + encodeURIComponent(pageContent), {
+	window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
 		baseURLForDataURL: `file://${__dirname}/gui/`,
 	});
 	global.window = window;
