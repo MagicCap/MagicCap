@@ -200,7 +200,7 @@ async function runCapture(windowedCapture) {
 global.runCapture = runCapture;
 // Runs the capture.
 
-function openConfig() {
+async function openConfig() {
 	if (window) {
 		window.show();
 		return;
@@ -214,6 +214,11 @@ function openConfig() {
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
+	let pageContent = await readFile.toString();
+	pageContent = await i18n.poParseHtml(pageContent);
+	window.loadURL('data:text/html;charset=UTF-8,' + encodeURIComponent(pageContent), {
+		baseURLForDataURL: `file://${__dirname}/gui/`
+	});
 	window.loadFile("./gui/index.html");
 	global.window = window;
 
