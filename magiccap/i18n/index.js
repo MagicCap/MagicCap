@@ -45,8 +45,32 @@ const getPoPhrase = async(phrase, file) => {
 	return phrase;
 };
 
+// This is used to parse the HTML that needs translating.
+const htmlParseRegex = /\$.+\$/g;
+const poParseHtml = async htmlData => {
+	let htmlDone = htmlData;
+	const i18nThisDocumentation = await getPoPhrase("this documentation", "gui");
+	for (;;) {
+		const regexParse = htmlParseRegex.exec(htmlDone);
+		if (regexParse === null) {
+			break;
+		}
+		const parseWithoutDollars = regexParse[0].substring(1, regexParse[0].length - 1);
+		const poParsed = await getPoPhrase(parseWithoutDollars, "gui")
+								.replace(/&/g,'&amp;')
+							   	.replace(/</g,'&lt;')
+							   	.replace(/>/g,'&gt;')
+							   	.replace(/"/g, '&quot;')
+							   	.replace("{license}", '<a href="javascript:openMPL()">MPL-2.0</a>')
+							   	.replace("{acceleratorDocs}", `<a href="javascript:openAcceleratorDocs()">${i18nThisDocumentation}</a>`);
+		htmlDone = htmlDone.replace(regexParse[0], poParsed);
+	}
+	return htmlDone;
+};
+
 // Exports all the things.
 module.exports = {
 	getPoPhrase: getPoPhrase,
 	langPackInfo: langPackInfo,
+	poParseHtml: poParseHtml,
 };
