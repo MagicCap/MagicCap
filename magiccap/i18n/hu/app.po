@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-01-22 20:53\n"
+"PO-Revision-Date: 2019-01-22 21:04\n"
 
 # app.js:40
 msgid "Application"
@@ -57,37 +57,37 @@ msgstr "Nem sikerült megtalálni vagy létrehozni a konfigurációs fájlt."
 # app.js:338
 # app.js:350
 msgid "The hotkey you gave was invalid."
-msgstr ""
+msgstr "A gyorsbillentyű, amit megadott, érvénytelen."
 
 # app.js:248
 msgid "Select file..."
-msgstr ""
+msgstr "Fájl kiválasztása..."
 
 # app.js:271
 msgid "The file specified was uploaded successfully."
-msgstr ""
+msgstr "A kiválasztott fájl feltöltése sikerült."
 
 # app.js:288
 msgid "(Default)"
-msgstr ""
+msgstr "(Alapértelmezés)"
 
 # app.js:306
 msgid "Selection Capture"
-msgstr ""
+msgstr "Terület felvétel"
 
 # app.js:307
 msgid "Window Capture"
-msgstr ""
+msgstr "Ablakfelvétel"
 
 # app.js:308
 msgid "Config"
-msgstr ""
+msgstr "Konfigurálás"
 
 # app.js:309
 msgid "Upload to..."
-msgstr ""
+msgstr "Feltöltés ide..."
 
 # app.js:310
 msgid "Exit"
-msgstr ""
+msgstr "Kilépés"
 
