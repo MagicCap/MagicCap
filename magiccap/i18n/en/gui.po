@@ -146,3 +146,11 @@ msgstr ""
 # i18n/index.js:52
 msgid "this documentation"
 msgstr ""
+
+# gui/gui.js:44
+msgid "Failure"
+msgstr ""
+
+# gui/gui.js:45
+msgid "Success"
+msgstr ""
