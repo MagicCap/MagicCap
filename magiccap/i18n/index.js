@@ -14,7 +14,7 @@ const getPoFile = async file => {
 		return cachedPo;
 	}
 
-	const fp = `./i18n/${config.language || "en"}/${file}.po`;
+	const fp = `${__dirname}/${config.language || "en"}/${file}.po`;
 	const _file = await readFile(fp);
 	const data = PO.parse(_file.toString());
 
