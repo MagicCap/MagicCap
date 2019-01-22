@@ -10,42 +10,43 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr_CS\n"
-"PO-Revision-Date: 2019-01-22 20:53\n"
+"PO-Revision-Date: 2019-01-22 21:13\n"
 
 # autoupdate.js:102
 msgid "Update Now"
-msgstr ""
+msgstr "Ažuriraj sada"
 
 # autoupdate.js:103
 msgid "Not Now"
-msgstr ""
+msgstr "Ne sad"
 
 # autoupdate.js:104
 msgid "Skip Release"
-msgstr ""
+msgstr "Preskoči Verziju"
 
 # autoupdate.js:105
 msgid "A new version of MagicCap is available."
-msgstr ""
+msgstr "Nova verzija MagicCap-a je dostupna."
 
 # autoupdate.js:106
 msgid "You are on {current} and the latest is {latest}. Here are the changelogs since your current release:\n\n"
 "{changelogs}"
-msgstr ""
+msgstr "Vi ste na {current}, a najnovije je {latest}. Ovde su changelogs od verzije koju trenutno koristite:\n\n"
+"{changelogs}"
 
 # autoupdate.js:144
 msgid "Yes"
-msgstr ""
+msgstr "Da"
 
 # autoupdate.js:145
 msgid "No"
-msgstr ""
+msgstr "Ne"
 
 # autoupdate.js:146
 msgid "Don't ask again"
-msgstr ""
+msgstr "Ne pitaj ponovo"
 
 # autoupdate.js:147
 msgid "In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this."
-msgstr ""
+msgstr "Da automatsko ažuriranje moglo da functioniše, MagicCap mora da instalira neke autoupdate fajlove. Da li hoćeš da to uradi? MagicCap neće moći da se automatski ažurira bez ovoga."
 
