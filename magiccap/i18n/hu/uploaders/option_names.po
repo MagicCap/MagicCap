@@ -10,46 +10,46 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-01-22 21:03\n"
+"PO-Revision-Date: 2019-01-22 21:26\n"
 
 # uploaders/breadmoe.js:12
 msgid "Key"
-msgstr ""
+msgstr "Kulcs"
 
 # uploaders/breadmoe.js:17
 # uploaders/ftp.js:38
 # uploaders/pomf.js:12
 msgid "Domain"
-msgstr ""
+msgstr "Domain"
 
 # uploaders/custom.js:13
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 # uploaders/custom.js:18
 msgid "Image Body"
-msgstr ""
+msgstr "Képtörzs"
 
 # uploaders/custom.js:23
 msgid "Response Key"
-msgstr ""
+msgstr "Válasz kulcs"
 
 # uploaders/custom.js:28
 msgid "Headers"
-msgstr ""
+msgstr "Fejlécek"
 
 # uploaders/custom.js:33
 msgid "Body"
-msgstr ""
+msgstr "Törzs"
 
 # uploaders/elixire.js:12
 # uploaders/novus.js:12
 msgid "API Token"
-msgstr ""
+msgstr "API token"
 
 # uploaders/ftp.js:11
 msgid "Hostname"
-msgstr ""
+msgstr "Hosztnév"
 
 # uploaders/ftp.js:16
 msgid "Port"
