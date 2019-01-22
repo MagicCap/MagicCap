@@ -10,43 +10,43 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr_CS\n"
-"PO-Revision-Date: 2019-01-22 20:53\n"
+"PO-Revision-Date: 2019-01-22 21:13\n"
 
 # app.js:40
 msgid "Application"
-msgstr ""
+msgstr "Aplikacija"
 
 # app.js:43
 msgid "Quit"
-msgstr ""
+msgstr "Izlaz"
 
 # app.js:52
 msgid "Edit"
-msgstr ""
+msgstr "Uredi"
 
 # app.js:55
 msgid "Undo"
-msgstr ""
+msgstr "Opozovi"
 
 # app.js:60
 msgid "Redo"
-msgstr ""
+msgstr "Ponovi"
 
 # app.js:68
 msgid "Cut"
-msgstr ""
+msgstr "Rez"
 
 # app.js:73
 msgid "Copy"
-msgstr ""
+msgstr "Kopiraj"
 
 # app.js:78
 msgid "Paste"
-msgstr ""
+msgstr "Lepi"
 
 # app.js:83
 msgid "Select All"
-msgstr ""
+msgstr "Izaberi sve"
 
 # app.js:143
 msgid "Could not find or create the config file."
@@ -69,25 +69,25 @@ msgstr ""
 
 # app.js:288
 msgid "(Default)"
-msgstr ""
+msgstr "(Podrazumevano)"
 
 # app.js:306
 msgid "Selection Capture"
-msgstr ""
+msgstr "Selekcija hvatanja"
 
 # app.js:307
 msgid "Window Capture"
-msgstr ""
+msgstr "Hvatanje prozora"
 
 # app.js:308
 msgid "Config"
-msgstr ""
+msgstr "Konfiguracija"
 
 # app.js:309
 msgid "Upload to..."
-msgstr ""
+msgstr "Otpremi u..."
 
 # app.js:310
 msgid "Exit"
-msgstr ""
+msgstr "Izlaz"
 
