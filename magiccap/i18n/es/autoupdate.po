@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-File: /i18n/magiccap/i18n/en/autoupdate.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: Spanish\n"
+"Language: es_ES\n"
+"PO-Revision-Date: 2019-01-22 18:41\n"
+
+# autoupdate.js:102
+msgid "Update Now"
+msgstr ""
+
+# autoupdate.js:103
+msgid "Not Now"
+msgstr ""
+
+# autoupdate.js:104
+msgid "Skip Release"
+msgstr ""
+
+# autoupdate.js:105
+msgid "A new version of MagicCap is available."
+msgstr ""
+
+# autoupdate.js:106
+msgid "You are on {current} and the latest is {latest}. Here are the changelogs since your current release:\n\n"
+"{changelogs}"
+msgstr ""
+
+# autoupdate.js:144
+msgid "Yes"
+msgstr ""
+
+# autoupdate.js:145
+msgid "No"
+msgstr ""
+
+# autoupdate.js:146
+msgid "Don't ask again"
+msgstr ""
+
+# autoupdate.js:147
+msgid "In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this."
+msgstr ""
+
