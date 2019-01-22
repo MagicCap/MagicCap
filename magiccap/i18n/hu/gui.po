@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-01-22 21:04\n"
+"PO-Revision-Date: 2019-01-22 21:13\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -103,69 +103,69 @@ msgstr "Ez a szoftver a(z) {license} alapján van licencelve."
 
 # gui/index.template.html:179
 msgid "Copy the uploaded URL to the clipboard (requires file uploads to be on)."
-msgstr ""
+msgstr "A feltöltött URL vágólapra másolása (a fájlfeltöltésnek be kell kapcsolva lennie)."
 
 # gui/index.template.html:180
 msgid "Copy the image to the clipboard."
-msgstr ""
+msgstr "Kép másolása a vágólapra."
 
 # gui/index.template.html:194
 msgid "Make files upload after capturing."
-msgstr ""
+msgstr "Fájlok feltöltése rögzítés után."
 
 # gui/index.template.html:217
 msgid "Make files save after capturing."
-msgstr ""
+msgstr "Fájlok mentése felvétel után."
 
 # gui/index.template.html:221
 msgid "File Naming Pattern:"
-msgstr ""
+msgstr "Fájl elnevezési séma:"
 
 # gui/index.template.html:222
 msgid "You can use \" to repersent a random character, %date% for the date and %time% for the time."
-msgstr ""
+msgstr "A \" karakter használható véletlenszerű karakter helyettesítésére, %date% a dátum és %time% az idő elhelyezésére."
 
 # gui/index.template.html:224
 msgid "File Naming Pattern"
-msgstr ""
+msgstr "Fájl elnevezési séma"
 
 # gui/index.template.html:228
 msgid "File Save Folder:"
-msgstr ""
+msgstr "Fájl mentési helye:"
 
 # gui/index.template.html:230
 msgid "File Save Folder"
-msgstr ""
+msgstr "Fájl mentése mappába"
 
 # gui/index.template.html:244
 msgid "You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed."
-msgstr ""
+msgstr "A(z) {acceleratorDocs} leírja, hogyan formázd meg a gyorsbillentyűid. Az automatikus mentés előforduló hibákat okozhat, amikor írsz, ezért csak eme ablak bezárása után lesz elmentve."
 
 # gui/index.template.html:247
 msgid "Selection Screenshot Hotkey:"
-msgstr ""
+msgstr "Területfotózás gyorsbillentyű:"
 
 # gui/index.template.html:249
 msgid "Selection Screenshot Hotkey"
-msgstr ""
+msgstr "Területfotózás gyorsbillentyű"
 
 # gui/index.template.html:253
 msgid "Window Screenshot Hotkey:"
-msgstr ""
+msgstr "Ablakfotózás gyorsbillentyű:"
 
 # gui/index.template.html:255
 msgid "Window Screenshot Hotkey"
-msgstr ""
+msgstr "Ablakfotózás gyorsbillentyű"
 
 # i18n/index.js:52
 msgid "this documentation"
-msgstr ""
+msgstr "ez a dokumentáció"
 
 # gui/gui.js:44
 msgid "Failure"
-msgstr ""
+msgstr "Hiba"
 
 # gui/gui.js:45
 msgid "Success"
-msgstr ""
+msgstr "Siker"
 
