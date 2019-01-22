@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /i18n/magiccap/i18n/en/capture.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: Japanese\n"
+"Language: ja_JP\n"
+"PO-Revision-Date: 2019-01-22 18:40\n"
+
+# capture.js:92
+msgid "The screenshot capturing/saving failed."
+msgstr ""
+
+# capture.js:108
+msgid "Failed to write captured file."
+msgstr ""
+
+# capture.js:117
+msgid "Platform not supported for screen capture."
+msgstr ""
+
+# capture.js:140
+msgid "Uploader not found."
+msgstr ""
+
+# capture.js:149
+msgid "A required config option is missing."
+msgstr ""
+
+# capture.js:166
+msgid "URL not found to put into the clipboard. Do you have uploading on?"
+msgstr ""
+
+# capture.js:181
+msgid "Could not delete capture."
+msgstr ""
+
+# capture.js:187
+msgid "Image successfully captured."
+msgstr ""
+
