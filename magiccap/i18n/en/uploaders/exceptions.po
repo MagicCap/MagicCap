@@ -1,3 +1,17 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: en\n"
+"X-Crowdin-File: /i18n/magiccap/i18n/en/uploaders/exceptions.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"PO-Revision-Date: 2019-01-22 19:37\n"
+
 # uploaders/breadmoe.js:31
 # uploaders/elixire.js:25
 # uploaders/novus.js:25
@@ -94,3 +108,4 @@ msgstr ""
 # uploaders/sharex.js:220
 msgid "File type not allowed by this SXCU."
 msgstr ""
+
