@@ -1,0 +1,97 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: fi\n"
+"X-Crowdin-File: /i18n/magiccap/i18n/en/uploaders/option_names.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: Finnish\n"
+"Language: fi_FI\n"
+"PO-Revision-Date: 2019-01-22 18:40\n"
+
+# uploaders/breadmoe.js:12
+msgid "Key"
+msgstr ""
+
+# uploaders/breadmoe.js:17
+# uploaders/ftp.js:38
+# uploaders/pomf.js:12
+msgid "Domain"
+msgstr ""
+
+# uploaders/custom.js:13
+msgid "URL"
+msgstr ""
+
+# uploaders/custom.js:18
+msgid "Image Body"
+msgstr ""
+
+# uploaders/custom.js:23
+msgid "Response Key"
+msgstr ""
+
+# uploaders/custom.js:28
+msgid "Headers"
+msgstr ""
+
+# uploaders/custom.js:33
+msgid "Body"
+msgstr ""
+
+# uploaders/elixire.js:12
+# uploaders/novus.js:12
+msgid "API Token"
+msgstr ""
+
+# uploaders/ftp.js:11
+msgid "Hostname"
+msgstr ""
+
+# uploaders/ftp.js:16
+msgid "Port"
+msgstr ""
+
+# uploaders/ftp.js:22
+msgid "Username"
+msgstr ""
+
+# uploaders/ftp.js:27
+msgid "Password"
+msgstr ""
+
+# uploaders/ftp.js:32
+msgid "Directory"
+msgstr ""
+
+# uploaders/pomf.js:17
+msgid "Token"
+msgstr ""
+
+# uploaders/s3.js:33
+msgid "Access Key ID"
+msgstr ""
+
+# uploaders/s3.js:38
+msgid "Secret Access Key"
+msgstr ""
+
+# uploaders/s3.js:43
+msgid "Endpoint"
+msgstr ""
+
+# uploaders/s3.js:49
+msgid "Bucket Name"
+msgstr ""
+
+# uploaders/s3.js:54
+msgid "Bucket URL"
+msgstr ""
+
+# uploaders/sharex.js:186
+msgid "SXCU File Path"
+msgstr ""
+
