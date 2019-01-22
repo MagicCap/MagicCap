@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-01-22 20:53\n"
+"PO-Revision-Date: 2019-01-22 21:03\n"
 
 # uploaders/breadmoe.js:12
 msgid "Key"
@@ -53,45 +53,45 @@ msgstr ""
 
 # uploaders/ftp.js:16
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 # uploaders/ftp.js:22
 msgid "Username"
-msgstr ""
+msgstr "Felhasználónév"
 
 # uploaders/ftp.js:27
 msgid "Password"
-msgstr ""
+msgstr "Jelszó"
 
 # uploaders/ftp.js:32
 msgid "Directory"
-msgstr ""
+msgstr "Mappa"
 
 # uploaders/pomf.js:17
 msgid "Token"
-msgstr ""
+msgstr "Token"
 
 # uploaders/s3.js:33
 msgid "Access Key ID"
-msgstr ""
+msgstr "Hozzáférési kulcs azonosító"
 
 # uploaders/s3.js:38
 msgid "Secret Access Key"
-msgstr ""
+msgstr "Titkos hozzáférési kulcs"
 
 # uploaders/s3.js:43
 msgid "Endpoint"
-msgstr ""
+msgstr "Végpont"
 
 # uploaders/s3.js:49
 msgid "Bucket Name"
-msgstr ""
+msgstr "Bucket neve"
 
 # uploaders/s3.js:54
 msgid "Bucket URL"
-msgstr ""
+msgstr "Bucket URL"
 
 # uploaders/sharex.js:186
 msgid "SXCU File Path"
-msgstr ""
+msgstr "SXCU fájl helye"
 
