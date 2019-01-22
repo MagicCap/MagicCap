@@ -45,8 +45,8 @@ new Vue({
 	data: {
 		captures: displayedCaptures,
 		successMap: {
-			0: "Failure",
-			1: "Success",
+			0: i18n.getPoPhrase("Failure", "gui"),
+			1: i18n.getPoPhrase("Success", "gui"),
 		},
 	},
 	methods: {
