@@ -10,11 +10,11 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr_CS\n"
-"PO-Revision-Date: 2019-01-22 20:53\n"
+"PO-Revision-Date: 2019-01-22 21:13\n"
 
 # capture.js:92
 msgid "The screenshot capturing/saving failed."
-msgstr ""
+msgstr "Snimak hvatanja ili čuvanja nije uspelo."
 
 # capture.js:108
 msgid "Failed to write captured file."
@@ -22,7 +22,7 @@ msgstr ""
 
 # capture.js:117
 msgid "Platform not supported for screen capture."
-msgstr ""
+msgstr "Platforma nije podržana za hvatanje ekrana."
 
 # capture.js:140
 msgid "Uploader not found."
@@ -38,7 +38,7 @@ msgstr ""
 
 # capture.js:181
 msgid "Could not delete capture."
-msgstr ""
+msgstr "Nije bilo moguće izbrisati hvatanje."
 
 # capture.js:187
 msgid "Image successfully captured."
