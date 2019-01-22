@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr_CS\n"
-"PO-Revision-Date: 2019-01-22 21:04\n"
+"PO-Revision-Date: 2019-01-22 21:13\n"
 
 # uploaders/breadmoe.js:31
 # uploaders/elixire.js:25
@@ -49,7 +49,7 @@ msgstr "Otpremanje do FTP nije uspelo: {err}"
 
 # uploaders/imgur.js:19
 msgid "Your client ID is invalid."
-msgstr ""
+msgstr "Vaš klijent ID je nevažeći."
 
 # uploaders/s3.js:71
 msgid "Failed to upload to S3: {err}"
@@ -91,7 +91,7 @@ msgstr "Regex naveden ne odgovara."
 
 # uploaders/sharex.js:169
 msgid "Unknown ShareX parser."
-msgstr ""
+msgstr "Nepoznati ShareX parser."
 
 # uploaders/sharex.js:202
 msgid "SXCU file could not be opened."
