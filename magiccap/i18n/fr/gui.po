@@ -1,0 +1,171 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /i18n/magiccap/i18n/en/gui.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"PO-Revision-Date: 2019-01-22 18:41\n"
+
+# gui/index.template.html:26
+# gui/index.template.html:161
+msgid "About"
+msgstr ""
+
+# gui/index.template.html:29
+msgid "Selection Capture"
+msgstr ""
+
+# gui/index.template.html:32
+msgid "Window Capture"
+msgstr ""
+
+# gui/index.template.html:35
+# gui/index.template.html:175
+msgid "Clipboard Action"
+msgstr ""
+
+# gui/index.template.html:38
+# gui/index.template.html:210
+msgid "File Configuration"
+msgstr ""
+
+# gui/index.template.html:41
+# gui/index.template.html:240
+msgid "Hotkey Configuration"
+msgstr ""
+
+# gui/index.template.html:44
+# gui/index.template.html:188
+msgid "Uploader Configuration"
+msgstr ""
+
+# gui/index.template.html:47
+msgid "Toggle Theme"
+msgstr ""
+
+# gui/index.template.html:65
+msgid "View"
+msgstr ""
+
+# gui/index.template.html:68
+msgid "Remove"
+msgstr ""
+
+# gui/index.template.html:83
+msgid "Required arguments are missing."
+msgstr ""
+
+# gui/index.template.html:84
+msgid "The key you gave was blank."
+msgstr ""
+
+# gui/index.template.html:85
+msgid "The key you gave was already used."
+msgstr ""
+
+# gui/index.template.html:86
+msgid "You provided a invalid integer."
+msgstr ""
+
+# gui/index.template.html:87
+msgid "Default uploader successfully saved."
+msgstr ""
+
+# gui/index.template.html:89
+msgid "There are no configuration options for this uploader."
+msgstr ""
+
+# gui/index.template.html:130
+msgid "Delete Row"
+msgstr ""
+
+# gui/index.template.html:143
+msgid "Add"
+msgstr ""
+
+# gui/index.template.html:153
+msgid "Set As Default Uploader"
+msgstr ""
+
+# gui/index.template.html:166
+msgid "Copyright (C) Jake Gealer and Rhys O'Kane 2018-2019."
+msgstr ""
+
+# gui/index.template.html:167
+msgid "This software is licensed under the {license} license."
+msgstr ""
+
+# gui/index.template.html:179
+msgid "Copy the uploaded URL to the clipboard (requires file uploads to be on)."
+msgstr ""
+
+# gui/index.template.html:180
+msgid "Copy the image to the clipboard."
+msgstr ""
+
+# gui/index.template.html:194
+msgid "Make files upload after capturing."
+msgstr ""
+
+# gui/index.template.html:217
+msgid "Make files save after capturing."
+msgstr ""
+
+# gui/index.template.html:221
+msgid "File Naming Pattern:"
+msgstr ""
+
+# gui/index.template.html:222
+msgid "You can use \" to repersent a random character, %date% for the date and %time% for the time."
+msgstr ""
+
+# gui/index.template.html:224
+msgid "File Naming Pattern"
+msgstr ""
+
+# gui/index.template.html:228
+msgid "File Save Folder:"
+msgstr ""
+
+# gui/index.template.html:230
+msgid "File Save Folder"
+msgstr ""
+
+# gui/index.template.html:244
+msgid "You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed."
+msgstr ""
+
+# gui/index.template.html:247
+msgid "Selection Screenshot Hotkey:"
+msgstr ""
+
+# gui/index.template.html:249
+msgid "Selection Screenshot Hotkey"
+msgstr ""
+
+# gui/index.template.html:253
+msgid "Window Screenshot Hotkey:"
+msgstr ""
+
+# gui/index.template.html:255
+msgid "Window Screenshot Hotkey"
+msgstr ""
+
+# i18n/index.js:52
+msgid "this documentation"
+msgstr ""
+
+# gui/gui.js:44
+msgid "Failure"
+msgstr ""
+
+# gui/gui.js:45
+msgid "Success"
+msgstr ""
+
