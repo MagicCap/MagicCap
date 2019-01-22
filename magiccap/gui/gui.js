@@ -39,32 +39,38 @@ async function getCaptures() {
 }
 getCaptures();
 
-// Handles the upload list.
-new Vue({
-	el: "#mainTableBody",
-	data: {
-		captures: displayedCaptures,
-		successMap: {
-			0: i18n.getPoPhrase("Failure", "gui"),
-			1: i18n.getPoPhrase("Success", "gui"),
+(async() => {
+	// Defines failure/success.
+	const i18nFailure = await i18n.getPoPhrase("Failure", "gui");
+	const i18nSuccess = await i18n.getPoPhrase("Success", "gui");
+
+	// Handles the upload list.
+	const mainTable = new Vue({
+		el: "#mainTableBody",
+		data: {
+			captures: displayedCaptures,
+			successMap: [
+				i18nFailure,
+				i18nSuccess,
+			],
 		},
-	},
-	methods: {
-		rmCapture: async timestamp => {
-			await db.run(
-				"DELETE FROM captures WHERE timestamp = ?",
-				[timestamp],
-			);
-			await getCaptures();
+		methods: {
+			rmCapture: async timestamp => {
+				await db.run(
+					"DELETE FROM captures WHERE timestamp = ?",
+					[timestamp],
+				);
+				await getCaptures();
+			},
+			openScreenshotURL: async url => {
+				await shell.openExternal(url);
+			},
+			openScreenshotFile: async filePath => {
+				await shell.openItem(filePath);
+			},
 		},
-		openScreenshotURL: async url => {
-			await shell.openExternal(url);
-		},
-		openScreenshotFile: async filePath => {
-			await shell.openItem(filePath);
-		},
-	},
-});
+	});
+})();
 
 // Defines the clipboard action.
 let clipboardAction = 2;

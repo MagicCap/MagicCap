@@ -219,6 +219,7 @@ async function openConfig() {
 	window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
 		baseURLForDataURL: `file://${__dirname}/gui/`,
 	});
+	window.webContents.openDevTools();
 	global.window = window;
 
 	window.on("closed", () => {
