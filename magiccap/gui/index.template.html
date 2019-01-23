@@ -85,7 +85,7 @@
                 <section class="modal-card-body">
                     <p>$NOTE: Changing the language requires a restart of MagicCap to work fully.$</p>
                     <div v-for="(item, key) in languages">
-                        <input type="radio" name="clipboardActionRadio" v-on:click="changeLanguage(key)" :checked="currentLang === key"> {{ item }}<br>
+                        <input type="radio" name="mflLanguageRadio" v-on:click="changeLanguage(key)" :checked="currentLang === key"> {{ item }}<br>
                     </div>
                 </section>
             </div>
