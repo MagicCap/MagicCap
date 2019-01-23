@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-01-23 20:24\n"
+"PO-Revision-Date: 2019-01-23 21:04\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -172,9 +172,9 @@ msgstr "Siker"
 # gui/index.template.html:47
 # gui/index.template.html:82
 msgid "Change Language"
-msgstr ""
+msgstr "Nyelv választása"
 
 # gui/index.template.html:86
 msgid "NOTE: Changing the language requires a restart of MagicCap to work fully."
-msgstr ""
+msgstr "FIGYELEM: A nyelv váltás érvénybeléptetéséhez újra kell indítani a MagicCapet."
 
