@@ -44,6 +44,9 @@
                             <a href="javascript:showUploaderConfig()">$Uploader Configuration$</a>
                         </li>
                         <li>
+                            <a href="javascript:toggleMFLConfig(true)">$Change Language$</a>
+                        </li>
+                        <li>
                             <a href="javascript:toggleTheme()">$Toggle Theme$</a>
                         </li>
                     </ul>
@@ -70,6 +73,21 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="modal" id="mflConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$Change Language$</p>
+                    <a class="delete" aria-label="close" id="mflConfigClose" href="javascript:toggleMFLConfig(false)"></a>
+                </header>
+                <section class="modal-card-body">
+                    <p>$NOTE: Changing the language requires a restart of MagicCap to work fully.$</p>
+                    <div v-for="(item, key) in languages">
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeLanguage(key)" :checked="currentLang === key"> {{ item }}<br>
+                    </div>
+                </section>
             </div>
         </div>
         <div class="modal" id="activeUploaderConfig">

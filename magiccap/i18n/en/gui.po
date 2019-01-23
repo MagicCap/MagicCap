@@ -154,3 +154,12 @@ msgstr ""
 # gui/gui.js:45
 msgid "Success"
 msgstr ""
+
+# gui/index.template.html:47
+# gui/index.template.html:82
+msgid "Change Language"
+msgstr ""
+
+# gui/index.template.html:86
+msgid "NOTE: Changing the language requires a restart of MagicCap to work fully."
+msgstr ""

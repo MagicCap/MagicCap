@@ -249,6 +249,10 @@ new Vue({
 // Toggles the file config.
 const toggleFileConfig = (toggle = false) => document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active");
 
+
+// Toggles the MFL config.
+const toggleMFLConfig = (toggle = false) => document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active");
+
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
 	el: "#activeUploaderConfig",
@@ -435,3 +439,18 @@ new Vue({
 function hideUploaderConfig() {
 	document.getElementById("uploaderConfig").classList.remove("is-active");
 }
+
+// Handles the MFL config.
+new Vue({
+	el: "#mflConfig",
+	data: {
+		currentLang: config.lang,
+		languages: i18n.langPackInfo,
+	},
+	methods: {
+		changeLanguage(language) {
+			this.currentLang = language;
+			config.lang = language;
+		},
+	},
+});
