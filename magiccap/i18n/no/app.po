@@ -10,11 +10,11 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
-"PO-Revision-Date: 2019-01-24 22:44\n"
+"PO-Revision-Date: 2019-01-24 22:54\n"
 
 # app.js:40
 msgid "Application"
-msgstr ""
+msgstr "Applikasjon"
 
 # app.js:43
 msgid "Quit"
@@ -26,11 +26,11 @@ msgstr "Rediger"
 
 # app.js:55
 msgid "Undo"
-msgstr ""
+msgstr "Angre"
 
 # app.js:60
 msgid "Redo"
-msgstr ""
+msgstr "Gjenta"
 
 # app.js:68
 msgid "Cut"
@@ -46,7 +46,7 @@ msgstr "Lim inn"
 
 # app.js:83
 msgid "Select All"
-msgstr ""
+msgstr "Merk alt"
 
 # app.js:143
 msgid "Could not find or create the config file."
