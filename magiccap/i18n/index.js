@@ -2,8 +2,10 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Gets the language pack information.
-const langPackInfo = require("./lang_packs.json");
+const nativeLangNames = require("./native_lang_names.json");
 const { readFile } = require("fs-nextra");
+const { readdirSync, statSync } = require("fs");
+const { join } = require("path");
 const PO = require("pofile");
 
 // Used to cache/get *.po files.
@@ -67,6 +69,14 @@ const poParseHtml = async htmlData => {
 	}
 	return htmlDone;
 };
+
+// Handles showing all of the language packs.
+const langPackInfo = {};
+for (const file of readdirSync(`${__dirname}`)) {
+	if (statSync(join(`${__dirname}`, file)).isDirectory()) {
+		langPackInfo[file] = nativeLangNames[file];
+	}
+}
 
 // Exports all the things.
 module.exports = {
