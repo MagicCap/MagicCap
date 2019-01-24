@@ -444,13 +444,14 @@ function hideUploaderConfig() {
 new Vue({
 	el: "#mflConfig",
 	data: {
-		currentLang: config.lang,
+		currentLang: config.language || "en",
 		languages: i18n.langPackInfo,
 	},
 	methods: {
 		changeLanguage(language) {
 			this.currentLang = language;
-			config.lang = language;
+			config.language = language;
+			saveConfig();
 		},
 	},
 });
