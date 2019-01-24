@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
-"PO-Revision-Date: 2019-01-24 23:03\n"
+"PO-Revision-Date: 2019-01-24 23:13\n"
 
 # app.js:40
 msgid "Application"
@@ -85,7 +85,7 @@ msgstr "Konfigurasjon"
 
 # app.js:309
 msgid "Upload to..."
-msgstr "Laste opp til..."
+msgstr "Last opp til..."
 
 # app.js:310
 msgid "Exit"
