@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
-"PO-Revision-Date: 2019-01-22 21:37\n"
+"PO-Revision-Date: 2019-01-24 22:44\n"
 
 # app.js:40
 msgid "Application"
@@ -18,11 +18,11 @@ msgstr ""
 
 # app.js:43
 msgid "Quit"
-msgstr ""
+msgstr "Avslutt"
 
 # app.js:52
 msgid "Edit"
-msgstr ""
+msgstr "Rediger"
 
 # app.js:55
 msgid "Undo"
@@ -34,15 +34,15 @@ msgstr ""
 
 # app.js:68
 msgid "Cut"
-msgstr ""
+msgstr "Klipp ut"
 
 # app.js:73
 msgid "Copy"
-msgstr ""
+msgstr "Kopier"
 
 # app.js:78
 msgid "Paste"
-msgstr ""
+msgstr "Lim inn"
 
 # app.js:83
 msgid "Select All"
@@ -61,7 +61,7 @@ msgstr ""
 
 # app.js:248
 msgid "Select file..."
-msgstr ""
+msgstr "Velg fil..."
 
 # app.js:271
 msgid "The file specified was uploaded successfully."
@@ -85,9 +85,9 @@ msgstr ""
 
 # app.js:309
 msgid "Upload to..."
-msgstr ""
+msgstr "Laste opp til..."
 
 # app.js:310
 msgid "Exit"
-msgstr ""
+msgstr "Avslutt"
 
