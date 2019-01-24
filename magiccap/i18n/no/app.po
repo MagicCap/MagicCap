@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
-"PO-Revision-Date: 2019-01-24 22:54\n"
+"PO-Revision-Date: 2019-01-24 23:03\n"
 
 # app.js:40
 msgid "Application"
@@ -50,7 +50,7 @@ msgstr "Merk alt"
 
 # app.js:143
 msgid "Could not find or create the config file."
-msgstr ""
+msgstr "Kan ikke finne eller opprete konfigurasjonsfilen."
 
 # app.js:154
 # app.js:164
@@ -69,7 +69,7 @@ msgstr ""
 
 # app.js:288
 msgid "(Default)"
-msgstr ""
+msgstr "(Standard)"
 
 # app.js:306
 msgid "Selection Capture"
@@ -81,7 +81,7 @@ msgstr ""
 
 # app.js:308
 msgid "Config"
-msgstr ""
+msgstr "Konfigurasjon"
 
 # app.js:309
 msgid "Upload to..."
