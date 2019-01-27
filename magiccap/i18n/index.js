@@ -9,7 +9,7 @@ const { join } = require("path");
 const PO = require("pofile");
 
 // Used to cache/get *.po files.
-const poCache = {};
+const poCache = new Map();
 const getPoFile = async file => {
 	const cachedPo = poCache[file];
 	if (cachedPo !== undefined) {
@@ -71,7 +71,7 @@ const poParseHtml = async htmlData => {
 };
 
 // Handles showing all of the language packs.
-const langPackInfo = {};
+const langPackInfo = new Map();
 for (const file of readdirSync(`${__dirname}`)) {
 	if (statSync(join(`${__dirname}`, file)).isDirectory()) {
 		langPackInfo[file] = nativeLangNames[file];
