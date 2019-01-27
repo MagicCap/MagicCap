@@ -15,6 +15,7 @@ jobs:
   include:
     - stage: test
       script: npm run lint
+      os: linux
     - stage: deploy
       if: tag IS present
       script: skip
