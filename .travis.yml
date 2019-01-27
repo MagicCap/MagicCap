@@ -16,6 +16,7 @@ jobs:
     - stage: test
       script: npm run lint
     - stage: deploy
+      if: tag IS present
       script: skip
       deploy:
         provider: s3
@@ -30,6 +31,7 @@ jobs:
           tags: true
         region: eu-west-2
     - stage: deploy
+      if: tag IS present
       script: skip
       deploy:
         provider: releases
@@ -41,6 +43,7 @@ jobs:
         on:
           tags: true
     - stage: deploy
+      if: tag IS present
       script: skip
       deploy:
         provider: script
