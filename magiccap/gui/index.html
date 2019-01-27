@@ -213,7 +213,7 @@
                 <section class="modal-card-body" id="fileConfigBody">
                     <div class="field">
                         <label class="checkbox">
-                            <input type="checkbox" id="fileConfigCheckbox" v-model="fileConfigCheckboxI" v-on:click="saveItem('fileConfigCheckboxI', 'save_capture', true)" :checked="fileConfigCheckbox">
+                            <input type="checkbox" id="fileConfigCheckbox" :checked="fileConfigCheckboxI" v-on:click="saveItem('fileConfigCheckbox', 'save_capture', true)">
                             Make files save after capturing.
                         </label>
                     </div>
@@ -221,13 +221,13 @@
                         <label class="label">File Naming Pattern:</label>
                         <p style="padding-bottom: 10px">You can use &quot; to repersent a random character, %date% for the date and %time% for the time.</p>
                         <div class="control">
-                            <input class="input" type="text" id="fileNamingPattern" placeholder="File Naming Pattern" v-model="fileNamingPatternI" v-on:change="saveItem('fileNamingPatternI', 'file_naming_pattern')">
+                            <input class="input" type="text" id="fileNamingPattern" placeholder="File Naming Pattern" :value="fileNamingPatternI" v-on:change="saveItem('fileNamingPattern', 'file_naming_pattern')">
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">File Save Folder:</label>
                         <div class="control">
-                            <input class="input" type="text" id="fileSaveFolder" placeholder="File Save Folder" v-model="fileSaveFolderI" v-on:change="saveItem('fileSaveFolderI', 'save_path', false, true)">
+                            <input class="input" type="text" id="fileSaveFolder" placeholder="File Save Folder" :value="fileSaveFolderI" v-on:change="saveItem('fileSaveFolder', 'save_path', false, true)">
                         </div>
                     </div>
                 </section>

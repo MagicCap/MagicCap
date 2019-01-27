@@ -224,16 +224,21 @@ new Vue({
 		fileSaveFolderI: config.save_path,
 	},
 	methods: {
-		saveItem: (key, configKey, not, path) => {
+		saveItem: (key, configKey, checkbox, path) => {
+			let i;
+			if (checkbox) {
+				i = document.getElementById(key).checked;
+			} else {
+				i = document.getElementById(key).value;
+			}
+
 			if (path) {
-				if (!this[key].endsWith(sep)) {
-					this[key] += sep;
+				if (!i.endsWith(sep)) {
+					i += sep;
 				}
 			}
-			if (not) {
-				this[key] = !this[key];
-			}
-			config[configKey] = this[key];
+
+			config[configKey] = i;
 			saveConfig();
 		},
 	},
