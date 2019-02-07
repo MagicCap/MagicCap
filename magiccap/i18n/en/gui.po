@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
-"PO-Revision-Date: 2019-01-23 20:24\n"
+"PO-Revision-Date: 2019-02-07 10:48\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -142,19 +142,11 @@ msgid "You can use {acceleratorDocs} in order to learn how to format your hotkey
 msgstr ""
 
 # gui/index.template.html:247
-msgid "Selection Screenshot Hotkey:"
+msgid "Screenshot Hotkey:"
 msgstr ""
 
 # gui/index.template.html:249
-msgid "Selection Screenshot Hotkey"
-msgstr ""
-
-# gui/index.template.html:253
-msgid "Window Screenshot Hotkey:"
-msgstr ""
-
-# gui/index.template.html:255
-msgid "Window Screenshot Hotkey"
+msgid "Screenshot Hotkey"
 msgstr ""
 
 # i18n/index.js:52
