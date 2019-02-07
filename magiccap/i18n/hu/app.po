@@ -1,0 +1,89 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: /develop/magiccap/i18n/en/app.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
+"PO-Revision-Date: 2019-02-07 10:58\n"
+
+# app.js:40
+msgid "Application"
+msgstr "Alkalmazás"
+
+# app.js:43
+msgid "Quit"
+msgstr "Kilépés"
+
+# app.js:52
+msgid "Edit"
+msgstr "Szerkesztés"
+
+# app.js:55
+msgid "Undo"
+msgstr "Visszavon"
+
+# app.js:60
+msgid "Redo"
+msgstr "Megismétel"
+
+# app.js:68
+msgid "Cut"
+msgstr "Kivágás"
+
+# app.js:73
+msgid "Copy"
+msgstr "Másolás"
+
+# app.js:78
+msgid "Paste"
+msgstr "Beillesztés"
+
+# app.js:83
+msgid "Select All"
+msgstr "Mindet kiválaszt"
+
+# app.js:143
+msgid "Could not find or create the config file."
+msgstr "Nem sikerült megtalálni vagy létrehozni a konfigurációs fájlt."
+
+# app.js:154
+# app.js:164
+# app.js:338
+# app.js:350
+msgid "The hotkey you gave was invalid."
+msgstr "A gyorsbillentyű, amit megadott, érvénytelen."
+
+# app.js:248
+msgid "Select file..."
+msgstr "Fájl kiválasztása..."
+
+# app.js:271
+msgid "The file specified was uploaded successfully."
+msgstr "A kiválasztott fájl feltöltése sikerült."
+
+# app.js:288
+msgid "(Default)"
+msgstr "(Alapértelmezés)"
+
+# app.js:300
+msgid "Screen Capture"
+msgstr ""
+
+# app.js:308
+msgid "Config"
+msgstr "Konfigurálás"
+
+# app.js:309
+msgid "Upload to..."
+msgstr "Feltöltés ide..."
+
+# app.js:310
+msgid "Exit"
+msgstr "Kilépés"
+
