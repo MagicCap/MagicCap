@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-01-23 21:04\n"
+"PO-Revision-Date: 2019-02-07 10:48\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -142,20 +142,12 @@ msgid "You can use {acceleratorDocs} in order to learn how to format your hotkey
 msgstr "A(z) {acceleratorDocs} leírja, hogyan formázd meg a gyorsbillentyűid. Az automatikus mentés előforduló hibákat okozhat, amikor írsz, ezért csak eme ablak bezárása után lesz elmentve."
 
 # gui/index.template.html:247
-msgid "Selection Screenshot Hotkey:"
-msgstr "Területfotózás gyorsbillentyű:"
+msgid "Screenshot Hotkey:"
+msgstr ""
 
 # gui/index.template.html:249
-msgid "Selection Screenshot Hotkey"
-msgstr "Területfotózás gyorsbillentyű"
-
-# gui/index.template.html:253
-msgid "Window Screenshot Hotkey:"
-msgstr "Ablakfotózás gyorsbillentyű:"
-
-# gui/index.template.html:255
-msgid "Window Screenshot Hotkey"
-msgstr "Ablakfotózás gyorsbillentyű"
+msgid "Screenshot Hotkey"
+msgstr ""
 
 # i18n/index.js:52
 msgid "this documentation"
