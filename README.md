@@ -5,6 +5,10 @@
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
 <span class="badge-patreon"><a href="https://patreon.com/jakemakesstuff" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-yellow.svg" alt="Patreon donate button" /></a></span>
 <span class="badge-patreon"><a href="https://ko-fi.com/jakemakesstuff" title="Donate to this project using ko-fi"><img src="https://img.shields.io/badge/kofi-donate-yellow.svg" alt="Patreon donate button" /></a></span>
+<a href="https://discord.gg/pTcBGcH">
+        <img src="https://img.shields.io/discord/475694715640217631.svg?logo=discord"
+            alt="chat on Discord">
+</a>
 
 MagicCap is a image capture suite for Mac and Linux. You can get a precompiled copy from the releases page of this GitHub page. It has the following features:
 
