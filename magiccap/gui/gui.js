@@ -353,7 +353,7 @@ function showUploaderConfig() {
 }
 
 // All of the imported uploaders.
-importedUploaders = ipcRenderer.sendSync("get-uploaders");
+importedUploaders = global.importedUploaders = ipcRenderer.sendSync("get-uploaders");
 
 // Renders all of the uploaders.
 new Vue({
