@@ -4,8 +4,10 @@
 
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
-const { writeJSON, readdir } = require("fs-nextra");
+const { dialog } = require("electron").remote;
+const { writeJSON, readdir, readJSON } = require("fs-nextra");
 const i18n = require("./i18n");
+const mconf = require("./mconf");
 const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 
 // Sets the MagicCap version.
@@ -353,7 +355,7 @@ function showUploaderConfig() {
 }
 
 // All of the imported uploaders.
-importedUploaders = ipcRenderer.sendSync("get-uploaders");
+importedUploaders = global.importedUploaders = ipcRenderer.sendSync("get-uploaders");
 
 // Renders all of the uploaders.
 new Vue({
@@ -435,3 +437,86 @@ new Vue({
 		},
 	},
 });
+
+// Handles exporting the config into a *.mconf file.
+const exportMconf = async() => {
+	const exported = mconf.new();
+	const saveFilei18n = await i18n.getPoPhrase("Save file...", "gui");
+	dialog.showSaveDialog({
+		title: saveFilei18n,
+		filters: [
+			{
+				extensions: ["mconf"],
+				name: "MagicCap Configuration File",
+			},
+		],
+		showsTagField: false,
+	}, async filename => {
+		if (filename === undefined) {
+			return;
+		}
+		if (!filename.endsWith(".mconf")) {
+			filename += ".mconf";
+		}
+		try {
+			await writeJSON(filename, exported, {
+				spaces: 4,
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	});
+};
+
+// Handles importing the config from a *.mconf file.
+const importMconf = async() => {
+	const saveFilei18n = await i18n.getPoPhrase("Open file...", "gui");
+	dialog.showOpenDialog({
+		title: saveFilei18n,
+		filters: [
+			{
+				extensions: ["mconf"],
+				name: "MagicCap Configuration File",
+			},
+		],
+		multiSelections: false,
+		openDirectory: false,
+		showsTagField: false,
+	}, async filename => {
+		if (filename === undefined) {
+			return;
+		}
+		let data;
+		try {
+			data = await readJSON(filename[0]);
+		} catch (err) {
+			console.log(err);
+			return;
+		}
+		const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate");
+		const noi18n = await i18n.getPoPhrase("No", "autoupdate");
+		const messagei18n = await i18n.getPoPhrase("This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?", "gui");
+		await dialog.showMessageBox({
+			type: "warning",
+			buttons: [yesi18n, noi18n],
+			title: "MagicCap",
+			message: messagei18n,
+		}, async response => {
+			switch (response) {
+				case 0: {
+					let parse;
+					try {
+						parse = await mconf.parse(data);
+					} catch (err) {
+						dialog.showErrorBox("MagicCap", `${err.message}`);
+					}
+					for (const key in parse) {
+						config[key] = parse[key];
+					}
+					await saveConfig();
+					break;
+				}
+			}
+		});
+	});
+};
