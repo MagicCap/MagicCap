@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr_CS\n"
-"PO-Revision-Date: 2019-01-22 21:13\n"
+"PO-Revision-Date: 2019-02-07 10:48\n"
 
 # app.js:40
 msgid "Application"
@@ -71,13 +71,9 @@ msgstr ""
 msgid "(Default)"
 msgstr "(Podrazumevano)"
 
-# app.js:306
-msgid "Selection Capture"
-msgstr "Selekcija hvatanja"
-
-# app.js:307
-msgid "Window Capture"
-msgstr "Hvatanje prozora"
+# app.js:300
+msgid "Screen Capture"
+msgstr ""
 
 # app.js:308
 msgid "Config"
