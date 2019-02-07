@@ -26,10 +26,7 @@
                             <a href="javascript:showAbout()">$About$</a>
                         </li>
                         <li>
-                            <a href="javascript:runCapture()">$Selection Capture$</a>
-                        </li>
-                        <li>
-                            <a href="javascript:runWindowCapture()">$Window Capture$</a>
+                            <a href="javascript:runCapture()">$Screen Capture$</a>
                         </li>
                         <li>
                             <a href="javascript:showClipboardAction()">$Clipboard Action$</a>
@@ -262,15 +259,9 @@
                     <p>$You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.$</p>
                     <br>
                     <div class="field">
-                        <label class="label">$Selection Screenshot Hotkey:$</label>
+                        <label class="label">$Screenshot Hotkey:$</label>
                         <div class="control">
-                            <input class="input" type="text" id="screenshotHotkey" placeholder="$Selection Screenshot Hotkey$" :value="screenshotHotkey">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">$Window Screenshot Hotkey:$</label>
-                        <div class="control">
-                            <input class="input" type="text" id="windowScreenshotHotkey" placeholder="$Window Screenshot Hotkey$" :value="windowHotkey">
+                            <input class="input" type="text" id="screenshotHotkey" placeholder="$Screenshot Hotkey$" :value="screenshotHotkey">
                         </div>
                     </div>
                 </section>

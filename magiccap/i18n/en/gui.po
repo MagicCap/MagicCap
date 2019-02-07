@@ -128,19 +128,11 @@ msgid "You can use {acceleratorDocs} in order to learn how to format your hotkey
 msgstr ""
 
 # gui/index.template.html:247
-msgid "Selection Screenshot Hotkey:"
+msgid "Screenshot Hotkey:"
 msgstr ""
 
 # gui/index.template.html:249
-msgid "Selection Screenshot Hotkey"
-msgstr ""
-
-# gui/index.template.html:253
-msgid "Window Screenshot Hotkey:"
-msgstr ""
-
-# gui/index.template.html:255
-msgid "Window Screenshot Hotkey"
+msgid "Screenshot Hotkey"
 msgstr ""
 
 # i18n/index.js:52
