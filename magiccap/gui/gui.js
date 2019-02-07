@@ -4,8 +4,10 @@
 
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
+const { dialog } = require("electron").remote;
 const { writeJSON, readdir } = require("fs-nextra");
 const i18n = require("./i18n");
+const mconf = require("./mconf");
 const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 
 // Sets the MagicCap version.
@@ -435,3 +437,32 @@ new Vue({
 		},
 	},
 });
+
+// Handles exporting the config into a *.mconf file.
+const exportMconf = () => {
+	const exported = mconf.new();
+	dialog.showSaveDialog({
+		title: "Save file...",
+		filters: [
+			{
+				extensions: ["mconf"],
+				name: "MagicCap Configuration File",
+			},
+		],
+		showsTagField: false,
+	}, async filename => {
+		if (filename === undefined) {
+			return;
+		}
+		if (!filename.endsWith(".mconf")) {
+			filename += ".mconf";
+		}
+		try {
+			await writeJSON(filename, exported, {
+				spaces: 4,
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	});
+};

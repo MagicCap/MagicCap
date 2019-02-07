@@ -26,7 +26,7 @@ const values = item => {
 	return x;
 };
 
-// Handles making a new *.mconf file.
+// Handles making a new *.mconf's file contents.
 const new_ = () => {
 	const options = {};
 	for (const uploader of values(importedUploaders)) {
@@ -36,7 +36,10 @@ const new_ = () => {
 			}
 		}
 	}
-	return options;
+	return {
+		version: 1,
+		config_items: options,
+	};
 };
 
 // Things that are exported.
