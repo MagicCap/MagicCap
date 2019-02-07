@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
-"PO-Revision-Date: 2019-01-24 23:43\n"
+"PO-Revision-Date: 2019-02-07 10:48\n"
 
 # app.js:40
 msgid "Application"
@@ -71,12 +71,8 @@ msgstr "Den angitte filen ble lastet opp."
 msgid "(Default)"
 msgstr "(Standard)"
 
-# app.js:306
-msgid "Selection Capture"
-msgstr ""
-
-# app.js:307
-msgid "Window Capture"
+# app.js:300
+msgid "Screen Capture"
 msgstr ""
 
 # app.js:308
