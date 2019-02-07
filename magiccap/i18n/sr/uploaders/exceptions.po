@@ -1,0 +1,111 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: sr-CS\n"
+"X-Crowdin-File: /develop/magiccap/i18n/en/uploaders/exceptions.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: Serbian (Latin)\n"
+"Language: sr_CS\n"
+"PO-Revision-Date: 2019-02-07 10:58\n"
+
+# uploaders/breadmoe.js:31
+# uploaders/elixire.js:25
+# uploaders/novus.js:25
+# uploaders/pomf.js:36
+msgid "Your key is invalid."
+msgstr "Tvoj ključ ne važi."
+
+# uploaders/breadmoe.js:34
+# uploaders/elixire.js:28
+# uploaders/imgur.js:22
+# uploaders/novus.js:28
+# uploaders/pomf.js:39
+msgid "You have been ratelimited!"
+msgstr ""
+
+# uploaders/breadmoe.js:38
+# uploaders/elixire.js:32
+# uploaders/imgur.js:26
+# uploaders/novus.js:32
+# uploaders/pomf.js:43
+msgid "There are currently server issues."
+msgstr "Trenutno postoje problemi sa serverom."
+
+# uploaders/breadmoe.js:40
+# uploaders/elixire.js:34
+# uploaders/imgur.js:28
+# uploaders/novus.js:34
+# uploaders/pomf.js:45
+msgid "Server returned the status {status}."
+msgstr "Server je vratio status {status}."
+
+# uploaders/ftp.js:56
+msgid "Could not upload to FTP: {err}"
+msgstr "Otpremanje do FTP nije uspelo: {err}"
+
+# uploaders/imgur.js:19
+msgid "Your client ID is invalid."
+msgstr "Vaš klijent ID je nevažeći."
+
+# uploaders/s3.js:71
+msgid "Failed to upload to S3: {err}"
+msgstr "Otpremanje do S3 nije uspelo: {err}"
+
+# uploaders/sharex.js:109
+# uploaders/sharex.js:134
+msgid "You cannot parse the result as XML and JSON."
+msgstr ""
+
+# uploaders/sharex.js:116
+msgid "Unable to parse to JSON."
+msgstr "Nije moguće raščlaniti u JSON."
+
+# uploaders/sharex.js:127
+# uploaders/sharex.js:148
+msgid "Could not get the argument specified."
+msgstr ""
+
+# uploaders/sharex.js:142
+msgid "Unable to parse to XML."
+msgstr "Nije moguće raščlaniti u XML."
+
+# uploaders/sharex.js:148
+msgid "Could not get the argument specified."
+msgstr ""
+
+# uploaders/sharex.js:155
+msgid "Index couldn't be parsed to a integer."
+msgstr ""
+
+# uploaders/sharex.js:159
+msgid "Regex is undefined."
+msgstr "Regex je nedefinisan."
+
+# uploaders/sharex.js:163
+msgid "Regex specified not matched."
+msgstr "Regex naveden ne odgovara."
+
+# uploaders/sharex.js:169
+msgid "Unknown ShareX parser."
+msgstr "Nepoznati ShareX parser."
+
+# uploaders/sharex.js:202
+msgid "SXCU file could not be opened."
+msgstr ""
+
+# uploaders/sharex.js:210
+msgid "Unable to JSON parse the SXCU file."
+msgstr ""
+
+# uploaders/sharex.js:216
+msgid "Unable to parse the SXCU file."
+msgstr ""
+
+# uploaders/sharex.js:220
+msgid "File type not allowed by this SXCU."
+msgstr ""
+
