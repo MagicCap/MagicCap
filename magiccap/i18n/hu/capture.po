@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: /develop/magiccap/i18n/en/capture.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
+"PO-Revision-Date: 2019-02-07 10:58\n"
+
+# capture.js:92
+msgid "The screenshot capturing/saving failed."
+msgstr "A képernyőfotó elkészítése/mentése nem sikerült."
+
+# capture.js:108
+msgid "Failed to write captured file."
+msgstr "Nem sikerült a felvételt lemezre írni."
+
+# capture.js:117
+msgid "Platform not supported for screen capture."
+msgstr "A platform nem támogatott."
+
+# capture.js:140
+msgid "Uploader not found."
+msgstr "Feltöltő nem található."
+
+# capture.js:149
+msgid "A required config option is missing."
+msgstr "Egy szükséges konfigurációs opció hiányzik."
+
+# capture.js:166
+msgid "URL not found to put into the clipboard. Do you have uploading on?"
+msgstr "A vágólapba nem sikerült az URL-t beilleszteni. A feltöltés be van kapcsolva?"
+
+# capture.js:181
+msgid "Could not delete capture."
+msgstr "Nem sikerült törölni a felvételt."
+
+# capture.js:187
+msgid "Image successfully captured."
+msgstr "Kép sikeresen rögzítve."
+
