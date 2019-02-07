@@ -439,10 +439,11 @@ new Vue({
 });
 
 // Handles exporting the config into a *.mconf file.
-const exportMconf = () => {
+const exportMconf = async () => {
 	const exported = mconf.new();
+	const saveFilei18n = await i18n.getPoPhrase("Save file...", "gui");
 	dialog.showSaveDialog({
-		title: "Save file...",
+		title: saveFilei18n,
 		filters: [
 			{
 				extensions: ["mconf"],

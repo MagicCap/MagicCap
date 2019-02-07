@@ -103,6 +103,10 @@ msgstr ""
 msgid "Make files save after capturing."
 msgstr ""
 
+# gui/index.template.html:219
+msgid "Export Uploader Configurations"
+msgstr ""
+
 # gui/index.template.html:221
 msgid "File Naming Pattern:"
 msgstr ""
@@ -154,4 +158,8 @@ msgstr ""
 
 # gui/index.template.html:86
 msgid "NOTE: Changing the language requires a restart of MagicCap to work fully."
+msgstr ""
+
+# gui/gui.js:444
+msgid "Save file..."
 msgstr ""
