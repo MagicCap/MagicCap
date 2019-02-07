@@ -150,16 +150,6 @@ function getConfiguredUploaders(config) {
 			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
 		}
 	}
-	if (config.window_hotkey) {
-		try {
-			globalShortcut.register(config.window_hotkey, async() => {
-				thisShouldFixMacIssuesAndIdkWhy();
-				await runCapture(true);
-			});
-		} catch (_) {
-			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
-		}
-	}
 	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
 
 	autoUpdateLoop(config);
@@ -298,8 +288,7 @@ function createContextMenu() {
 		);
 	}
 	const contextMenu = Menu.buildFromTemplate([
-		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
-		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },
+		{ label: "Screen Capture", type: "normal", click: async() => { await runCapture(false); } },
 		{ label: "Config", type: "normal", click: openConfig },
 		{ label: "Upload to...", submenu: uploadDropdown },
 		{ label: "Exit", type: "normal", role: "quit" },
@@ -331,18 +320,6 @@ ipcMain.on("hotkey-change", async(event, hotkey) => {
 	}
 });
 // Handles the hotkey changing.
-
-ipcMain.on("window-hotkey-change", async(event, hotkey) => {
-	try {
-		globalShortcut.register(hotkey, async() => {
-			thisShouldFixMacIssuesAndIdkWhy();
-			await runCapture(true);
-		});
-	} catch (_) {
-		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
-	}
-});
-// Handles the window hotkey changing.
 
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders; });
 // The get uploaders IPC.
