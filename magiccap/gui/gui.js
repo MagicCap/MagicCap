@@ -120,11 +120,6 @@ async function runCapture() {
 	await remote.getGlobal("runCapture")();
 }
 
-// Runs the window capture.
-async function runWindowCapture() {
-	await remote.getGlobal("runCapture")(true);
-}
-
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
 	document.body.style.display = "initial";
@@ -171,7 +166,6 @@ function showHotkeyConfig() {
 // Allows you to close the hotkey config.
 async function hotkeyConfigClose() {
 	const text = document.getElementById("screenshotHotkey").value;
-	const windowText = document.getElementById("windowScreenshotHotkey").value;
 	if (config.hotkey !== text) {
 		if (text === "") {
 			ipcRenderer.send("hotkey-unregister");
@@ -182,24 +176,6 @@ async function hotkeyConfigClose() {
 			config.hotkey = text;
 			await saveConfig();
 			ipcRenderer.send("hotkey-change", text);
-		}
-		if (config.window_hotkey) {
-			ipcRenderer.send("window-hotkey-change", config.window_hotkey);
-		}
-	}
-	if (config.window_hotkey !== windowText) {
-		if (windowText === "") {
-			ipcRenderer.send("hotkey-unregister");
-			config.window_hotkey = null;
-			await saveConfig();
-		} else {
-			ipcRenderer.send("hotkey-unregister");
-			config.window_hotkey = windowText;
-			await saveConfig();
-			ipcRenderer.send("window-hotkey-change", windowText);
-		}
-		if (config.hotkey) {
-			ipcRenderer.send("hotkey-change", config.hotkey);
 		}
 	}
 	document.getElementById("hotkeyConfig").classList.remove("is-active");
@@ -215,7 +191,6 @@ new Vue({
 	el: "#hotkeyConfigBody",
 	data: {
 		screenshotHotkey: config.hotkey || "",
-		windowHotkey: config.window_hotkey || "",
 	},
 });
 
@@ -231,16 +206,21 @@ new Vue({
 		fileSaveFolderI: config.save_path,
 	},
 	methods: {
-		saveItem: (key, configKey, not, path) => {
+		saveItem: (key, configKey, checkbox, path) => {
+			let i;
+			if (checkbox) {
+				i = document.getElementById(key).checked;
+			} else {
+				i = document.getElementById(key).value;
+			}
+
 			if (path) {
-				if (!this[key].endsWith(sep)) {
-					this[key] += sep;
+				if (!i.endsWith(sep)) {
+					i += sep;
 				}
 			}
-			if (not) {
-				this[key] = !this[key];
-			}
-			config[configKey] = this[key];
+
+			config[configKey] = i;
 			saveConfig();
 		},
 	},

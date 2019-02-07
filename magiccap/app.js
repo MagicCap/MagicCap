@@ -152,16 +152,6 @@ function getConfiguredUploaders(config) {
 			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
 		}
 	}
-	if (config.window_hotkey) {
-		try {
-			globalShortcut.register(config.window_hotkey, async() => {
-				thisShouldFixMacIssuesAndIdkWhy();
-				await runCapture(true);
-			});
-		} catch (_) {
-			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
-		}
-	}
 	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
 
 	autoUpdateLoop(config);
@@ -307,14 +297,12 @@ const createContextMenu = async() => {
 			}
 		);
 	}
-	const i18nSelect = await i18n.getPoPhrase("Selection Capture", "app");
-	const i18nWindow = await i18n.getPoPhrase("Window Capture", "app");
+	const i18nSelect = await i18n.getPoPhrase("Screen Capture", "app");
 	const i18nConfig = await i18n.getPoPhrase("Config", "app");
 	const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app");
 	const i18nExit = await i18n.getPoPhrase("Exit", "app");
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: i18nSelect, type: "normal", click: async() => { await runCapture(false); } },
-		{ label: i18nWindow, type: "normal", click: async() => { await runCapture(true); } },
 		{ label: i18nConfig, type: "normal", click: openConfig },
 		{ label: i18nUploadTo, submenu: uploadDropdown },
 		{ label: i18nExit, type: "normal", role: "quit" },
@@ -346,18 +334,6 @@ ipcMain.on("hotkey-change", async(event, hotkey) => {
 	}
 });
 // Handles the hotkey changing.
-
-ipcMain.on("window-hotkey-change", async(event, hotkey) => {
-	try {
-		globalShortcut.register(hotkey, async() => {
-			thisShouldFixMacIssuesAndIdkWhy();
-			await runCapture(true);
-		});
-	} catch (_) {
-		dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
-	}
-});
-// Handles the window hotkey changing.
 
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders; });
 // The get uploaders IPC.
