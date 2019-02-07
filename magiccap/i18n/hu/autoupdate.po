@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: hu\n"
+"X-Crowdin-File: /develop/magiccap/i18n/en/autoupdate.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
+"PO-Revision-Date: 2019-02-07 10:58\n"
+
+# autoupdate.js:102
+msgid "Update Now"
+msgstr "Frissítés most"
+
+# autoupdate.js:103
+msgid "Not Now"
+msgstr "Most nem"
+
+# autoupdate.js:104
+msgid "Skip Release"
+msgstr "Verzió kihagyása"
+
+# autoupdate.js:105
+msgid "A new version of MagicCap is available."
+msgstr "A MagicCap újabb verziója elérhető."
+
+# autoupdate.js:106
+msgid "You are on {current} and the latest is {latest}. Here are the changelogs since your current release:\n\n"
+"{changelogs}"
+msgstr "Jelenleg {current} verzió fut, a legfrisebb: {latest}. A jelenlegi kiadás változási naplója:\n"
+"{changelogs}"
+
+# autoupdate.js:144
+msgid "Yes"
+msgstr "Igen"
+
+# autoupdate.js:145
+msgid "No"
+msgstr "Nem"
+
+# autoupdate.js:146
+msgid "Don't ask again"
+msgstr "Ne kérdezzen többször"
+
+# autoupdate.js:147
+msgid "In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this."
+msgstr "Az automatikus frissítéshez a MagicCapnek fel kell telepítenie az autoupdate binárisokat. Megtegyem? Enélkül az automatikus frissítés nem fog működni."
+
