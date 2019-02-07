@@ -5,7 +5,8 @@
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
 const { writeJSON, readdir } = require("fs-nextra");
-const config = require(`${require("os").homedir()}/magiccap.json`);
+const i18n = require("./i18n");
+const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
@@ -38,32 +39,38 @@ async function getCaptures() {
 }
 getCaptures();
 
-// Handles the upload list.
-new Vue({
-	el: "#mainTableBody",
-	data: {
-		captures: displayedCaptures,
-		successMap: {
-			0: "Failure",
-			1: "Success",
+(async() => {
+	// Defines failure/success.
+	const i18nFailure = await i18n.getPoPhrase("Failure", "gui");
+	const i18nSuccess = await i18n.getPoPhrase("Success", "gui");
+
+	// Handles the upload list.
+	const mainTable = new Vue({
+		el: "#mainTableBody",
+		data: {
+			captures: displayedCaptures,
+			successMap: [
+				i18nFailure,
+				i18nSuccess,
+			],
 		},
-	},
-	methods: {
-		rmCapture: async timestamp => {
-			await db.run(
-				"DELETE FROM captures WHERE timestamp = ?",
-				[timestamp],
-			);
-			await getCaptures();
+		methods: {
+			rmCapture: async timestamp => {
+				await db.run(
+					"DELETE FROM captures WHERE timestamp = ?",
+					[timestamp],
+				);
+				await getCaptures();
+			},
+			openScreenshotURL: async url => {
+				await shell.openExternal(url);
+			},
+			openScreenshotFile: async filePath => {
+				await shell.openItem(filePath);
+			},
 		},
-		openScreenshotURL: async url => {
-			await shell.openExternal(url);
-		},
-		openScreenshotFile: async filePath => {
-			await shell.openItem(filePath);
-		},
-	},
-});
+	});
+})();
 
 // Defines the clipboard action.
 let clipboardAction = 2;
@@ -222,6 +229,10 @@ new Vue({
 // Toggles the file config.
 const toggleFileConfig = (toggle = false) => document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active");
 
+
+// Toggles the MFL config.
+const toggleMFLConfig = (toggle = false) => document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active");
+
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
 	el: "#activeUploaderConfig",
@@ -319,10 +330,10 @@ const activeUploaderConfig = new Vue({
 			}
 
 			let view = this;
-			readdir(`${__dirname}/../uploaders`).then(files => {
+			readdir(`${__dirname}/uploaders`).then(files => {
 				let filename = "";
 				for (const file in files) {
-					const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
+					const import_ = require(`${__dirname}/uploaders/${files[file]}`);
 					if (import_.name === view.uploader.name) {
 						filename = files[file].substring(0, files[file].length - 3);
 						break;
@@ -352,21 +363,23 @@ new Vue({
 		checkUploadCheckbox: config.upload_capture,
 	},
 	methods: {
-		renderUploader: (uploader, uploaderKey) => {
-			const options = {};
+		renderUploader: async(uploader, uploaderKey) => {
+			const options = [];
 			for (const optionKey in uploader.config_options) {
 				const option = uploader.config_options[optionKey];
+				const translatedOption = await i18n.getPoPhrase(optionKey, "uploaders/option_names");
 				switch (option.type) {
 					case "text":
 					case "integer":
 					case "password":
 					case "boolean": {
-						options[optionKey] = {
+						options.push({
 							type: option.type,
 							value: option.value,
 							default: option.default,
 							required: option.required,
-						};
+							translatedName: translatedOption,
+						});
 						if (option.type === "boolean") {
 							config[option.value] = config[option.value] || false;
 							saveConfig();
@@ -375,13 +388,14 @@ new Vue({
 					}
 					case "object": {
 						const i = config[option.value] || option.default || {};
-						options[optionKey] = {
+						options.push({
 							type: option.type,
 							value: option.value,
 							default: option.default,
 							required: option.required,
 							items: i,
-						};
+							translatedName: translatedOption,
+						});
 						config[option.value] = i;
 						saveConfig();
 						break;
@@ -405,3 +419,19 @@ new Vue({
 function hideUploaderConfig() {
 	document.getElementById("uploaderConfig").classList.remove("is-active");
 }
+
+// Handles the MFL config.
+new Vue({
+	el: "#mflConfig",
+	data: {
+		currentLang: config.language || "en",
+		languages: i18n.langPackInfo,
+	},
+	methods: {
+		changeLanguage(language) {
+			this.currentLang = language;
+			config.language = language;
+			saveConfig();
+		},
+	},
+});

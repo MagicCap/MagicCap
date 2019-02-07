@@ -7,8 +7,8 @@ const async_child_process = require("async-child-process");
 const os = require("os");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
-const fs = require("fs");
-const { clipboard, nativeImage, ipcMain } = require("electron");
+const { clipboard, nativeImage } = require("electron");
+const i18n = require("./i18n");
 // Imports go here.
 
 module.exports = class CaptureHandler {
@@ -82,9 +82,8 @@ module.exports = class CaptureHandler {
 					await async_child_process.join(capture);
 				} catch (_) {
 					if (!(process.platform === "darwin" && _.code === 1)) {
-						throw new Error(
-							"The screenshot capturing/saving failed."
-						);
+						const i18nCaptureFailed = await i18n.getPoPhrase("The screenshot capturing/saving failed.", "capture");
+						throw new Error(i18nCaptureFailed);
 					}
 				}
 				result = await fsnextra.readFile(file_path).catch(async() => {
@@ -99,7 +98,8 @@ module.exports = class CaptureHandler {
 				} catch (_) { break; }
 				result = clipboard_after.toPNG();
 				await fsnextra.writeFile(file_path, result).catch(async() => {
-					throw new Error("Failed to write captured file.");
+					const i18nUnableToWrite = await i18n.getPoPhrase("Failed to write captured file.", "capture");
+					throw new Error(i18nUnableToWrite);
 				});
 				if (result.length == 0) {
 					throw new Error("Screenshot cancelled.");
@@ -107,9 +107,8 @@ module.exports = class CaptureHandler {
 				break;
 			}
 			default: {
-				throw new Error(
-					"Platform not supported for screen capture."
-				);
+				const i18nNotSupported = await i18n.getPoPhrase("Platform not supported for screen capture.", "capture");
+				throw new Error(i18nNotSupported);
 			}
 		}
 		if (result) return result;
@@ -131,7 +130,8 @@ module.exports = class CaptureHandler {
 			uploader_file = `${__dirname}/uploaders/${uploader_type}.js`;
 			const uploaderName = nameUploaderMap[uploader_type];
 			if (uploaderName === undefined) {
-				throw new Error("Uploader not found.");
+				const notFoundi18n = await i18n.getPoPhrase("Uploader not found.", "capture");
+				throw new Error(notFoundi18n);
 			}
 			uploader = importedUploaders[uploaderName];
 			for (key in uploader.config_options) {
@@ -139,9 +139,8 @@ module.exports = class CaptureHandler {
 					if (uploader.config_options[key].default) {
 						config[uploader.config_options[key].value] = uploader.config_options[key].default;
 					} else {
-						throw new Error(
-							"A required config option is missing."
-						);
+						const missingOptioni18n = await i18n.getPoPhrase("A required config option is missing.", "capture");
+						throw new Error(missingOptioni18n);
 					}
 				}
 			}
@@ -157,9 +156,8 @@ module.exports = class CaptureHandler {
 				}
 				case 2: {
 					if (!url) {
-						throw new Error(
-							"URL not found to put into the clipboard. Do you have uploading on?"
-						);
+						const noURLi18n = await i18n.getPoPhrase("URL not found to put into the clipboard. Do you have uploading on?", "capture");
+						throw new Error(noURLi18n);
 					}
 					clipboard.writeText(url);
 					break;
@@ -172,11 +170,15 @@ module.exports = class CaptureHandler {
 			}
 		}
 		if (delete_after) {
-			await fsnextra.unlink(save_path).catch(async() => { throw new Error("Could not delete capture."); });
+			await fsnextra.unlink(save_path).catch(async() => {
+				const noDeletei18n = await i18n.getPoPhrase("Could not delete capture.", "capture");
+				throw new Error(noDeletei18n);
+			});
 			save_path = null;
 		}
 		await this.logUpload(filename, true, url, save_path);
-		return "Image successfully captured.";
+		const i18nResult = await i18n.getPoPhrase("Image successfully captured.", "capture");
+		return i18nResult;
 	}
 	// Handle screenshots.
 };
