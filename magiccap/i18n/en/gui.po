@@ -1,3 +1,17 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: en\n"
+"X-Crowdin-File: /develop/magiccap/i18n/en/gui.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"PO-Revision-Date: 2019-02-07 10:58\n"
+
 # gui/index.template.html:26
 # gui/index.template.html:161
 msgid "About"
@@ -155,3 +169,4 @@ msgstr ""
 # gui/index.template.html:86
 msgid "NOTE: Changing the language requires a restart of MagicCap to work fully."
 msgstr ""
+
