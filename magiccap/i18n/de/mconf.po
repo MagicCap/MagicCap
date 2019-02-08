@@ -1,0 +1,22 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: de\n"
+"X-Crowdin-File: /develop/magiccap/i18n/en/mconf.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"PO-Revision-Date: 2019-02-08 18:26\n"
+
+# mconf.js:10
+msgid "This version of MagicCap cannot read the config file given."
+msgstr ""
+
+# mconf.js:14
+msgid "MagicCap couldn't parse the config file."
+msgstr ""
+
