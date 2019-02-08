@@ -13,6 +13,8 @@ const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboa
 const notifier = require("node-notifier");
 const { sep } = require("path");
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
+const i18n = require("./i18n");
+const { darkThemeInformation } = require("./system_dark_theme");
 // Main imports.
 
 global.importedUploaders = {};
@@ -33,12 +35,12 @@ function thisShouldFixMacIssuesAndIdkWhy() {
 	console.log("Running capture hotkey.");
 }
 
-function createMenu() {
+const createMenu = async() => {
 	const application = {
-		label: "Application",
+		label: await i18n.getPoPhrase("Application", "app"),
 		submenu: [
 			{
-				label: "Quit",
+				label: await i18n.getPoPhrase("Quit", "app"),
 				accelerator: "Command+Q",
 				click: () => {
 					app.quit();
@@ -47,15 +49,15 @@ function createMenu() {
 		],
 	};
 	const edit = {
-		label: "Edit",
+		label: await i18n.getPoPhrase("Edit", "app"),
 		submenu: [
 			{
-				label: "Undo",
+				label: await i18n.getPoPhrase("Undo", "app"),
 				accelerator: "CmdOrCtrl+Z",
 				selector: "undo:",
 			},
 			{
-				label: "Redo",
+				label: await i18n.getPoPhrase("Redo", "app"),
 				accelerator: "Shift+CmdOrCtrl+Z",
 				selector: "redo:",
 			},
@@ -63,29 +65,29 @@ function createMenu() {
 				type: "separator",
 			},
 			{
-				label: "Cut",
+				label: await i18n.getPoPhrase("Cut", "app"),
 				accelerator: "CmdOrCtrl+X",
 				selector: "cut:",
 			},
 			{
-				label: "Copy",
+				label: await i18n.getPoPhrase("Copy", "app"),
 				accelerator: "CmdOrCtrl+C",
 				selector: "copy:",
 			},
 			{
-				label: "Paste",
+				label: await i18n.getPoPhrase("Paste", "app"),
 				accelerator: "CmdOrCtrl+V",
 				selector: "paste:",
 			},
 			{
-				label: "Select All",
+				label: await i18n.getPoPhrase("Select All", "app"),
 				accelerator: "CmdOrCtrl+A",
 				selector: "selectAll:",
 			},
 		],
 	};
 	Menu.setApplicationMenu(Menu.buildFromTemplate([application, edit]));
-}
+};
 // Creates a menu on Mac.
 
 async function getDefaultConfig() {
@@ -98,6 +100,7 @@ async function getDefaultConfig() {
 		clipboard_action: 2,
 		save_capture: true,
 		save_path: pics_dir,
+		light_theme: !await darkThemeInformation(),
 	};
 	await ensureDir(config.save_path).catch(async error => {
 		if (!(error.errno === -4075 || error.errno === -17)) {
@@ -138,7 +141,8 @@ function getConfiguredUploaders(config) {
 	}).catch(async() => {
 		global.config = await getDefaultConfig();
 		writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
-			throw new Error("Could not find or create the config file.");
+			const poPhrase = await i18n.getPoPhrase("Could not find or create the config file.", "app");
+			throw new Error(poPhrase);
 		});
 	});
 	if (config.hotkey) {
@@ -148,17 +152,7 @@ function getConfiguredUploaders(config) {
 				await runCapture(false);
 			});
 		} catch (_) {
-			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
-		}
-	}
-	if (config.window_hotkey) {
-		try {
-			globalShortcut.register(config.window_hotkey, async() => {
-				thisShouldFixMacIssuesAndIdkWhy();
-				await runCapture(true);
-			});
-		} catch (_) {
-			dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
 		}
 	}
 	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
@@ -191,14 +185,15 @@ async function runCapture(windowedCapture) {
 	} catch (err) {
 		if (err.message !== "Screenshot cancelled.") {
 			await capture.logUpload(filename, false, null, null);
-			dialog.showErrorBox("MagicCap", `${err.message}`);
+			const translatedMessage = await i18n.getPoPhrase(`${err.message}`, "uploaders/exceptions");
+			dialog.showErrorBox("MagicCap", translatedMessage);
 		}
 	}
 }
 global.runCapture = runCapture;
 // Runs the capture.
 
-function openConfig() {
+async function openConfig() {
 	if (window) {
 		window.show();
 		return;
@@ -217,7 +212,11 @@ function openConfig() {
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
 	global.platform = process.platform;
-	window.loadFile("./gui/index.html");
+	let pageContent = (await readFile(`${__dirname}/gui/index.template.html`)).toString();
+	pageContent = await i18n.poParseHtml(pageContent);
+	window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
+		baseURLForDataURL: `file://${__dirname}/gui/`,
+	});
 	global.window = window;
 
 	window.on("closed", () => {
@@ -250,8 +249,9 @@ ipcMain.on("window-show", () => {
 
 // Does the dropdown menu uploads.
 async function dropdownMenuUpload(uploader) {
+	const selectFilei18n = await i18n.getPoPhrase("Select file...", "app");
 	await dialog.showOpenDialog({
-		title: "Select file...",
+		title: selectFilei18n,
 		multiSelections: false,
 		openDirectory: false,
 	}, async filePaths => {
@@ -274,7 +274,8 @@ async function dropdownMenuUpload(uploader) {
 				}
 				return;
 			}
-			throwNotification("The file specified was uploaded successfully.");
+			const successi18n = await i18n.getPoPhrase("The file specified was uploaded successfully.", "app");
+			throwNotification(successi18n);
 			if (config.clipboard_action == 2) {
 				clipboard.writeText(url);
 			}
@@ -284,17 +285,18 @@ async function dropdownMenuUpload(uploader) {
 }
 
 // Creates the context menu.
-function createContextMenu() {
+const createContextMenu = async() => {
 	let c = global.config;
 	if (c === undefined) {
 		c = getDefaultConfig();
 	}
 	let uploadDropdown = [];
+	const defaulti18n = await i18n.getPoPhrase("(Default)", "app");
 	if (nameUploaderMap[c.uploader_type] in importedUploaders) {
 		const defaultRealName = nameUploaderMap[c.uploader_type];
 		uploadDropdown.push(
 			{
-				label: `${defaultRealName} (Default)`,
+				label: `${defaultRealName} ${defaulti18n}`,
 				type: "normal",
 				click: async() => { await dropdownMenuUpload(importedUploaders[defaultRealName]); },
 			}
@@ -309,26 +311,29 @@ function createContextMenu() {
 			}
 		);
 	}
+	const i18nSelect = await i18n.getPoPhrase("Screen Capture", "app");
+	const i18nConfig = await i18n.getPoPhrase("Config", "app");
+	const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app");
+	const i18nExit = await i18n.getPoPhrase("Exit", "app");
 	const contextMenu = Menu.buildFromTemplate([
-		{ label: "Selection Capture", type: "normal", click: async() => { await runCapture(false); } },
-		{ label: "Window Capture", type: "normal", click: async() => { await runCapture(true); } },
-		{ label: "Config", type: "normal", click: openConfig },
-		{ label: "Upload to...", submenu: uploadDropdown },
-		{ label: "Exit", type: "normal", role: "quit" },
+		{ label: i18nSelect, type: "normal", click: async() => { await runCapture(false); } },
+		{ label: i18nConfig, type: "normal", click: openConfig },
+		{ label: i18nUploadTo, submenu: uploadDropdown },
+		{ label: i18nExit, type: "normal", role: "quit" },
 	]);
 	tray.setContextMenu(contextMenu);
-}
+};
 
-function initialiseScript() {
+const initialiseScript = async() => {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
-	createContextMenu();
+	await createContextMenu();
 	if (process.platform === "darwin") createMenu();
-}
+};
 // Initialises the script.
 
 ipcMain.on("config-edit", async(event, data) => {
 	global.config = data;
-	createContextMenu();
+	await createContextMenu();
 });
 // When the config changes, this does.
 
@@ -339,22 +344,10 @@ ipcMain.on("hotkey-change", async(event, hotkey) => {
 			await runCapture(false);
 		});
 	} catch (_) {
-		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
+		dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
 	}
 });
 // Handles the hotkey changing.
-
-ipcMain.on("window-hotkey-change", async(event, hotkey) => {
-	try {
-		globalShortcut.register(hotkey, async() => {
-			thisShouldFixMacIssuesAndIdkWhy();
-			await runCapture(true);
-		});
-	} catch (_) {
-		dialog.showErrorBox("MagicCap", "The hotkey you gave was invalid.");
-	}
-});
-// Handles the window hotkey changing.
 
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders; });
 // The get uploaders IPC.

@@ -5,8 +5,11 @@
 
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
-const { writeJSON, readdir } = require("fs-nextra");
-const config = require(`${require("os").homedir()}/magiccap.json`);
+const { dialog } = require("electron").remote;
+const { writeJSON, readdir, readJSON } = require("fs-nextra");
+const i18n = require("./i18n");
+const mconf = require("./mconf");
+const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
 
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
@@ -24,7 +27,7 @@ if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
 	document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
-if (platform == "darwin") {
+if (platform === "darwin") {
 	document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)";
 }
 
@@ -46,32 +49,38 @@ async function getCaptures() {
 }
 getCaptures();
 
-// Handles the upload list.
-new Vue({
-	el: "#mainTableBody",
-	data: {
-		captures: displayedCaptures,
-		successMap: {
-			0: "Failure",
-			1: "Success",
+(async() => {
+	// Defines failure/success.
+	const i18nFailure = await i18n.getPoPhrase("Failure", "gui");
+	const i18nSuccess = await i18n.getPoPhrase("Success", "gui");
+
+	// Handles the upload list.
+	const mainTable = new Vue({
+		el: "#mainTableBody",
+		data: {
+			captures: displayedCaptures,
+			successMap: [
+				i18nFailure,
+				i18nSuccess,
+			],
 		},
-	},
-	methods: {
-		rmCapture: async timestamp => {
-			await db.run(
-				"DELETE FROM captures WHERE timestamp = ?",
-				[timestamp],
-			);
-			await getCaptures();
+		methods: {
+			rmCapture: async timestamp => {
+				await db.run(
+					"DELETE FROM captures WHERE timestamp = ?",
+					[timestamp],
+				);
+				await getCaptures();
+			},
+			openScreenshotURL: async url => {
+				await shell.openExternal(url);
+			},
+			openScreenshotFile: async filePath => {
+				await shell.openItem(filePath);
+			},
 		},
-		openScreenshotURL: async url => {
-			await shell.openExternal(url);
-		},
-		openScreenshotFile: async filePath => {
-			await shell.openItem(filePath);
-		},
-	},
-});
+	});
+})();
 
 // Defines the clipboard action.
 let clipboardAction = 2;
@@ -121,11 +130,6 @@ async function runCapture() {
 	await remote.getGlobal("runCapture")();
 }
 
-// Runs the window capture.
-async function runWindowCapture() {
-	await remote.getGlobal("runCapture")(true);
-}
-
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
 	document.body.style.display = "initial";
@@ -172,7 +176,6 @@ function showHotkeyConfig() {
 // Allows you to close the hotkey config.
 async function hotkeyConfigClose() {
 	const text = document.getElementById("screenshotHotkey").value;
-	const windowText = document.getElementById("windowScreenshotHotkey").value;
 	if (config.hotkey !== text) {
 		if (text === "") {
 			ipcRenderer.send("hotkey-unregister");
@@ -183,24 +186,6 @@ async function hotkeyConfigClose() {
 			config.hotkey = text;
 			await saveConfig();
 			ipcRenderer.send("hotkey-change", text);
-		}
-		if (config.window_hotkey) {
-			ipcRenderer.send("window-hotkey-change", config.window_hotkey);
-		}
-	}
-	if (config.window_hotkey !== windowText) {
-		if (windowText === "") {
-			ipcRenderer.send("hotkey-unregister");
-			config.window_hotkey = null;
-			await saveConfig();
-		} else {
-			ipcRenderer.send("hotkey-unregister");
-			config.window_hotkey = windowText;
-			await saveConfig();
-			ipcRenderer.send("window-hotkey-change", windowText);
-		}
-		if (config.hotkey) {
-			ipcRenderer.send("hotkey-change", config.hotkey);
 		}
 	}
 	document.getElementById("hotkeyConfig").classList.remove("is-active");
@@ -216,7 +201,6 @@ new Vue({
 	el: "#hotkeyConfigBody",
 	data: {
 		screenshotHotkey: config.hotkey || "",
-		windowHotkey: config.window_hotkey || "",
 	},
 });
 
@@ -254,6 +238,10 @@ new Vue({
 
 // Toggles the file config.
 const toggleFileConfig = (toggle = false) => document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active");
+
+
+// Toggles the MFL config.
+const toggleMFLConfig = (toggle = false) => document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active");
 
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
@@ -352,10 +340,10 @@ const activeUploaderConfig = new Vue({
 			}
 
 			let view = this;
-			readdir(`${__dirname}/../uploaders`).then(files => {
+			readdir(`${__dirname}/uploaders`).then(files => {
 				let filename = "";
 				for (const file in files) {
-					const import_ = require(`${__dirname}/../uploaders/${files[file]}`);
+					const import_ = require(`${__dirname}/uploaders/${files[file]}`);
 					if (import_.name === view.uploader.name) {
 						filename = files[file].substring(0, files[file].length - 3);
 						break;
@@ -375,7 +363,7 @@ function showUploaderConfig() {
 }
 
 // All of the imported uploaders.
-importedUploaders = ipcRenderer.sendSync("get-uploaders");
+importedUploaders = global.importedUploaders = ipcRenderer.sendSync("get-uploaders");
 
 // Renders all of the uploaders.
 new Vue({
@@ -385,21 +373,23 @@ new Vue({
 		checkUploadCheckbox: config.upload_capture,
 	},
 	methods: {
-		renderUploader: (uploader, uploaderKey) => {
-			const options = {};
+		renderUploader: async(uploader, uploaderKey) => {
+			const options = [];
 			for (const optionKey in uploader.config_options) {
 				const option = uploader.config_options[optionKey];
+				const translatedOption = await i18n.getPoPhrase(optionKey, "uploaders/option_names");
 				switch (option.type) {
 					case "text":
 					case "integer":
 					case "password":
 					case "boolean": {
-						options[optionKey] = {
+						options.push({
 							type: option.type,
 							value: option.value,
 							default: option.default,
 							required: option.required,
-						};
+							translatedName: translatedOption,
+						});
 						if (option.type === "boolean") {
 							config[option.value] = config[option.value] || false;
 							saveConfig();
@@ -408,13 +398,14 @@ new Vue({
 					}
 					case "object": {
 						const i = config[option.value] || option.default || {};
-						options[optionKey] = {
+						options.push({
 							type: option.type,
 							value: option.value,
 							default: option.default,
 							required: option.required,
 							items: i,
-						};
+							translatedName: translatedOption,
+						});
 						config[option.value] = i;
 						saveConfig();
 						break;
@@ -438,3 +429,102 @@ new Vue({
 function hideUploaderConfig() {
 	document.getElementById("uploaderConfig").classList.remove("is-active");
 }
+
+// Handles the MFL config.
+new Vue({
+	el: "#mflConfig",
+	data: {
+		currentLang: config.language || "en",
+		languages: i18n.langPackInfo,
+	},
+	methods: {
+		changeLanguage(language) {
+			this.currentLang = language;
+			config.language = language;
+			saveConfig();
+		},
+	},
+});
+
+// Handles exporting the config into a *.mconf file.
+const exportMconf = async() => {
+	const exported = mconf.new();
+	const saveFilei18n = await i18n.getPoPhrase("Save file...", "gui");
+	dialog.showSaveDialog({
+		title: saveFilei18n,
+		filters: [
+			{
+				extensions: ["mconf"],
+				name: "MagicCap Configuration File",
+			},
+		],
+		showsTagField: false,
+	}, async filename => {
+		if (filename === undefined) {
+			return;
+		}
+		if (!filename.endsWith(".mconf")) {
+			filename += ".mconf";
+		}
+		try {
+			await writeJSON(filename, exported, {
+				spaces: 4,
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	});
+};
+
+// Handles importing the config from a *.mconf file.
+const importMconf = async() => {
+	const saveFilei18n = await i18n.getPoPhrase("Open file...", "gui");
+	dialog.showOpenDialog({
+		title: saveFilei18n,
+		filters: [
+			{
+				extensions: ["mconf"],
+				name: "MagicCap Configuration File",
+			},
+		],
+		multiSelections: false,
+		openDirectory: false,
+		showsTagField: false,
+	}, async filename => {
+		if (filename === undefined) {
+			return;
+		}
+		let data;
+		try {
+			data = await readJSON(filename[0]);
+		} catch (err) {
+			console.log(err);
+			return;
+		}
+		const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate");
+		const noi18n = await i18n.getPoPhrase("No", "autoupdate");
+		const messagei18n = await i18n.getPoPhrase("This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?", "gui");
+		await dialog.showMessageBox({
+			type: "warning",
+			buttons: [yesi18n, noi18n],
+			title: "MagicCap",
+			message: messagei18n,
+		}, async response => {
+			switch (response) {
+				case 0: {
+					let parse;
+					try {
+						parse = await mconf.parse(data);
+					} catch (err) {
+						dialog.showErrorBox("MagicCap", `${err.message}`);
+					}
+					for (const key in parse) {
+						config[key] = parse[key];
+					}
+					await saveConfig();
+					break;
+				}
+			}
+		});
+	});
+};
