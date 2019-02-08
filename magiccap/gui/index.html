@@ -83,7 +83,7 @@
                     <article class="message is-danger" v-if="exception === 'requiredStuffMissing'" id="requiredStuffMissing"><div class="message-body">Required arguments are missing.</div></article>
                     <article class="message is-danger" v-else-if="exception === 'blankKey'" id="blankKey"><div class="message-body">The key you gave was blank.</div></article>
                     <article class="message is-danger" v-else-if="exception === 'keyAlreadyUsed'" id="keyAlreadyUsed"><div class="message-body">The key you gave was already used.</div></article>
-                    <article class="message is-danger" v-else-if="exception === 'notAIntYouGiddyGoat'" id="notAIntYouGiddyGoat"><div class="message-body">You provided a invalid integer.</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'notAnInteger'" id="notAnInteger"><div class="message-body">You provided a invalid integer.</div></article>
                     <article class="message is-success" v-else-if="exception === 'ayyyyDefaultSaved'" id="ayyyyDefaultSaved"><div class="message-body">Default uploader successfully saved.</div></article>
                     <div v-if="uploader.options.length === 0">
                         <p>There are no configuration options for this uploader.</p><br>

@@ -334,7 +334,7 @@ const activeUploaderConfig = new Vue({
 						config[option.value] = option.default;
 						saveConfig();
 					} else if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
-						this.exception += "notAIntYouGiddyGoat";
+						this.exception += "notAnInteger";
 						return;
 					} else {
 						this.exception += "requiredStuffMissing";
