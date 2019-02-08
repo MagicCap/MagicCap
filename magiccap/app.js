@@ -99,7 +99,7 @@ async function getDefaultConfig() {
 		clipboard_action: 2,
 		save_capture: true,
 		save_path: pics_dir,
-		light_theme: !(await darkThemeInformation()),
+		light_theme: !await darkThemeInformation(),
 	};
 	await ensureDir(config.save_path).catch(async error => {
 		if (!(error.errno === -4075 || error.errno === -17)) {
