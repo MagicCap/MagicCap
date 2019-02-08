@@ -165,7 +165,7 @@ async function saveConfig() {
 async function toggleTheme() {
 	config.light_theme = !config.light_theme;
 	await saveConfig();
-	ipcRenderer.send("restartWindow"); // vibrancy forces us to restart the window on theme change.
+	ipcRenderer.send("restartWindow");
 }
 
 // Shows the hotkey config.
