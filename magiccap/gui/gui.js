@@ -1,6 +1,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
+// Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
@@ -16,6 +17,9 @@ document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getV
 // Changes the colour scheme.
 const stylesheet = document.createElement("link");
 stylesheet.setAttribute("rel", "stylesheet");
+
+let platform = remote.getGlobal("platform");
+
 if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
 	document.getElementById("sidebar").style.backgroundColor = "#e6e6e6";
@@ -23,6 +27,10 @@ if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
 	document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
+if (platform === "darwin") {
+	document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)";
+}
+
 document.getElementsByTagName("head")[0].appendChild(stylesheet);
 
 // Defines the DB.
@@ -157,7 +165,7 @@ async function saveConfig() {
 async function toggleTheme() {
 	config.light_theme = !config.light_theme;
 	await saveConfig();
-	location.reload();
+	ipcRenderer.send("restartWindow"); // vibrancy forces us to restart the window on theme change.
 }
 
 // Shows the hotkey config.
@@ -322,7 +330,7 @@ const activeUploaderConfig = new Vue({
 						config[option.value] = option.default;
 						saveConfig();
 					} else if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
-						this.exception += "notAIntYouGiddyGoat";
+						this.exception += "notAnInteger";
 						return;
 					} else {
 						this.exception += "requiredStuffMissing";

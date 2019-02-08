@@ -1,6 +1,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
+// Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
 const sqlite3 = require("sqlite3").verbose();
 let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("os").homedir()}/magiccap_captures.db`);
@@ -200,12 +201,17 @@ async function openConfig() {
 
 	if (app.dock) app.dock.show();
 
+	let vibrancy;
+	if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "sidebar";
 	window = new BrowserWindow({
 		width: 1250, height: 600,
 		show: false,
+		vibrancy: vibrancy,
+		backgroundColor: "#00000000",
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	window.setTitle("MagicCap");
+	global.platform = process.platform;
 	let pageContent = (await readFile(`${__dirname}/gui/index.template.html`)).toString();
 	pageContent = await i18n.poParseHtml(pageContent);
 	window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
@@ -229,6 +235,12 @@ app.on("window-all-closed", () => {
 	// Nothing should happen here.
 });
 // Stays alive.
+
+ipcMain.on("restartWindow", () => {
+	window.close();
+	openConfig();
+});
+// Restart the window on theme change (fixes bug with vibrancy)
 
 ipcMain.on("window-show", () => {
 	window.show();
