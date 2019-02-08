@@ -30,7 +30,8 @@
         "electron-packager": "13.0.1",
         "electron-installer-dmg": "2.0.0",
         "electron": "4.0.1",
-        "eslint": "5.3.0"
+        "eslint": "5.3.0",
+        "lodash": ">=4.17.11"
     },
     "scripts": {
         "postinstall": "electron-builder install-app-deps --arch x64",
