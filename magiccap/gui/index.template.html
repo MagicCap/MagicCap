@@ -41,6 +41,9 @@
                             <a href="javascript:showUploaderConfig()">$Uploader Configuration$</a>
                         </li>
                         <li>
+                            <a href="javascript:showBetaUpdates()">$Beta Updates$</a>
+                        </li>
+                        <li>
                             <a href="javascript:toggleMFLConfig(true)">$Change Language$</a>
                         </li>
                         <li>
@@ -193,6 +196,20 @@
                 <section class="modal-card-body">
                     <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2"> $Copy the uploaded URL to the clipboard (requires file uploads to be on).$<br>
                     <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1"> $Copy the image to the clipboard.$
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="betaUpdates">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$Beta Updates$</p>
+                    <a class="delete" aria-label="close" href="javascript:closeBetaUpdates()"></a>
+                </header>
+                <section class="modal-card-body">
+                    <p>$Beta updates contain more functionality, but the functionality might be broken in some aspects or unstable.$</p><br>
+                    <input type="radio" name="BetaAction" v-on:click="changeAction(false)" :checked="!action"> $Only get stable updates.$<br>
+                    <input type="radio" name="BetaAction" v-on:click="changeAction(true)" :checked="action"> $Get stable and beta updates.$
                 </section>
             </div>
         </div>
