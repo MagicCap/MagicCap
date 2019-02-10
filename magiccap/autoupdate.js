@@ -49,7 +49,7 @@ async function downloadBin() {
 async function checkForUpdates() {
 	let res;
 	try {
-		res = await get(`https://api.magiccap.me/version/check/${app.getVersion()}`).toJSON();
+		res = await get(`https://api.magiccap.me/version/check/${app.getVersion()}?beta=${Boolean(config.beta_channel).toString()}`).toJSON();
 	} catch (_) {
 		return {
 			upToDate: true,

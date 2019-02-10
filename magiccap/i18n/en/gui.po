@@ -175,3 +175,20 @@ msgstr ""
 # gui/gui.js:496
 msgid "This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?"
 msgstr ""
+
+# gui/index.template.html:44
+# gui/index.template.html:206
+msgid "Beta Updates"
+msgstr ""
+
+# gui/index.template.html:210
+msgid "Beta updates contain more functionality, but the functionality might be broken in some aspects or unstable."
+msgstr ""
+
+# gui/index.template.html:211
+msgid "Only get stable updates."
+msgstr ""
+
+# gui/index.template.html:212
+msgid "Get stable and beta updates."
+msgstr ""

@@ -120,6 +120,16 @@ function showClipboardAction() {
 	document.getElementById("clipboardAction").classList.add("is-active");
 }
 
+// Handles the beta updates close button.
+function closeBetaUpdates() {
+	document.getElementById("betaUpdates").classList.remove("is-active");
+}
+
+// Shows the beta updates  settings page.
+function showBetaUpdates() {
+	document.getElementById("betaUpdates").classList.add("is-active");
+}
+
 // Handles new screenshots.
 ipcRenderer.on("screenshot-upload", async() => {
 	await getCaptures();
@@ -528,3 +538,18 @@ const importMconf = async() => {
 		});
 	});
 };
+
+// Handles beta updates.
+new Vue({
+	el: "#betaUpdates",
+	data: {
+		action: Boolean(config.beta_channel),
+	},
+	methods: {
+		changeAction: actionBool => {
+			this.action = actionBool;
+			config.beta_channel = actionBool;
+			saveConfig();
+		},
+	},
+});
