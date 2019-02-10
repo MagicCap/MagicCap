@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
-"PO-Revision-Date: 2019-02-07 21:04\n"
+"PO-Revision-Date: 2019-02-10 20:47\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -188,5 +188,22 @@ msgstr ""
 
 # gui/gui.js:496
 msgid "This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?"
+msgstr ""
+
+# gui/index.template.html:44
+# gui/index.template.html:206
+msgid "Beta Updates"
+msgstr ""
+
+# gui/index.template.html:210
+msgid "Beta updates contain more functionality, but the functionality might be broken in some aspects or unstable."
+msgstr ""
+
+# gui/index.template.html:211
+msgid "Only get stable updates."
+msgstr ""
+
+# gui/index.template.html:212
+msgid "Get stable and beta updates."
 msgstr ""
 
