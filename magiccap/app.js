@@ -15,6 +15,8 @@ const { sep } = require("path");
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
 const i18n = require("./i18n");
 const { darkThemeInformation } = require("./system_dark_theme");
+const { machineId } = require("node-machine-id");
+const { get } = require("chainfetch");
 // Main imports.
 
 global.importedUploaders = {};
@@ -90,6 +92,13 @@ const createMenu = async() => {
 };
 // Creates a menu on Mac.
 
+async function newInstallId() {
+	const newMachineId = await machineId();
+	const siteGet = await get("https://api.magiccap.me/install_id/new/" + newMachineId);
+	return siteGet.body;
+}
+// Creates the install ID.
+
 async function getDefaultConfig() {
 	let pics_dir = app.getPath("pictures");
 	pics_dir += `${sep}MagicCap${sep}`;
@@ -101,6 +110,7 @@ async function getDefaultConfig() {
 		save_capture: true,
 		save_path: pics_dir,
 		light_theme: !await darkThemeInformation(),
+		install_id: await newInstallId(),
 	};
 	await ensureDir(config.save_path).catch(async error => {
 		if (!(error.errno === -4075 || error.errno === -17)) {
@@ -156,6 +166,15 @@ function getConfiguredUploaders(config) {
 		}
 	}
 	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
+
+	if (!config.install_id) {
+		config.install_id = await newInstallId();
+		try {
+			await writeJSON(`${require("os").homedir()}/magiccap.json`, config);
+		} catch (err) {
+			console.log(err);
+		}
+	}
 
 	autoUpdateLoop(config);
 	// Starts the autoupdate loop.
