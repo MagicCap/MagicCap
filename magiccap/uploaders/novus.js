@@ -4,6 +4,7 @@
 
 const { post } = require("chainfetch");
 const i18n = require("../i18n");
+const { app } = require("electron");
 
 module.exports = {
 	name: "i.novus",
@@ -18,6 +19,7 @@ module.exports = {
 	upload: async(buffer, fileType) => {
 		let res = await post("https://i.novuscommunity.co/api/upload")
 			.set("Authorization", `Bearer ${config.novus_token}`)
+			.set("User-Agent", `MagicCap ${app.getVersion()}; ${config.install_id}`)
 			.attach("file", buffer, `oof.${fileType}`);
 		switch (res.status) {
 			case 200: break;
