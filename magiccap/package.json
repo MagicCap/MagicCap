@@ -23,7 +23,8 @@
         "sudo-prompt": "^8.2.3",
         "vue": "2.5.21",
         "safe-eval": "0.4.1",
-        "pofile": "1.0.11"
+        "pofile": "1.0.11",
+        "node-machine-id": "1.1.10"
     },
     "devDependencies": {
         "electron-builder": "20.26.1",
