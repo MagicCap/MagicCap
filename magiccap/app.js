@@ -221,7 +221,12 @@ async function openConfig() {
 	if (app.dock) app.dock.show();
 
 	let vibrancy;
-	if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "sidebar";
+	if (process.platform == "darwin") {
+		vibrancy = config.light_theme ? "light" : "sidebar";
+	} else {
+		vibrancy = false;
+	}
+
 	window = new BrowserWindow({
 		width: 1250, height: 600,
 		show: false,
@@ -229,13 +234,9 @@ async function openConfig() {
 		backgroundColor: "#00000000",
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
-	window.setTitle("MagicCap");
 	global.platform = process.platform;
-	let pageContent = (await readFile(`${__dirname}/gui/index.template.html`)).toString();
-	pageContent = await i18n.poParseHtml(pageContent);
-	window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
-		baseURLForDataURL: `file://${__dirname}/gui/`,
-	});
+	window.setTitle("MagicCap");
+	window.loadFile("./gui/index.html");
 	global.window = window;
 
 	window.on("closed", () => {
