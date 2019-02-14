@@ -25,7 +25,7 @@ if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
 }
 if (platform === "darwin") {
-	document.getElementById("sidebar").style.backgroundColor = "rgba(100,100,100,0)";
+	document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)";
 }
 
 // Unhides the body/window when the page has loaded.
@@ -37,7 +37,7 @@ stylesheet.onload = () => {
 document.getElementsByTagName("head")[0].appendChild(stylesheet);
 
 // Defines the capture database.
-const db = require('better-sqlite3')(`${require("os").homedir()}/magiccap_captures.db`);
+const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap_captures.db`);
 
 // A list of the displayed captures.
 const displayedCaptures = [];

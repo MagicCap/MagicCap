@@ -3,7 +3,7 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
-let captureDatabase = global.captureDatabase = require('better-sqlite3')(`${require("os").homedir()}/magiccap_captures.db`);
+let captureDatabase = global.captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap_captures.db`);
 // Defines the capture database.
 
 const { stat, writeJSON, ensureDir, readdir, readFile } = require("fs-nextra");
@@ -229,8 +229,8 @@ async function openConfig() {
 	window = new BrowserWindow({
 		width: 1250, height: 600,
 		show: false,
-		vibrancy: "dark",
-		backgroundColor: "rgba(0,0,0,0)",
+		vibrancy: vibrancy,
+		backgroundColor: "#00000000",
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	global.platform = process.platform;
