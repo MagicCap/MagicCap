@@ -29,8 +29,8 @@ const getPoPhrase = async(phrase, file) => {
 	let poFile;
 	try {
 		poFile = await getPoFile(file);
-	} catch (_) {
-		console.error(`Could not read/parse the PO file: ${file}`);
+	} catch (e) {
+		console.error(`Could not read/parse the PO file: ${file}\nError: ${e}`);
 		return phrase;
 	}
 

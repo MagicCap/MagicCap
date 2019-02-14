@@ -7,9 +7,8 @@
 const { ipcRenderer, remote, shell } = require("electron");
 const { dialog } = require("electron").remote;
 const { writeJSON, readdir, readJSON } = require("fs-nextra");
-const i18n = require("./i18n");
-const mconf = require("./mconf");
-const config = global.config = require(`${require("os").homedir()}/magiccap.json`);
+const i18n = require("../i18n");
+const mconf = require("../mconf");
 
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
@@ -30,6 +29,12 @@ if (config.light_theme) {
 if (platform === "darwin") {
 	document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)";
 }
+
+// Unhides the body/window when the page has loaded.
+stylesheet.onload = () => {
+	document.body.style.display = "initial";
+	ipcRenderer.send("window-show");
+};
 
 document.getElementsByTagName("head")[0].appendChild(stylesheet);
 
@@ -139,12 +144,6 @@ ipcRenderer.on("screenshot-upload", async() => {
 async function runCapture() {
 	await remote.getGlobal("runCapture")();
 }
-
-// Unhides the body/window when the page has loaded.
-window.onload = () => {
-	document.body.style.display = "initial";
-	ipcRenderer.send("window-show");
-};
 
 // Shows the about page.
 function showAbout() {
