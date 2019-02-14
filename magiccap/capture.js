@@ -11,6 +11,9 @@ const { clipboard, nativeImage } = require("electron");
 const i18n = require("./i18n");
 // Imports go here.
 
+const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)");
+// Defines the capture statement.
+
 module.exports = class CaptureHandler {
 	static renderRandomChars(filename) {
 		const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -44,10 +47,7 @@ module.exports = class CaptureHandler {
 
 	static async logUpload(filename, success, url, file_path) {
 		const timestamp = new Date().getTime();
-		await captureDatabase.run(
-			"INSERT INTO captures VALUES (?, ?, ?, ?, ?)",
-			[filename, Number(success), timestamp, url, file_path]
-		);
+		await captureStatement.run(filename, Number(success), timestamp, url, file_path);
 		try {
 			global.window.webContents.send("screenshot-upload", {
 				filename: filename,

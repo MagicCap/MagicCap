@@ -21,13 +21,11 @@ let platform = remote.getGlobal("platform");
 
 if (config.light_theme) {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css");
-	document.getElementById("sidebar").style.backgroundColor = "#e6e6e6";
 } else {
 	stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
-	document.getElementById("sidebar").style.backgroundColor = "#171819";
 }
 if (platform === "darwin") {
-	document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)";
+	document.getElementById("sidebar").style.backgroundColor = "rgba(100,100,100,0)";
 }
 
 // Unhides the body/window when the page has loaded.
@@ -38,19 +36,19 @@ stylesheet.onload = () => {
 
 document.getElementsByTagName("head")[0].appendChild(stylesheet);
 
-// Defines the DB.
-const db = remote.getGlobal("captureDatabase");
+// Defines the capture database.
+const db = require('better-sqlite3')(`${require("os").homedir()}/magiccap_captures.db`);
 
 // A list of the displayed captures.
 const displayedCaptures = [];
 
 // Handles each capture.
-async function getCaptures() {
+function getCaptures() {
 	displayedCaptures.length = 0;
-	await db.each("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20", (err, row) => {
-		if (err) { console.log(err); }
-		displayedCaptures.push(row);
-	});
+	const stmt = db.prepare("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20");
+	for (const i of stmt.iterate()) {
+		displayedCaptures.push(i);
+	}
 }
 getCaptures();
 
@@ -71,10 +69,7 @@ getCaptures();
 		},
 		methods: {
 			rmCapture: async timestamp => {
-				await db.run(
-					"DELETE FROM captures WHERE timestamp = ?",
-					[timestamp],
-				);
+				db.prepare("DELETE FROM captures WHERE timestamp = ?").run(timestamp);
 				await getCaptures();
 			},
 			openScreenshotURL: async url => {

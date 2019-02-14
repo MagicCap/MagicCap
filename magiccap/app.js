@@ -3,8 +3,7 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
-const sqlite3 = require("sqlite3").verbose();
-let captureDatabase = global.captureDatabase = new sqlite3.Database(`${require("os").homedir()}/magiccap_captures.db`);
+let captureDatabase = global.captureDatabase = require('better-sqlite3')(`${require("os").homedir()}/magiccap_captures.db`);
 // Defines the capture database.
 
 const { stat, writeJSON, ensureDir, readdir, readFile } = require("fs-nextra");
@@ -165,7 +164,7 @@ function getConfiguredUploaders(config) {
 			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
 		}
 	}
-	await captureDatabase.run("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
+	captureDatabase.exec("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
 
 	if (!config.install_id) {
 		config.install_id = await newInstallId();
@@ -224,14 +223,14 @@ async function openConfig() {
 	if (process.platform == "darwin") {
 		vibrancy = config.light_theme ? "light" : "sidebar";
 	} else {
-		vibrancy = false;
+		vibrancy = undefined;
 	}
 
 	window = new BrowserWindow({
 		width: 1250, height: 600,
 		show: false,
-		vibrancy: vibrancy,
-		backgroundColor: "#00000000",
+		vibrancy: "dark",
+		backgroundColor: "rgba(0,0,0,0)",
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	global.platform = process.platform;
