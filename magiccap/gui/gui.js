@@ -45,7 +45,7 @@ const displayedCaptures = [];
 // Handles each capture.
 function getCaptures() {
 	displayedCaptures.length = 0;
-	const stmt = db.prepare("SELECT * FROM captures ORDER BY timestamp DESC LIMIT 20");
+	const stmt = db.prepare("SELECT * FROM captures ORDER BY timestamp DESC");
 	for (const i of stmt.iterate()) {
 		displayedCaptures.push(i);
 	}
