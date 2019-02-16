@@ -169,7 +169,6 @@ async function openConfig() {
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	global.platform = process.platform;
-	window.webContents.openDevTools();
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
 	global.window = window;
