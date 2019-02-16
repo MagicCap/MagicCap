@@ -11,21 +11,21 @@ const configInsertStmt = db.prepare("INSERT INTO config VALUES (?, ?);");
 // Places all of the items into the object.
 const config = {};
 for (const i of configGetStmt.iterate()) {
-    config[i.key] = JSON.parse(i.value);
+	config[i.key] = JSON.parse(i.value);
 }
 
 // The config saving transaction.
 const configSaveTransaction = db.transaction(newConfig => {
-    db.exec("DELETE FROM config");
-    for (const i in newConfig) {
-        configInsertStmt.run(i, JSON.stringify(newConfig[i]));
-    }
-})
+	db.exec("DELETE FROM config");
+	for (const i in newConfig) {
+		configInsertStmt.run(i, JSON.stringify(newConfig[i]));
+	}
+});
 
 // Saves the config.
 const saveConfig = () => {
-    configSaveTransaction(config);
+	configSaveTransaction(config);
 };
 
 // Exports this file.
-module.exports = {config, saveConfig};
+module.exports = { config, saveConfig };

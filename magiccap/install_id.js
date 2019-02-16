@@ -10,4 +10,4 @@ module.exports = async function newInstallId() {
 	const newMachineId = await machineId();
 	const siteGet = await get(`https://api.magiccap.me/install_id/new/${newMachineId}`);
 	return siteGet.body;
-}
+};

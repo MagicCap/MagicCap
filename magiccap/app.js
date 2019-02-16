@@ -89,7 +89,7 @@ const createMenu = async() => {
 // Creates a menu on Mac.
 
 // Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
-function getConfiguredUploaders(config) {
+function getConfiguredUploaders() {
 	const default_uploader = nameUploaderMap[config.uploader_type];
 	let configured = [];
 	for (const uploaderName in importedUploaders) {
@@ -254,7 +254,7 @@ const createContextMenu = async() => {
 			}
 		);
 	}
-	for (const uploader of getConfiguredUploaders(c)) {
+	for (const uploader of getConfiguredUploaders()) {
 		uploadDropdown.push(
 			{
 				label: uploader.name,
