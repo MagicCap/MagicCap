@@ -2,7 +2,7 @@
     "name": "magiccap",
     "version": "1.0.0b4",
     "description": "A cross platform image capturing suite.",
-    "main": "app.js",
+    "main": "initialiser.js",
     "author": "Jake Gealer & Rhys O'Kane",
     "license": "MPL-2.0",
     "repository": {

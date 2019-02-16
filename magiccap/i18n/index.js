@@ -6,6 +6,7 @@ const nativeLangNames = require("./native_lang_names.json");
 const { readFile } = require("fs-nextra");
 const { readdirSync, statSync } = require("fs");
 const { join } = require("path");
+const { config } = require("../config");
 const PO = require("pofile");
 
 // Used to cache/get *.po files.

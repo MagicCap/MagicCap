@@ -6,6 +6,8 @@
 // The needed imports.
 const { ipcRenderer, remote, shell } = require("electron");
 const { dialog } = require("electron").remote;
+const config = require("../config").config;
+const saveConfigToDb = require("../config").saveConfig;
 const { writeJSON, readdir, readJSON } = require("fs-nextra");
 const i18n = require("../i18n");
 const mconf = require("../mconf");
@@ -37,7 +39,7 @@ stylesheet.onload = () => {
 document.getElementsByTagName("head")[0].appendChild(stylesheet);
 
 // Defines the capture database.
-const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap_captures.db`);
+const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`);
 
 // A list of the displayed captures.
 const displayedCaptures = [];
@@ -157,11 +159,7 @@ function openMPL() {
 
 // Saves the config.
 async function saveConfig() {
-	try {
-		await writeJSON(`${require("os").homedir()}/magiccap.json`, config);
-	} catch (err) {
-		console.log(err);
-	}
+	saveConfigToDb();
 	ipcRenderer.send("config-edit", config);
 }
 
