@@ -1,5 +1,5 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
-// Copyright (C) Jake Gealer <jake@gealer.email> 2018.
+// Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 const child_process = require("child_process");
@@ -8,7 +8,9 @@ const os = require("os");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const { clipboard, nativeImage } = require("electron");
+const { config } = require("./config");
 const i18n = require("./i18n");
+const captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`);
 // Imports go here.
 
 const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)");

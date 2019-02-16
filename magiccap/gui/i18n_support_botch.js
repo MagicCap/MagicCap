@@ -1,7 +1,4 @@
 (async() => {
-	// Sets the configuration file.
-	global.config = require(`${require("os").homedir()}/magiccap.json`);
-
 	// Imports the i18n components.
 	const i18n = require("../i18n");
 

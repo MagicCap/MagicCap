@@ -3,19 +3,16 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
-let captureDatabase = global.captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap_captures.db`);
-// Defines the capture database.
+const { config } = require("./config");
+global.config = config;
+// Defines the config.
 
-const { stat, writeJSON, ensureDir, readdir, readFile } = require("fs-nextra");
+const { readdir, readFile } = require("fs-nextra");
 const capture = require(`${__dirname}/capture.js`);
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = require("electron");
 const notifier = require("node-notifier");
-const { sep } = require("path");
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
 const i18n = require("./i18n");
-const { darkThemeInformation } = require("./system_dark_theme");
-const { machineId } = require("node-machine-id");
-const { get } = require("chainfetch");
 // Main imports.
 
 global.importedUploaders = {};
@@ -91,35 +88,6 @@ const createMenu = async() => {
 };
 // Creates a menu on Mac.
 
-async function newInstallId() {
-	const newMachineId = await machineId();
-	const siteGet = await get(`https://api.magiccap.me/install_id/new/${newMachineId}`);
-	return siteGet.body;
-}
-// Creates the install ID.
-
-async function getDefaultConfig() {
-	let pics_dir = app.getPath("pictures");
-	pics_dir += `${sep}MagicCap${sep}`;
-	let config = {
-		hotkey: null,
-		upload_capture: true,
-		uploader_type: "imgur",
-		clipboard_action: 2,
-		save_capture: true,
-		save_path: pics_dir,
-		light_theme: !await darkThemeInformation(),
-		install_id: await newInstallId(),
-	};
-	await ensureDir(config.save_path).catch(async error => {
-		if (!(error.errno === -4075 || error.errno === -17)) {
-			config.Remove("save_path");
-		}
-	});
-	return config;
-}
-// Creates the default config.
-
 // Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
 function getConfiguredUploaders(config) {
 	const default_uploader = nameUploaderMap[config.uploader_type];
@@ -144,41 +112,8 @@ function getConfiguredUploaders(config) {
 	return configured;
 }
 
-(async() => {
-	await stat(`${require("os").homedir()}/magiccap.json`).then(async() => {
-		global.config = require(`${require("os").homedir()}/magiccap.json`);
-	}).catch(async() => {
-		global.config = await getDefaultConfig();
-		writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
-			const poPhrase = await i18n.getPoPhrase("Could not find or create the config file.", "app");
-			throw new Error(poPhrase);
-		});
-	});
-	if (config.hotkey) {
-		try {
-			globalShortcut.register(config.hotkey, async() => {
-				thisShouldFixMacIssuesAndIdkWhy();
-				await runCapture(false);
-			});
-		} catch (_) {
-			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
-		}
-	}
-	captureDatabase.exec("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);");
-
-	if (!config.install_id) {
-		config.install_id = await newInstallId();
-		try {
-			await writeJSON(`${require("os").homedir()}/magiccap.json`, config);
-		} catch (err) {
-			console.log(err);
-		}
-	}
-
-	autoUpdateLoop(config);
-	// Starts the autoupdate loop.
-})();
-// Creates the config/capture DB table.
+autoUpdateLoop(config);
+// Starts the autoupdate loop.
 
 if (app.dock) app.dock.hide();
 // Hides the dock icon.
@@ -234,6 +169,7 @@ async function openConfig() {
 	});
 	if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`);
 	global.platform = process.platform;
+	window.webContents.openDevTools();
 	window.setTitle("MagicCap");
 	window.loadFile("./gui/index.html");
 	global.window = window;
@@ -305,10 +241,7 @@ async function dropdownMenuUpload(uploader) {
 
 // Creates the context menu.
 const createContextMenu = async() => {
-	let c = global.config;
-	if (c === undefined) {
-		c = getDefaultConfig();
-	}
+	let c = config;
 	let uploadDropdown = [];
 	const defaulti18n = await i18n.getPoPhrase("(Default)", "app");
 	if (nameUploaderMap[c.uploader_type] in importedUploaders) {
@@ -347,6 +280,17 @@ const initialiseScript = async() => {
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	await createContextMenu();
 	if (process.platform === "darwin") createMenu();
+
+	if (config.hotkey) {
+		try {
+			globalShortcut.register(config.hotkey, async() => {
+				thisShouldFixMacIssuesAndIdkWhy();
+				await runCapture(false);
+			});
+		} catch (_) {
+			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
+		}
+	}
 };
 // Initialises the script.
 
