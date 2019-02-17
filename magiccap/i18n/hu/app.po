@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-02-07 10:58\n"
+"PO-Revision-Date: 2019-02-17 12:04\n"
 
 # app.js:40
 msgid "Application"
@@ -84,6 +84,10 @@ msgid "Upload to..."
 msgstr "Feltöltés ide..."
 
 # app.js:310
+msgid "Shorten Link..."
+msgstr ""
+
+# app.js:311
 msgid "Exit"
 msgstr "Kilépés"
 
