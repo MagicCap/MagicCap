@@ -13,6 +13,7 @@ const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboa
 const notifier = require("node-notifier");
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
 const i18n = require("./i18n");
+const { showShortener } = require("./shortener");
 // Main imports.
 
 global.importedUploaders = {};
@@ -265,10 +266,12 @@ const createContextMenu = async() => {
 	const i18nSelect = await i18n.getPoPhrase("Screen Capture", "app");
 	const i18nConfig = await i18n.getPoPhrase("Config", "app");
 	const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app");
+	const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app");
 	const i18nExit = await i18n.getPoPhrase("Exit", "app");
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: i18nSelect, type: "normal", click: async() => { await runCapture(false); } },
 		{ label: i18nConfig, type: "normal", click: openConfig },
+		{ label: i18nShort, type: "normal", click: showShortener },
 		{ label: i18nUploadTo, submenu: uploadDropdown },
 		{ label: i18nExit, type: "normal", role: "quit" },
 	]);
@@ -292,6 +295,11 @@ const initialiseScript = async() => {
 	}
 };
 // Initialises the script.
+
+ipcMain.on("show-short", () => {
+	showShortener();
+});
+// Shows the link shortener.
 
 ipcMain.on("config-edit", async(event, data) => {
 	global.config = data;

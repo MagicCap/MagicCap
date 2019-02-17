@@ -192,3 +192,7 @@ msgstr ""
 # gui/index.template.html:212
 msgid "Get stable and beta updates."
 msgstr ""
+
+# gui/index.template.html:32
+msgid "Link Shortener"
+msgstr ""
