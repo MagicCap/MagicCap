@@ -70,5 +70,9 @@ msgid "Upload to..."
 msgstr ""
 
 # app.js:310
+msgid "Shorten Link..."
+msgstr ""
+
+# app.js:311
 msgid "Exit"
 msgstr ""

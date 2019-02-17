@@ -545,3 +545,8 @@ new Vue({
 		},
 	},
 });
+
+// Shows the link shortener.
+const showShortener = () => {
+	ipcRenderer.send("show-short");
+};
