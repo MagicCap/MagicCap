@@ -12,76 +12,76 @@ const PO = require("pofile");
 // Used to cache/get *.po files.
 const poCache = new Map();
 const getPoFile = async file => {
-	const cachedPo = poCache[file];
-	if (cachedPo !== undefined) {
-		return cachedPo;
-	}
+    const cachedPo = poCache[file];
+    if (cachedPo !== undefined) {
+        return cachedPo;
+    }
 
-	const fp = `${__dirname}/${config.language || "en"}/${file}.po`;
-	const _file = await readFile(fp);
-	const data = PO.parse(_file.toString());
+    const fp = `${__dirname}/${config.language || "en"}/${file}.po`;
+    const _file = await readFile(fp);
+    const data = PO.parse(_file.toString());
 
-	poCache[file] = data;
-	return data;
+    poCache[file] = data;
+    return data;
 };
 
 // Used to get a translated phrase from the file specified.
 const getPoPhrase = async(phrase, file) => {
-	let poFile;
-	try {
-		poFile = await getPoFile(file);
-	} catch (e) {
-		console.error(`Could not read/parse the PO file: ${file}\nError: ${e}`);
-		return phrase;
-	}
+    let poFile;
+    try {
+        poFile = await getPoFile(file);
+    } catch (e) {
+        console.error(`Could not read/parse the PO file: ${file}\nError: ${e}`);
+        return phrase;
+    }
 
-	for (const poItem of poFile.items) {
-		if (poItem.msgid === phrase) {
-			if (poItem.msgstr[0] !== "") {
-				return poItem.msgstr[0];
-			} else {
-				return phrase;
-			}
-		}
-	}
+    for (const poItem of poFile.items) {
+        if (poItem.msgid === phrase) {
+            if (poItem.msgstr[0] !== "") {
+                return poItem.msgstr[0];
+            } else {
+                return phrase;
+            }
+        }
+    }
 
-	return phrase;
+    return phrase;
 };
 
 // This is used to parse the HTML that needs translating.
 const htmlParseRegex = /\$.+\$/g;
 const poParseHtml = async htmlData => {
-	let htmlDone = htmlData;
-	const i18nThisDocumentation = await getPoPhrase("this documentation", "gui");
-	for (;;) {
-		const regexParse = htmlParseRegex.exec(htmlDone);
-		if (regexParse === null) {
-			break;
-		}
-		const parseWithoutDollars = regexParse[0].substring(1, regexParse[0].length - 1);
-		const poParsed = (await getPoPhrase(parseWithoutDollars, "gui"))
-			.replace(/&/g, "&amp;")
-			.replace(/</g, "&lt;")
-			.replace(/>/g, "&gt;")
-			.replace(/"/g, "&quot;")
-			.replace("{license}", '<a href="javascript:openMPL()">MPL-2.0</a>')
-			.replace("{acceleratorDocs}", `<a href="javascript:openAcceleratorDocs()">${i18nThisDocumentation}</a>`);
-		htmlDone = htmlDone.replace(regexParse[0], poParsed);
-	}
-	return htmlDone;
+    let htmlDone = htmlData;
+    const i18nThisDocumentation = await getPoPhrase("this documentation", "gui");
+    for (;;) {
+        const regexParse = htmlParseRegex.exec(htmlDone);
+        if (regexParse === null) {
+            break;
+        }
+        const parseWithoutDollars = regexParse[0].substring(1, regexParse[0].length - 1);
+        const poParsed = (await getPoPhrase(parseWithoutDollars, "gui"))
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace("{license}", '<a href="javascript:openMPL()">MPL-2.0</a>')
+            .replace("{acceleratorDocs}", `<a href="javascript:openAcceleratorDocs()">${i18nThisDocumentation}</a>`);
+        htmlDone = htmlDone.replace(regexParse[0], poParsed);
+    }
+    return htmlDone;
 };
 
 // Handles showing all of the language packs.
 const langPackInfo = new Map();
 for (const file of readdirSync(`${__dirname}`)) {
-	if (statSync(join(`${__dirname}`, file)).isDirectory()) {
-		langPackInfo[file] = nativeLangNames[file];
-	}
+    if (statSync(join(`${__dirname}`, file)).isDirectory()) {
+        langPackInfo[file] = nativeLangNames[file];
+    }
 }
 
 // Exports all the things.
 module.exports = {
-	getPoPhrase: getPoPhrase,
-	langPackInfo: langPackInfo,
-	poParseHtml: poParseHtml,
+    getPoPhrase: getPoPhrase,
+    langPackInfo: langPackInfo,
+    poParseHtml: poParseHtml,
 };

@@ -5,23 +5,23 @@ const { exec } = require("child_process");
 
 // Gets the dark theme information.
 const darkThemeInformation = () => new Promise(res => {
-	switch (process.platform) {
-		case "darwin": {
-			exec("defaults read -g AppleInterfaceStyle", (err, stdout) => {
-				if (err) {
-					res(false);
-				}
-				if (stdout) {
-					res(stdout === "Dark\n");
-				}
-				res(true);
-			});
-			break;
-		}
-		default: {
-			return true;
-		}
-	}
+    switch (process.platform) {
+        case "darwin": {
+            exec("defaults read -g AppleInterfaceStyle", (err, stdout) => {
+                if (err) {
+                    res(false);
+                }
+                if (stdout) {
+                    res(stdout === "Dark\n");
+                }
+                res(true);
+            });
+            break;
+        }
+        default: {
+            return true;
+        }
+    }
 });
 
 

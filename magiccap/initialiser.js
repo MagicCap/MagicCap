@@ -12,7 +12,7 @@ const newInstallId = require("./install_id");
 
 // Moves the legacy MagicCap captures file to "magiccap.db" if it exists.
 if (existsSync(`${homedir()}/magiccap_captures.db`)) {
-	renameSync(`${homedir()}/magiccap_captures.db`, `${homedir()}/magiccap.db`);
+    renameSync(`${homedir()}/magiccap_captures.db`, `${homedir()}/magiccap.db`);
 }
 
 // Imports the DB for further initialisation.
@@ -26,49 +26,49 @@ db.exec("CREATE TABLE IF NOT EXISTS `config` (`key` TEXT NOT NULL, `value` TEXT 
 
 // Creates the default config.
 async function getDefaultConfig() {
-	let pics_dir = app.getPath("pictures");
-	pics_dir += `${sep}MagicCap${sep}`;
-	let config = {
-		hotkey: null,
-		upload_capture: true,
-		uploader_type: "imgur",
-		clipboard_action: 2,
-		save_capture: true,
-		save_path: pics_dir,
-		light_theme: !await darkThemeInformation(),
-		install_id: await newInstallId(),
-	};
-	await ensureDir(config.save_path).catch(async error => {
-		if (!(error.errno === -4075 || error.errno === -17)) {
-			config.Remove("save_path");
-		}
-	});
-	return config;
+    let pics_dir = app.getPath("pictures");
+    pics_dir += `${sep}MagicCap${sep}`;
+    let config = {
+        hotkey: null,
+        upload_capture: true,
+        uploader_type: "imgur",
+        clipboard_action: 2,
+        save_capture: true,
+        save_path: pics_dir,
+        light_theme: !await darkThemeInformation(),
+        install_id: await newInstallId(),
+    };
+    await ensureDir(config.save_path).catch(async error => {
+        if (!(error.errno === -4075 || error.errno === -17)) {
+            config.Remove("save_path");
+        }
+    });
+    return config;
 }
 
 // Handles the configuration (migration).
 const { config, saveConfig } = require("./config");
 if (Object.keys(config).length === 0) {
-	if (existsSync(`${homedir()}/magiccap.json`)) {
-		const oldConfig = require(`${homedir()}/magiccap.json`);
-		unlinkSync(`${homedir()}/magiccap.json`);
-		for (const i in oldConfig) {
-			config[i] = oldConfig[i];
-		}
-		saveConfig();
-	} else {
-		getDefaultConfig().then(newConfig => {
-			for (const i in newConfig) {
-				config[i] = newConfig[i];
-			}
-			saveConfig();
-		});
-	}
+    if (existsSync(`${homedir()}/magiccap.json`)) {
+        const oldConfig = require(`${homedir()}/magiccap.json`);
+        unlinkSync(`${homedir()}/magiccap.json`);
+        for (const i in oldConfig) {
+            config[i] = oldConfig[i];
+        }
+        saveConfig();
+    } else {
+        getDefaultConfig().then(newConfig => {
+            for (const i in newConfig) {
+                config[i] = newConfig[i];
+            }
+            saveConfig();
+        });
+    }
 } else if (!config.install_id) {
-	newInstallId().then(installId => {
-		config.install_id = installId;
-		saveConfig();
-	});
+    newInstallId().then(installId => {
+        config.install_id = installId;
+        saveConfig();
+    });
 }
 
 // Requires the app.
