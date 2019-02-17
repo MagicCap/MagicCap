@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2019-02-10 20:48\n"
+"PO-Revision-Date: 2019-02-17 12:03\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -205,5 +205,9 @@ msgstr ""
 
 # gui/index.template.html:212
 msgid "Get stable and beta updates."
+msgstr ""
+
+# gui/index.template.html:32
+msgid "Link Shortener"
 msgstr ""
 
