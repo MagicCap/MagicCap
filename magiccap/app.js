@@ -281,9 +281,9 @@ const createContextMenu = async() => {
 
 const initialiseScript = async() => {
 	Sentry.configureScope(scope => {
-		scope.setUser({id: config.install_id});
+		scope.setUser({ id: config.install_id });
 	});
-	
+
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	await createContextMenu();
 	if (process.platform === "darwin") createMenu();

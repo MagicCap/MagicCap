@@ -16,7 +16,7 @@ const Sentry = require("@sentry/electron");
 
 // Configures the Sentry scope.
 Sentry.configureScope(scope => {
-	scope.setUser({id: config.install_id});
+	scope.setUser({ id: config.install_id });
 });
 
 // Sets the MagicCap version.
