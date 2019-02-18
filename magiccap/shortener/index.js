@@ -20,9 +20,9 @@ const showShortener = () => {
 		maximizable: false, alwaysOnTop: true,
 		minWidth: 500, minHeight: 200,
 	});
-	if (process.platform !== "darwin") shortenerWindow.setIcon(`${__dirname}/../icons/taskbar.png`);
+	if (process.platform !== "darwin") shortenerWindow.setIcon(`${path.join(__dirname, "..")}/icons/taskbar.png`);
 	shortenerWindow.setTitle("MagicCap Link Shortener");
-	shortenerWindow.loadFile(`${path.join(__dirname, "..")}/index.html`);
+	shortenerWindow.loadFile(`${__dirname}/index.html`);
 
 	shortenerWindow.on("closed", () => {
 		shortenerWindow = null;
