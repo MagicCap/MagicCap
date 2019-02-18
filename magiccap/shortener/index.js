@@ -3,6 +3,7 @@
 
 // Imports the things.
 const { BrowserWindow } = require("electron");
+const path = require("path");
 
 // Defines the window.
 let shortenerWindow = null;
@@ -21,7 +22,7 @@ const showShortener = () => {
 	});
 	if (process.platform !== "darwin") shortenerWindow.setIcon(`${__dirname}/../icons/taskbar.png`);
 	shortenerWindow.setTitle("MagicCap Link Shortener");
-	shortenerWindow.loadFile(`${__dirname}/index.html`);
+	shortenerWindow.loadFile(`${path.join(__dirname, "..")}/index.html`);
 
 	shortenerWindow.on("closed", () => {
 		shortenerWindow = null;
