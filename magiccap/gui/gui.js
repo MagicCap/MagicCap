@@ -11,6 +11,7 @@ const saveConfigToDb = require("../config").saveConfig;
 const { writeJSON, readdir, readJSON } = require("fs-nextra");
 const i18n = require("../i18n");
 const mconf = require("../mconf");
+const { join } = require("path");
 
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
@@ -342,10 +343,10 @@ const activeUploaderConfig = new Vue({
 			}
 
 			let view = this;
-			readdir(`${__dirname}/uploaders`).then(files => {
+			readdir(`${join(__dirname, "..")}/uploaders`).then(files => {
 				let filename = "";
 				for (const file in files) {
-					const import_ = require(`${__dirname}/uploaders/${files[file]}`);
+					const import_ = require(`${join(__dirname, "..")}/uploaders/${files[file]}`);
 					if (import_.name === view.uploader.name) {
 						filename = files[file].substring(0, files[file].length - 3);
 						break;
