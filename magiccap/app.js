@@ -14,6 +14,7 @@ const notifier = require("node-notifier");
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
 const i18n = require("./i18n");
 const { showShortener } = require("./shortener");
+const Sentry = require("@sentry/electron");
 // Main imports.
 
 global.importedUploaders = {};
@@ -279,6 +280,10 @@ const createContextMenu = async() => {
 };
 
 const initialiseScript = async() => {
+	Sentry.configureScope(scope => {
+		scope.setUser({id: config.install_id});
+	});
+	
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	await createContextMenu();
 	if (process.platform === "darwin") createMenu();
