@@ -9,6 +9,12 @@ const { sep } = require("path");
 const { homedir } = require("os");
 const { app } = require("electron");
 const newInstallId = require("./install_id");
+const { init } = require("@sentry/electron");
+
+// Initialises the Sentry SDK.
+init({
+	dsn: "https://968dcfa0651e40ddaa807bbe47b1aa91@sentry.io/1396847",
+});
 
 // Moves the legacy MagicCap captures file to "magiccap.db" if it exists.
 if (existsSync(`${homedir()}/magiccap_captures.db`)) {

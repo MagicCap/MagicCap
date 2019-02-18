@@ -12,6 +12,12 @@ const { writeJSON, readdir, readJSON } = require("fs-nextra");
 const i18n = require("../i18n");
 const mconf = require("../mconf");
 const { join } = require("path");
+const Sentry = require("@sentry/electron");
+
+// Configures the Sentry scope.
+Sentry.configureScope(scope => {
+	scope.setUser({ id: config.install_id });
+});
 
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`;
