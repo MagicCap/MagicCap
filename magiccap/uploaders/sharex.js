@@ -67,10 +67,6 @@ function parseShareXFile(parsedJson, fileType) {
 		throw new Error();
 	}
 
-	if (parsedJson.URL === undefined) {
-		throw new Error();
-	}
-
 	if (parsedJson.FileFormName === undefined) {
 		throw new Error();
 	}
@@ -88,95 +84,99 @@ function parseShareXResult(parsedSxcu, body) {
 	const parsing = {};
 
 	let result = parsedSxcu.resultUrl;
-	for (;;) {
-		const reExec = shareXRegex.exec(result);
-		if (reExec === null) {
-			break;
+	if (result === undefined) {
+		return body;
+	} else {
+		for (;;) {
+			const reExec = shareXRegex.exec(result);
+			if (reExec === null) {
+				break;
+			}
+
+			let reResult = reExec[0];
+			reResult = reResult.substring(1, reResult.length - 1);
+
+			const methodType = reResult.split(":")[0];
+			const methodArg = reResult.split(":")[1];
+
+			let res;
+
+			switch (methodType) {
+				case "json": {
+					if (parsing.set) {
+						if (parsing.set !== methodType) {
+							throw new Error("You cannot parse the result as XML and JSON.");
+						}
+					} else {
+						try {
+							parsing.set = methodType;
+							parsing.parsed = JSON.parse(body);
+						} catch (_) {
+							throw new Error("Unable to parse to JSON.");
+						}
+					}
+					try {
+						res = safeEval(`data.${methodArg}`, {
+							data: parsing.parsed,
+						});
+						if (res === undefined) {
+							throw new Error();
+						}
+					} catch (_) {
+						throw new Error("Could not get the argument specified.");
+					}
+					break;
+				}
+				case "xml": {
+					if (parsing.set) {
+						if (parsing.set !== methodType) {
+							throw new Error("You cannot parse the result as XML and JSON.");
+						}
+					} else {
+						try {
+							parsing.set = methodType;
+							const parser = new DOMParser();
+							parsing.parsed = parser.parseFromString(body, "text/xml");
+						} catch (_) {
+							throw new Error("Unable to parse to XML.");
+						}
+					}
+					try {
+						res = `${parsing.parsed.evaluate(body, parsing.parsed, null, XPathResult.ANY_TYPE).iterateNext().childNodes[0]}`;
+					} catch (_) {
+						throw new Error("Could not get the argument specified.");
+					}
+					break;
+				}
+				case "regex": {
+					const index = parseInt(methodArg);
+					if (isNaN(index)) {
+						throw new Error("Index couldn't be parsed to a integer.");
+					}
+					const indexRes = parsedSxcu.regexList[index - 1];
+					if (indexRes === undefined) {
+						throw new Error("Regex is undefined.");
+					}
+					const r = RegExp(indexRes).exec(body);
+					if (r === null) {
+						throw new Error("Regex specified not matched.");
+					}
+					res = r[0];
+					break;
+				}
+				default: {
+					throw new Error("Unknown ShareX parser.");
+				}
+			}
+
+			const start = result.substring(0, reExec.index);
+			const end = result.substring(reExec.index + reResult.length + 2, result.length);
+
+			result = `${start}${res}${end}`;
 		}
 
-		let reResult = reExec[0];
-		reResult = reResult.substring(1, reResult.length - 1);
-
-		const methodType = reResult.split(":")[0];
-		const methodArg = reResult.split(":")[1];
-
-		let res;
-
-		switch (methodType) {
-			case "json": {
-				if (parsing.set) {
-					if (parsing.set !== methodType) {
-						throw new Error("You cannot parse the result as XML and JSON.");
-					}
-				} else {
-					try {
-						parsing.set = methodType;
-						parsing.parsed = JSON.parse(body);
-					} catch (_) {
-						throw new Error("Unable to parse to JSON.");
-					}
-				}
-				try {
-					res = safeEval(`data.${methodArg}`, {
-						data: parsing.parsed,
-					});
-					if (res === undefined) {
-						throw new Error();
-					}
-				} catch (_) {
-					throw new Error("Could not get the argument specified.");
-				}
-				break;
-			}
-			case "xml": {
-				if (parsing.set) {
-					if (parsing.set !== methodType) {
-						throw new Error("You cannot parse the result as XML and JSON.");
-					}
-				} else {
-					try {
-						parsing.set = methodType;
-						const parser = new DOMParser();
-						parsing.parsed = parser.parseFromString(body, "text/xml");
-					} catch (_) {
-						throw new Error("Unable to parse to XML.");
-					}
-				}
-				try {
-					res = `${parsing.parsed.evaluate(body, parsing.parsed, null, XPathResult.ANY_TYPE).iterateNext().childNodes[0]}`;
-				} catch (_) {
-					throw new Error("Could not get the argument specified.");
-				}
-				break;
-			}
-			case "regex": {
-				const index = parseInt(methodArg);
-				if (isNaN(index)) {
-					throw new Error("Index couldn't be parsed to a integer.");
-				}
-				const indexRes = parsedSxcu.regexList[index - 1];
-				if (indexRes === undefined) {
-					throw new Error("Regex is undefined.");
-				}
-				const r = RegExp(indexRes).exec(body);
-				if (r === null) {
-					throw new Error("Regex specified not matched.");
-				}
-				res = r[0];
-				break;
-			}
-			default: {
-				throw new Error("Unknown ShareX parser.");
-			}
-		}
-
-		const start = result.substring(0, reExec.index);
-		const end = result.substring(reExec.index + reResult.length + 2, result.length);
-
-		result = `${start}${res}${end}`;
+		return result;
 	}
-
-	return result;
 }
 
 module.exports = {
