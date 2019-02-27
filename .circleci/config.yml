@@ -53,6 +53,7 @@ jobs:
   macbuild:
     macos:
       node: "10"
+      xcode: "10.2"
     working_directory: ~/repo/magiccap
     steps:
       - checkout:
