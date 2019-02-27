@@ -101,6 +101,7 @@ jobs:
   # Handles the final deploy.
 
 workflows:
+  version: 2
   test-build-and-deploy:
     jobs:
       - test
