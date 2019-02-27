@@ -44,7 +44,7 @@ jobs:
           command: npm run linuxcompile
       - run:
           name: Create a MagicCap Linux zip
-          command: cd ./build/MagicCap-linux-x64 && 7z a ./magiccap-linux.zip * && cd ../..
+          command: cd ./build/MagicCap-linux-x64 && zip -r ./magiccap-linux.zip . && cd ../..
       - run:
           name: Upload to Amazon S3
           command: aws s3 cp ./build/MagicCap-linux-x64/magiccap-linux.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
@@ -72,7 +72,7 @@ jobs:
           command: npm run maccompile
       - run:
           name: Rename the macOS dmg file
-          command: mv ./magiccap/build/MagicCap.dmg ./magiccap/build/magiccap-mac.dmg
+          command: mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
       - run:
           name: Create a MagicCap macOS zip
           command: cd ./build/MagicCap-darwin-x64 && 7z a ./magiccap-mac.zip * && cd ../..
