@@ -46,6 +46,11 @@ jobs:
           name: Create a MagicCap Linux zip
           command: cd ./build/MagicCap-linux-x64 && zip -r ./magiccap-linux.zip . && cd ../..
       - run:
+          name: Install the AWS CLI.
+          command: |
+            apk add --update python python-dev py-pip build-base
+            pip install awscli
+      - run:
           name: Upload to Amazon S3
           command: aws s3 cp ./build/MagicCap-linux-x64/magiccap-linux.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
   # Creates a build for Linux and uploads it to Amazon S3.
@@ -75,7 +80,12 @@ jobs:
           command: mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
       - run:
           name: Create a MagicCap macOS zip
-          command: cd ./build/MagicCap-darwin-x64 && 7z a ./magiccap-mac.zip * && cd ../..
+          command: cd ./build/MagicCap-darwin-x64 && zip -r ./magiccap-mac.zip . && cd ../..
+      - run:
+          name: Install the AWS CLI.
+          command: |
+            apk add --update python python-dev py-pip build-base
+            pip install awscli
       - run:
           name: Upload magiccap-mac.zip to Amazon S3
           command: aws s3 cp ./build/MagicCap-darwin-x64/magiccap-mac.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
@@ -88,6 +98,11 @@ jobs:
     docker:
       - image: circleci/golang:1.8
     steps:
+      - run:
+          name: Install the AWS CLI.
+          command: |
+            apk add --update python python-dev py-pip build-base
+            pip install awscli
       - run:
           name: Pull release from Amazon S3
           command: aws s3 sync ./current/ s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
