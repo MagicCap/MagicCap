@@ -47,7 +47,7 @@ jobs:
           command: cd ./build/MagicCap-linux-x64 && 7z a ./magiccap-linux.zip * && cd ../..
       - run:
           name: Upload to Amazon S3
-          command: aws s3 cp ./build/MagicCap-linux-x64/magiccap-linux.zip s3://s3.magiccap.me/upgrades/$CIRCLE_BRANCH/
+          command: aws s3 cp ./build/MagicCap-linux-x64/magiccap-linux.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
   # Creates a build for Linux and uploads it to Amazon S3.
 
   macbuild:
@@ -78,10 +78,10 @@ jobs:
           command: cd ./build/MagicCap-darwin-x64 && 7z a ./magiccap-mac.zip * && cd ../..
       - run:
           name: Upload magiccap-mac.zip to Amazon S3
-          command: aws s3 cp ./build/MagicCap-darwin-x64/magiccap-mac.zip s3://s3.magiccap.me/upgrades/$CIRCLE_BRANCH/
+          command: aws s3 cp ./build/MagicCap-darwin-x64/magiccap-mac.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
       - run:
           name: Upload magiccap-mac.dmg to Amazon S3
-          command: aws s3 cp ./build/magiccap-mac.dmg s3://s3.magiccap.me/upgrades/$CIRCLE_BRANCH/
+          command: aws s3 cp ./build/magiccap-mac.dmg s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
   # Creates a build for macOS and uploads it to Amazon S3.
 
   final_deploy:
@@ -90,13 +90,13 @@ jobs:
     steps:
       - run:
           name: Pull release from Amazon S3
-          command: aws s3 sync ./current/ s3://s3.magiccap.me/upgrades/$CIRCLE_BRANCH/
+          command: aws s3 sync ./current/ s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
       - run:
           name: Create GitHub release
-          command: go get github.com/tcnksm/ghr && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_BRANCH} ./current/
+          command: go get github.com/tcnksm/ghr && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} ./current/
       - run:
           name: Deploy to the MagicCap API
-          command: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
+          command: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$CIRCLE_TAG
   # Handles the final deploy.
 
 workflows:
