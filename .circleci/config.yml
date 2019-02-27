@@ -93,9 +93,7 @@ jobs:
         command: aws s3 sync ./current/ s3://s3.magiccap.me/upgrades/$CIRCLE_BRANCH/
       - run:
         name: Create GitHub release
-        command: |
-          go get github.com/tcnksm/ghr
-          ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_BRANCH} ./current/
+        command: go get github.com/tcnksm/ghr && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_BRANCH} ./current/
       - run:
         name: Deploy to the MagicCap API
         command: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$TRAVIS_TAG
