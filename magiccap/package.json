@@ -28,6 +28,7 @@
         "@sentry/electron": "0.15.0"
     },
     "devDependencies": {
+        "electron-builder": "20.26.1",
         "electron-packager": "13.0.1",
         "electron-installer-dmg": "2.0.0",
         "electron": "4.0.4",
@@ -35,6 +36,7 @@
         "lodash": ">=4.17.11"
     },
     "scripts": {
+        "postinstall": "electron-builder install-app-deps --arch x64",
         "lint": "eslint \"./**/*.js\"",
         "lint-and-fix": "eslint \"./**/*.js\" --fix",
         "maccompile": "electron-packager . MagicCap --platform darwin --arch x64 --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
