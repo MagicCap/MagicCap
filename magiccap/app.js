@@ -3,12 +3,13 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
-const { config } = require("./config");
-global.config = config;
+let { config: localConfig, saveConfig } = require("./config");
+global.config = localConfig;
+global.saveConfig = saveConfig;
 // Defines the config.
 
 const { readdir, readFile } = require("fs-nextra");
-const capture = require(`${__dirname}/capture.js`);
+let capture = require(`${__dirname}/capture.js`);
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = require("electron");
 const notifier = require("node-notifier");
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`);
@@ -92,7 +93,7 @@ const createMenu = async() => {
 
 // Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
 function getConfiguredUploaders() {
-	const default_uploader = nameUploaderMap[config.uploader_type];
+	const default_uploader = nameUploaderMap[localConfig.uploader_type];
 	let configured = [];
 	for (const uploaderName in importedUploaders) {
 		const uploader = importedUploaders[uploaderName];
@@ -102,7 +103,7 @@ function getConfiguredUploaders() {
 		let allOptions = true;
 		for (const optionName in uploader.config_options) {
 			const option = uploader.config_options[optionName];
-			if (!(option.value in config) && option.required && !option.default) {
+			if (!(option.value in localConfig) && option.required && !option.default) {
 				allOptions = false;
 				break;
 			}
@@ -114,7 +115,7 @@ function getConfiguredUploaders() {
 	return configured;
 }
 
-autoUpdateLoop(config);
+autoUpdateLoop();
 // Starts the autoupdate loop.
 
 if (app.dock) app.dock.hide();
@@ -158,7 +159,7 @@ async function openConfig() {
 
 	let vibrancy;
 	if (process.platform == "darwin") {
-		vibrancy = config.light_theme ? "light" : "sidebar";
+		vibrancy = localConfig.light_theme ? "light" : "sidebar";
 	} else {
 		vibrancy = undefined;
 	}
@@ -232,7 +233,7 @@ async function dropdownMenuUpload(uploader) {
 			}
 			const successi18n = await i18n.getPoPhrase("The file specified was uploaded successfully.", "app");
 			throwNotification(successi18n);
-			if (config.clipboard_action == 2) {
+			if (localConfig.clipboard_action == 2) {
 				clipboard.writeText(url);
 			}
 			await capture.logUpload(filename, true, url, path);
@@ -242,7 +243,7 @@ async function dropdownMenuUpload(uploader) {
 
 // Creates the context menu.
 const createContextMenu = async() => {
-	let c = config;
+	let c = localConfig;
 	let uploadDropdown = [];
 	const defaulti18n = await i18n.getPoPhrase("(Default)", "app");
 	if (nameUploaderMap[c.uploader_type] in importedUploaders) {
@@ -281,16 +282,16 @@ const createContextMenu = async() => {
 
 const initialiseScript = async() => {
 	Sentry.configureScope(scope => {
-		scope.setUser({ id: config.install_id });
+		scope.setUser({ id: localConfig.install_id });
 	});
 
 	tray = new Tray(`${__dirname}/icons/taskbar.png`);
 	await createContextMenu();
 	if (process.platform === "darwin") createMenu();
 
-	if (config.hotkey) {
+	if (localConfig.hotkey) {
 		try {
-			globalShortcut.register(config.hotkey, async() => {
+			globalShortcut.register(localConfig.hotkey, async() => {
 				thisShouldFixMacIssuesAndIdkWhy();
 				await runCapture(false);
 			});
@@ -308,6 +309,7 @@ ipcMain.on("show-short", () => {
 
 ipcMain.on("config-edit", async(event, data) => {
 	global.config = data;
+	localConfig = data;
 	await createContextMenu();
 });
 // When the config changes, this does.

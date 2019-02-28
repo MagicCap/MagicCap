@@ -8,7 +8,6 @@ const os = require("os");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
 const { clipboard, nativeImage } = require("electron");
-const { config } = require("./config");
 const i18n = require("./i18n");
 const captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`);
 // Imports go here.

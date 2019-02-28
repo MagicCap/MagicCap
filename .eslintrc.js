@@ -15,6 +15,7 @@ module.exports = {
 		nameUploaderMap: true,
 		tray: true,
 		Vue: true,
+		saveConfig: true,
 	},
 	rules: {
 		"no-compare-neg-zero": "error",

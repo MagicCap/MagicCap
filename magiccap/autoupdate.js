@@ -119,10 +119,7 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
 				} else {
 					config.ignored_updates = [updateInfo.current];
 				}
-				writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
-					console.log("Could not update the config.");
-				});
-				global.config = config;
+				saveConfig();
 				break;
 			case 1:
 				tempIgnore.push(updateInfo.current);
@@ -134,7 +131,7 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
 }
 
 // The actual autoupdate part.
-module.exports = async function autoUpdateLoop(config) {
+module.exports = async function autoUpdateLoop() {
 	if (config.autoupdate_on === false) {
 		return;
 	}
@@ -156,10 +153,7 @@ module.exports = async function autoUpdateLoop(config) {
 					case 2:
 						toCont = false;
 						config.autoupdate_on = false;
-						writeJSON(`${require("os").homedir()}/magiccap.json`, config).catch(async() => {
-							console.log("Could not update the config.");
-						});
-						global.config = config;
+						saveConfig();
 						break;
 					case 1:
 						toCont = false;
