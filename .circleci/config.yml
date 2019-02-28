@@ -96,7 +96,7 @@ jobs:
     steps:
       - run:
           name: Install the AWS CLI.
-          command: sudo apt update && apt install -y python-pip && pip install awscli --user
+          command: sudo apt update && sudo apt install -y python-pip && pip install awscli --user
       - run:
           name: Pull release from Amazon S3
           command: ~/.local/bin/aws s3 sync ./current/ s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
