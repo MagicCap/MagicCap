@@ -44,7 +44,7 @@ jobs:
           command: npm run linuxcompile
       - run:
           name: Create a MagicCap Linux zip
-          command: cd ./build/MagicCap-linux-x64 && zip -r ./magiccap-linux.zip . && cd ../..
+          command: cd ./build/MagicCap-linux-x64 && zip -9 -r ./magiccap-linux.zip . && cd ../..
       - run:
           name: Install the AWS CLI.
           command: sudo apt install -y python-pip && pip install awscli --user
@@ -78,7 +78,7 @@ jobs:
           command: mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
       - run:
           name: Create a MagicCap macOS zip
-          command: cd ./build/MagicCap-darwin-x64 && zip -r ./magiccap-mac.zip . && cd ../..
+          command: cd ./build/MagicCap-darwin-x64 && zip -9 -r ./magiccap-mac.zip . && cd ../..
       - run:
           name: Install the AWS CLI.
           command: HOMEBREW_NO_AUTO_UPDATE=1 brew install awscli
