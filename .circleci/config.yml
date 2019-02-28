@@ -47,7 +47,7 @@ jobs:
           command: cd ./build/MagicCap-linux-x64 && zip -r ./magiccap-linux.zip . && cd ../..
       - run:
           name: Install the AWS CLI.
-          command: apt install -y python-pip && pip install awscli
+          command: sudo apt install -y python-pip && pip install awscli
       - run:
           name: Upload to Amazon S3
           command: aws s3 cp ./build/MagicCap-linux-x64/magiccap-linux.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
@@ -81,7 +81,7 @@ jobs:
           command: cd ./build/MagicCap-darwin-x64 && zip -r ./magiccap-mac.zip . && cd ../..
       - run:
           name: Install the AWS CLI.
-          command: brew install awscli
+          command: HOMEBREW_NO_AUTO_UPDATE=1 brew install awscli
       - run:
           name: Upload magiccap-mac.zip to Amazon S3
           command: aws s3 cp ./build/MagicCap-darwin-x64/magiccap-mac.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
@@ -96,7 +96,7 @@ jobs:
     steps:
       - run:
           name: Install the AWS CLI.
-          command: apt install -y python-pip && pip install awscli
+          command: sudo apt install -y python-pip && pip install awscli
       - run:
           name: Pull release from Amazon S3
           command: aws s3 sync ./current/ s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
