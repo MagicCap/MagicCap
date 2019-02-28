@@ -102,7 +102,7 @@ jobs:
           command: mkdir ./current/  
       - run:
           name: Pull release from Amazon S3
-          command: ~/.local/bin/aws s3 sync ./current/ s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/
+          command: ~/.local/bin/aws s3 cp s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/ current --recursive
       - run:
           name: Create GitHub release
           command: go get github.com/tcnksm/ghr && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} ./current/
