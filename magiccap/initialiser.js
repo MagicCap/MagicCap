@@ -37,7 +37,7 @@ async function getDefaultConfig() {
 	let config = {
 		hotkey: null,
 		upload_capture: true,
-		uploader_type: "imgur",
+		uploader_type: "magiccap",
 		clipboard_action: 2,
 		save_capture: true,
 		save_path: pics_dir,
