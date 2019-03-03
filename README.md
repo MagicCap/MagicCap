@@ -39,6 +39,7 @@ MagicCap supports the following uploaders (this list will expand over time):
 The following people have done a ton to help in the creation of MagicCap. If you have done something to help and want your name here, feel free to make a pull request. This is in alphabetical order, not the order of the work people have done:
 - Devon (Da532) - Made all of the branding.
 - Harrison (AO554) - Helped us test for Mac.
+- Jacob (Kelwing) - Helped with some Go towards the project.
 - Jake (JakeMakesStuff) - Made the majority of the GUI/capture code for MagicCap.
 - Jake (techfan36) - Helped us test for Linux.
 - Rhys (SunburntRock89) - Helped me with the structure and fixing bugs. Also fixed FTP.
