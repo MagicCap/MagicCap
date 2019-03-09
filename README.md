@@ -51,3 +51,6 @@ In order to download needed packages, run `npm i`. This will get all of the need
 
 ## Mac Note
 If you are on Mac, you'll need to download XCode.
+
+# More Information
+For more information on installation/configuration and compiling, please refer to docs/index.md (https://github.com/MagicCap/MagicCap/blob/master/docs/index.md)
