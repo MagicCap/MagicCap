@@ -68,7 +68,7 @@ module.exports = class CaptureHandler {
 	static async createCapture(file_path) {
 		const selection = await selector();
 		if (!selection) {
-			return;
+			throw new Error("Screenshot cancelled.");
 		}
 		const displayFull = selection.screenshots[selection.display];
 		const cropped = await sharp(displayFull)
@@ -82,9 +82,7 @@ module.exports = class CaptureHandler {
 		if (file_path) {
 			await fsnextra.writeFile(file_path, cropped);
 		}
-		if (cropped) {
-			return cropped;
-		}
+		return cropped;
 	}
 	// Creates a screen capture.
 
