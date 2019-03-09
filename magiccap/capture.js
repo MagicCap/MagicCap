@@ -10,6 +10,8 @@ const fsnextra = require("fs-nextra");
 const { clipboard, nativeImage } = require("electron");
 const i18n = require("./i18n");
 const captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`);
+const selector = require("magiccap-selector");
+const sharp = require("sharp");
 // Imports go here.
 
 const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)");
@@ -64,71 +66,37 @@ module.exports = class CaptureHandler {
 	// Logs uploads.
 
 	static async createCapture(file_path) {
-		let cap_location, clipboard_before, clipboard_after, result;
-		let args = [];
-		switch (process.platform) {
-			case "linux":
-			case "darwin": {
-				if (process.platform === "darwin") {
-					cap_location = "/usr/sbin/screencapture";
-					args.push("-i");
-				} else {
-					cap_location = "gnome-screenshot";
-					args.push("-bap");
-					args.push("-f");
-				}
-				args.push(file_path);
-				let capture = child_process.spawn(cap_location, args);
-				try {
-					await async_child_process.join(capture);
-				} catch (_) {
-					if (!(process.platform === "darwin" && _.code === 1)) {
-						const i18nCaptureFailed = await i18n.getPoPhrase("The screenshot capturing/saving failed.", "capture");
-						throw new Error(i18nCaptureFailed);
-					}
-				}
-				result = await fsnextra.readFile(file_path).catch(async() => {
-					throw new Error("Screenshot cancelled.");
-				});
-				break;
-			}
-			case "win32": {
-				try {
-					await async_child_process.execAsync("snippingtool /clip");
-					clipboard_after = clipboard.readImage();
-				} catch (_) { break; }
-				result = clipboard_after.toPNG();
-				await fsnextra.writeFile(file_path, result).catch(async() => {
-					const i18nUnableToWrite = await i18n.getPoPhrase("Failed to write captured file.", "capture");
-					throw new Error(i18nUnableToWrite);
-				});
-				if (result.length == 0) {
-					throw new Error("Screenshot cancelled.");
-				}
-				break;
-			}
-			default: {
-				const i18nNotSupported = await i18n.getPoPhrase("Platform not supported for screen capture.", "capture");
-				throw new Error(i18nNotSupported);
-			}
+		const selection = await selector();
+		if (!selection) {
+			return;
 		}
-		if (result) return result;
+		const displayFull = selection.screenshots[selection.display];
+		const cropped = await sharp(displayFull)
+			.extract({
+				top: selection.start.pageY,
+				left: selection.start.pageX,
+				width: selection.width,
+				height: selection.height,
+			})
+			.toBuffer();
+		if (file_path) {
+			await fsnextra.writeFile(file_path, cropped);
+		}
+		if (cropped) {
+			return cropped;
+		}
 	}
 	// Creates a screen capture.
 
 	static async handleScreenshotting(filename) {
-		let delete_after = true;
-		let save_path, uploader_type, uploader_file, url, uploader, key;
+		let save_path = null;
+		let uploader_type, url, uploader, key;
 		if (config.save_capture) {
 			save_path = config.save_path + filename;
-			delete_after = false;
-		} else {
-			save_path = `${os.tmpdir()}/${filename}`;
 		}
 		let buffer = await this.createCapture(save_path);
 		if (config.upload_capture) {
 			uploader_type = config.uploader_type;
-			uploader_file = `${__dirname}/uploaders/${uploader_type}.js`;
 			const uploaderName = nameUploaderMap[uploader_type];
 			if (uploaderName === undefined) {
 				const notFoundi18n = await i18n.getPoPhrase("Uploader not found.", "capture");
@@ -169,13 +137,6 @@ module.exports = class CaptureHandler {
 					);
 				}
 			}
-		}
-		if (delete_after) {
-			await fsnextra.unlink(save_path).catch(async() => {
-				const noDeletei18n = await i18n.getPoPhrase("Could not delete capture.", "capture");
-				throw new Error(noDeletei18n);
-			});
-			save_path = null;
 		}
 		await this.logUpload(filename, true, url, save_path);
 		const i18nResult = await i18n.getPoPhrase("Image successfully captured.", "capture");
