@@ -28,7 +28,8 @@
         "@sentry/electron": "0.15.0",
         "magiccap-selector": "git+https://git@github.com/MagicCap/magiccap-selector.git",
         "sharp": "0.21.3",
-        "gifman": "1.0.0"
+        "gifman": "1.0.1",
+        "aperture": "5.2.0"
     },
     "devDependencies": {
         "electron-builder": "20.26.1",

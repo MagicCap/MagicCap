@@ -78,7 +78,18 @@ module.exports = class CaptureHandler {
 
 		if (gif) {
 			inGif = true;
-			await gifman.start(15, selection.start.x, selection.start.y, selection.width, selection.height);
+			const displays = require("electron").screen.getAllDisplays().sort((a, b) => {
+				let sub = a.bounds.x - b.bounds.x;
+				if (sub === 0) {
+					if (a.bounds.y > b.bounds.y) {
+						sub -= 1;
+					} else {
+						sub += 1;
+					}
+				}
+				return sub;
+			});
+			await gifman.start(15, selection.start.pageX, selection.start.pageY, selection.width, selection.height, displays[selection.display].id);
 			const gifIcon = new Tray(`${__dirname}/icons/taskbar.png`);
 			await new Promise(res => {
 				gifIcon.once("click", () => {
