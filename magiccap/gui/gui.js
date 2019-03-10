@@ -149,6 +149,12 @@ async function runCapture() {
 	await remote.getGlobal("runCapture")();
 }
 
+// Runs GIF capture.
+async function runGifCapture() {
+	await remote.getGlobal("runCapture")(true);
+}
+
+
 // Shows the about page.
 function showAbout() {
 	document.getElementById("about").classList.add("is-active");
@@ -185,18 +191,30 @@ function showHotkeyConfig() {
 // Allows you to close the hotkey config.
 async function hotkeyConfigClose() {
 	const text = document.getElementById("screenshotHotkey").value;
+	const gifText = document.getElementById("gifHotkey").value;
+
 	if (config.hotkey !== text) {
 		if (text === "") {
-			ipcRenderer.send("hotkey-unregister");
 			config.hotkey = null;
 			await saveConfig();
 		} else {
-			ipcRenderer.send("hotkey-unregister");
 			config.hotkey = text;
 			await saveConfig();
-			ipcRenderer.send("hotkey-change", text);
 		}
 	}
+
+	if (config.gif_hotkey !== gifText) {
+		if (text === "") {
+			config.gif_hotkey = null;
+			await saveConfig();
+		} else {
+			config.gif_hotkey = gifText;
+			await saveConfig();
+		}
+	}
+
+	ipcRenderer.send("hotkey-change", config);
+
 	document.getElementById("hotkeyConfig").classList.remove("is-active");
 }
 
@@ -209,6 +227,7 @@ function openAcceleratorDocs() {
 new Vue({
 	el: "#hotkeyConfigBody",
 	data: {
+		gifHotkey: config.gif_hotkey || "",
 		screenshotHotkey: config.hotkey || "",
 	},
 });

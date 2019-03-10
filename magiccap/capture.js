@@ -2,17 +2,18 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const child_process = require("child_process");
-const async_child_process = require("async-child-process");
-const os = require("os");
+const gifman = require("gifman");
 const moment = require("moment");
 const fsnextra = require("fs-nextra");
-const { clipboard, nativeImage } = require("electron");
+const { clipboard, nativeImage, Tray } = require("electron");
 const i18n = require("./i18n");
 const captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`);
 const selector = require("magiccap-selector");
 const sharp = require("sharp");
 // Imports go here.
+
+let inGif = false;
+// Defines if we are in a GIF.
 
 const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)");
 // Defines the capture statement.
@@ -36,7 +37,7 @@ module.exports = class CaptureHandler {
 	}
 	// Generates the random characters.
 
-	static async createCaptureFilename() {
+	static async createCaptureFilename(gif) {
 		let filename = "screenshot_%date%_%time%";
 		if (config.file_naming_pattern) {
 			filename = config.file_naming_pattern;
@@ -44,7 +45,7 @@ module.exports = class CaptureHandler {
 		filename = this.renderRandomChars(filename
 			.replace(/%date%/g, moment().format("DD-MM-YYYY"))
 			.replace(/%time%/g, moment().format("HH-mm-ss")));
-		return `${filename}.png`;
+		return `${filename}.${gif ? "gif" : "png"}`;
 	}
 	// Makes a nice filename for screen captures.
 
@@ -65,34 +66,55 @@ module.exports = class CaptureHandler {
 	}
 	// Logs uploads.
 
-	static async createCapture(file_path) {
+	static async createCapture(file_path, gif) {
+		if (gif && inGif) {
+			throw new Error("Screenshot cancelled.");
+		}
+
 		const selection = await selector();
 		if (!selection) {
 			throw new Error("Screenshot cancelled.");
 		}
-		const displayFull = selection.screenshots[selection.display];
-		const cropped = await sharp(displayFull)
-			.extract({
-				top: selection.start.pageY,
-				left: selection.start.pageX,
-				width: selection.width,
-				height: selection.height,
-			})
-			.toBuffer();
-		if (file_path) {
-			await fsnextra.writeFile(file_path, cropped);
+
+		if (gif) {
+			inGif = true;
+			await gifman.start(15, selection.start.x, selection.start.y, selection.width, selection.height);
+			const gifIcon = new Tray(`${__dirname}/icons/taskbar.png`);
+			await new Promise(res => {
+				gifIcon.once("click", () => {
+					res();
+				});
+			});
+			gifIcon.setImage(`${__dirname}/icons/s3.png`);
+			const buffer = await gifman.stop();
+			await gifIcon.destroy();
+			inGif = false;
+			return buffer;
+		} else {
+			const displayFull = selection.screenshots[selection.display];
+			const cropped = await sharp(displayFull)
+				.extract({
+					top: selection.start.pageY,
+					left: selection.start.pageX,
+					width: selection.width,
+					height: selection.height,
+				})
+				.toBuffer();
+			if (file_path) {
+				await fsnextra.writeFile(file_path, cropped);
+			}
+			return cropped;
 		}
-		return cropped;
 	}
 	// Creates a screen capture.
 
-	static async handleScreenshotting(filename) {
+	static async handleScreenshotting(filename, gif) {
 		let save_path = null;
 		let uploader_type, url, uploader, key;
 		if (config.save_capture) {
 			save_path = config.save_path + filename;
 		}
-		let buffer = await this.createCapture(save_path);
+		let buffer = await this.createCapture(save_path, gif);
 		if (config.upload_capture) {
 			uploader_type = config.uploader_type;
 			const uploaderName = nameUploaderMap[uploader_type];
@@ -111,7 +133,7 @@ module.exports = class CaptureHandler {
 					}
 				}
 			}
-			url = await uploader.upload(buffer, "png", filename);
+			url = await uploader.upload(buffer, gif ? "gif" : "png", filename);
 		}
 		if (config.clipboard_action) {
 			switch (config.clipboard_action) {

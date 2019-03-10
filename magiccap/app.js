@@ -133,10 +133,10 @@ function throwNotification(result) {
 }
 // Throws a notification.
 
-async function runCapture(windowedCapture) {
-	const filename = await capture.createCaptureFilename();
+async function runCapture(gif) {
+	const filename = await capture.createCaptureFilename(gif);
 	try {
-		const result = await capture.handleScreenshotting(filename, windowedCapture);
+		const result = await capture.handleScreenshotting(filename, gif);
 		throwNotification(result);
 	} catch (err) {
 		if (err.message !== "Screenshot cancelled.") {
@@ -266,12 +266,14 @@ const createContextMenu = async() => {
 		);
 	}
 	const i18nSelect = await i18n.getPoPhrase("Screen Capture", "app");
+	const i18nGif = await i18n.getPoPhrase("GIF Capture", "app");
 	const i18nConfig = await i18n.getPoPhrase("Config", "app");
 	const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app");
 	const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app");
 	const i18nExit = await i18n.getPoPhrase("Exit", "app");
 	const contextMenu = Menu.buildFromTemplate([
 		{ label: i18nSelect, type: "normal", click: async() => { await runCapture(false); } },
+		{ label: i18nGif, type: "normal", click: async() => { await runCapture(true); } },
 		{ label: i18nConfig, type: "normal", click: openConfig },
 		{ label: i18nShort, type: "normal", click: showShortener },
 		{ label: i18nUploadTo, submenu: uploadDropdown },
@@ -299,6 +301,17 @@ const initialiseScript = async() => {
 			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
 		}
 	}
+
+	if (localConfig.gif_hotkey) {
+		try {
+			globalShortcut.register(localConfig.gif_hotkey, async() => {
+				thisShouldFixMacIssuesAndIdkWhy();
+				await runCapture(true);
+			});
+		} catch (_) {
+			dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
+		}
+	}
 };
 // Initialises the script.
 
@@ -314,12 +327,21 @@ ipcMain.on("config-edit", async(event, data) => {
 });
 // When the config changes, this does.
 
-ipcMain.on("hotkey-change", async(event, hotkey) => {
+ipcMain.on("hotkey-change", async(event, c) => {
 	try {
-		globalShortcut.register(hotkey, async() => {
-			thisShouldFixMacIssuesAndIdkWhy();
-			await runCapture(false);
-		});
+		globalShortcut.unregisterAll();
+		if (c.hotkey) {
+			globalShortcut.register(c.hotkey, async() => {
+				thisShouldFixMacIssuesAndIdkWhy();
+				await runCapture(false);
+			});
+		}
+		if (c.gif_hotkey) {
+			globalShortcut.register(c.gif_hotkey, async() => {
+				thisShouldFixMacIssuesAndIdkWhy();
+				await runCapture(true);
+			});
+		}
 	} catch (_) {
 		dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"));
 	}
@@ -328,11 +350,6 @@ ipcMain.on("hotkey-change", async(event, hotkey) => {
 
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders; });
 // The get uploaders IPC.
-
-ipcMain.on("hotkey-unregister", async event => {
-	globalShortcut.unregisterAll();
-});
-// Unregisters all hotkeys.
 
 app.on("ready", initialiseScript);
 // The app is ready to rock!
