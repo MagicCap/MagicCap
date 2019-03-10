@@ -9,7 +9,7 @@ const { clipboard, nativeImage, Tray } = require("electron");
 const i18n = require("./i18n");
 const captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`);
 const selector = require("magiccap-selector");
-const sharp = require("sharp");
+const sharp = require("electron-sharp");
 // Imports go here.
 
 let inGif = false;
@@ -89,17 +89,21 @@ module.exports = class CaptureHandler {
 				}
 				return sub;
 			});
-			await gifman.start(15, selection.start.pageX, selection.start.pageY, selection.width, selection.height, displays[selection.display].id);
-			const gifIcon = new Tray(`${__dirname}/icons/taskbar.png`);
+			const thisDisplay = displays[selection.display];
+			await gifman.start(15, selection.start.pageX, selection.start.pageY, selection.width, selection.height, thisDisplay.id);
+			const gifIcon = new Tray(`${__dirname}/icons/stop.png`);
 			await new Promise(res => {
 				gifIcon.once("click", () => {
 					res();
 				});
 			});
-			gifIcon.setImage(`${__dirname}/icons/s3.png`);
+			gifIcon.setImage(`${__dirname}/icons/cog.png`);
 			const buffer = await gifman.stop();
 			await gifIcon.destroy();
 			inGif = false;
+			if (file_path) {
+				await fsnextra.writeFile(file_path, buffer);
+			}
 			return buffer;
 		} else {
 			const displayFull = selection.screenshots[selection.display];
