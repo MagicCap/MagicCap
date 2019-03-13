@@ -415,7 +415,7 @@ const optionWebviewBodge = option => {
 			});
 		}
 	}, 200);
-}
+};
 
 // Shows the uploader config page.
 function showUploaderConfig() {
@@ -457,7 +457,7 @@ new Vue({
 							config[option.value] = config[option.value] || false;
 							saveConfig();
 						}
-						
+
 						optionWebviewBodge(option);
 						break;
 					}

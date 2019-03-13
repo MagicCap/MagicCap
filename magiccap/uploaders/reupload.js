@@ -24,9 +24,9 @@ module.exports = {
 			case "gif":
 			case "bmp": {
 				const res = await put("https://api.reupload.gg/image")
-							.set("Content-Type", `image/${fileType}`)
-							.set("Authorization", config.reupload_token)				
-							.send(buffer);
+					.set("Content-Type", `image/${fileType}`)
+					.set("Authorization", config.reupload_token)
+					.send(buffer);
 				return res.body.url;
 			}
 			default: {
