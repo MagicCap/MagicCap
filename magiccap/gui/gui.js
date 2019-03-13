@@ -280,7 +280,7 @@ const activeUploaderConfig = new Vue({
             options: {},
         },
         exception: "",
-        userAgent: `MagicCap v${remote.app.getVersion()}; ${config.install_id}`,
+        userAgent: `MagicCap ${remote.app.getVersion()}; ${config.install_id}`,
     },
     methods: {
         getDefaultValue: option => {
