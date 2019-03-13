@@ -280,6 +280,7 @@ const activeUploaderConfig = new Vue({
 			options: {},
 		},
 		exception: "",
+		userAgent: `MagicCap v${remote.app.getVersion()}; ${config.install_id}`,
 	},
 	methods: {
 		getDefaultValue: option => {
@@ -301,9 +302,18 @@ const activeUploaderConfig = new Vue({
 					if (option.default !== undefined) {
 						return option.default;
 					}
+					if (option.type === "token_from_json") {
+						return undefined;
+					}
 					return "";
 				}
 			}
+		},
+		resetValue(option) {
+			delete config[option.value];
+			saveConfig();
+			this.$forceUpdate();
+			optionWebviewBodge(option);
 		},
 		changeOption: option => {
 			let res = document.getElementById(option.value).value;
@@ -385,6 +395,28 @@ const activeUploaderConfig = new Vue({
 	},
 });
 
+// The Art of the Bodge: How I Made The Emoji Keyboard <https://www.youtube.com/watch?v=lIFE7h3m40U>
+const optionWebviewBodge = option => {
+	setTimeout(() => {
+		const x = document.getElementById(option.value);
+		if (x) {
+			x.addEventListener("did-navigate", async urlInfo => {
+				const url = urlInfo.url;
+				if (url.match(new RegExp(option.endUrlRegex))) {
+					const webContents = document.getElementById(option.value).getWebContents();
+					const data = JSON.parse(await webContents.executeJavaScript("document.documentElement.innerText")).token;
+					if (data) {
+						config[option.value] = data;
+						saveConfig();
+						activeUploaderConfig.$set(activeUploaderConfig.uploader.options, option.value, data);
+						activeUploaderConfig.$forceUpdate();
+					}
+				}
+			});
+		}
+	}, 200);
+}
+
 // Shows the uploader config page.
 function showUploaderConfig() {
 	document.getElementById("uploaderConfig").classList.add("is-active");
@@ -409,6 +441,7 @@ new Vue({
 				switch (option.type) {
 					case "text":
 					case "integer":
+					case "token_from_json":
 					case "password":
 					case "boolean": {
 						options.push({
@@ -416,12 +449,16 @@ new Vue({
 							value: option.value,
 							default: option.default,
 							required: option.required,
+							startUrl: option.startUrl,
+							endUrlRegex: option.endUrlRegex,
 							translatedName: translatedOption,
 						});
 						if (option.type === "boolean") {
 							config[option.value] = config[option.value] || false;
 							saveConfig();
 						}
+						
+						optionWebviewBodge(option);
 						break;
 					}
 					case "object": {

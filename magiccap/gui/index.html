@@ -122,6 +122,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div v-else-if="option.type === 'token_from_json'">
+                                <div class="field">
+                                    <label class="label">{{ option.translatedName }}:</label>
+                                    <div v-if="getDefaultValue(option) === undefined">
+                                        <webview :id="option.value" :src="option.startUrl" :useragent="userAgent" style="height: 450px"></webview>
+                                    </div>
+                                    <div v-else>
+                                        <p>Already set. Do you want to <a v-on:click="resetValue(option)">reset this value?</a></p>
+                                    </div>
+                                </div>
+                            </div>
                             <div v-else-if="option.type === 'password'">
                                 <div class="field">
                                     <label class="label">{{ option.translatedName }}:</label>

@@ -94,3 +94,7 @@ msgstr ""
 # uploaders/sharex.js:220
 msgid "File type not allowed by this SXCU."
 msgstr ""
+
+# uploaders/reupload.js:32
+msgid "Invalid format for this uploader."
+msgstr ""
