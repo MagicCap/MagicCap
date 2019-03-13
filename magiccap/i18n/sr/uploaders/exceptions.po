@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr_CS\n"
-"PO-Revision-Date: 2019-02-07 10:58\n"
+"PO-Revision-Date: 2019-03-13 19:09\n"
 
 # uploaders/breadmoe.js:31
 # uploaders/elixire.js:25
@@ -107,5 +107,9 @@ msgstr ""
 
 # uploaders/sharex.js:220
 msgid "File type not allowed by this SXCU."
+msgstr ""
+
+# uploaders/reupload.js:32
+msgid "Invalid format for this uploader."
 msgstr ""
 
