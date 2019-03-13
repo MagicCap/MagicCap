@@ -3,6 +3,7 @@
 
 const { put } = require("chainfetch")
 const i18n = require("../i18n")
+const { app } = require("electron")
 
 module.exports = {
     name: "reUpload",
@@ -26,6 +27,7 @@ module.exports = {
                 const res = await put("https://api.reupload.gg/image")
                     .set("Content-Type", `image/${fileType}`)
                     .set("Authorization", config.reupload_token)
+                    .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.install_id}`)
                     .send(buffer)
                 return res.body.url
             }
