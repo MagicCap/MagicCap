@@ -55,6 +55,9 @@ async function getDefaultConfig() {
 // Puts the lite touch configuration into memory if it exists.
 if (existsSync("/usr/share/magiccap_deployment_info.json")) {
     global.liteTouchConfig = require("/usr/share/magiccap_deployment_info.json")
+    if (global.liteTouchConfig.config.save_path && global.liteTouchConfig.config.save_path.startsWith("$H")) {
+        global.liteTouchConfig.config.save_path = global.liteTouchConfig.config.save_path.replace("$H", homedir())
+    }
 } else {
     global.liteTouchConfig = undefined
 
