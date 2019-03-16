@@ -3,8 +3,11 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
-// The needed imports.
+// Gets the lite touch configuration.
 const { ipcRenderer, remote, shell } = require("electron")
+global.liteTouchConfig = remote.getGlobal("liteTouchConfig")
+
+// The needed imports.
 const { dialog } = require("electron").remote
 const config = require("../config").config
 const saveConfigToDb = require("../config").saveConfig
@@ -17,6 +20,28 @@ const Sentry = require("@sentry/electron")
 // Configures the Sentry scope.
 Sentry.configureScope(scope => {
     scope.setUser({ id: config.install_id })
+})
+
+// Defines the about menu.
+new Vue({
+    el: "#about",
+    data: {
+        liteTouch: global.liteTouchConfig !== undefined,
+    },
+})
+
+// Handles the sidebar buttons.
+new Vue({
+    el: "#sidebar",
+    data: {
+        clipboardAction: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.ClipboardAction : true,
+        hotkeyConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.HotkeyConfig : true,
+        uploaderConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.UploaderConfig : true,
+        betaUpdates: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.BetaUpdates : true,
+        toggleTheme: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.ToggleTheme : true,
+        fileConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.FileConfig : true,
+        shortener: global.liteTouchConfig ? global.liteTouchConfig.link_shortener_allowed : true,
+    },
 })
 
 // Sets the MagicCap version.

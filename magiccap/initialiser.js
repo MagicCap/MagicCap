@@ -52,29 +52,36 @@ async function getDefaultConfig() {
     return config
 }
 
-// Handles the configuration (migration).
-const { config, saveConfig } = require("./config")
-if (Object.keys(config).length === 0) {
-    if (existsSync(`${homedir()}/magiccap.json`)) {
-        const oldConfig = require(`${homedir()}/magiccap.json`)
-        unlinkSync(`${homedir()}/magiccap.json`)
-        for (const i in oldConfig) {
-            config[i] = oldConfig[i]
-        }
-        saveConfig()
-    } else {
-        getDefaultConfig().then(newConfig => {
-            for (const i in newConfig) {
-                config[i] = newConfig[i]
+// Puts the lite touch configuration into memory if it exists.
+if (existsSync("/usr/share/magiccap_deployment_info.json")) {
+    global.liteTouchConfig = require("/usr/share/magiccap_deployment_info.json");
+} else {
+    global.liteTouchConfig = undefined
+
+    // Handles the configuration (migration).
+    const { config, saveConfig } = require("./config")
+    if (Object.keys(config).length === 0) {
+        if (existsSync(`${homedir()}/magiccap.json`)) {
+            const oldConfig = require(`${homedir()}/magiccap.json`)
+            unlinkSync(`${homedir()}/magiccap.json`)
+            for (const i in oldConfig) {
+                config[i] = oldConfig[i]
             }
+            saveConfig()
+        } else {
+            getDefaultConfig().then(newConfig => {
+                for (const i in newConfig) {
+                    config[i] = newConfig[i]
+                }
+                saveConfig()
+            })
+        }
+    } else if (!config.install_id) {
+        newInstallId().then(installId => {
+            config.install_id = installId
             saveConfig()
         })
     }
-} else if (!config.install_id) {
-    newInstallId().then(installId => {
-        config.install_id = installId
-        saveConfig()
-    })
 }
 
 // Requires the app.

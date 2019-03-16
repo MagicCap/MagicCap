@@ -271,14 +271,17 @@ const createContextMenu = async() => {
     const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app")
     const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app")
     const i18nExit = await i18n.getPoPhrase("Exit", "app")
-    const contextMenu = Menu.buildFromTemplate([
+    const contextMenuTmp = [
         { label: i18nSelect, type: "normal", click: async() => { await runCapture(false) } },
         { label: i18nGif, type: "normal", click: async() => { await runCapture(true) } },
         { label: i18nConfig, type: "normal", click: openConfig },
-        { label: i18nShort, type: "normal", click: showShortener },
         { label: i18nUploadTo, submenu: uploadDropdown },
         { label: i18nExit, type: "normal", role: "quit" },
-    ])
+    ]
+    if (global.liteTouchConfig ? global.liteTouchConfig.link_shortener_allowed : true) {
+        contextMenuTmp.splice(3, 0, { label: i18nShort, type: "normal", click: showShortener })
+    }
+    const contextMenu = Menu.buildFromTemplate(contextMenuTmp)
     tray.setContextMenu(contextMenu)
 }
 
