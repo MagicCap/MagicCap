@@ -2,8 +2,9 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Requirements go here.
+const magicImports = require("magicimports")
 const { machineId } = require("node-machine-id")
-const { get } = require("chainfetch")
+const { get } = magicImports("chainfetch")
 
 // Creates the install ID.
 module.exports = async function newInstallId() {

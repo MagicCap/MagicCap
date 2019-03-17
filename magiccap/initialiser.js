@@ -2,12 +2,13 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Requirements for initialisation.
-const { existsSync, renameSync, unlinkSync } = require("fs")
-const { ensureDir } = require("fs-nextra")
-const { darkThemeInformation } = require("./system_dark_theme")
-const { sep } = require("path")
-const { homedir } = require("os")
-const { app } = require("electron")
+const magicImports = require("magicimports")
+const { existsSync, renameSync, unlinkSync } = magicImports("fs")
+const { ensureDir } = magicImports("fs-nextra")
+const { darkThemeInformation } = magicImports("./system_dark_theme")
+const { sep } = magicImports("path")
+const { homedir } = magicImports("os")
+const { app } = magicImports("electron")
 const newInstallId = require("./install_id")
 const { init } = require("@sentry/electron")
 

@@ -3,9 +3,10 @@
 
 // eslint-disable no-inline-comments
 
-const { post } = require("chainfetch")
-const { readFile } = require("fs-nextra")
-const safeEval = require("safe-eval")
+const magicImports = require("magicimports")
+const { post } = magicImports("chainfetch")
+const { readFile } = magicImports("fs-nextra")
+const safeEval = magicImports("safe-eval")
 
 // Defines image extensions for parsing.
 const imageExtensions = [

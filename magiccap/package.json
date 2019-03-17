@@ -28,7 +28,8 @@
         "@sentry/electron": "0.15.0",
         "magiccap-selector": "1.0.7",
         "electron-sharp": "0.20.8",
-        "gifman": "1.0.1"
+        "gifman": "1.0.1",
+        "magicimports": "1.0.0"
     },
     "devDependencies": {
         "electron-builder": "20.26.1",

@@ -2,9 +2,10 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const { post } = require("chainfetch")
-const i18n = require("../i18n")
-const { app } = require("electron")
+const magicImports = require("magicimports")
+const { post } = magicImports("chainfetch")
+const i18n = magicImports("./i18n")
+const { app } = magicImports("electron")
 
 module.exports = {
     name: "i.novus",

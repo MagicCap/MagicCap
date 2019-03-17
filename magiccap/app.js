@@ -8,12 +8,13 @@ global.config = localConfig
 global.saveConfig = saveConfig
 // Defines the config.
 
-const { readdir, readFile } = require("fs-nextra")
+const magicImports = require("magicimports")
+const { readdir, readFile } = magicImports("fs-nextra")
 let capture = require(`${__dirname}/capture.js`)
-const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = require("electron")
-const notifier = require("node-notifier")
+const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = magicImports("electron")
+const notifier = magicImports("node-notifier")
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
-const i18n = require("./i18n")
+const i18n = magicImports("./i18n")
 const { showShortener } = require("./shortener")
 const Sentry = require("@sentry/electron")
 // Main imports.

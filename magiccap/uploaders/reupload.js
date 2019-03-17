@@ -1,9 +1,10 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-const { put } = require("chainfetch")
-const i18n = require("../i18n")
-const { app } = require("electron")
+const magicImports = require("magicimports")
+const { put } = magicImports("chainfetch")
+const i18n = magicImports("./i18n")
+const { app } = magicImports("electron")
 
 module.exports = {
     name: "reUpload",

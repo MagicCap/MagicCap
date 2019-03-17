@@ -1,12 +1,13 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 
-const { stat, writeFile, writeJSON } = require("fs-nextra")
-const { app, dialog } = require("electron")
-const { get } = require("chainfetch")
-const async_child_process = require("async-child-process")
-const sudo = require("sudo-prompt")
-const i18n = require("./i18n")
+const magicImports = require("magicimports")
+const { stat, writeFile } = magicImports("fs-nextra")
+const { app, dialog } = magicImports("electron")
+const { get } = magicImports("chainfetch")
+const async_child_process = magicImports("async-child-process")
+const sudo = magicImports("sudo-prompt")
+const i18n = magicImports("./i18n")
 
 // Checks if the autoupdate binaries are installed.
 async function checkAutoupdateBin() {

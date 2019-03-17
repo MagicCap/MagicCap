@@ -2,14 +2,15 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
+const magicImports = require("magicimports")
 const gifman = require("gifman")
-const moment = require("moment")
-const fsnextra = require("fs-nextra")
-const { clipboard, nativeImage, Tray } = require("electron")
+const moment = magicImports("moment")
+const fsnextra = magicImports("fs-nextra")
+const { clipboard, nativeImage, Tray } = magicImports("electron")
 const i18n = require("./i18n")
-const captureDatabase = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
+const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 const selector = require("magiccap-selector")
-const sharp = require("electron-sharp")
+const sharp = magicImports("electron-sharp")
 // Imports go here.
 
 let inGif = false
@@ -93,7 +94,7 @@ module.exports = class CaptureHandler {
             throw new Error("Screenshot cancelled.")
         }
 
-        const electronScreen = require("electron").screen
+        const electronScreen = magicImports("electron").screen
 
         const displays = electronScreen.getAllDisplays().sort((a, b) => {
             let sub = a.bounds.x - b.bounds.x

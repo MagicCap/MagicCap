@@ -4,7 +4,8 @@
 
 // eslint-disable no-inline-comments
 
-const { post } = require("chainfetch")
+const magicImports = require("magicimports")
+const { post } = magicImports("chainfetch")
 
 module.exports = {
     name: "Custom",

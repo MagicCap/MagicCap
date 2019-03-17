@@ -2,7 +2,8 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Loads the config.
-const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
+const magicImports = require("magicimports")
+const db = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 
 // The statement to get all configuration options.
 const configGetStmt = db.prepare("SELECT * FROM config;")
