@@ -111,7 +111,10 @@ module.exports = class CaptureHandler {
 
         if (gif) {
             inGif = true
-            await gifman.start(15, selection.start.pageX, selection.start.pageY, selection.width, selection.height, thisDisplay.id)
+            await gifman.start(
+                15, selection.start.pageX, selection.start.pageY,
+                selection.width, selection.height, thisDisplay
+            )
             const gifIcon = new Tray(`${__dirname}/icons/stop.png`)
             await new Promise(res => {
                 gifIcon.once("click", () => {
