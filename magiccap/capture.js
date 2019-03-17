@@ -93,20 +93,23 @@ module.exports = class CaptureHandler {
             throw new Error("Screenshot cancelled.")
         }
 
+        const electronScreen = require("electron").screen
+
+        const displays = electronScreen.getAllDisplays().sort((a, b) => {
+            let sub = a.bounds.x - b.bounds.x
+            if (sub === 0) {
+                if (a.bounds.y > b.bounds.y) {
+                    sub -= 1
+                } else {
+                    sub += 1
+                }
+            }
+            return sub
+        })
+        const thisDisplay = displays[selection.display]
+
         if (gif) {
             inGif = true
-            const displays = require("electron").screen.getAllDisplays().sort((a, b) => {
-                let sub = a.bounds.x - b.bounds.x
-                if (sub === 0) {
-                    if (a.bounds.y > b.bounds.y) {
-                        sub -= 1
-                    } else {
-                        sub += 1
-                    }
-                }
-                return sub
-            })
-            const thisDisplay = displays[selection.display]
             await gifman.start(15, selection.start.pageX, selection.start.pageY, selection.width, selection.height, thisDisplay.id)
             const gifIcon = new Tray(`${__dirname}/icons/stop.png`)
             await new Promise(res => {
@@ -127,6 +130,13 @@ module.exports = class CaptureHandler {
             const crops = []
             if (selection.selections.Blur) {
                 for (const blurRegion of selection.selections.Blur) {
+                    if (electronScreen.getDisplayNearestPoint({
+                        x: blurRegion.startX,
+                        y: blurRegion.startY,
+                    }).id !== thisDisplay.id) {
+                        continue
+                    }
+
                     crops.push([
                         await sharp(displayFull)
                             .extract({
@@ -142,7 +152,7 @@ module.exports = class CaptureHandler {
                 }
             }
 
-            let sharpDesktop = await sharp(displayFull)
+            let sharpDesktop = sharp(displayFull)
 
             for (const blur of crops) {
                 sharpDesktop = sharp(await sharpDesktop.overlayWith(blur[0], {
@@ -151,7 +161,7 @@ module.exports = class CaptureHandler {
                 }).toBuffer())
             }
 
-            const cropped = sharpDesktop.extract({
+            const cropped = await sharpDesktop.extract({
                 top: selection.start.pageY,
                 left: selection.start.pageX,
                 width: selection.width,
