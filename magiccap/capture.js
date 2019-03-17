@@ -71,7 +71,24 @@ module.exports = class CaptureHandler {
             throw new Error("Screenshot cancelled.")
         }
 
-        const selection = await selector()
+        let selectorArgs
+        if (!gif) {
+            selectorArgs = [
+                {
+                    type: "selection",
+                    name: "Blur",
+                    imageLocation: `${__dirname}/icons/blur.png`,
+                },
+                {
+                    type: "selection",
+                    name: "__cap__",
+                    imageLocation: `${__dirname}/icons/crosshair.png`,
+                    active: true,
+                },
+            ]
+        }
+
+        const selection = await selector(selectorArgs)
         if (!selection) {
             throw new Error("Screenshot cancelled.")
         }
@@ -107,14 +124,40 @@ module.exports = class CaptureHandler {
             return buffer
         } else {
             const displayFull = selection.screenshots[selection.display]
-            const cropped = await sharp(displayFull)
-                .extract({
-                    top: selection.start.pageY,
-                    left: selection.start.pageX,
-                    width: selection.width,
-                    height: selection.height,
-                })
-                .toBuffer()
+            const crops = []
+            if (selection.selections.Blur) {
+                for (const blurRegion of selection.selections.Blur) {
+                    crops.push([
+                        await sharp(displayFull)
+                            .extract({
+                                left: blurRegion.startPageX,
+                                top: blurRegion.startPageY,
+                                width: blurRegion.endPageX - blurRegion.startPageX,
+                                height: blurRegion.endPageY - blurRegion.startPageY,
+                            })
+                            .blur(50)
+                            .toBuffer(),
+                        blurRegion.startPageX, blurRegion.startPageY,
+                    ])
+                }
+            }
+
+            let sharpDesktop = await sharp(displayFull)
+
+            for (const blur of crops) {
+                sharpDesktop = sharp(await sharpDesktop.overlayWith(blur[0], {
+                    left: blur[1],
+                    top: blur[2],
+                }).toBuffer())
+            }
+
+            const cropped = sharpDesktop.extract({
+                top: selection.start.pageY,
+                left: selection.start.pageX,
+                width: selection.width,
+                height: selection.height,
+            }).toBuffer()
+
             if (file_path) {
                 await fsnextra.writeFile(file_path, cropped)
             }
