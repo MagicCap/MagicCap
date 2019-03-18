@@ -4,7 +4,7 @@
 
 const magicImports = require("magicimports")
 const AWS = magicImports("aws-sdk")
-const i18n = magicImports("./i18n")
+const i18n = require("../i18n")
 
 function s3Promise(s3, bucketName, filename, buffer) {
     const s3Function = (resolve, reject) => {

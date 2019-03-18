@@ -4,7 +4,7 @@
 
 const magicImports = require("magicimports")
 const { post } = magicImports("chainfetch")
-const i18n = magicImports("./i18n")
+const i18n = require("../i18n")
 
 module.exports = {
     name: "elixi.re",
