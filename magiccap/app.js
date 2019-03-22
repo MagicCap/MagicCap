@@ -184,11 +184,6 @@ async function openConfig() {
 }
 // Opens the config.
 
-app.on("activate", () => {
-    openConfig()
-})
-// Opens up the config when clicked in the dock.
-
 app.on("window-all-closed", () => {
     // Nothing should happen here.
 })
@@ -376,3 +371,10 @@ app.on("second-instance", () => {
     }
 })
 // If a second instance is spawned, open the config.
+
+app.on("activate", () => {
+    if (eReady) {
+        openConfig()
+    }
+})
+// Opens up the config when clicked in the dock.
