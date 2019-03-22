@@ -286,7 +286,10 @@ const createContextMenu = async() => {
     tray.setContextMenu(contextMenu)
 }
 
+let eReady = false
 const initialiseScript = async() => {
+    eReady = true
+
     Sentry.configureScope(scope => {
         scope.setUser({ id: localConfig.install_id })
     })
@@ -368,6 +371,8 @@ if (shouldExit) {
 // Makes the app a single instance app.
 
 app.on("second-instance", () => {
-    openConfig()
+    if (eReady) {
+        openConfig()
+    }
 })
 // If a second instance is spawned, open the config.
