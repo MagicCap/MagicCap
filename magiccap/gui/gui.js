@@ -16,7 +16,7 @@ const i18n = require("../i18n")
 const mconf = require("../mconf")
 const { join } = require("path")
 const Sentry = require("@sentry/electron")
-const { AUTOUPDATE_ON } = require("../build_info");
+const { AUTOUPDATE_ON } = require("../build_info")
 
 // Configures the Sentry scope.
 Sentry.configureScope(scope => {
