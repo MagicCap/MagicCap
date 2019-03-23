@@ -55,5 +55,4 @@ In order to download needed packages, run `npm i`. This will get all of the need
 If you are on Mac, you'll need to download XCode.
 
 ## More Information
-For more information on installation/configuration and compiling, please refer to [the documentation.]
-(https://magiccap.readthedocs.io/en/latest/?badge=latest)
+For more information on installation/configuration and compiling, please refer to [the documentation.](https://magiccap.readthedocs.io/en/latest/?badge=latest)
