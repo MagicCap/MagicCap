@@ -72,6 +72,13 @@ if (existsSync("/usr/share/magiccap_deployment_info.json")) {
                 config[i] = oldConfig[i]
             }
             saveConfig()
+            const notifier = magicImports("node-notifier")
+            notifier.notify({
+                title: "Welcome to MagicCap 1.0.0",
+                message: "Your old configuration has been migrated. We hope you enjoy this update!",
+                icon: `${__dirname}/icons/taskbar@2x.png`,
+                wait: true,
+            })
         } else {
             getDefaultConfig().then(newConfig => {
                 for (const i in newConfig) {
