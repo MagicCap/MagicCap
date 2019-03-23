@@ -29,7 +29,8 @@
         "magiccap-selector": "1.0.10",
         "electron-sharp": "0.20.8",
         "gifman": "1.0.3",
-        "magicimports": "1.0.0"
+        "magicimports": "1.0.0",
+        "asciiart-logo": "0.2.6"
     },
     "devDependencies": {
         "electron-builder": "20.26.1",

@@ -12,6 +12,13 @@ const { app } = magicImports("electron")
 const newInstallId = require("./install_id")
 const { init } = require("@sentry/electron")
 
+// ASCII!!!!!1111111!
+new Promise(res => {
+    res(require("asciiart-logo")(require(`${__dirname}/package.json`)).render())
+}).then(render => {
+    console.log(render)
+})
+
 // Initialises the Sentry SDK.
 init({
     dsn: "https://968dcfa0651e40ddaa807bbe47b1aa91@sentry.io/1396847",
