@@ -31,6 +31,7 @@ MagicCap supports the following uploaders (this list will expand over time):
 - Pomf
 - imgur
 - i.novus
+- i.magiccap
 - reUpload
 - S3 (Amazon and other S3-compatible providers)
 - ShareX (upload only)
