@@ -360,24 +360,24 @@ const activeUploaderConfig = new Vue({
         deleteRow: (key, option) => {
             delete option.items[key]
             config[option.value] = option.items
-            this.$forceUpdate()
+            activeUploaderConfig.$forceUpdate()
             saveConfig()
         },
         addToTable: option => {
-            this.$set(this, "exception", "")
+            activeUploaderConfig.exception = ""
             const key = document.getElementById(`Key${option.value}`).value || ""
             const value = document.getElementById(`Value${option.value}`).value || ""
             if (key === "") {
-                this.exception += "blankKey"
+                activeUploaderConfig.exception += "blankKey"
                 return
             }
             if (option.items[key] !== undefined) {
-                this.exception += "keyAlreadyUsed"
+                activeUploaderConfig.exception += "keyAlreadyUsed"
                 return
             }
             option.items[key] = value
             config[option.value] = option.items
-            this.$forceUpdate()
+            activeUploaderConfig.$forceUpdate()
             saveConfig()
         },
         closeActiveConfig() {
