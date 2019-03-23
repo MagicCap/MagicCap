@@ -2,6 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
+// Imports go here.
 const magicImports = require("magicimports")
 const gifman = require("gifman")
 const moment = magicImports("moment")
@@ -11,15 +12,15 @@ const i18n = require("./i18n")
 const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 const selector = require("magiccap-selector")
 const sharp = magicImports("electron-sharp")
-// Imports go here.
 
-let inGif = false
 // Defines if we are in a GIF.
+let inGif = false
 
-const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)")
 // Defines the capture statement.
+const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)")
 
 module.exports = class CaptureHandler {
+    // Generates the random characters.
     static renderRandomChars(filename) {
         const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         if (filename.includes('"')) {
@@ -36,8 +37,8 @@ module.exports = class CaptureHandler {
         }
         return filename
     }
-    // Generates the random characters.
 
+    // Makes a nice filename for screen captures.
     static async createCaptureFilename(gif) {
         let filename = "screenshot_%date%_%time%"
         if (config.file_naming_pattern) {
@@ -48,8 +49,8 @@ module.exports = class CaptureHandler {
             .replace(/%time%/g, moment().format("HH-mm-ss")))
         return `${filename}.${gif ? "gif" : "png"}`
     }
-    // Makes a nice filename for screen captures.
 
+    // Logs uploads.
     static async logUpload(filename, success, url, file_path) {
         const timestamp = new Date().getTime()
         await captureStatement.run(filename, Number(success), timestamp, url, file_path)
@@ -65,8 +66,8 @@ module.exports = class CaptureHandler {
             // This isn't too important, we should just ignore.
         }
     }
-    // Logs uploads.
 
+    // Creates a screen capture.
     static async createCapture(file_path, gif) {
         if (gif && inGif) {
             throw new Error("Screenshot cancelled.")
@@ -178,8 +179,8 @@ module.exports = class CaptureHandler {
             return cropped
         }
     }
-    // Creates a screen capture.
 
+    // Handle screenshots.
     static async handleScreenshotting(filename, gif) {
         let save_path = null
         let uploader_type, url, uploader, key
@@ -234,5 +235,4 @@ module.exports = class CaptureHandler {
         const i18nResult = await i18n.getPoPhrase("Image successfully captured.", "capture")
         return i18nResult
     }
-    // Handle screenshots.
 }

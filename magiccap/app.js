@@ -3,11 +3,12 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
+// Defines the config.
 let { config: localConfig, saveConfig } = require("./config")
 global.config = localConfig
 global.saveConfig = saveConfig
-// Defines the config.
 
+// Main imports.
 const magicImports = require("magicimports")
 const { readdir, readFile } = magicImports("fs-nextra")
 let capture = require(`${__dirname}/capture.js`)
@@ -17,12 +18,12 @@ const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
 const i18n = magicImports("./i18n")
 const { showShortener } = require("./shortener")
 const Sentry = require("@sentry/electron")
-// Main imports.
 
+// All of the loaded uploaders.
 global.importedUploaders = {}
 global.nameUploaderMap = {};
-// All of the loaded uploaders.
 
+// Loads all of the uploaders.
 (async() => {
     const files = await readdir(`${__dirname}/uploaders`)
     for (const file in files) {
@@ -31,12 +32,13 @@ global.nameUploaderMap = {};
         nameUploaderMap[files[file].split(".").shift()] = import_.name
     }
 })()
-// Loads all of the uploaders.
 
+// Fixes odd capture issues on macOS.
 function thisShouldFixMacIssuesAndIdkWhy() {
     console.log("Running capture hotkey.")
 }
 
+// Creates a menu on Mac.
 const createMenu = async() => {
     const application = {
         label: await i18n.getPoPhrase("Application", "app"),
@@ -90,7 +92,6 @@ const createMenu = async() => {
     }
     Menu.setApplicationMenu(Menu.buildFromTemplate([application, edit]))
 }
-// Creates a menu on Mac.
 
 // Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
 function getConfiguredUploaders() {
@@ -116,15 +117,16 @@ function getConfiguredUploaders() {
     return configured
 }
 
-autoUpdateLoop()
 // Starts the autoupdate loop.
+autoUpdateLoop()
 
-if (app.dock) app.dock.hide()
 // Hides the dock icon.
+if (app.dock) app.dock.hide()
 
-let tray, window
 // Predefines the task tray and window.
+let tray, window
 
+// Throws a notification.
 function throwNotification(result) {
     notifier.notify({
         title: "MagicCap",
@@ -132,8 +134,8 @@ function throwNotification(result) {
         icon: `${__dirname}/icons/taskbar@2x.png`,
     })
 }
-// Throws a notification.
 
+// Runs the capture.
 async function runCapture(gif) {
     const filename = await capture.createCaptureFilename(gif)
     try {
@@ -148,8 +150,8 @@ async function runCapture(gif) {
     }
 }
 global.runCapture = runCapture
-// Runs the capture.
 
+// Opens the config.
 async function openConfig() {
     if (window) {
         window.show()
@@ -182,23 +184,22 @@ async function openConfig() {
         if (app.dock) app.dock.hide()
     })
 }
-// Opens the config.
 
+// Stays alive.
 app.on("window-all-closed", () => {
     // Nothing should happen here.
 })
-// Stays alive.
 
+// Restart the window on theme change (fixes bug with vibrancy)
 ipcMain.on("restartWindow", () => {
     window.close()
     openConfig()
 })
-// Restart the window on theme change (fixes bug with vibrancy)
 
+// Shows the window.
 ipcMain.on("window-show", () => {
     window.show()
 })
-// Shows the window.
 
 // Does the dropdown menu uploads.
 async function dropdownMenuUpload(uploader) {
@@ -281,6 +282,7 @@ const createContextMenu = async() => {
     tray.setContextMenu(contextMenu)
 }
 
+// Initialises the script.
 let eReady = false
 const initialiseScript = async() => {
     eReady = true
@@ -315,20 +317,20 @@ const initialiseScript = async() => {
         }
     }
 }
-// Initialises the script.
 
+// Shows the link shortener.
 ipcMain.on("show-short", () => {
     showShortener()
 })
-// Shows the link shortener.
 
+// When the config changes, this does.
 ipcMain.on("config-edit", async(event, data) => {
     global.config = data
     localConfig = data
     await createContextMenu()
 })
-// When the config changes, this does.
 
+// Handles the hotkey changing.
 ipcMain.on("hotkey-change", async(event, c) => {
     try {
         globalShortcut.unregisterAll()
@@ -348,33 +350,32 @@ ipcMain.on("hotkey-change", async(event, c) => {
         dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"))
     }
 })
-// Handles the hotkey changing.
 
-ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
 // The get uploaders IPC.
+ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
 
-app.on("ready", initialiseScript)
 // The app is ready to rock!
+app.on("ready", initialiseScript)
 
-process.on("unhandledRejection", async err => console.error(err))
 // Handles unhandled rejections.
+process.on("unhandledRejection", async err => console.error(err))
 
+// Makes the app a single instance app.
 const shouldExit = !app.requestSingleInstanceLock()
 if (shouldExit) {
     app.quit()
 }
-// Makes the app a single instance app.
 
+// If a second instance is spawned, open the config.
 app.on("second-instance", () => {
     if (eReady) {
         openConfig()
     }
 })
-// If a second instance is spawned, open the config.
 
+// Opens up the config when clicked in the dock.
 app.on("activate", () => {
     if (eReady) {
         openConfig()
     }
 })
-// Opens up the config when clicked in the dock.
