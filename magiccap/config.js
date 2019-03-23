@@ -22,7 +22,9 @@ for (const i of configGetStmt.iterate()) {
 const configSaveTransaction = db.transaction(newConfig => {
     db.exec("DELETE FROM config")
     for (const i in newConfig) {
-        configInsertStmt.run(i, JSON.stringify(newConfig[i]))
+        if (newConfig[i] !== undefined) {
+            configInsertStmt.run(i, JSON.stringify(newConfig[i]))
+        }
     }
 })
 
