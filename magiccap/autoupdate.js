@@ -1,6 +1,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
-// Copyright (C) Jake Gealer <jake@gealer.email> 2018.
+// Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 
+const { AUTOUPDATE_ON } = require(`${__dirname}/build_info`)
 const magicImports = require("magicimports")
 const { stat, writeFile } = magicImports("fs-nextra")
 const { app, dialog } = magicImports("electron")
@@ -133,6 +134,10 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
 
 // The actual autoupdate part.
 module.exports = async function autoUpdateLoop() {
+    if (!AUTOUPDATE_ON) {
+        return
+    }
+
     if (config.autoupdate_on === false) {
         return
     }

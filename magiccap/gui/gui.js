@@ -16,6 +16,7 @@ const i18n = require("../i18n")
 const mconf = require("../mconf")
 const { join } = require("path")
 const Sentry = require("@sentry/electron")
+const { AUTOUPDATE_ON } = require("../build_info");
 
 // Configures the Sentry scope.
 Sentry.configureScope(scope => {
@@ -37,7 +38,7 @@ new Vue({
         clipboardAction: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.ClipboardAction : true,
         hotkeyConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.HotkeyConfig : true,
         uploaderConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.UploaderConfig : true,
-        betaUpdates: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.BetaUpdates : true,
+        betaUpdates: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.BetaUpdates : AUTOUPDATE_ON,
         toggleTheme: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.ToggleTheme : true,
         fileConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.FileConfig : true,
         shortener: global.liteTouchConfig ? global.liteTouchConfig.link_shortener_allowed : true,
