@@ -2,9 +2,6 @@
 
 On this page, you should find everything you need to know to use MagicCap.
 
-## Requirements
-Linux requires `gnome-screenshot` for this to work. The application should not be ran as root.
-
 ## Installation/Configuration
 You can grab the latest MagicCap release from [here](https://github.com/JakeMakesStuff/MagicCap/releases). From here, you can install it like you would any other application. To configure it, simply click/right click the icon in your taskbar and select "Config". You will be greeted with the GUI:
 

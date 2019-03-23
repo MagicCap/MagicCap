@@ -20,9 +20,6 @@ MagicCap is a image capture suite for Mac and Linux. You can get a precompiled c
 # This is not for Windows!
 [ShareX](https://getsharex.com/) is amazing for that!
 
-# Requirements
-Linux requires `gnome-screenshot` for this to work. The application should not be ran as root.
-
 # Supported Uploaders
 MagicCap supports the following uploaders (this list will expand over time):
 - Custom HTTP POST
