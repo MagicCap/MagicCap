@@ -72,6 +72,10 @@ if (existsSync("/usr/share/magiccap_deployment_info.json")) {
                 config[i] = oldConfig[i]
             }
             saveConfig()
+            newInstallId().then(installId => {
+                config.install_id = installId
+                saveConfig()
+            })
             const notifier = magicImports("node-notifier")
             notifier.notify({
                 title: "Welcome to MagicCap 1.0.0",
