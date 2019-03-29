@@ -92,7 +92,7 @@ jobs:
 
   final_deploy:
     docker:
-      - image: circleci/golang:1.8
+      - image: circleci/golang
     steps:
       - run:
           name: Install the AWS CLI.
