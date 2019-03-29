@@ -9,14 +9,20 @@ global.liteTouchConfig = remote.getGlobal("liteTouchConfig")
 
 // The needed imports.
 const { dialog } = require("electron").remote
-const config = require("../config").config
-const saveConfigToDb = require("../config").saveConfig
+const config = require("./config").config
+const saveConfigToDb = require("./config").saveConfig
 const { writeJSON, readdir, readJSON } = require("fs-nextra")
-const i18n = require("../i18n")
-const mconf = require("../mconf")
+const i18n = require("./i18n")
+const mconf = require("./mconf")
 const { join } = require("path")
 const Sentry = require("@sentry/electron")
-const { AUTOUPDATE_ON } = require("../build_info")
+const { AUTOUPDATE_ON } = require("./build_info")
+
+// Initialises the Sentry SDK.
+Sentry.init({
+    dsn: "https://968dcfa0651e40ddaa807bbe47b1aa91@sentry.io/1396847",
+})
+
 
 // Configures the Sentry scope.
 Sentry.configureScope(scope => {
@@ -64,7 +70,7 @@ if (platform === "darwin") {
 }
 
 // Unhides the body/window when the page has loaded.
-stylesheet.onload = () => {
+window.onload = () => {
     document.body.style.display = "initial"
     ipcRenderer.send("window-show")
 }

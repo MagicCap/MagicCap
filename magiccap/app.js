@@ -161,11 +161,7 @@ async function openConfig() {
     if (app.dock) app.dock.show()
 
     let vibrancy
-    if (process.platform == "darwin") {
-        vibrancy = localConfig.light_theme ? "light" : "sidebar"
-    } else {
-        vibrancy = undefined
-    }
+    if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "sidebar"
 
     window = new BrowserWindow({
         width: 1250, height: 600,
@@ -176,7 +172,10 @@ async function openConfig() {
     if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`)
     global.platform = process.platform
     window.setTitle("MagicCap")
-    window.loadFile("./gui/index.html")
+    const pageContent = await i18n.poParseHtml((await readFile(`${__dirname}/gui/index.html`)).toString())
+    window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
+        baseURLForDataURL: `file://${__dirname}/gui/`,
+    })
     global.window = window
 
     window.on("closed", () => {
