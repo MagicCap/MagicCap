@@ -1,0 +1,78 @@
+# app.js:40
+msgid "Application"
+msgstr ""
+
+# app.js:43
+msgid "Quit"
+msgstr ""
+
+# app.js:52
+msgid "Edit"
+msgstr ""
+
+# app.js:55
+msgid "Undo"
+msgstr ""
+
+# app.js:60
+msgid "Redo"
+msgstr ""
+
+# app.js:68
+msgid "Cut"
+msgstr ""
+
+# app.js:73
+msgid "Copy"
+msgstr ""
+
+# app.js:78
+msgid "Paste"
+msgstr ""
+
+# app.js:83
+msgid "Select All"
+msgstr ""
+
+# app.js:143
+msgid "Could not find or create the config file."
+msgstr ""
+
+# app.js:154
+# app.js:164
+# app.js:338
+# app.js:350
+msgid "The hotkey you gave was invalid."
+msgstr ""
+
+# app.js:248
+msgid "Select file..."
+msgstr ""
+
+# app.js:271
+msgid "The file specified was uploaded successfully."
+msgstr ""
+
+# app.js:288
+msgid "(Default)"
+msgstr ""
+
+# app.js:300
+msgid "Screen Capture"
+msgstr ""
+
+# app.js:308
+msgid "Config"
+msgstr ""
+
+# app.js:309
+msgid "Upload to..."
+msgstr ""
+
+# app.js:310
+msgid "Shorten Link..."
+msgstr ""
+
+# app.js:311
+msgid "Exit"
+msgstr ""
