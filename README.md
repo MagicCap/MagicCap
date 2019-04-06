@@ -10,12 +10,13 @@
             alt="chat on Discord">
 </a>
 
-MagicCap is a image capture suite for Mac and Linux. You can get a precompiled copy from the releases page of this GitHub page. It has the following features:
+MagicCap is a image/GIF capture suite for Mac and Linux. You can get a precompiled copy from the releases page of this GitHub page. It has the following features:
 
 - Very cross compatible. You should get the same experience on Mac and Linux.
 - Very easy to add to. You don't need to faff around with modifying HTML; instead you write a small file that includes all of the config options and the upload script (most of this is handled by `capture.js` anyway).
 - Very fast. Captures are optimised to be as fast as possible.
 - Very flexible. You can choose to upload to whatever service you want to or just save the file.
+- Very functional. Want to capture a GIF? No problem. Want to blur a screenshot? No problem. MagicCap is there to help you with whatever you want.
 
 # This is not for Windows!
 [ShareX](https://getsharex.com/) is amazing for that!
@@ -30,6 +31,7 @@ MagicCap supports the following uploaders (this list will expand over time):
 - i.novus
 - i.magiccap
 - reUpload
+- Ultrashare
 - S3 (Amazon and other S3-compatible providers)
 - ShareX (upload only)
 
