@@ -28,7 +28,7 @@
         "@sentry/electron": "0.15.0",
         "magiccap-selector": "1.0.13",
         "electron-sharp": "0.20.8",
-        "gifman": "1.0.4",
+        "gifman": "1.0.5",
         "magicimports": "1.0.0",
         "asciiart-logo": "0.2.6"
     },
