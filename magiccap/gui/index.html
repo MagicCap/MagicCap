@@ -116,7 +116,7 @@
                         <div v-for="option in uploader.options" :key="option.translatedName">
                             <div v-if="option.type === 'text' || option.type === 'integer'">
                                 <div class="field">
-                                    <label class="label">{{ option.translatedName }}:</label>
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div class="control">
                                         <input class="input" type="text" :id="option.value" :placeholder="option.translatedName" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
                                     </div>
@@ -124,7 +124,7 @@
                             </div>
                             <div v-else-if="option.type === 'token_from_json'">
                                 <div class="field">
-                                    <label class="label">{{ option.translatedName }}:</label>
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div v-if="getDefaultValue(option) === undefined">
                                         <webview :id="option.value" :src="option.startUrl" :useragent="userAgent" style="height: 450px"></webview>
                                     </div>
@@ -135,7 +135,7 @@
                             </div>
                             <div v-else-if="option.type === 'password'">
                                 <div class="field">
-                                    <label class="label">{{ option.translatedName }}:</label>
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div class="control">
                                         <input class="input" type="password" :id="option.value" :placeholder="option.translatedName" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
                                     </div>
@@ -143,7 +143,7 @@
                             </div>
                             <div v-else-if="option.type === 'boolean'">
                                 <div class="field">
-                                    <label class="label">{{ option.translatedName }}:</label>
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div class="control">
                                         <label class="checkbox">
                                             <input type="checkbox" :id="option.value" :checked="getDefaultValue(option)" v-on:change="changeOption(option)">
@@ -155,7 +155,7 @@
                             </div>
                             <div v-else-if="option.type === 'object'">
                                 <div class="field">
-                                    <label class="label">{{ option.translatedName }}:</label>
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <table class="table is-bordered is-striped is-fullwidth" :id="option.value">
                                         <tbody>
                                             <tr v-for="(value, key) in option.items">
@@ -271,14 +271,14 @@
                         </label>
                     </div>
                     <div class="field">
-                        <label class="label">$File Naming Pattern:$</label>
+                        <label class="label" for="fileNamingPattern">$File Naming Pattern:$</label>
                         <p style="padding-bottom: 10px">$You can use " to repersent a random character, %date% for the date and %time% for the time.$</p>
                         <div class="control">
                             <input class="input" type="text" id="fileNamingPattern" placeholder="$File Naming Pattern$" :value="fileNamingPatternI" v-on:change="saveItem('fileNamingPattern', 'file_naming_pattern')">
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">$File Save Folder:$</label>
+                        <label class="label" for="fileSaveFolder">$File Save Folder:$</label>
                         <div class="control">
                             <input class="input" type="text" id="fileSaveFolder" placeholder="$File Save Folder$" :value="fileSaveFolderI" v-on:change="saveItem('fileSaveFolder', 'save_path', false, true)">
                         </div>
@@ -297,13 +297,13 @@
                     <p>$You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.$</p>
                     <br>
                     <div class="field">
-                        <label class="label">$Screenshot Hotkey:$</label>
+                        <label class="label" for="screenshotHotkey">$Screenshot Hotkey:$</label>
                         <div class="control">
                             <input class="input" type="text" id="screenshotHotkey" placeholder="$Screenshot Hotkey$" :value="screenshotHotkey">
                         </div>
                     </div>
                     <div class="field">
-                        <label class="label">$GIF Hotkey:$</label>
+                        <label class="label" for="gifHotkey">$GIF Hotkey:$</label>
                         <div class="control">
                             <input class="input" type="text" id="gifHotkey" placeholder="$GIF Hotkey$" :value="gifHotkey">
                         </div>
