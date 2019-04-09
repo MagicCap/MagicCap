@@ -81,6 +81,7 @@ if (config.light_theme) {
 }
 if (platform === "darwin") {
     document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)"
+    document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0)"
 }
 
 // Unhides the body/window when the page has loaded.
