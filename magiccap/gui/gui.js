@@ -3,6 +3,20 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
+// Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
+document.addEventListener("keydown", function (e) {
+    // key is I, and the alt key is held down
+    // and also, ctrl (for Linux) or Cmd (meta, macOS) is held down
+    if (e.code == "KeyI" && e.altKey && (e.ctrlKey || e.metaKey)) {
+        require('electron').remote.getCurrentWindow().toggleDevTools();
+    }
+});
+
+// Open devtools when things break
+window.onerror = function() {
+    require('electron').remote.getCurrentWindow().openDevTools();
+}
+
 // Gets the lite touch configuration.
 const { ipcRenderer, remote, shell } = require("electron")
 global.liteTouchConfig = remote.getGlobal("liteTouchConfig")
@@ -66,7 +80,13 @@ if (config.light_theme) {
     stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
 }
 if (platform === "darwin") {
-    document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)"
+    if (config.light_theme) {
+        document.getElementById("sidebar").style.backgroundColor = "rgba(255,255,255,0.5)"
+    	document.body.parentElement.style.backgroundColor = "rgba(255,255,255,0.5)"
+    } else {
+        document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0.5)"
+        document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0.5)"
+    }
 }
 
 // Unhides the body/window when the page has loaded.

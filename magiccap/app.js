@@ -161,7 +161,7 @@ async function openConfig() {
     if (app.dock) app.dock.show()
 
     let vibrancy
-    if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "sidebar"
+    if (process.platform == "darwin") vibrancy = "light"
 
     window = new BrowserWindow({
         width: 1250, height: 600,
