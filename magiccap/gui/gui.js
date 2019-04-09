@@ -80,8 +80,13 @@ if (config.light_theme) {
     stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
 }
 if (platform === "darwin") {
-    document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)"
-    document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0)"
+    if (config.light_theme) {
+        document.getElementById("sidebar").style.backgroundColor = "rgba(255,255,255,0.5)"
+    	document.body.parentElement.style.backgroundColor = "rgba(255,255,255,0.5)"
+    } else {
+        document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0.5)"
+        document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0.5)"
+    }
 }
 
 // Unhides the body/window when the page has loaded.
