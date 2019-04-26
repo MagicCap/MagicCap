@@ -28,7 +28,6 @@ const saveConfigToDb = require("./config").saveConfig
 const { writeJSON, readdir, readJSON } = require("fs-nextra")
 const i18n = require("./i18n")
 const mconf = require("./mconf")
-const { join } = require("path")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
 
@@ -430,7 +429,7 @@ const activeUploaderConfig = new Vue({
             }
 
             let view = this
-            const uploaders = require(`${join(__dirname, "..")}/uploaders`)
+            const uploaders = require(`${__dirname}/uploaders`)
             let filename
             for (const file in uploaders) {
                 const import_ = uploaders[file]
