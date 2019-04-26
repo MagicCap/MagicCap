@@ -10,12 +10,10 @@ const darkThemeInformation = () => new Promise(res => {
             exec("defaults read -g AppleInterfaceStyle", (err, stdout) => {
                 if (err) {
                     res(false)
+                } else if (stdout) {
+                    res(stdout === "Dark\n")
                 } else {
-                    if (stdout) {
-                        res(stdout === "Dark\n")
-                    } else {
-                        res(true)
-                    }
+                    res(true)
                 }
             })
             break
