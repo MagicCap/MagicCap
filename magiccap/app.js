@@ -24,14 +24,12 @@ global.importedUploaders = {}
 global.nameUploaderMap = {};
 
 // Loads all of the uploaders.
-(async() => {
-    const files = await readdir(`${__dirname}/uploaders`)
-    for (const file in files) {
-        const import_ = require(`${__dirname}/uploaders/${files[file]}`)
-        importedUploaders[import_.name] = import_
-        nameUploaderMap[files[file].split(".").shift()] = import_.name
-    }
-})()
+const uploaders = require(`${__dirname}/uploaders`)
+for (const uploaderName in uploaders) {
+    const import_ = uploaders[uploaderName]
+    importedUploaders[import_.name] = import_
+    nameUploaderMap[uploaderName] = import_.name
+}
 
 // Fixes odd capture issues on macOS.
 function thisShouldFixMacIssuesAndIdkWhy() {

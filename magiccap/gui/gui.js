@@ -430,19 +430,18 @@ const activeUploaderConfig = new Vue({
             }
 
             let view = this
-            readdir(`${join(__dirname, "..")}/uploaders`).then(files => {
-                let filename = ""
-                for (const file in files) {
-                    const import_ = require(`${join(__dirname, "..")}/uploaders/${files[file]}`)
-                    if (import_.name === view.uploader.name) {
-                        filename = files[file].substring(0, files[file].length - 3)
-                        break
-                    }
+            const uploaders = require(`${join(__dirname, "..")}/uploaders`)
+            let filename
+            for (const file in uploaders) {
+                const import_ = uploaders[file]
+                if (import_.name === view.uploader.name) {
+                    filename = file
+                    break
                 }
-                config.uploader_type = filename
-                saveConfig()
-                view.exception += "ayyyyDefaultSaved"
-            })
+            }
+            config.uploader_type = filename
+            saveConfig()
+            view.exception += "ayyyyDefaultSaved"
         },
     },
 })
