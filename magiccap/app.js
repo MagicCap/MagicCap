@@ -21,7 +21,7 @@ const Sentry = require("@sentry/electron")
 
 // All of the loaded uploaders.
 global.importedUploaders = {}
-global.nameUploaderMap = {};
+global.nameUploaderMap = {}
 
 // Loads all of the uploaders.
 const uploaders = require(`${__dirname}/uploaders`)

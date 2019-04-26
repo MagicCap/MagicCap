@@ -4,17 +4,17 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
-document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", e => {
     // key is I, and the alt key is held down
     // and also, ctrl (for Linux) or Cmd (meta, macOS) is held down
     if (e.code == "KeyI" && e.altKey && (e.ctrlKey || e.metaKey)) {
-        require('electron').remote.getCurrentWindow().toggleDevTools();
+        require("electron").remote.getCurrentWindow().toggleDevTools()
     }
-});
+})
 
 // Open devtools when things break
 window.onerror = function() {
-    require('electron').remote.getCurrentWindow().openDevTools();
+    require("electron").remote.getCurrentWindow().openDevTools()
 }
 
 // Gets the lite touch configuration.
@@ -81,7 +81,7 @@ if (config.light_theme) {
 if (platform === "darwin") {
     if (config.light_theme) {
         document.getElementById("sidebar").style.backgroundColor = "rgba(255,255,255,0.5)"
-    	document.body.parentElement.style.backgroundColor = "rgba(255,255,255,0.5)"
+        document.body.parentElement.style.backgroundColor = "rgba(255,255,255,0.5)"
     } else {
         document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0.5)"
         document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0.5)"
