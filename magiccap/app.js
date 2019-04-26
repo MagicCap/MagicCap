@@ -21,17 +21,15 @@ const Sentry = require("@sentry/electron")
 
 // All of the loaded uploaders.
 global.importedUploaders = {}
-global.nameUploaderMap = {};
+global.nameUploaderMap = {}
 
 // Loads all of the uploaders.
-(async() => {
-    const files = await readdir(`${__dirname}/uploaders`)
-    for (const file in files) {
-        const import_ = require(`${__dirname}/uploaders/${files[file]}`)
-        importedUploaders[import_.name] = import_
-        nameUploaderMap[files[file].split(".").shift()] = import_.name
-    }
-})()
+const uploaders = require(`${__dirname}/uploaders`)
+for (const uploaderName in uploaders) {
+    const import_ = uploaders[uploaderName]
+    importedUploaders[import_.name] = import_
+    nameUploaderMap[uploaderName] = import_.name
+}
 
 // Fixes odd capture issues on macOS.
 function thisShouldFixMacIssuesAndIdkWhy() {
@@ -161,7 +159,7 @@ async function openConfig() {
     if (app.dock) app.dock.show()
 
     let vibrancy
-    if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "sidebar"
+    if (process.platform == "darwin") vibrancy = "light"
 
     window = new BrowserWindow({
         width: 1250, height: 600,

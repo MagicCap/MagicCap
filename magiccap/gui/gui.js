@@ -3,6 +3,20 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
+// Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
+document.addEventListener("keydown", e => {
+    // key is I, and the alt key is held down
+    // and also, ctrl (for Linux) or Cmd (meta, macOS) is held down
+    if (e.code == "KeyI" && e.altKey && (e.ctrlKey || e.metaKey)) {
+        require("electron").remote.getCurrentWindow().toggleDevTools()
+    }
+})
+
+// Open devtools when things break
+window.onerror = function() {
+    require("electron").remote.getCurrentWindow().openDevTools()
+}
+
 // Gets the lite touch configuration.
 const { ipcRenderer, remote, shell } = require("electron")
 global.liteTouchConfig = remote.getGlobal("liteTouchConfig")
@@ -11,10 +25,9 @@ global.liteTouchConfig = remote.getGlobal("liteTouchConfig")
 const { dialog } = require("electron").remote
 const config = require("./config").config
 const saveConfigToDb = require("./config").saveConfig
-const { writeJSON, readdir, readJSON } = require("fs-nextra")
+const { writeJSON, readJSON } = require("fs-nextra")
 const i18n = require("./i18n")
 const mconf = require("./mconf")
-const { join } = require("path")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
 
@@ -66,7 +79,13 @@ if (config.light_theme) {
     stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
 }
 if (platform === "darwin") {
-    document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0)"
+    if (config.light_theme) {
+        document.getElementById("sidebar").style.backgroundColor = "rgba(255,255,255,0.5)"
+        document.body.parentElement.style.backgroundColor = "rgba(255,255,255,0.5)"
+    } else {
+        document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0.5)"
+        document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0.5)"
+    }
 }
 
 // Unhides the body/window when the page has loaded.
@@ -410,19 +429,18 @@ const activeUploaderConfig = new Vue({
             }
 
             let view = this
-            readdir(`${join(__dirname, "..")}/uploaders`).then(files => {
-                let filename = ""
-                for (const file in files) {
-                    const import_ = require(`${join(__dirname, "..")}/uploaders/${files[file]}`)
-                    if (import_.name === view.uploader.name) {
-                        filename = files[file].substring(0, files[file].length - 3)
-                        break
-                    }
+            const uploaders = require(`${__dirname}/uploaders`)
+            let filename
+            for (const file in uploaders) {
+                const import_ = uploaders[file]
+                if (import_.name === view.uploader.name) {
+                    filename = file
+                    break
                 }
-                config.uploader_type = filename
-                saveConfig()
-                view.exception += "ayyyyDefaultSaved"
-            })
+            }
+            config.uploader_type = filename
+            saveConfig()
+            view.exception += "ayyyyDefaultSaved"
         },
     },
 })

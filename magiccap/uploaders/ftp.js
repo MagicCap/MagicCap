@@ -6,7 +6,7 @@ const i18n = require("../i18n")
 
 module.exports = {
     name: "FTP",
-    icon: "FTP.png",
+    icon: "ftp.png",
     config_options: {
         Hostname: {
             value: "ftp_hostname",
