@@ -19,7 +19,7 @@ const darkThemeInformation = () => new Promise(res => {
             break
         }
         default: {
-            return true
+            res(true)
         }
     }
 })
