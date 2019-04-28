@@ -336,6 +336,7 @@ const activeUploaderConfig = new Vue({
             options: {},
         },
         exception: "",
+        exceptionData: "",
         userAgent: `MagicCap ${remote.app.getVersion()}; ${config.install_id}`,
     },
     methods: {
@@ -414,8 +415,9 @@ const activeUploaderConfig = new Vue({
             this.$set(this, "exception", "")
             document.getElementById("activeUploaderConfig").classList.remove("is-active")
         },
-        setDefaultUploader() {
+        validateConfig() {
             this.$set(this, "exception", "")
+            this.$set(this, "exceptionData", "")
             for (const optionKey in this.uploader.options) {
                 const option = this.uploader.options[optionKey]
                 const c = config[option.value]
@@ -425,27 +427,45 @@ const activeUploaderConfig = new Vue({
                         saveConfig()
                     } else if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
                         this.exception += "notAnInteger"
-                        return
+                        return false
                     } else {
                         this.exception += "requiredStuffMissing"
-                        return
+                        return false
                     }
                 }
             }
-
-            let view = this
+            return true
+        },
+        getFilename() {
             const uploaders = require(`${__dirname}/uploaders`)
-            let filename
             for (const file in uploaders) {
                 const import_ = uploaders[file]
-                if (import_.name === view.uploader.name) {
-                    filename = file
-                    break
+                if (import_.name === this.uploader.name) {
+                    return file
                 }
             }
+        },
+        testUploader() {
+            if (!this.validateConfig()) {
+                return
+            }
+            const res = ipcRenderer.sendSync("test-uploader", this.getFilename())
+            if (res[0]) {
+                this.exception += "ayyyyTestWorked"
+            } else {
+                this.exception += "testFailed"
+                this.exceptionData += res[1]
+            }
+        },
+        setDefaultUploader() {
+            if (!this.validateConfig()) {
+                return
+            }
+
+            const filename = this.getFilename()
             config.uploader_type = filename
             saveConfig()
-            view.exception += "ayyyyDefaultSaved"
+            this.exception += "ayyyyDefaultSaved"
         },
     },
 })

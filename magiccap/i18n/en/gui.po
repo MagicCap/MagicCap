@@ -200,3 +200,6 @@ msgstr ""
 # gui/index.template.html:32
 msgid "Link Shortener"
 msgstr ""
+
+msgid "Test Uploader"
+msgstr ""

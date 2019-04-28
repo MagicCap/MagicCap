@@ -10,7 +10,8 @@ global.saveConfig = saveConfig
 
 // Main imports.
 const magicImports = require("magicimports")
-const { readdir, readFile } = magicImports("fs-nextra")
+const { readFile } = magicImports("fs-nextra")
+const testUploader = require("./test_uploader")
 let capture = require(`${__dirname}/capture.js`)
 const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = magicImports("electron")
 const notifier = magicImports("node-notifier")
@@ -326,6 +327,9 @@ ipcMain.on("config-edit", async(event, data) => {
     localConfig = data
     await createContextMenu()
 })
+
+// Tests a uploader.
+ipcMain.on("test-uploader", async(event, data) => { event.returnValue = await testUploader(uploaders[data]) })
 
 // Handles the hotkey changing.
 ipcMain.on("hotkey-change", async(event, c) => {
