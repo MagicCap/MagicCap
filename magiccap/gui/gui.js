@@ -221,6 +221,11 @@ function openMPL() {
     shell.openExternal("https://www.mozilla.org/en-US/MPL/2.0")
 }
 
+// Opens the license for the emoji data in a browser.
+function openEmojiLicense() {
+    shell.openExternal("https://github.com/missive/emoji-mart/blob/master/LICENSE")
+}
+
 // Saves the config.
 async function saveConfig() {
     saveConfigToDb()

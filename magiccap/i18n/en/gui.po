@@ -87,6 +87,10 @@ msgstr ""
 msgid "This software is licensed under the {license} license."
 msgstr ""
 
+# gui/index.template.html:203
+msgid "The emoji data used is licensed under the {emojiLicense} license."
+msgstr ""
+
 # gui/index.template.html:179
 msgid "Copy the uploaded URL to the clipboard (requires file uploads to be on)."
 msgstr ""
