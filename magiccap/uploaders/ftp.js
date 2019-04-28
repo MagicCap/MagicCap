@@ -58,6 +58,11 @@ module.exports = {
         }
         await client.end()
 
-        return `${config.ftp_domain}/${filename}`
+        let baseURL = config.ftp_domain
+        if (baseURL.endsWith("/") || baseURL.endsWith("\\")) {
+            baseURL = baseURL.slice(0, -1)
+        }
+
+        return `${baseURL}/${filename}`
     },
 }
