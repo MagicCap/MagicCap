@@ -449,7 +449,7 @@ const activeUploaderConfig = new Vue({
             if (!this.validateConfig()) {
                 return
             }
-            const view = this;
+            const view = this
             document.getElementById("testButton").classList.add("is-loading")
             ipcRenderer.send("test-uploader", this.getFilename())
             ipcRenderer.once("test-uploader-res", (_, res) => {
