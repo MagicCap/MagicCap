@@ -450,8 +450,8 @@ const activeUploaderConfig = new Vue({
                 return
             }
             const view = this;
-            ipcRenderer.send("test-uploader", this.getFilename())
             document.getElementById("testButton").classList.add("is-loading")
+            ipcRenderer.send("test-uploader", this.getFilename())
             ipcRenderer.once("test-uploader-res", (_, res) => {
                 document.getElementById("testButton").classList.remove("is-loading")
                 if (res[0]) {
