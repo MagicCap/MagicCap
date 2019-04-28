@@ -335,11 +335,20 @@ new Vue({
 })
 
 // Toggles the file config.
-const toggleFileConfig = (toggle = false) => document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active")
-
+const toggleFileConfig = (toggle = false) => {
+    if (toggle) {
+        activeModal = "fileConfig"
+    }
+    document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active")
+}
 
 // Toggles the MFL config.
-const toggleMFLConfig = (toggle = false) => document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active")
+const toggleMFLConfig = (toggle = false) => {
+    if (toggle) {
+        activeModal = "mflConfig"
+    }
+    document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active")
+}
 
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
