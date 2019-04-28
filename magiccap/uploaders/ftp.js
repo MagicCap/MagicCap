@@ -35,7 +35,7 @@ module.exports = {
             default: "/",
             required: true,
         },
-        Domain: {
+        "Base URL": {
             value: "ftp_domain",
             type: "text",
             required: true,
