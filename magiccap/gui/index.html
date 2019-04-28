@@ -25,15 +25,6 @@
                         <li>
                             <a href="javascript:showAbout()">$About$</a>
                         </li>
-                        <li>
-                            <a href="javascript:runCapture()">$Screen Capture$</a>
-                        </li>
-                        <li>
-                            <a href="javascript:runGifCapture()">$GIF Capture$</a>
-                        </li>
-                        <li v-if="shortener">
-                            <a href="javascript:showShortener()">$Link Shortener$</a>
-                        </li>
                         <li v-if="clipboardAction">
                             <a href="javascript:showClipboardAction()">$Clipboard Action$</a>
                         </li>
@@ -54,6 +45,16 @@
                         </li> -->
                         <li v-if="toggleTheme">
                             <a href="javascript:toggleTheme()">$Toggle Theme$</a>
+                        </li>
+                        <hr style="margin: 8px">
+                        <li v-if="shortener">
+                            <a href="javascript:showShortener()">$Link Shortener$</a>
+                        </li>
+                        <li>
+                            <a href="javascript:runCapture()">$Screen Capture$</a>
+                        </li>
+                        <li>
+                            <a href="javascript:runGifCapture()">$GIF Capture$</a>
                         </li>
                     </ul>
                 </aside>
