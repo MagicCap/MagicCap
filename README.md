@@ -25,7 +25,7 @@ MagicCap is a image/GIF capture suite for Mac and Linux. You can get a precompil
 MagicCap supports the following uploaders (this list will expand over time):
 - Custom HTTP POST
 - elixi.re
-- FTP
+- Passive FTP
 - Pomf
 - imgur
 - i.novus
