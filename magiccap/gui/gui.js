@@ -449,13 +449,17 @@ const activeUploaderConfig = new Vue({
             if (!this.validateConfig()) {
                 return
             }
-            const res = ipcRenderer.sendSync("test-uploader", this.getFilename())
-            if (res[0]) {
-                this.exception += "ayyyyTestWorked"
-            } else {
-                this.exception += "testFailed"
-                this.exceptionData += res[1]
-            }
+            const view = this;
+            (new Promise(res => {
+                res(ipcRenderer.sendSync("test-uploader", this.getFilename()))
+            })).then(res => {
+                if (res[0]) {
+                    view.exception += "ayyyyTestWorked"
+                } else {
+                    view.exception += "testFailed"
+                    view.exceptionData += res[1]
+                }
+            })
         },
         setDefaultUploader() {
             if (!this.validateConfig()) {
