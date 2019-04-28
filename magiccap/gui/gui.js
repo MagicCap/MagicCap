@@ -450,9 +450,8 @@ const activeUploaderConfig = new Vue({
                 return
             }
             const view = this;
-            (new Promise(res => {
-                res(ipcRenderer.sendSync("test-uploader", this.getFilename()))
-            })).then(res => {
+            ipcRenderer.send("test-uploader", this.getFilename())
+            ipcRenderer.once("test-uploader-res", (_, res) => {
                 if (res[0]) {
                     view.exception += "ayyyyTestWorked"
                 } else {

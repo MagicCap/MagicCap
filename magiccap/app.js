@@ -329,7 +329,7 @@ ipcMain.on("config-edit", async(event, data) => {
 })
 
 // Tests a uploader.
-ipcMain.on("test-uploader", async(event, data) => { event.returnValue = await testUploader(uploaders[data]) })
+ipcMain.on("test-uploader", async(event, data) => event.reply("test-uploader-res", await testUploader(uploaders[data])))
 
 // Handles the hotkey changing.
 ipcMain.on("hotkey-change", async(event, c) => {
