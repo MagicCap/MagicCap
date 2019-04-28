@@ -79,11 +79,11 @@ msgstr ""
 msgid "Set As Default Uploader"
 msgstr ""
 
-# gui/index.template.html:166
-msgid "Copyright (C) Jake Gealer and Rhys O'Kane 2018-2019."
+# gui/index.template.html:201
+msgid "Copyright (C) Jake Gealer, Rhys O'Kane & Matt Cowley 2018-2019."
 msgstr ""
 
-# gui/index.template.html:167
+# gui/index.template.html:202
 msgid "This software is licensed under the {license} license."
 msgstr ""
 

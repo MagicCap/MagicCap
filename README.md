@@ -44,6 +44,7 @@ The following people have done a ton to help in the creation of MagicCap. If you
 - Jake (techfan36) - Helped us test for Linux.
 - Rhys (SunburntRock89) - Helped me with the structure and fixing bugs. Also fixed FTP.
 - Sam (REC) - Made the FTP logo.
+- Matt (IPv4) - Refactored filename pattern logic & implemented random emoji.
 
 # Building
 In order to download needed packages, run `npm i`. This will get all of the needed packages. You can then run one of the following commands:
