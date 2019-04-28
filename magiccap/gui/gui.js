@@ -3,12 +3,22 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
+// Handles escape to close.
+let activeModal
+
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
 document.addEventListener("keydown", e => {
     // key is I, and the alt key is held down
     // and also, ctrl (for Linux) or Cmd (meta, macOS) is held down
     if (e.code == "KeyI" && e.altKey && (e.ctrlKey || e.metaKey)) {
         require("electron").remote.getCurrentWindow().toggleDevTools()
+    }
+    // Handles escape to close.
+    if (e.code == "Escape") {
+        if (activeModal) {
+            document.getElementById(activeModal).classList.remove("is-active")
+            activeModal = undefined
+        }
     }
 })
 
@@ -177,6 +187,7 @@ function closeClipboardConfig() {
 
 // Shows the clipboard action settings page.
 function showClipboardAction() {
+    activeModal = "clipboardAction"
     document.getElementById("clipboardAction").classList.add("is-active")
 }
 
@@ -187,6 +198,7 @@ function closeBetaUpdates() {
 
 // Shows the beta updates  settings page.
 function showBetaUpdates() {
+    activeModal = "betaUpdates"
     document.getElementById("betaUpdates").classList.add("is-active")
 }
 
@@ -208,6 +220,7 @@ async function runGifCapture() {
 
 // Shows the about page.
 function showAbout() {
+    activeModal = "about"
     document.getElementById("about").classList.add("is-active")
 }
 
@@ -241,6 +254,7 @@ async function toggleTheme() {
 
 // Shows the hotkey config.
 function showHotkeyConfig() {
+    activeModal = "hotkeyConfig"
     document.getElementById("hotkeyConfig").classList.add("is-active")
 }
 
@@ -499,6 +513,7 @@ const optionWebviewBodge = option => {
 
 // Shows the uploader config page.
 function showUploaderConfig() {
+    activeModal = "uploaderConfig"
     document.getElementById("uploaderConfig").classList.add("is-active")
 }
 
@@ -561,6 +576,7 @@ new Vue({
             activeUploaderConfig.$set(activeUploaderConfig.uploader, "options", options)
             document.getElementById("uploaderConfig").classList.remove("is-active")
             document.getElementById("activeUploaderConfig").classList.add("is-active")
+            activeModal = "activeUploaderConfig"
         },
         toggleCheckbox() {
             this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox)
