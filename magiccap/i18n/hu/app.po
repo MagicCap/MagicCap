@@ -7,10 +7,10 @@ msgstr ""
 "X-Crowdin-File: /develop/magiccap/i18n/en/app.po\n"
 "Project-Id-Version: magiccap\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-02-17 12:04\n"
+"PO-Revision-Date: 2019-04-28 12:35\n"
 
 # app.js:40
 msgid "Application"
