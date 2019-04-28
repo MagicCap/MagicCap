@@ -24,13 +24,13 @@ const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?
 
 module.exports = class CaptureHandler {
     // Replaces pattern with callback
-    static replacePatternCallback(string, pattern, callback) {
+    static replacePatternCallback(string, pattern, cb) {
         if (string.includes(pattern)) {
             let finalString = ""
             const stringSplit = string.split(new RegExp(`(${pattern})`))
             for (const part in stringSplit) {
                 if (stringSplit[part] === pattern) {
-                    finalString += callback()
+                    finalString += cb()
                 } else {
                     finalString += stringSplit[part]
                 }
