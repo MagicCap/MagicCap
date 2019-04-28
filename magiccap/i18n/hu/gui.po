@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-04-28 12:35\n"
+"PO-Revision-Date: 2019-04-28 14:56\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -213,5 +213,8 @@ msgstr ""
 
 # gui/index.template.html:32
 msgid "Link Shortener"
+msgstr ""
+
+msgid "Test Uploader"
 msgstr ""
 
