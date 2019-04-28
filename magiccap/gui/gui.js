@@ -451,7 +451,9 @@ const activeUploaderConfig = new Vue({
             }
             const view = this;
             ipcRenderer.send("test-uploader", this.getFilename())
+            document.getElementById("testButton").disabled = true
             ipcRenderer.once("test-uploader-res", (_, res) => {
+                document.getElementById("testButton").disabled = false
                 if (res[0]) {
                     view.exception += "ayyyyTestWorked"
                 } else {
