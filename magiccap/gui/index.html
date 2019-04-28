@@ -198,8 +198,9 @@
                 </header>
                 <section class="modal-card-body">
                     <h1 class="title" id="magiccap-ver">MagicCap</h1>
-                    <p>$Copyright (C) Jake Gealer and Rhys O'Kane 2018-2019.$</p>
+                    <p>$Copyright (C) Jake Gealer, Rhys O'Kane & Matt Cowley 2018-2019.$</p>
                     <p>$This software is licensed under the {license} license.$</p>
+                    <p>$The emoji data used is licensed under the {emojiLicense} license.$</p>
                     <p v-if="liteTouch">$Some settings are managed by your system administrator.$</p>
                 </section>
             </div>
@@ -272,7 +273,7 @@
                     </div>
                     <div class="field">
                         <label class="label" for="fileNamingPattern">$File Naming Pattern:$</label>
-                        <p style="padding-bottom: 10px">$You can use " to repersent a random character, %date% for the date and %time% for the time.$</p>
+                        <p style="padding-bottom: 10px">$You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time.$</p>
                         <div class="control">
                             <input class="input" type="text" id="fileNamingPattern" placeholder="$File Naming Pattern$" :value="fileNamingPatternI" v-on:change="saveItem('fileNamingPattern', 'file_naming_pattern')">
                         </div>
