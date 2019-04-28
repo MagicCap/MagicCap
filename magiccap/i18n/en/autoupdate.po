@@ -7,10 +7,10 @@ msgstr ""
 "X-Crowdin-File: /develop/magiccap/i18n/en/autoupdate.po\n"
 "Project-Id-Version: magiccap\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: English\n"
 "Language: en_US\n"
-"PO-Revision-Date: 2019-02-07 10:58\n"
+"PO-Revision-Date: 2019-04-28 12:34\n"
 
 # autoupdate.js:102
 msgid "Update Now"
