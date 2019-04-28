@@ -119,8 +119,8 @@ msgstr ""
 msgid "File Naming Pattern:"
 msgstr ""
 
-# gui/index.template.html:222
-msgid "You can use \" to repersent a random character, %date% for the date and %time% for the time."
+# gui/index.template.html:276
+msgid "You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time."
 msgstr ""
 
 # gui/index.template.html:224

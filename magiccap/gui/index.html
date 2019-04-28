@@ -273,7 +273,7 @@
                     </div>
                     <div class="field">
                         <label class="label" for="fileNamingPattern">$File Naming Pattern:$</label>
-                        <p style="padding-bottom: 10px">$You can use " to repersent a random character, %date% for the date and %time% for the time.$</p>
+                        <p style="padding-bottom: 10px">$You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time.$</p>
                         <div class="control">
                             <input class="input" type="text" id="fileNamingPattern" placeholder="$File Naming Pattern$" :value="fileNamingPatternI" v-on:change="saveItem('fileNamingPattern', 'file_naming_pattern')">
                         </div>
