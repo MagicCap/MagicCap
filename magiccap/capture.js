@@ -1,6 +1,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Imports go here.
 const magicImports = require("magicimports")
@@ -12,6 +13,8 @@ const i18n = require("./i18n")
 const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 const selector = require("magiccap-selector")
 const sharp = magicImports("electron-sharp")
+// Source: https://raw.githubusercontent.com/missive/emoji-mart/master/data/apple.json
+const appleEmojis = require("./emojis/apple.json").emojis
 
 // Defines if we are in a GIF.
 let inGif = false
@@ -20,33 +23,57 @@ let inGif = false
 const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)")
 
 module.exports = class CaptureHandler {
-    // Generates the random characters.
-    static renderRandomChars(filename) {
-        const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-        if (filename.includes('"')) {
-            let finalFilename = ""
-            const filenameSplit = filename.split(/(")/)
-            for (const part in filenameSplit) {
-                if (filenameSplit[part] === '"') {
-                    finalFilename += charset.charAt(Math.floor(Math.random() * charset.length))
+    // Replaces pattern with callback
+    static replacePatternCallback(string, pattern, callback) {
+        if (string.includes(pattern)) {
+            let finalString = ""
+            const stringSplit = string.split(new RegExp(`(${pattern})`))
+            for (const part in stringSplit) {
+                if (stringSplit[part] === pattern) {
+                    finalString += callback()
                 } else {
-                    finalFilename += filenameSplit[part]
+                    finalString += stringSplit[part]
                 }
             }
-            return finalFilename
+            return finalString
         }
-        return filename
+        return string
+    }
+
+    // Generates a random character
+    static getRandomString() {
+        const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        return charset.charAt(Math.floor(Math.random() * charset.length))
+    }
+
+    // Generates any random emoji
+    static getRandomEmoji() {
+        // Choose a random
+        const emojiArray = Object.values(appleEmojis)
+        let emoji = emojiArray[Math.floor(Math.random() * emojiArray.length)]
+
+        // Convert from code point to emoji string
+        emoji = String.fromCodePoint(parseInt(emoji.b, 16))
+        return emoji
     }
 
     // Makes a nice filename for screen captures.
     static async createCaptureFilename(gif) {
+        // Get pattern
         let filename = "screenshot_%date%_%time%"
         if (config.file_naming_pattern) {
             filename = config.file_naming_pattern
         }
-        filename = this.renderRandomChars(filename
-            .replace(/%date%/g, moment().format("DD-MM-YYYY"))
-            .replace(/%time%/g, moment().format("HH-mm-ss")))
+
+        // Sub in fixed patterns
+        filename = filename.replace(/%date%/g, moment().format("DD-MM-YYYY"))
+        filename = filename.replace(/%time%/g, moment().format("HH-mm-ss"))
+
+        // Sub in dynamic patterns
+        filename = this.replacePatternCallback(filename, '"', this.getRandomString)
+        filename = this.replacePatternCallback(filename, "%emoji%", this.getRandomEmoji)
+
+        // Return with correct prefix
         return `${filename}.${gif ? "gif" : "png"}`
     }
 
