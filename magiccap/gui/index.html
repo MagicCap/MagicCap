@@ -110,7 +110,7 @@
                     <article class="message is-danger" v-else-if="exception === 'notAnInteger'" id="notAnInteger"><div class="message-body">$You provided a invalid integer.$</div></article>
                     <article class="message is-success" v-else-if="exception === 'ayyyyDefaultSaved'" id="ayyyyDefaultSaved"><div class="message-body">$Default uploader successfully saved.$</div></article>
                     <article class="message is-success" v-else-if="exception === 'ayyyyTestWorked'" id="ayyyyTestWorked"><div class="message-body">$Uploader test was successful.$</div></article>
-                    <article class="message is-danger" v-else-if="exception === 'testFailed'" id="testFailed"><div class="message-body">{{ testFailed }}</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'testFailed'" id="testFailed"><div class="message-body">{{ exceptionData }}</div></article>
                     <div v-if="uploader.options.length === 0">
                         <p>$There are no configuration options for this uploader.$</p><br>
                     </div>
