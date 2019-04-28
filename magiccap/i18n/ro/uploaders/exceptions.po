@@ -7,10 +7,10 @@ msgstr ""
 "X-Crowdin-File: /develop/magiccap/i18n/en/uploaders/exceptions.po\n"
 "Project-Id-Version: magiccap\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: JakeMakesStuff <jake@gealer.email>\n"
+"Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
-"PO-Revision-Date: 2019-03-13 19:09\n"
+"PO-Revision-Date: 2019-04-28 12:34\n"
 
 # uploaders/breadmoe.js:31
 # uploaders/elixire.js:25
