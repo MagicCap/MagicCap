@@ -27,7 +27,7 @@
         "node-machine-id": "1.1.10",
         "@sentry/electron": "0.15.0",
         "magiccap-selector": "1.0.14",
-        "electron-sharp": "0.20.8",
+        "sharp": "0.22.1",
         "gifman": "1.0.5",
         "magicimports": "1.0.0",
         "asciiart-logo": "0.2.6"
@@ -44,7 +44,7 @@
         "postinstall": "electron-builder install-app-deps --arch x64",
         "lint": "eslint \"./**/*.js\"",
         "lint-and-fix": "eslint \"./**/*.js\" --fix",
-        "maccompile": "electron-packager . MagicCap --platform darwin --arch x64 --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
+        "maccompile": "electron-packager . MagicCap --no-deref-symlinks --platform darwin --arch x64 --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
         "linuxcompile": "electron-packager . MagicCap --platform linux --arch x64 --out ./build --overwrite --icon icons/app.ico"
     }
 }
