@@ -167,6 +167,9 @@ async function openConfig() {
         show: false,
         vibrancy: vibrancy,
         backgroundColor: "#00000000",
+        webPreferences: {
+            nodeIntegration: true,
+        },
     })
     if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`)
     global.platform = process.platform

@@ -19,6 +19,9 @@ const showShortener = () => {
         show: false, minimizable: false,
         maximizable: false, alwaysOnTop: true,
         minWidth: 500, minHeight: 200,
+        webPreferences: {
+            nodeIntegration: true,
+        },
     })
     if (process.platform !== "darwin") shortenerWindow.setIcon(`${path.join(__dirname, "..")}/icons/taskbar.png`)
     shortenerWindow.setTitle("MagicCap Link Shortener")
