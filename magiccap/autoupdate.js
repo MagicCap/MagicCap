@@ -10,6 +10,12 @@ const async_child_process = magicImports("async-child-process")
 const sudo = magicImports("sudo-prompt")
 const i18n = magicImports("./i18n")
 
+// Ignores this while the app is open.
+const tempIgnore = []
+
+// Defines if a update is running.
+let updateRunning = false
+
 // Checks if the autoupdate binaries are installed.
 async function checkAutoupdateBin() {
     try {
@@ -19,9 +25,6 @@ async function checkAutoupdateBin() {
         return false
     }
 }
-
-// Makes the JS code sleep.
-const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds))
 
 // Downloads the needed autoupdate binaries.
 async function downloadBin() {
@@ -90,7 +93,7 @@ async function doUpdate(updateInfo) {
 }
 
 // Handles a new update.
-async function handleUpdate(updateInfo, config, tempIgnore) {
+async function handleUpdate(updateInfo) {
     if (tempIgnore.indexOf(updateInfo.current) > -1) {
         return
     }
@@ -132,6 +135,18 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
     })
 }
 
+const runUpdateCheck = async() => {
+    if (updateRunning || !config.autoupdate_on) {
+        return
+    }
+    const updateInfo = await checkForUpdates()
+    if (!updateInfo.upToDate) {
+        updateRunning = true
+        await handleUpdate(updateInfo)
+        updateRunning = false
+    }
+}
+
 // The actual autoupdate part.
 module.exports = async function autoUpdateLoop() {
     if (!AUTOUPDATE_ON) {
@@ -139,8 +154,10 @@ module.exports = async function autoUpdateLoop() {
     }
 
     if (config.autoupdate_on === false) {
+        // We want undefined to fall through here.
         return
     }
+
     const binExists = await checkAutoupdateBin()
     if (!binExists) {
         let toContinue = await new Promise(async res => {
@@ -175,12 +192,12 @@ module.exports = async function autoUpdateLoop() {
             return
         }
     }
-    let tempIgnore = []
-    for (;;) {
-        const updateInfo = await checkForUpdates()
-        if (!updateInfo.upToDate) {
-            await handleUpdate(updateInfo, config, tempIgnore)
-        }
-        await sleep(600000)
+
+    if (!config.autoupdate_on) {
+        // Not here though.
+        return
     }
+
+    runUpdateCheck()
+    setInterval(runUpdateCheck, 600000)
 }
