@@ -26,7 +26,7 @@
         "pofile": "1.0.11",
         "node-machine-id": "1.1.10",
         "@sentry/electron": "0.15.0",
-        "magiccap-selector": "1.0.14",
+        "magiccap-selector": "1.0.17",
         "sharp": "0.22.1",
         "gifman": "1.0.5",
         "magicimports": "1.0.0",
