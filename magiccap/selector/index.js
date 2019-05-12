@@ -62,8 +62,6 @@ const spawnWindows = displays => {
                 nodeIntegration: true,
             },
             backgroundColor: "#000000",
-            transparent: true,
-            offscreen: true,
         })
         win.setVisibleOnAllWorkspaces(true)
         win.setPosition(i.bounds.x, i.bounds.y)
@@ -89,22 +87,6 @@ const getOrderedDisplays = () => {
     })
 }
 
-// Defines all of the spawned windows.
-let spawnedWindows
-const appPrep = () => {
-    if (platform !== "linux") {
-        const spawnEm = () => {
-            const displays = getOrderedDisplays()
-            spawnedWindows = spawnWindows(displays)
-        }
-        spawnEm()
-        const electronScreen = require("electron").screen
-        electronScreen.on("display-added", spawnEm)
-        electronScreen.on("display-removed", spawnEm)
-    }
-}
-app.on("ready", appPrep)
-
 // Gets the values of a object.
 const values = item => {
     const x = []
@@ -129,10 +111,8 @@ module.exports = async buttons => {
 
     let primaryId = 0
     const x = electronScreen.getPrimaryDisplay().id
-    let primary
     for (const display of displays) {
         if (display.id === x) {
-            primary = display
             break
         }
         primaryId += 1
@@ -254,6 +234,5 @@ module.exports = async buttons => {
             }
         })
     })
-    appPrep()
     return r
 }
