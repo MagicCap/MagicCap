@@ -202,7 +202,6 @@ module.exports = async buttons => {
                 await screen.setSize(0, 0)
                 screen.close()
             }
-            screens = []
             if (args === undefined) {
                 res(null)
             } else {
