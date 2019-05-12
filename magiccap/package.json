@@ -43,7 +43,6 @@
     },
     "scripts": {
         "postinstall": "electron-builder install-app-deps --arch x64",
-        "link": "node ../create-link-deps.js",
         "lint": "eslint \"./**/*.js\"",
         "lint-and-fix": "eslint \"./**/*.js\" --fix",
         "maccompile": "electron-packager . MagicCap --no-deref-symlinks --platform darwin --arch x64 --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
