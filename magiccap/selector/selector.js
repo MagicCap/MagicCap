@@ -235,7 +235,7 @@ ipcRenderer.once("load-reply", (_, info) => {
     displayInfo = info
 
     // Sets the background image.
-    document.body.style.backgroundImage = `url("file://${__dirname}/dimmer.png"), url("http://127.0.0.1:${displayInfo.port}/?key=${displayInfo.key}&display=${screenNumber}")`
+    document.body.style.backgroundImage = `url("file://${__dirname}/dimmer.svg"), url("http://127.0.0.1:${displayInfo.port}/?key=${displayInfo.key}&display=${screenNumber}")`
 
     // Handles displaying the buttons.
     if (displayInfo.buttons && displayInfo.mainDisplay) {
