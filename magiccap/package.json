@@ -31,8 +31,7 @@
         "sharp": "0.22.1",
         "gifman": "1.0.5",
         "magicimports": "1.0.0",
-        "asciiart-logo": "0.2.6",
-        "electron-link": "0.4.0"
+        "asciiart-logo": "0.2.6"
     },
     "devDependencies": {
         "electron-builder": "20.26.1",
@@ -40,7 +39,8 @@
         "electron-installer-dmg": "2.0.0",
         "electron": "5.0.0",
         "eslint": "5.3.0",
-        "lodash": ">=4.17.11"
+        "lodash": ">=4.17.11",
+        "electron-link": "0.4.0"
     },
     "scripts": {
         "postinstall": "electron-builder install-app-deps --arch x64 && node ./linked.js",
