@@ -31,7 +31,8 @@
         "sharp": "0.22.1",
         "gifman": "1.0.5",
         "magicimports": "1.0.0",
-        "asciiart-logo": "0.2.6"
+        "asciiart-logo": "0.2.6",
+        "electron-link": "0.4.0"
     },
     "devDependencies": {
         "electron-builder": "20.26.1",
@@ -42,7 +43,7 @@
         "lodash": ">=4.17.11"
     },
     "scripts": {
-        "postinstall": "electron-builder install-app-deps --arch x64",
+        "postinstall": "electron-builder install-app-deps --arch x64 && node ./linked.js",
         "lint": "eslint \"./**/*.js\"",
         "lint-and-fix": "eslint \"./**/*.js\" --fix",
         "maccompile": "electron-packager . MagicCap --no-deref-symlinks --platform darwin --arch x64 --out ./build --overwrite --icon icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./icons/app.icns",
