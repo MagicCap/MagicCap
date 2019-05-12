@@ -41,7 +41,7 @@ freezeServer.get("/", (req, res) => {
         res.status(403)
         res.send("Invalid key.")
     } else {
-        const display = parseInt(req.query.display)
+        const display = Number(req.query.display)
         res.contentType("png")
         res.end(screenshots[display])
     }
