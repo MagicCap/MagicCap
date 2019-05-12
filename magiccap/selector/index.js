@@ -154,12 +154,7 @@ module.exports = async buttons => {
 
     screenshots = await Promise.all(promises)
 
-    let screens
-    if (!spawnedWindows) {
-        screens = spawnWindows(displays)
-    } else {
-        screens = spawnedWindows
-    }
+    const screens = spawnWindows(displays)
 
     const uuidDisplayMap = {}
     for (const screenNumber in screens) {
