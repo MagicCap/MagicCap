@@ -11,7 +11,7 @@ const fsnextra = magicImports("fs-nextra")
 const { clipboard, nativeImage, Tray } = magicImports("electron")
 const i18n = require("./i18n")
 const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
-const selector = require("magiccap-selector")
+const selector = require("./selector")
 const sharp = magicImports("sharp")
 // Source: https://raw.githubusercontent.com/missive/emoji-mart/master/data/apple.json
 const appleEmojis = require("./emojis/apple.json").emojis
