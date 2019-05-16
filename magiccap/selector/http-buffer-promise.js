@@ -3,16 +3,14 @@
 
 const http = require("http")
 
-module.exports = url => {
+module.exports = url => new Promise((res, rej) => {
     const urlified = new URL(url)
-    return new Promise((res, rej) => {
-        const data = []
-        const concatPromise = () => new Promise(x => x(Buffer.concat(data)))
-        const req = http.request(urlified, cbRes => {
-            cbRes.on("data", part => data.push(part))
-            cbRes.on("end", async() => res(await concatPromise()))
-        })
-        req.on("error", e => rej(e))
-        req.end()
+    const data = []
+    const concatPromise = () => new Promise(x => x(Buffer.concat(data)))
+    const req = http.request(urlified, cbRes => {
+        cbRes.on("data", part => data.push(part))
+        cbRes.on("end", async() => res(await concatPromise()))
     })
-}
+    req.on("error", e => rej(e))
+    req.end()
+})
