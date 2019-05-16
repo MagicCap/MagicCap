@@ -3,13 +3,13 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2019.
 
 // Defines the required imports.
-const { ipcMain, BrowserWindow, app } = require("electron")
+const { ipcMain, BrowserWindow } = require("electron")
 const uuidv4 = require("uuid/v4")
 const os = require("os")
 const path = require("path")
 const asyncChildProcess = require("async-child-process")
 const { spawn } = require("child_process")
-const { get } = require("chainfetch")
+const httpBufferPromise = require("./http-buffer-promise")
 const express = require("express")
 
 // Defines all of the screenshots.
@@ -136,17 +136,11 @@ module.exports = async buttons => {
         }
     }
 
-    const displayPromise = async display => {
-        const data = await get(`http://127.0.0.1:${port}/?key=${screenshotServerKey}&display=${display}`).toBuffer()
-        return data.body
-    }
-
-    const promises = [];
-
     // Shoves everything in the background.
+    const promises = [];
     (() => {
         for (const displayId in displays) {
-            const promise = displayPromise(displayId)
+            const promise = httpBufferPromise(`http://127.0.0.1:${port}/?key=${screenshotServerKey}&display=${displayId}`)
             promise
             promises.push(promise)
         }
