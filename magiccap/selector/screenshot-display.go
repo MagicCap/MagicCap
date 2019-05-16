@@ -6,12 +6,12 @@ package main
 import (
 	"github.com/kbinani/screenshot"
 	"github.com/satori/go.uuid"
+	"github.com/valyala/fasthttp"
 	"image/png"
 	"image"
 	"strconv"
 	"bytes"
 	"sort"
-	"net/http"
 	"fmt"
 	"os"
 )
@@ -30,13 +30,12 @@ func main() {
 
 	id := fmt.Sprintf("%s", uuid.Must(uuid.NewV4()))
 
-	http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
-		queryValues := r.URL.Query()
-		key := queryValues.Get("key")
-		if key != id {
+	handler := func(ctx *fasthttp.RequestCtx) {
+		queryValues := ctx.QueryArgs()
+		if string(queryValues.Peek("key")) != id {
 			panic("Invalid key.")
 		}
-		display_id, _ := strconv.Atoi(queryValues.Get("display"))
+		display_id, _ := strconv.Atoi(string(queryValues.Peek("display")))
 
 		img, err := screenshot.CaptureRect(all_displays[display_id])
 		if err != nil {
@@ -45,10 +44,10 @@ func main() {
 	
 		buf := new(bytes.Buffer)
 		png.Encode(buf, img)
-		
-		w.Write(buf.Bytes())
-	})
+
+		ctx.SetBody(buf.Bytes())
+	}
 
 	fmt.Printf("%s", id)
-	http.ListenAndServe(fmt.Sprintf("127.0.0.1:%s", os.Args[1]), nil)
+	fasthttp.ListenAndServe(fmt.Sprintf("127.0.0.1:%s", os.Args[1]), handler)
 }

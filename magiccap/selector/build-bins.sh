@@ -9,6 +9,7 @@ go get golang.org/x/sys/windows
 go get github.com/BurntSushi/xgb
 go get github.com/gen2brain/shm
 go get github.com/satori/go.uuid
+go get github.com/valyala/fasthttp
 echo 'Building...'
 
 platforms=("windows/amd64" "linux/amd64" "darwin/amd64" "freebsd/amd64")
