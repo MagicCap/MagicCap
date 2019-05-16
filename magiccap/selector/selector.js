@@ -1,8 +1,9 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-// Requires the various things which are needed.
-const { ipcRenderer } = require("electron")
+// Requires Electron.
+const electron = require("electron")
+const ipcRenderer = electron.ipcRenderer
 
 // Gets the display number.
 const screenNumber = Number(window.location.hash.substr(1))
@@ -65,7 +66,7 @@ const getInbetweenWindows = electronMouse => {
 
 // Called when the mouse moves.
 document.body.onmousemove = e => {
-    const thisClick = require("electron").screen.getCursorScreenPoint()
+    const thisClick = electron.screen.getCursorScreenPoint()
     ipcRenderer.send(`${displayInfo.uuid}-event-send`, {
         type: "invalidate-selections",
     })
@@ -103,7 +104,7 @@ const xssProtect = data => {
 
 // Called when the mouse button goes up.
 document.body.onmouseup = async e => {
-    const thisClick = require("electron").screen.getCursorScreenPoint()
+    const thisClick = electron.screen.getCursorScreenPoint()
 
     if (e.target.matches(".clickable-property")) {
         return
