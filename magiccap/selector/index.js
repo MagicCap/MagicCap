@@ -108,7 +108,7 @@ const spawnWindows = (displays, primaryId) => {
             webPreferences: {
                 nodeIntegration: true,
             },
-            backgroundColor: "#000000",
+            transparent: true,
         })
         const primary = index == primaryId
         const uuid = uuids[index]
