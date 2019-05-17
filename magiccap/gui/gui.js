@@ -217,6 +217,11 @@ async function runGifCapture() {
     await remote.getGlobal("runCapture")(true)
 }
 
+// Runs the Clipboard capture.
+async function runClipboardCapture() {
+    await remote.getGlobal("runClipboardCapture")()
+}
+
 
 // Shows the about page.
 function showAbout() {
