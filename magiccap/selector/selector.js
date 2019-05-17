@@ -33,7 +33,7 @@ document.body.onmousedown = async e => {
         return
     }
 
-    firstClick = require("electron").screen.getCursorScreenPoint()
+    firstClick = electron.screen.getCursorScreenPoint()
     firstClick.pageX = e.pageX
     firstClick.pageY = e.pageY
 }
