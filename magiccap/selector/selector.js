@@ -5,12 +5,6 @@
 const electron = require("electron")
 const ipcRenderer = electron.ipcRenderer
 
-// Gets the display number.
-const screenNumber = Number(window.location.hash.substr(1))
-
-// Where display information will be defined.
-let displayInfo
-
 // Defines the selection type.
 let selectionType = "__cap__"
 
@@ -53,7 +47,7 @@ function between(x, min, max) {
 const getInbetweenWindows = electronMouse => {
     const inThese = []
 
-    for (const x of displayInfo.activeWindows) {
+    for (const x of payload.activeWindows) {
         if (between(electronMouse.x, x.x, x.x + x.width) && between(electronMouse.y, x.y, x.y + x.height)) {
             inThese.push(x)
         }
@@ -67,7 +61,7 @@ const getInbetweenWindows = electronMouse => {
 // Called when the mouse moves.
 document.body.onmousemove = e => {
     const thisClick = electron.screen.getCursorScreenPoint()
-    ipcRenderer.send(`${displayInfo.uuid}-event-send`, {
+    ipcRenderer.send(`${payload.uuid}-event-send`, {
         type: "invalidate-selections",
     })
 
@@ -86,8 +80,8 @@ document.body.onmousemove = e => {
         const screenPart = inThese[0]
         element.style.width = `${screenPart.width}px`
         element.style.height = `${screenPart.height}px`
-        element.style.left = `${screenPart.x - displayInfo.bounds.x}px`
-        element.style.top = `${screenPart.y - displayInfo.bounds.y}px`
+        element.style.left = `${screenPart.x - payload.bounds.x}px`
+        element.style.top = `${screenPart.y - payload.bounds.y}px`
     }
 }
 
@@ -128,8 +122,8 @@ document.body.onmouseup = async e => {
         pageX: posInfo.x,
         pageY: posInfo.y,
     }
-    start.x = start.pageX + displayInfo.bounds.x
-    start.y = start.pageY + displayInfo.bounds.y
+    start.x = start.pageX + payload.bounds.x
+    start.y = start.pageY + payload.bounds.y
 
     end = {
         x: start.x + width,
@@ -148,14 +142,14 @@ document.body.onmouseup = async e => {
             endY: end.y,
             endPageX: end.pageX,
             endPageY: end.pageY,
-            display: screenNumber,
+            display: payload.display,
             selections: selections,
             width: width,
             height: height,
         })
     } else {
         const selection = {
-            display: screenNumber,
+            display: payload.display,
             selectionType: selectionType,
             startX: start.x,
             startY: start.y,
@@ -166,7 +160,7 @@ document.body.onmouseup = async e => {
             endPageX: end.pageX,
             endPageY: end.pageY,
         }
-        ipcRenderer.send(`${displayInfo.uuid}-event-send`, {
+        ipcRenderer.send(`${payload.uuid}-event-send`, {
             type: "selection-made",
             args: selection,
         })
@@ -206,20 +200,20 @@ function invokeButton(buttonId) {
     }
 
     const htmlElement = newNodes[buttonId]
-    const button = displayInfo.buttons[buttonId]
+    const button = payload.buttons[buttonId]
     switch (button.type) {
         case "selection": {
             htmlElement.childNodes[1].classList.add("selected")
-            for (const thisButtonId in displayInfo.buttons) {
+            for (const thisButtonId in payload.buttons) {
                 if (buttonId != thisButtonId) {
-                    const thisButton = displayInfo.buttons[thisButtonId]
+                    const thisButton = payload.buttons[thisButtonId]
                     if (thisButton.type === "selection") {
                         newNodes[thisButtonId].childNodes[1].classList.remove("selected")
                     }
                 }
             }
             selectionType = button.name
-            ipcRenderer.send(`${displayInfo.uuid}-event-send`, {
+            ipcRenderer.send(`${payload.uuid}-event-send`, {
                 type: "selection-type-change",
                 args: {
                     selectionType: selectionType,
@@ -230,32 +224,23 @@ function invokeButton(buttonId) {
     }
 }
 
-// Sets the display information.
-ipcRenderer.send(`screen-${screenNumber}-load`)
-ipcRenderer.once("load-reply", (_, info) => {
-    displayInfo = info
-
-    // Sets the background image.
-    document.body.style.backgroundImage = `url("file://${__dirname}/dimmer.svg"), url("http://127.0.0.1:${displayInfo.port}/?key=${displayInfo.key}&display=${screenNumber}")`
-
-    // Handles displaying the buttons.
-    if (displayInfo.buttons && displayInfo.mainDisplay) {
-        let propertyStr = ""
-        for (const buttonId in displayInfo.buttons) {
-            const button = displayInfo.buttons[buttonId]
-            propertyStr += `
-                <a href="javascript:invokeButton(${buttonId})" style="cursor: default;">
-                    <img class="clickable-property${button.active ? " selected" : ""}" src="file://${button.imageLocation}">
-                </a>
-            `
-        }
-        uploaderProperties.innerHTML += propertyStr
+// Handles displaying the buttons.
+if (payload.buttons && payload.mainDisplay) {
+    let propertyStr = ""
+    for (const buttonId in payload.buttons) {
+        const button = payload.buttons[buttonId]
+        propertyStr += `
+            <a href="javascript:invokeButton(${buttonId})" style="cursor: default;">
+                <img class="clickable-property${button.active ? " selected" : ""}" src="/selector/icons/${button.imageLocation}">
+            </a>
+        `
     }
-})
+    uploaderProperties.innerHTML += propertyStr
+}
 
 // Called when a event is recieved from another screen.
 ipcRenderer.on("event-recv", (_, res) => {
-    if (res.display == screenNumber) {
+    if (res.display == payload.display) {
         return
     }
     switch (res.type) {

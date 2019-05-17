@@ -16,6 +16,7 @@ module.exports = {
 		tray: true,
 		Vue: true,
 		saveConfig: true,
+		payload: true,
 	},
 	rules: {
 		"no-compare-neg-zero": "error",

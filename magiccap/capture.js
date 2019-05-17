@@ -106,12 +106,12 @@ module.exports = class CaptureHandler {
                 {
                     type: "selection",
                     name: "Blur",
-                    imageLocation: `${__dirname}/icons/blur.png`,
+                    imageLocation: "blur.png",
                 },
                 {
                     type: "selection",
                     name: "__cap__",
-                    imageLocation: `${__dirname}/icons/crosshair.png`,
+                    imageLocation: "crosshair.png",
                     active: true,
                 },
             ]

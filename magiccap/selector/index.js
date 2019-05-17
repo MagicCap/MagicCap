@@ -11,9 +11,19 @@ const asyncChildProcess = require("async-child-process")
 const { spawn } = require("child_process")
 const httpBufferPromise = require("./http-buffer-promise")
 const express = require("express")
+const { readFile } = require("fs-nextra")
+
+// Defines all UUID's.
+let uuids = []
+
+// Defines all active windows.
+let activeWindows = []
 
 // Defines all of the screenshots.
 let screenshots = []
+
+// Defines all of the buttons.
+let globalButtons = []
 
 // Defines the platform.
 const platform = os.platform()
@@ -46,12 +56,49 @@ freezeServer.get("/", (req, res) => {
         res.end(screenshots[display])
     }
 })
+let selectorHtmlCache
+freezeServer.get("/selector/render", async(req, res) => {
+    const key = req.query.key
+    if (key !== screenshotServerKey) {
+        res.status(403)
+        res.send("Invalid key.")
+    } else {
+        const display = Number(req.query.display)
+        const payload = JSON.stringify({
+            display: display,
+            uuid: req.query.uuid,
+            bounds: JSON.parse(req.query.bounds),
+            mainDisplay: req.query.primary === "1",
+            activeWindows: activeWindows,
+            buttons: globalButtons,
+        })
+        const imageUrl = `url("http://127.0.0.1:${freezeServerPort}/dimmer"), url("http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}")`
+        if (!selectorHtmlCache) {
+            selectorHtmlCache = (await readFile(`${__dirname}/selector.html`)).toString()
+        }
+        res.contentType("html")
+        res.end(selectorHtmlCache.replace("%IMAGE_URL%", imageUrl).replace("%PAYLOAD%", payload))
+    }
+})
+freezeServer.get("/dimmer", (_, res) => {
+    res.sendFile(`${__dirname}/dimmer.svg`)
+})
+freezeServer.get("/selector/js", (_, res) => {
+    res.sendFile(`${__dirname}/selector.js`)
+})
+freezeServer.get("/selector/font", (_, res) => {
+    res.sendFile(`${__dirname}/Roboto-Light.ttf`)
+})
+freezeServer.get("/selector/icons/:icon", (req, res) => {
+    res.sendFile(`${path.join(__dirname, "..")}/icons/${path.basename(req.params.icon)}`)
+})
 freezeServer.listen(freezeServerPort, "127.0.0.1")
 
 // Spawns all browser windows.
-const spawnWindows = displays => {
+const spawnWindows = (displays, primaryId) => {
     const windows = []
-    for (let i of displays) {
+    for (let index in displays) {
+        const i = displays[index]
         let win = new BrowserWindow({
             frame: false,
             alwaysOnTop: true,
@@ -63,6 +110,10 @@ const spawnWindows = displays => {
             },
             backgroundColor: "#000000",
         })
+        const primary = index == primaryId
+        const uuid = uuids[index]
+        const bounds = i.bounds
+        win.loadURL(`http://127.0.0.1:${freezeServerPort}/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
         win.setVisibleOnAllWorkspaces(true)
         win.setPosition(i.bounds.x, i.bounds.y)
         win.setMovable(false)
@@ -87,15 +138,6 @@ const getOrderedDisplays = () => {
     })
 }
 
-// Gets the values of a object.
-const values = item => {
-    const x = []
-    for (const i in item) {
-        x.push(item[i])
-    }
-    return x
-}
-
 // Defines if the selector is active.
 let selectorActive = false
 
@@ -104,6 +146,8 @@ module.exports = async buttons => {
     if (selectorActive) {
         return
     }
+
+    globalButtons = buttons
 
     const electronScreen = require("electron").screen
 
@@ -118,7 +162,7 @@ module.exports = async buttons => {
         primaryId += 1
     }
 
-    const activeWindows = []
+    activeWindows = []
     if (os.platform() === "darwin") {
         const { stdout } = await asyncChildProcess.execAsync(`"${__dirname}${path.sep}bin${path.sep}get-visible-windows-darwin"`)
         const windowsSplit = stdout.trim().split("\n")
@@ -137,42 +181,26 @@ module.exports = async buttons => {
     }
 
     // Shoves everything in the background.
+    uuids = []
     const promises = [];
     (() => {
         for (const displayId in displays) {
             const promise = httpBufferPromise(`http://127.0.0.1:${port}/?key=${screenshotServerKey}&display=${displayId}`)
             promise
             promises.push(promise)
+            uuids.push(uuidv4())
         }
     })()
 
     screenshots = await Promise.all(promises)
 
-    const screens = spawnWindows(displays)
+    const screens = spawnWindows(displays, primaryId)
 
-    const uuidDisplayMap = {}
     for (const screenNumber in screens) {
         const screen = screens[screenNumber]
-        screen.loadURL(`file://${__dirname}/selector.html#${screenNumber}`)
-        const uuid = uuidv4()
-        uuidDisplayMap[screenNumber] = uuid
-        await ipcMain.once(`screen-${screenNumber}-load`, async() => {
-            await screen.webContents.send("load-reply", {
-                mainDisplay: screenNumber == primaryId,
-                key: screenshotServerKey,
-                port: freezeServerPort,
-                buttons: buttons,
-                displayNumber: screenNumber,
-                uuid: uuid,
-                bounds: displays[screenNumber].bounds,
-                activeWindows: activeWindows,
-            })
-        })
-        setTimeout(() => {
-            screen.show()
-            screen.setFullScreen(true)
-        }, 150)
-        ipcMain.on(`${uuid}-event-send`, (_, args) => {
+        screen.show()
+        screen.setFullScreen(true)
+        ipcMain.on(`${uuids[screenNumber]}-event-send`, (_, args) => {
             for (const browser of screens) {
                 browser.webContents.send("event-recv", {
                     type: args.type,
@@ -185,7 +213,7 @@ module.exports = async buttons => {
     selectorActive = true
     const r = await new Promise(res => {
         ipcMain.once("screen-close", async(_, args) => {
-            for (const uuid of values(uuidDisplayMap)) {
+            for (const uuid of uuids) {
                 await ipcMain.removeAllListeners(`${uuid}-event-send`)
             }
             await ipcMain.removeAllListeners("event-recv")
