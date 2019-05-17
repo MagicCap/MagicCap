@@ -2,6 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Handles escape to close.
 let activeModal
@@ -217,6 +218,11 @@ async function runGifCapture() {
     await remote.getGlobal("runCapture")(true)
 }
 
+// Runs the Clipboard capture.
+async function runClipboardCapture() {
+    await remote.getGlobal("runClipboardCapture")()
+}
+
 
 // Shows the about page.
 function showAbout() {
@@ -262,6 +268,7 @@ function showHotkeyConfig() {
 async function hotkeyConfigClose() {
     const text = document.getElementById("screenshotHotkey").value
     const gifText = document.getElementById("gifHotkey").value
+    const clipboardText = document.getElementById("clipboardHotkey").value
 
     if (config.hotkey !== text) {
         if (text === "") {
@@ -274,11 +281,21 @@ async function hotkeyConfigClose() {
     }
 
     if (config.gif_hotkey !== gifText) {
-        if (text === "") {
+        if (gifText === "") {
             config.gif_hotkey = null
             await saveConfig()
         } else {
             config.gif_hotkey = gifText
+            await saveConfig()
+        }
+    }
+
+    if (config.clipboard_hotkey !== clipboardText) {
+        if (clipboardText === "") {
+            config.clipboard_hotkey = null
+            await saveConfig()
+        } else {
+            config.clipboard_hotkey = clipboardText
             await saveConfig()
         }
     }
@@ -299,6 +316,7 @@ new Vue({
     data: {
         gifHotkey: config.gif_hotkey || "",
         screenshotHotkey: config.hotkey || "",
+        clipboardHotkey: config.clipboard_hotkey || "",
     },
 })
 

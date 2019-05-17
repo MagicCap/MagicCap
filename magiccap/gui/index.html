@@ -56,6 +56,9 @@
                         <li>
                             <a href="javascript:runGifCapture()">$GIF Capture$</a>
                         </li>
+                        <li>
+                            <a href="javascript:runClipboardCapture()">$Clipboard Capture$</a>
+                        </li>
                     </ul>
                 </aside>
             </aside>
@@ -313,6 +316,12 @@
                         <label class="label" for="gifHotkey">$GIF Hotkey:$</label>
                         <div class="control">
                             <input class="input" type="text" id="gifHotkey" placeholder="$GIF Hotkey$" :value="gifHotkey">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="clipboardHotkey">$Clipboard Hotkey:$</label>
+                        <div class="control">
+                            <input class="input" type="text" id="clipboardHotkey" placeholder="$Clipboard Hotkey$" :value="clipboardHotkey">
                         </div>
                     </div>
                 </section>

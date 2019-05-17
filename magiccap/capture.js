@@ -319,4 +319,19 @@ module.exports = class CaptureHandler {
         const i18nResult = await i18n.getPoPhrase("Image successfully captured.", "capture")
         return i18nResult
     }
+
+    // Handle from clipboard
+    static async handleClipboard(filename) {
+        // Attempt to fetch the nativeimage from the clipboard
+        let image = clipboard.readImage()
+        // If clipboard cannot be made an image, abort
+        if (image.isEmpty()) {
+            const noImagei18n = await i18n.getPoPhrase("The clipboard does not contain an image", "capture")
+            throw new Error(noImagei18n)
+        }
+        // Convert nativeimage to png buffer (clipboard doesn't support animated gifs)
+        image = image.toPNG()
+        // Upload/save
+        await this.fromBufferAndFilename(await this.getDefaultUploader(), image, filename)
+    }
 }

@@ -2,6 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the config.
 let { config: localConfig, saveConfig } = require("./config")
@@ -140,6 +141,20 @@ async function runCapture(gif) {
 }
 global.runCapture = runCapture
 
+// Runs the clipboard capture
+async function runClipboardCapture() {
+    const filename = await capture.createCaptureFilename(false)
+    try {
+        const result = await capture.handleClipboard(filename, false)
+        capture.throwNotification(result)
+    } catch (err) {
+        await capture.logUpload(filename, false, null, null)
+        const translatedMessage = await i18n.getPoPhrase(`${err.message}`, "uploaders/exceptions")
+        dialog.showErrorBox("MagicCap", translatedMessage)
+    }
+}
+global.runClipboardCapture = runClipboardCapture
+
 // Opens the config.
 async function openConfig() {
     if (window) {
@@ -237,15 +252,17 @@ const createContextMenu = async() => {
             }
         )
     }
-    const i18nSelect = await i18n.getPoPhrase("Screen Capture", "app")
+    const i18nCapture = await i18n.getPoPhrase("Screen Capture", "app")
     const i18nGif = await i18n.getPoPhrase("GIF Capture", "app")
+    const i18nClipboard = await i18n.getPoPhrase("Clipboard Capture", "app")
     const i18nConfig = await i18n.getPoPhrase("Config", "app")
     const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app")
     const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app")
     const i18nExit = await i18n.getPoPhrase("Exit", "app")
     const contextMenuTmp = [
-        { label: i18nSelect, type: "normal", click: async() => { await runCapture(false) } },
+        { label: i18nCapture, type: "normal", click: async() => { await runCapture(false) } },
         { label: i18nGif, type: "normal", click: async() => { await runCapture(true) } },
+        { label: i18nClipboard, type: "normal", click: async() => { await runClipboardCapture() } },
         { label: i18nConfig, type: "normal", click: openConfig },
         { label: i18nUploadTo, submenu: uploadDropdown },
         { label: i18nExit, type: "normal", role: "quit" },
@@ -291,6 +308,17 @@ const initialiseScript = async() => {
             dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"))
         }
     }
+
+    if (localConfig.clipboard_hotkey) {
+        try {
+            globalShortcut.register(localConfig.clipboard_hotkey, async () => {
+                thisShouldFixMacIssuesAndIdkWhy()
+                await runClipboardCapture()
+            })
+        } catch (_) {
+            dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"))
+        }
+    }
 }
 
 // Shows the link shortener.
@@ -322,6 +350,12 @@ ipcMain.on("hotkey-change", async(event, c) => {
             globalShortcut.register(c.gif_hotkey, async() => {
                 thisShouldFixMacIssuesAndIdkWhy()
                 await runCapture(true)
+            })
+        }
+        if (c.clipboard_hotkey) {
+            globalShortcut.register(c.clipboard_hotkey, async() => {
+                thisShouldFixMacIssuesAndIdkWhy()
+                await runClipboardCapture()
             })
         }
     } catch (_) {
