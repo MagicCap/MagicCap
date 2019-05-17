@@ -105,7 +105,7 @@ module.exports = class CaptureHandler {
     }
 
     // Handles from a buffer and filename.
-    static async fromBufferAndFilename(uploader, buffer, filename, path) {
+    static async fromBufferAndFilename(uploader, buffer, filename, fp) {
         const extension = filename.split(".").pop().toLowerCase()
         let url
         try {
@@ -119,10 +119,10 @@ module.exports = class CaptureHandler {
         }
         const successi18n = await i18n.getPoPhrase("The file specified was uploaded successfully.", "app")
         this.throwNotification(successi18n)
-        if (!path && config.save_capture) {
+        if (!fp && config.save_capture) {
             // We need to save this and tailor the return.
-            const path = `${config.save_path}${await this.createCaptureFilename(true).split(".")[0]}.${extension}`
-            await fsnextra.writeFile(path, buffer)
+            const fp = `${config.save_path}${await this.createCaptureFilename(true).split(".")[0]}.${extension}`
+            await fsnextra.writeFile(fp, buffer)
             switch (config.clipboard_action) {
                 case 1: {
                     clipboard.writeImage(
@@ -143,7 +143,7 @@ module.exports = class CaptureHandler {
         } else {
             clipboard.writeText(url)
         }
-        await this.logUpload(filename, true, url, path)
+        await this.logUpload(filename, true, url, fp)
     }
 
     // Creates a screen capture.
