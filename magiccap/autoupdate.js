@@ -9,6 +9,7 @@ const { get } = magicImports("chainfetch")
 const async_child_process = magicImports("async-child-process")
 const sudo = magicImports("sudo-prompt")
 const i18n = magicImports("./i18n")
+const WebSocket = require("ws")
 
 // Ignores this while the app is open.
 const tempIgnore = []
@@ -130,12 +131,15 @@ async function handleUpdate(updateInfo) {
                 tempIgnore.push(updateInfo.current)
                 break
             case 0:
+                updateRunning = true
                 await doUpdate(updateInfo)
+                updateRunning = false
         }
     })
 }
 
-const runUpdateCheck = async() => {
+// Handles the initial HTTP update check.
+const runHttpUpdateCheck = async() => {
     if (updateRunning || !config.autoupdate_on) {
         return
     }
@@ -145,6 +149,45 @@ const runUpdateCheck = async() => {
         await handleUpdate(updateInfo)
         updateRunning = false
     }
+}
+
+// Handles WebSocket updates.
+const handleWebSocketUpdates = () => {
+    let conn
+    let retry = 0
+    const spawnWs = () => {
+        conn = new WebSocket("wss://api.magiccap.me/version/feed")
+        let deathByError = false
+        conn.on("error", () => {
+            deathByError = true
+            retry += 1
+            console.error(`Update WebSocket failed. Retrying in ${retry} second(s).`)
+            setTimeout(() => { conn = spawnWs() }, retry * 1000)
+        })
+        conn.on("open", () => {
+            retry = 0
+            console.log("Update WebSocket open.")
+            conn.send(JSON.stringify({ t: "watch", beta: true }))
+        })
+        conn.on("message", async data => {
+            data = JSON.parse(data).info
+            if (updateRunning || !config.autoupdate_on) {
+                return
+            }
+            if (!config.beta_channel && data.beta) {
+                return
+            }
+            const payload = {
+                current: data.version,
+                changelogs: data.changelogs,
+                upToDate: false,
+            }
+            updateRunning = true
+            await handleUpdate(payload)
+            updateRunning = false
+        })
+    }
+    spawnWs()
 }
 
 // The actual autoupdate part.
@@ -193,11 +236,10 @@ module.exports = async function autoUpdateLoop() {
         }
     }
 
-    if (!config.autoupdate_on) {
-        // Not here though.
+    if (config.autoupdate_on === false) {
         return
     }
 
-    runUpdateCheck()
-    setInterval(runUpdateCheck, 600000)
+    runHttpUpdateCheck()
+    handleWebSocketUpdates()
 }
