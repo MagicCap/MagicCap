@@ -29,3 +29,7 @@ msgstr ""
 # capture.js:187
 msgid "Image successfully captured."
 msgstr ""
+
+# capture.js:303
+msgid "Clipboard does not contain an image."
+msgstr ""

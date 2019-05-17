@@ -57,8 +57,16 @@ msgstr ""
 msgid "(Default)"
 msgstr ""
 
-# app.js:300
+# app.js:254
 msgid "Screen Capture"
+msgstr ""
+
+# app.js:255
+msgid "GIF Capture"
+msgstr ""
+
+# app.js:256
+msgid "Clipboard Capture"
 msgstr ""
 
 # app.js:308
