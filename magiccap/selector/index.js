@@ -113,6 +113,10 @@ const spawnWindows = (displays, primaryId) => {
         const primary = index == primaryId
         const uuid = uuids[index]
         const bounds = i.bounds
+        win.on("ready-to-show", () => { 
+            win.setFullScreen(true)
+            win.show()
+        })
         win.loadURL(`http://127.0.0.1:${freezeServerPort}/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
         win.setVisibleOnAllWorkspaces(true)
         win.setPosition(i.bounds.x, i.bounds.y)
@@ -198,8 +202,6 @@ module.exports = async buttons => {
 
     for (const screenNumber in screens) {
         const screen = screens[screenNumber]
-        screen.show()
-        screen.setFullScreen(true)
         ipcMain.on(`${uuids[screenNumber]}-event-send`, (_, args) => {
             for (const browser of screens) {
                 browser.webContents.send("event-recv", {
