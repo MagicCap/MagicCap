@@ -18,7 +18,7 @@
     </style>
 
     <body style="display: none">
-        <div class="columns is-gapless">
+        <div class="columns is-gapless" style="margin: 0;">
             <aside class="column is-2 aside hero is-fullheight" style="position: fixed; width: 15%" id="sidebar">
                 <aside class="menu">
                     <ul class="menu-list">
@@ -62,7 +62,7 @@
                     </ul>
                 </aside>
             </aside>
-            <div class="column" style="margin-left: 15%;">
+            <div class="column" style="margin: 0 0 0 15%;">
                 <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
                     <tbody id="mainTableBody">
                         <tr v-for="capture in captures" :key="capture.timestamp">
