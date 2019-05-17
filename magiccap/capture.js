@@ -119,7 +119,28 @@ module.exports = class CaptureHandler {
         }
         const successi18n = await i18n.getPoPhrase("The file specified was uploaded successfully.", "app")
         this.throwNotification(successi18n)
-        if (config.clipboard_action == 2) {
+        if (!path && config.save_capture) {
+            // We need to save this and tailor the return.
+            const path = `${config.save_path}${await this.createCaptureFilename(true).split(".")[0]}.${extension}`
+            await fsnextra.writeFile(path, buffer)
+            switch (config.clipboard_action) {
+                case 1: {
+                    clipboard.writeImage(
+                        nativeImage.createFromBuffer(buffer)
+                    )
+                    break
+                }
+                case 2: {
+                    clipboard.writeText(url)
+                    break
+                }
+                default: {
+                    throw new Error(
+                        "Unknown clipboard action."
+                    )
+                }
+            }
+        } else {
             clipboard.writeText(url)
         }
         await this.logUpload(filename, true, url, path)
