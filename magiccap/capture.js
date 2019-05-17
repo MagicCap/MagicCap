@@ -238,22 +238,27 @@ module.exports = class CaptureHandler {
         }
     }
 
+    // Gets the default uploader.
+    static async getDefaultUploader() {
+        const uploader_type = config.uploader_type
+        const uploaderName = nameUploaderMap[uploader_type]
+        if (uploaderName === undefined) {
+            const notFoundi18n = await i18n.getPoPhrase("Uploader not found.", "capture")
+            throw new Error(notFoundi18n)
+        }
+        return importedUploaders[uploaderName]
+    }
+
     // Handle screenshots.
     static async handleScreenshotting(filename, gif) {
         let save_path = null
-        let uploader_type, url, uploader, key
+        let url, uploader, key
         if (config.save_capture) {
             save_path = config.save_path + filename
         }
         let buffer = await this.createCapture(save_path, gif)
         if (config.upload_capture) {
-            uploader_type = config.uploader_type
-            const uploaderName = nameUploaderMap[uploader_type]
-            if (uploaderName === undefined) {
-                const notFoundi18n = await i18n.getPoPhrase("Uploader not found.", "capture")
-                throw new Error(notFoundi18n)
-            }
-            uploader = importedUploaders[uploaderName]
+            uploader = await this.getDefaultUploader()
             for (key in uploader.config_options) {
                 if (config[uploader.config_options[key].value] === undefined) {
                     if (uploader.config_options[key].default) {
