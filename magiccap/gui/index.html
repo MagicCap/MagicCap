@@ -10,6 +10,53 @@
             font-size: 15px !important;
         }
 
+        ::-webkit-scrollbar {
+            width: .9em
+        }
+
+        ::-webkit-scrollbar-track {
+            padding: .1em;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border: .2em solid transparent;
+            border-radius: .4em;
+        }
+
+        .dark::-webkit-scrollbar {
+            background-color: #343434;
+        }
+
+        .dark::-webkit-scrollbar-thumb {
+            border-color: #343434;
+            background: #232323;
+        }
+
+        .dark::-webkit-scrollbar-thumb:hover {
+            background: #1b1b1b;
+        }
+
+        .dark::-webkit-scrollbar-thumb:active {
+            background: #121212;
+        }
+
+        .light::-webkit-scrollbar {
+            background-color: #efefef;
+        }
+
+        .light::-webkit-scrollbar-thumb {
+            border-color: #efefef;
+            background: #bcbcbc;
+        }
+
+        .light::-webkit-scrollbar-thumb:hover {
+            background: #ababab;
+        }
+
+        .light::-webkit-scrollbar-thumb:active {
+            background: #9a9a9a;
+        }
+
         .divider {
             width:5px;
             height:auto;
