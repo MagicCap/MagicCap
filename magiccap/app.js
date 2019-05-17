@@ -311,7 +311,7 @@ const initialiseScript = async() => {
 
     if (localConfig.clipboard_hotkey) {
         try {
-            globalShortcut.register(localConfig.clipboard_hotkey, async () => {
+            globalShortcut.register(localConfig.clipboard_hotkey, async() => {
                 thisShouldFixMacIssuesAndIdkWhy()
                 await runClipboardCapture()
             })
