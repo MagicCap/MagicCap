@@ -157,15 +157,16 @@ global.runClipboardCapture = runClipboardCapture
 
 // Opens the config.
 async function openConfig() {
+    let vibrancy
+    if (process.platform == "darwin") vibrancy = (config.light_theme ? "light" : "dark")
+
     if (window) {
+        window.setVibrancy(vibrancy)
         window.show()
         return
     }
 
     if (app.dock) app.dock.show()
-
-    let vibrancy
-    if (process.platform == "darwin") vibrancy = "light"
 
     window = new BrowserWindow({
         width: 1250, height: 600,
