@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-04-28 12:35\n"
+"PO-Revision-Date: 2019-05-17 16:03\n"
 
 # app.js:40
 msgid "Application"
@@ -71,8 +71,16 @@ msgstr "A kiválasztott fájl feltöltése sikerült."
 msgid "(Default)"
 msgstr "(Alapértelmezés)"
 
-# app.js:300
+# app.js:254
 msgid "Screen Capture"
+msgstr ""
+
+# app.js:255
+msgid "GIF Capture"
+msgstr ""
+
+# app.js:256
+msgid "Clipboard Capture"
 msgstr ""
 
 # app.js:308
