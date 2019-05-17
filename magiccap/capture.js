@@ -121,7 +121,7 @@ module.exports = class CaptureHandler {
         this.throwNotification(successi18n)
         if (!fp && config.save_capture) {
             // We need to save this and tailor the return.
-            const fp = `${config.save_path}${filename}`
+            fp = `${config.save_path}${filename}`
             await fsnextra.writeFile(fp, buffer)
             switch (config.clipboard_action) {
                 case 1: {
