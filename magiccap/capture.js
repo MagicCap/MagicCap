@@ -13,6 +13,7 @@ const i18n = require("./i18n")
 const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 const selector = require("./selector")
 const sharp = magicImports("sharp")
+const notifier = magicImports("node-notifier")
 // Source: https://raw.githubusercontent.com/missive/emoji-mart/master/data/apple.json
 const appleEmojis = require("./emojis/apple.json").emojis
 
@@ -92,6 +93,36 @@ module.exports = class CaptureHandler {
         } catch (err) {
             // This isn't too important, we should just ignore.
         }
+    }
+
+    // Throws a notification.
+    static throwNotification(result) {
+        notifier.notify({
+            title: "MagicCap",
+            message: result,
+            icon: `${__dirname}/icons/taskbar@2x.png`,
+        })
+    }
+
+    // Handles from a buffer and filename.
+    static async fromBufferAndFilename(uploader, buffer, filename, path) {
+        const extension = filename.split(".").pop().toLowerCase()
+        let url
+        try {
+            url = await uploader.upload(buffer, extension, filename)
+        } catch (err) {
+            if (err.message !== "Screenshot cancelled.") {
+                await this.logUpload(filename, false, null, null)
+                dialog.showErrorBox("MagicCap", `${err.message}`)
+            }
+            return
+        }
+        const successi18n = await i18n.getPoPhrase("The file specified was uploaded successfully.", "app")
+        this.throwNotification(successi18n)
+        if (config.clipboard_action == 2) {
+            clipboard.writeText(url)
+        }
+        await this.logUpload(filename, true, url, path)
     }
 
     // Creates a screen capture.

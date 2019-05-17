@@ -13,8 +13,7 @@ const magicImports = require("magicimports")
 const { readFile } = magicImports("fs-nextra")
 const testUploader = require("./test_uploader")
 let capture = require(`${__dirname}/capture.js`)
-const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain, clipboard } = magicImports("electron")
-const notifier = magicImports("node-notifier")
+const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = magicImports("electron")
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
 const i18n = magicImports("./i18n")
 const { showShortener } = require("./shortener")
@@ -125,21 +124,12 @@ if (app.dock) app.dock.hide()
 // Predefines the task tray and window.
 let tray, window
 
-// Throws a notification.
-function throwNotification(result) {
-    notifier.notify({
-        title: "MagicCap",
-        message: result,
-        icon: `${__dirname}/icons/taskbar@2x.png`,
-    })
-}
-
 // Runs the capture.
 async function runCapture(gif) {
     const filename = await capture.createCaptureFilename(gif)
     try {
         const result = await capture.handleScreenshotting(filename, gif)
-        throwNotification(result)
+        capture.throwNotification(result)
     } catch (err) {
         if (err.message !== "Screenshot cancelled.") {
             await capture.logUpload(filename, false, null, null)
@@ -212,29 +202,13 @@ async function dropdownMenuUpload(uploader) {
     }, async filePaths => {
         if (filePaths) {
             const path = filePaths[0]
-            const extension = path.split(".").pop().toLowerCase()
             const buffer = await readFile(path)
             const filename = path
                 .split("\\")
                 .pop()
                 .split("/")
                 .pop()
-            let url
-            try {
-                url = await uploader.upload(buffer, extension, filename)
-            } catch (err) {
-                if (err.message !== "Screenshot cancelled.") {
-                    await capture.logUpload(filename, false, null, null)
-                    dialog.showErrorBox("MagicCap", `${err.message}`)
-                }
-                return
-            }
-            const successi18n = await i18n.getPoPhrase("The file specified was uploaded successfully.", "app")
-            throwNotification(successi18n)
-            if (localConfig.clipboard_action == 2) {
-                clipboard.writeText(url)
-            }
-            await capture.logUpload(filename, true, url, path)
+            await capture.fromBufferAndFilename(uploader, buffer, filename, path)
         }
     })
 }
