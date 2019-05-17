@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
-"PO-Revision-Date: 2019-04-28 12:34\n"
+"PO-Revision-Date: 2019-05-17 16:04\n"
 
 # capture.js:92
 msgid "The screenshot capturing/saving failed."
@@ -42,5 +42,9 @@ msgstr ""
 
 # capture.js:187
 msgid "Image successfully captured."
+msgstr ""
+
+# capture.js:303
+msgid "Clipboard does not contain an image."
 msgstr ""
 
