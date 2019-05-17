@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-04-28 12:35\n"
+"PO-Revision-Date: 2019-05-17 16:03\n"
 
 # capture.js:92
 msgid "The screenshot capturing/saving failed."
@@ -43,4 +43,8 @@ msgstr "Nem sikerült törölni a felvételt."
 # capture.js:187
 msgid "Image successfully captured."
 msgstr "Kép sikeresen rögzítve."
+
+# capture.js:303
+msgid "Clipboard does not contain an image."
+msgstr ""
 
