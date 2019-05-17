@@ -113,7 +113,7 @@ const spawnWindows = (displays, primaryId) => {
         const primary = index == primaryId
         const uuid = uuids[index]
         const bounds = i.bounds
-        win.on("ready-to-show", () => { 
+        win.on("ready-to-show", () => {
             win.setFullScreen(true)
             win.show()
         })
