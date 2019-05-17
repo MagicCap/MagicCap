@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Serbian (Latin)\n"
 "Language: sr_CS\n"
-"PO-Revision-Date: 2019-04-28 14:56\n"
+"PO-Revision-Date: 2019-05-17 16:04\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -153,12 +153,28 @@ msgstr "Fascikla za čuvanje datoteka"
 msgid "You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed."
 msgstr ""
 
-# gui/index.template.html:247
+# gui/index.template.html:307
 msgid "Screenshot Hotkey:"
 msgstr ""
 
-# gui/index.template.html:249
+# gui/index.template.html:309
 msgid "Screenshot Hotkey"
+msgstr ""
+
+# gui/index.template.html:313
+msgid "GIF Hotkey:"
+msgstr ""
+
+# gui/index.template.html:315
+msgid "GIF Hotkey"
+msgstr ""
+
+# gui/index.template.html:319
+msgid "Clipboard Hotkey:"
+msgstr ""
+
+# gui/index.template.html:321
+msgid "Clipboard Hotkey"
 msgstr ""
 
 # i18n/index.js:52
