@@ -82,22 +82,12 @@ document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getV
 const stylesheet = document.createElement("link")
 stylesheet.setAttribute("rel", "stylesheet")
 
-let platform = remote.getGlobal("platform")
-
 if (config.light_theme) {
     stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css")
 } else {
     stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
 }
-if (platform === "darwin") {
-    if (config.light_theme) {
-        document.getElementById("sidebar").style.backgroundColor = "rgba(255,255,255,0.5)"
-        document.body.parentElement.style.backgroundColor = "rgba(255,255,255,0.5)"
-    } else {
-        document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0.5)"
-        document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0.5)"
-    }
-}
+document.body.parentElement.classList.add((config.light_theme ? "light" : "dark"))
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
