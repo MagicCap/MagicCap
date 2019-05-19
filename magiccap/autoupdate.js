@@ -140,7 +140,7 @@ async function handleUpdate(updateInfo) {
 
 // Handles the initial HTTP update check.
 const runHttpUpdateCheck = async() => {
-    if (updateRunning || !config.autoupdate_on) {
+    if (updateRunning || config.autoupdate_on === false) {
         return
     }
     const updateInfo = await checkForUpdates()
@@ -171,7 +171,7 @@ const handleWebSocketUpdates = () => {
         })
         conn.on("message", async data => {
             data = JSON.parse(data).info
-            if (updateRunning || !config.autoupdate_on) {
+            if (updateRunning || config.autoupdate_on === false) {
                 return
             }
             if (!config.beta_channel && data.beta) {
