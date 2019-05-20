@@ -87,7 +87,7 @@ if (config.light_theme) {
 } else {
     stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
 }
-document.body.parentElement.classList.add((config.light_theme ? "light" : "dark"))
+document.body.parentElement.classList.add(config.light_theme ? "light" : "dark")
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {

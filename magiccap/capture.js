@@ -340,7 +340,7 @@ module.exports = class CaptureHandler {
         // Upload/save
         try {
             await this.fromBufferAndFilename(await this.getDefaultUploader(), image, filename)
-        } catch(_) {
+        } catch (_) {
             await this.fromBufferAndFilename(await this.getDefaultUploader(), image, filename)
         }
     }

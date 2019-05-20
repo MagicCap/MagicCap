@@ -158,7 +158,7 @@ global.runClipboardCapture = runClipboardCapture
 // Opens the config.
 async function openConfig() {
     let vibrancy
-    if (process.platform == "darwin") vibrancy = (config.light_theme ? "light" : "dark")
+    if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "dark"
 
     if (window) {
         window.setVibrancy(vibrancy)
