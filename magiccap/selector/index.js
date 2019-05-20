@@ -11,6 +11,7 @@ const asyncChildProcess = require("async-child-process")
 const { spawn } = require("child_process")
 const httpBufferPromise = require("./http-buffer-promise")
 const express = require("express")
+const sharp = require("sharp")
 const { readFile } = require("fs-nextra")
 
 // Defines all UUID's.
@@ -71,17 +72,18 @@ freezeServer.get("/selector/render", async(req, res) => {
             mainDisplay: req.query.primary === "1",
             activeWindows: activeWindows,
             buttons: globalButtons,
+            server: {
+                port: freezeServerPort,
+                key: key,
+            },
         })
-        const imageUrl = `url("http://127.0.0.1:${freezeServerPort}/dimmer"), url("http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}")`
+        const imageUrl = `url("http://127.0.0.1:${freezeServerPort}/root/dimmer.svg"), url("http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}")`
         if (!selectorHtmlCache) {
             selectorHtmlCache = (await readFile(`${__dirname}/selector.html`)).toString()
         }
         res.contentType("html")
         res.end(selectorHtmlCache.replace("%IMAGE_URL%", imageUrl).replace("%PAYLOAD%", payload))
     }
-})
-freezeServer.get("/dimmer", (_, res) => {
-    res.sendFile(`${__dirname}/dimmer.svg`)
 })
 freezeServer.get("/selector/js", (_, res) => {
     res.sendFile(`${__dirname}/selector.js`)
@@ -91,6 +93,43 @@ freezeServer.get("/selector/font", (_, res) => {
 })
 freezeServer.get("/selector/icons/:icon", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/icons/${path.basename(req.params.icon)}`)
+})
+freezeServer.get("/root/:file", (req, res) => {
+    res.sendFile(`${__dirname}/${path.basename(req.params.file)}`)
+})
+let xyImageMap = new Map()
+freezeServer.get("/selector/magnify", async(req, res) => {
+    const key = req.query.key
+    if (key !== screenshotServerKey) {
+        res.status(403)
+        res.send("Invalid key.")
+    } else {
+        const height = Number(req.query.height)
+        const width = Number(req.query.width)
+        const x = Number(req.query.x)
+        const y = Number(req.query.y)
+        const display = Number(req.query.display)
+        const cache = xyImageMap.get([height, width, x, y, display])
+        let region
+        if (cache !== undefined) {
+            region = cache
+        } else {
+            const left = x - (width / 2)
+            const top = y - (height / 2)
+            try {
+                region = await sharp(screenshots[display])
+                    .extract({ left, top, width, height })
+                    .toBuffer()
+            } catch (_) {
+                region = await sharp(screenshots[display])
+                    .extract({ left: 0, top: 0, width, height })
+                    .toBuffer()
+            }
+            xyImageMap.set([height, width, x, y, display], region)
+        }
+        res.contentType("png")
+        res.end(region)
+    }
 })
 freezeServer.listen(freezeServerPort, "127.0.0.1")
 
@@ -201,7 +240,6 @@ module.exports = async buttons => {
     const screens = spawnWindows(displays, primaryId)
 
     for (const screenNumber in screens) {
-        const screen = screens[screenNumber]
         ipcMain.on(`${uuids[screenNumber]}-event-send`, (_, args) => {
             for (const browser of screens) {
                 browser.webContents.send("event-recv", {
@@ -215,6 +253,7 @@ module.exports = async buttons => {
     selectorActive = true
     const r = await new Promise(res => {
         ipcMain.once("screen-close", async(_, args) => {
+            xyImageMap = new Map()
             for (const uuid of uuids) {
                 await ipcMain.removeAllListeners(`${uuid}-event-send`)
             }

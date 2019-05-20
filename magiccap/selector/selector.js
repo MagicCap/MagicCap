@@ -58,6 +58,25 @@ const getInbetweenWindows = electronMouse => {
     return inThese
 }
 
+// Moves the selector 30 times every second.
+const framerate = 30
+const moveSelector = async() => {
+    const thisCursor = electron.screen.getCursorScreenPoint()
+    const magnifyElement = document.getElementById("magnify")
+    const x = thisCursor.x - payload.bounds.x
+    const y = thisCursor.y - payload.bounds.y
+    magnifyElement.style.left = x
+    magnifyElement.style.top = payload.bounds.height - (payload.bounds.height - y)
+    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=50&width=50&x=${x}&y=${y}`)
+    const urlPart = URL.createObjectURL(await fetchReq.blob())
+    const image = new Image()
+    image.src = urlPart
+    image.onload = () => {
+        magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/crosshair.png"), url(${urlPart})`
+    }
+}
+setInterval(moveSelector, 1000 / framerate)
+
 // Called when the mouse moves.
 document.body.onmousemove = e => {
     const thisClick = electron.screen.getCursorScreenPoint()
