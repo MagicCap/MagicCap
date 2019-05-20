@@ -290,7 +290,13 @@ module.exports = class CaptureHandler {
                     }
                 }
             }
-            url = await uploader.upload(buffer, gif ? "gif" : "png", filename)
+            try {
+                url = await uploader.upload(buffer, gif ? "gif" : "png", filename)
+            } catch (_) {
+                // Lets try with a new filename.
+                filename = `${await this.createCaptureFilename(gif)}.${gif ? "gif" : "png"}`
+                url = await uploader.upload(buffer, gif ? "gif" : "png", filename)
+            }
         }
         if (config.clipboard_action) {
             switch (config.clipboard_action) {
