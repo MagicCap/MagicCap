@@ -338,6 +338,10 @@ module.exports = class CaptureHandler {
         // Convert nativeimage to png buffer (clipboard doesn't support animated gifs)
         image = image.toPNG()
         // Upload/save
-        await this.fromBufferAndFilename(await this.getDefaultUploader(), image, filename)
+        try {
+            await this.fromBufferAndFilename(await this.getDefaultUploader(), image, filename)
+        } catch(_) {
+            await this.fromBufferAndFilename(await this.getDefaultUploader(), image, filename)
+        }
     }
 }
