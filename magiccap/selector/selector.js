@@ -58,9 +58,8 @@ const getInbetweenWindows = electronMouse => {
     return inThese
 }
 
-// Moves the selector 30 times every second.
-const framerate = 30
-const moveSelector = async() => {
+// Moves the selector magnifier.
+const moveSelectorMagnifier = async() => {
     const thisCursor = electron.screen.getCursorScreenPoint()
     const magnifyElement = document.getElementById("magnify")
     const x = thisCursor.x - payload.bounds.x
@@ -75,10 +74,11 @@ const moveSelector = async() => {
         magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/crosshair.png"), url(${urlPart})`
     }
 }
-setInterval(moveSelector, 1000 / framerate)
+moveSelectorMagnifier()
 
 // Called when the mouse moves.
 document.body.onmousemove = e => {
+    moveSelectorMagnifier()
     const thisClick = electron.screen.getCursorScreenPoint()
     ipcRenderer.send(`${payload.uuid}-event-send`, {
         type: "invalidate-selections",
