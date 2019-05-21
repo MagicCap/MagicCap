@@ -114,8 +114,8 @@ freezeServer.get("/selector/magnify", async(req, res) => {
         if (cache !== undefined) {
             region = cache
         } else {
-            const left = x - (width / 2)
-            const top = y - (height / 2)
+            const left = x - Math.round(width / 2)
+            const top = y - Math.round(height / 2)
             try {
                 region = await sharp(screenshots[display])
                     .extract({ left, top, width, height })

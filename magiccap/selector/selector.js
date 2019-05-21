@@ -69,7 +69,7 @@ const moveSelectorMagnifier = async() => {
     magnifyElement.style.top = payload.bounds.height - (payload.bounds.height - y)
     positionElement.style.left = x + 50
     positionElement.style.top = payload.bounds.height - (payload.bounds.height - y) + 200
-    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=50&width=50&x=${x}&y=${y}`)
+    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${x}&y=${y}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
     const image = new Image()
     image.src = urlPart
