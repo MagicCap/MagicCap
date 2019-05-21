@@ -62,10 +62,13 @@ const getInbetweenWindows = electronMouse => {
 const moveSelectorMagnifier = async() => {
     const thisCursor = electron.screen.getCursorScreenPoint()
     const magnifyElement = document.getElementById("magnify")
+    const positionElement = document.getElementById("position")
     const x = thisCursor.x - payload.bounds.x
     const y = thisCursor.y - payload.bounds.y
     magnifyElement.style.left = x
     magnifyElement.style.top = payload.bounds.height - (payload.bounds.height - y)
+    positionElement.style.left = x + 50
+    positionElement.style.top = payload.bounds.height - (payload.bounds.height - y) + 200
     const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=50&width=50&x=${x}&y=${y}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
     const image = new Image()
@@ -73,6 +76,7 @@ const moveSelectorMagnifier = async() => {
     image.onload = () => {
         magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/crosshair.png"), url(${urlPart})`
     }
+    document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
 }
 moveSelectorMagnifier()
 
