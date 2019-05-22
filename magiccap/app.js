@@ -127,31 +127,19 @@ let tray, window
 
 // Runs the capture.
 async function runCapture(gif) {
-    const filename = await capture.createCaptureFilename(gif)
-    try {
-        const result = await capture.handleScreenshotting(filename, gif)
-        capture.throwNotification(result)
-    } catch (err) {
-        if (err.message !== "Screenshot cancelled.") {
-            await capture.logUpload(filename, false, null, null)
-            const translatedMessage = await i18n.getPoPhrase(`${err.message}`, "uploaders/exceptions")
-            dialog.showErrorBox("MagicCap", translatedMessage)
-        }
-    }
+    await capture.region(gif).filename().upload()
+        .notify("Screen capture successful.")
+        .log()
+        .run()
 }
 global.runCapture = runCapture
 
 // Runs the clipboard capture
 async function runClipboardCapture() {
-    const filename = await capture.createCaptureFilename(false)
-    try {
-        const result = await capture.handleClipboard(filename, false)
-        capture.throwNotification(result)
-    } catch (err) {
-        await capture.logUpload(filename, false, null, null)
-        const translatedMessage = await i18n.getPoPhrase(`${err.message}`, "uploaders/exceptions")
-        dialog.showErrorBox("MagicCap", translatedMessage)
-    }
+    await capture.clipboard().filename().upload()
+        .notify("Clipboard capture successful.")
+        .log()
+        .run()
 }
 global.runClipboardCapture = runClipboardCapture
 
@@ -224,7 +212,9 @@ async function dropdownMenuUpload(uploader) {
                 .pop()
                 .split("/")
                 .pop()
-            await capture.fromBufferAndFilename(uploader, buffer, filename, path)
+            await capture.file(buffer, filename, path).upload(uploader).notify("File successfully uploaded.")
+                .log()
+                .run()
         }
     })
 }
