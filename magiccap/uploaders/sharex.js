@@ -21,7 +21,12 @@ const textExtensions = [
 // Defines the ShareX parsing regex.
 const shareXRegex = /(?!\\)\$[a-z]{3,5}:.+(?!\\)\$/g
 
-// Parses the ShareX SXCU file.
+/**
+ * Parses the ShareX SXCU file.
+ * @param {object} parsedJson - The JSON parsed into an object.
+ * @param {string} fileType - The file type that is being uploaded.
+ * @returns A more friendly object for JS.
+ */
 function parseShareXFile(parsedJson, fileType) {
     const parsed = {}
     const fileTypeLower = fileType.toLowerCase()
@@ -80,7 +85,12 @@ function parseShareXFile(parsedJson, fileType) {
     return parsed
 }
 
-// Parses the ShareX URL response.
+/**
+ * Parses the ShareX result.
+ * @param {object} parsedSxcu - The parsed SXCU file.
+ * @param {string} body - The string version of the body.
+ * @returns The URL for the upload.
+ */
 function parseShareXResult(parsedSxcu, body) {
     const parsing = {}
 

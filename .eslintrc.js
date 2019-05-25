@@ -64,6 +64,15 @@ module.exports = {
 		"no-mixed-requires": "error",
 		"no-new-require": "error",
 		"no-path-concat": "error",
+		"require-jsdoc": ["error", {
+			"require": {
+				"FunctionDeclaration": true,
+				"MethodDefinition": true,
+				"ClassDeclaration": true,
+				"ArrowFunctionExpression": true,
+				"FunctionExpression": true
+			}
+		}],
 		"array-bracket-spacing": "error",
 		"block-spacing": "error",
 		"brace-style": ["error", "1tbs", { "allowSingleLine": true }],

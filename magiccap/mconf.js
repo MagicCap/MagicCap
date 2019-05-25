@@ -4,8 +4,12 @@
 // Imports go here.
 const i18n = require(`${__dirname}/i18n`)
 
-// Parses the *.mconf file.
-const parse = async data => {
+/**
+ * Parses the *.mconf file.
+ * @param {object} data - The JSON parsed data.
+ * @returns - All the configuration items that are being changed.
+ */
+async function parse(data) {
     if (data.version !== 1) {
         const wrongVerErr = await i18n.getPoPhrase("This version of MagicCap cannot read the config file given.", "mconf")
         throw new Error(wrongVerErr)
@@ -17,8 +21,14 @@ const parse = async data => {
     return data.config_items
 }
 
-// Gets the values of a object.
-const values = item => {
+
+/**
+ * Gets the values of a object.
+ *
+ * @param {object} item - The item you want values from.
+ * @returns The values.
+ */
+function values(item) {
     const x = []
     for (const i in item) {
         x.push(item[i])
@@ -26,8 +36,11 @@ const values = item => {
     return x
 }
 
-// Handles making a new *.mconf's file contents.
-const new_ = () => {
+/**
+ * Handles making a new *.mconf's file contents.
+ * @returns The parsed mconf file.
+ */
+function new_() {
     const options = {}
     for (const uploader of values(importedUploaders)) {
         for (const option of values(uploader.config_options)) {

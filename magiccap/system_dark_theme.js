@@ -3,7 +3,9 @@
 
 const { exec } = require("child_process")
 
-// Gets the dark theme information.
+/**
+ * Gets the dark theme information.
+ */
 const darkThemeInformation = () => new Promise(res => {
     switch (process.platform) {
         case "darwin": {

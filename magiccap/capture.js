@@ -25,7 +25,11 @@ const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?
 
 // The main capture core.
 module.exports = class CaptureCore {
-    // Constructs the capture core. If the file type is unknown (such as for clipboard functionality), omit the filetype.
+    /**
+     *Creates an instance of CaptureCore.
+     * @param {Buffer} buffer - The buffer for the capture. If this is ommited, it will be set to undefined.
+     * @param {String} filetype - Sets the filetype for the capture. If this is left ommited, it will be set to undefined.
+     */
     constructor(buffer, filetype) {
         this._filename = null
         this._log = false
@@ -35,20 +39,33 @@ module.exports = class CaptureCore {
         this.promiseQueue = []
     }
 
-    // Sets the file path if it is known.
+
+    /**
+     * Sets the file path if it is known.
+     * @param {String} location - The location where the file is.
+     * @returns The CaptureCore class this was called from.
+     */
     fp(location) {
         this._fp = location
         this.filetype = this._fp.split(".").pop().toLowerCase()
         return this
     }
 
-    // Sets whether to log the result.
+    /**
+     * Sets whether to log the result.
+     * @returns The CaptureCore class this was called from.
+     */
     log() {
         this._log = true
         return this
     }
 
-    // Handles throwing notifications.
+
+    /**
+     * Handles throwing notifications.
+     * @param {String} result - What to print in the notification.
+     * @returns The CaptureCore class this was called from.
+     */
     notify(result) {
         this.promiseQueue.push(async() => {
             notifier.notify({
@@ -60,7 +77,13 @@ module.exports = class CaptureCore {
         return this
     }
 
-    // Logs uploads.
+    /**
+     * This is used internally to do the upload logging.
+     * @param {String} filename - The filename which was uploaded.
+     * @param {Boolean} success - Whether the upload was successful.
+     * @param {String} url - The URL of the capture.
+     * @param {String} filePath - The filepath to the capture.
+     */
     async _logUpload(filename, success, url, filePath) {
         const timestamp = new Date().getTime()
         await captureStatement.run(filename, Number(success), timestamp, url, filePath)
@@ -78,6 +101,11 @@ module.exports = class CaptureCore {
     }
 
     // Handles the uploading/saving of the capture.
+    /**
+     * This is used to allow for the normal capture workflow to be ran.
+     * @param {Object} uploader - The uploader to use. If ommited, runs through the default capture workflow.
+     * @returns The CaptureCore class this was called from.
+     */
     upload(uploader) {
         this.promiseQueue.push(async() => {
             try {
@@ -142,13 +170,19 @@ module.exports = class CaptureCore {
         return this
     }
 
-    // Generates a random character
+    /**
+     * Used internally to generate a random character.
+     * @returns The random character.
+     */
     _getRandomString() {
         const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         return charset.charAt(Math.floor(Math.random() * charset.length))
     }
 
-    // Generates any random emoji
+    /**
+     * Used internally to generate a random emoji.
+     * @returns The random emoji.
+     */
     _getRandomEmoji() {
         // Choose a random
         const emojiArray = Object.values(appleEmojis)
@@ -159,7 +193,13 @@ module.exports = class CaptureCore {
         return emoji
     }
 
-    // Replaces patterns using callbacks.
+    /**
+     * Replaces patterns using callbacks.
+     * @param {String} string - The original string.
+     * @param {String} pattern - The pattern to use for splitting the string.
+     * @param {Function} called - The function to call.
+     * @returns The modified string.
+     */
     _replacePatternCallback(string, pattern, called) {
         if (string.includes(pattern)) {
             let finalString = ""
@@ -176,7 +216,11 @@ module.exports = class CaptureCore {
         return string
     }
 
-    // Sets the filename.
+    /**
+     * Sets the capture filename.
+     * @param {String} name - Sets the filename to the string specified. If this is ommited, it will be generated using the usual workflow.
+     * @returns The CaptureCore class this was called from.
+     */
     filename(name) {
         this.promiseQueue.push(async() => {
             if (name === undefined) {
@@ -203,7 +247,10 @@ module.exports = class CaptureCore {
         return this
     }
 
-    // Runs all promises in order.
+
+    /**
+     * Runs all of the promises in the internal queue in order.
+     */
     async run() {
         for (const promise of this.promiseQueue) {
             try {
@@ -218,7 +265,10 @@ module.exports = class CaptureCore {
         }
     }
 
-    // Allows for clipboard capture.
+    /**
+     * Allows for clipboard capture based on what is in the clipboard and creates a new instance of the CaptureCore class.
+     * @returns A new instance of the CaptureCore class.
+     */
     static clipboard() {
         const cls = new CaptureCore()
         cls.promiseQueue.push(async() => {
@@ -241,7 +291,13 @@ module.exports = class CaptureCore {
         return cls
     }
 
-    // Allows for file uploads.
+    /**
+     * Allows for file uploads and creates a new instance of the CaptureCore class.
+     * @param {Buffer} buffer - The buffer to upload.
+     * @param {String} filename - The filename of the file.
+     * @param {String} fp - The file path to the file.
+     * @returns A new instance of the CaptureCore class.
+     */
     static file(buffer, filename, fp) {
         const extension = filename.split(".").pop().toLowerCase()
         const cls = new CaptureCore(buffer, extension)
@@ -249,7 +305,11 @@ module.exports = class CaptureCore {
         return cls
     }
 
-    // Allows for upload from the region selection.
+    /**
+     * Allows for file region selection and creates a new instance of the CaptureCore class.
+     * @param {Boolean} gif - Defines if the user asked for a GIF.
+     * @returns A new instance of the CaptureCore class.
+     */
     static region(gif) {
         const cls = new CaptureCore(undefined, gif ? "gif" : "png")
         cls.promiseQueue.push(async() => {

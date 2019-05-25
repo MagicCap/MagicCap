@@ -5,7 +5,9 @@
 const { globalShortcut, dialog } = require("electron")
 const i18n = require("./i18n")
 
-// Fixes odd capture issues on macOS.
+/**
+ * Fixes odd capture issues on macOS.
+ */
 function thisShouldFixMacIssuesAndIdkWhy() {
     console.log("Running capture hotkey.")
 }

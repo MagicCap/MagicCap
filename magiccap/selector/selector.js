@@ -38,13 +38,23 @@ document.body.onmousedown = async e => {
     firstClick.pageY = e.pageY
 }
 
-// Checks if a number is between other numbers. NUMBERRRRRRS!
+/**
+ * Checks if a number is between other numbers. NUMBERRRRRRS!
+ * @param {int} x - The number used for comparison.
+ * @param {*} min - The minimum number.
+ * @param {*} max - The maximum number.
+ * @returns A boolean repersenting if the number is between min and max.
+ */
 function between(x, min, max) {
     return x >= min && x <= max
 }
 
-// Gets the inbetween windows.
-const getInbetweenWindows = electronMouse => {
+/**
+ * Gets the inbetween windows.
+ * @param {*} electronMouse - The Electron mouse input.
+ * @returns All inbetween windows in an array.
+ */
+function getInbetweenWindows(electronMouse) {
     const inThese = []
 
     for (const x of payload.activeWindows) {
@@ -58,8 +68,10 @@ const getInbetweenWindows = electronMouse => {
     return inThese
 }
 
-// Moves the selector magnifier.
-const moveSelectorMagnifier = async() => {
+/**
+ * Moves the selector magnifier.
+ */
+async function moveSelectorMagnifier() {
     const thisCursor = electron.screen.getCursorScreenPoint()
     const magnifyElement = document.getElementById("magnify")
     const positionElement = document.getElementById("position")
@@ -80,7 +92,9 @@ const moveSelectorMagnifier = async() => {
 }
 moveSelectorMagnifier()
 
-// Called when the mouse moves.
+/**
+ * Called when the mouse moves.
+ */
 document.body.onmousemove = e => {
     moveSelectorMagnifier()
     const thisClick = electron.screen.getCursorScreenPoint()
@@ -108,8 +122,12 @@ document.body.onmousemove = e => {
     }
 }
 
-// Protects against XSS.
-const xssProtect = data => {
+/**
+ * Protects against XSS.
+ * @param {string} data - The data to sanitise.
+ * @returns A sanitised string.
+ */
+function xssProtect(data) {
     const lt = /</g
     const gt = />/g
     const ap = /'/g
@@ -213,7 +231,11 @@ document.body.onmouseup = async e => {
 // Defines the uploader properties HTML element.
 const uploaderProperties = document.getElementById("UploaderProperties")
 
-// This is called when a button is invoked.
+
+/**
+ * This is called when a button is invoked.
+ * @param {int} buttonId - The ID of the button.
+ */
 function invokeButton(buttonId) {
     const newNodes = []
     for (const el of uploaderProperties.childNodes) {

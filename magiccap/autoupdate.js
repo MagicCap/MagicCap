@@ -17,7 +17,10 @@ const tempIgnore = []
 // Defines if a update is running.
 let updateRunning = false
 
-// Checks if the autoupdate binaries are installed.
+/**
+ * Checks if the autoupdate binaries are installed.
+ * @returns Boolean saying whether the binary exists.
+ */
 async function checkAutoupdateBin() {
     try {
         await stat(`${require("os").homedir()}/magiccap-updater`)
@@ -27,7 +30,9 @@ async function checkAutoupdateBin() {
     }
 }
 
-// Downloads the needed autoupdate binaries.
+/**
+ * Downloads the needed autoupdate binaries.
+ */
 async function downloadBin() {
     const githubResp = await get(
         "https://api.github.com/repos/JakeMakesStuff/magiccap-updater/releases"
@@ -51,7 +56,10 @@ async function downloadBin() {
     }
 }
 
-// Checks for any updates.
+/**
+ * Checks for any updates.
+ * @returns A object repersenting if it is up to date and changelogs if it is not.
+ */
 async function checkForUpdates() {
     let res
     try {
@@ -78,7 +86,10 @@ async function checkForUpdates() {
     }
 }
 
-// Does the update.
+/**
+ * Does the update.
+ * @param {object} updateInfo - The object returned by checkForUpdates.
+ */
 async function doUpdate(updateInfo) {
     await new Promise(res => {
         sudo.exec(`"${require("os").homedir()}/magiccap-updater" v${updateInfo.current}`, {
@@ -93,7 +104,10 @@ async function doUpdate(updateInfo) {
     })
 }
 
-// Handles a new update.
+/**
+ * Handles a new update.
+ * @param {object} updateInfo - A object containing the update information.
+ */
 async function handleUpdate(updateInfo) {
     if (tempIgnore.indexOf(updateInfo.current) > -1) {
         return
@@ -138,8 +152,10 @@ async function handleUpdate(updateInfo) {
     })
 }
 
-// Handles the initial HTTP update check.
-const runHttpUpdateCheck = async() => {
+/**
+ * Handles the initial HTTP update check.
+ */
+async function runHttpUpdateCheck() {
     if (updateRunning || config.autoupdate_on === false) {
         return
     }
@@ -151,10 +167,16 @@ const runHttpUpdateCheck = async() => {
     }
 }
 
-// Handles WebSocket updates.
-const handleWebSocketUpdates = () => {
+
+/**
+ * Handles WebSocket updates.
+ */
+async function handleWebSocketUpdates() {
     let conn
     let retry = 0
+    /**
+     * Spawns the WebSocket to do the updates with.
+     */
     const spawnWs = () => {
         conn = new WebSocket("wss://api.magiccap.me/version/feed")
         let deathByError = false
@@ -190,7 +212,6 @@ const handleWebSocketUpdates = () => {
     spawnWs()
 }
 
-// The actual autoupdate part.
 module.exports = async function autoUpdateLoop() {
     if (!AUTOUPDATE_ON) {
         return

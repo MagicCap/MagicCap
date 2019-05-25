@@ -8,7 +8,9 @@ const path = require("path")
 // Defines the window.
 let shortenerWindow = null
 
-// Spawns the shortener window.
+/**
+ * Spawns the shortener window.
+ */
 const showShortener = () => {
     if (shortenerWindow) {
         shortenerWindow.show()

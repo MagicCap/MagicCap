@@ -6,8 +6,22 @@ const magicImports = require("magicimports")
 const AWS = magicImports("aws-sdk")
 const i18n = require("../i18n")
 
+/**
+ * The Promise which gets resolved when the S3 upload is finished.
+ * @param {AWS.S3} s3 - The S3 object to use to upload the file.
+ * @param {string} bucketName - The bucket name of where you want to upload.
+ * @param {string} filename - The filename of the upload.
+ * @param {Buffer} buffer - The buffer to upload.
+ * @returns The data from the S3 upload.
+ */
 function s3Promise(s3, bucketName, filename, buffer) {
+    /**
+     * The function embedded into the Promise.
+     */
     const s3Function = (resolve, reject) => {
+        /**
+         * The main S3 handler.
+         */
         const s3Handler = (err, data) => {
             if (err) {
                 reject(err)
@@ -25,7 +39,6 @@ function s3Promise(s3, bucketName, filename, buffer) {
     }
     return new Promise(s3Function)
 }
-// The S3 upload promise that works with the rest of this code properly.
 
 module.exports = {
     name: "S3",

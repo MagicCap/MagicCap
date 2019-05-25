@@ -28,7 +28,9 @@ const configSaveTransaction = db.transaction(newConfig => {
     }
 })
 
-// Saves the config.
+/**
+ * Saves the config.
+ */
 const saveConfig = () => {
     configSaveTransaction(config)
 }

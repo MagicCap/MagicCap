@@ -33,8 +33,10 @@ for (const uploaderName in uploaders) {
     nameUploaderMap[uploaderName] = import_.name
 }
 
-// Creates a menu on Mac.
-const createMenu = async() => {
+/**
+ * Creates the GUI menu on macOS.
+ */
+async function createMenu() {
     const application = {
         label: await i18n.getPoPhrase("Application", "app"),
         submenu: [
@@ -88,7 +90,11 @@ const createMenu = async() => {
     Menu.setApplicationMenu(Menu.buildFromTemplate([application, edit]))
 }
 
-// Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
+/**
+ * Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
+ *
+ * @returns {Array} All configured uploader objects
+ */
 function getConfiguredUploaders() {
     const defaultUploader = nameUploaderMap[localConfig.uploader_type]
     let configured = []
@@ -121,7 +127,12 @@ if (app.dock) app.dock.hide()
 // Predefines the task tray and window.
 let tray, window
 
-// Runs the capture.
+/**
+ *
+ * Runs a regular screen capture.
+ *
+ * @param {boolean} gif - Is the capture a GIF?
+ */
 async function runCapture(gif) {
     await capture.region(gif).filename().upload()
         .notify("Screen capture successful.")
@@ -130,7 +141,9 @@ async function runCapture(gif) {
 }
 global.runCapture = runCapture
 
-// Runs the clipboard capture
+/**
+ * Runs the clipboard capture functionality.
+ */
 async function runClipboardCapture() {
     await capture.clipboard().filename().upload()
         .notify("Clipboard capture successful.")
@@ -139,7 +152,9 @@ async function runClipboardCapture() {
 }
 global.runClipboardCapture = runClipboardCapture
 
-// Opens the config.
+/**
+ * Opens the configuration GUI.
+ */
 async function openConfig() {
     let vibrancy
     if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "dark"
@@ -192,7 +207,10 @@ ipcMain.on("window-show", () => {
     window.show()
 })
 
-// Does the dropdown menu uploads.
+/**
+ * Does the dropdown menu uploads.
+ * @param {Object} uploader - Defines the uploader to use.
+ */
 async function dropdownMenuUpload(uploader) {
     const selectFilei18n = await i18n.getPoPhrase("Select file...", "app")
     await dialog.showOpenDialog({
@@ -215,8 +233,10 @@ async function dropdownMenuUpload(uploader) {
     })
 }
 
-// Creates the context menu.
-const createContextMenu = async() => {
+/**
+ * Creates the context menu for the MagicCap application.
+ */
+async function createContextMenu() {
     let c = localConfig
     let uploadDropdown = []
     const defaulti18n = await i18n.getPoPhrase("(Default)", "app")
@@ -261,9 +281,11 @@ const createContextMenu = async() => {
     tray.setContextMenu(contextMenu)
 }
 
-// Initialises the script.
 let eReady = false
-const initialiseScript = async() => {
+/**
+ * This is used to initialise the MagicCap application.
+ */
+async function initialiseScript() {
     eReady = true
 
     Sentry.configureScope(scope => {

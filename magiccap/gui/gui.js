@@ -103,7 +103,9 @@ const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 // A list of the displayed captures.
 const displayedCaptures = []
 
-// Handles each capture.
+/**
+ * Gets the captures from the database.
+ */
 function getCaptures() {
     displayedCaptures.length = 0
     const stmt = db.prepare("SELECT * FROM captures ORDER BY timestamp DESC")
@@ -171,23 +173,31 @@ new Vue({
     },
 })
 
-// Handles the clipboard action close button.
+/**
+ * Handles the clipboard action close button.
+ */
 function closeClipboardConfig() {
     document.getElementById("clipboardAction").classList.remove("is-active")
 }
 
-// Shows the clipboard action settings page.
+/**
+ * Shows the clipboard action settings page.
+ */
 function showClipboardAction() {
     activeModal = "clipboardAction"
     document.getElementById("clipboardAction").classList.add("is-active")
 }
 
-// Handles the beta updates close button.
+/**
+ * Handles the beta updates close button.
+ */
 function closeBetaUpdates() {
     document.getElementById("betaUpdates").classList.remove("is-active")
 }
 
-// Shows the beta updates  settings page.
+/**
+ * Shows the beta updates settings page.
+ */
 function showBetaUpdates() {
     activeModal = "betaUpdates"
     document.getElementById("betaUpdates").classList.add("is-active")
@@ -198,63 +208,84 @@ ipcRenderer.on("screenshot-upload", async() => {
     await getCaptures()
 })
 
-// Runs the fullscreen capture.
+/**
+ * Runs the fullscreen capture.
+ */
 async function runCapture() {
     await remote.getGlobal("runCapture")()
 }
 
-// Runs GIF capture.
+/**
+ * Runs GIF capture.
+ */
 async function runGifCapture() {
     await remote.getGlobal("runCapture")(true)
 }
 
-// Runs the Clipboard capture.
+/**
+ * Runs the Clipboard capture.
+ */
 async function runClipboardCapture() {
     await remote.getGlobal("runClipboardCapture")()
 }
 
-
-// Shows the about page.
+/**
+ * Shows the about page.
+ */
 function showAbout() {
     activeModal = "about"
     document.getElementById("about").classList.add("is-active")
 }
 
-// Handles the about close button.
+/**
+ * Handles the about close button.
+ */
 function closeAbout() {
     document.getElementById("about").classList.remove("is-active")
 }
 
-// Opens the MPL 2.0 license in a browser.
+/**
+ * Opens the MPL 2.0 license in a browser.
+ */
 function openMPL() {
     shell.openExternal("https://www.mozilla.org/en-US/MPL/2.0")
 }
 
-// Opens the license for the emoji data in a browser.
+/**
+ * Opens the license for the emoji data in a browser.
+ */
 function openEmojiLicense() {
     shell.openExternal("https://github.com/missive/emoji-mart/blob/master/LICENSE")
 }
 
-// Saves the config.
+/**
+ * Saves the config.
+ */
 async function saveConfig() {
     saveConfigToDb()
     ipcRenderer.send("config-edit", config)
 }
 
-// Toggles the theme.
+/**
+ * Toggles the theme.
+ */
 async function toggleTheme() {
     config.light_theme = !config.light_theme
     await saveConfig()
     ipcRenderer.send("restartWindow")
 }
 
-// Shows the hotkey config.
+/**
+ * Shows the hotkey config.
+ */
 function showHotkeyConfig() {
     activeModal = "hotkeyConfig"
     document.getElementById("hotkeyConfig").classList.add("is-active")
 }
 
-// Allows you to close the hotkey config.
+/**
+ * Allows you to close the hotkey config.
+ */
 async function hotkeyConfigClose() {
     const text = document.getElementById("screenshotHotkey").value
     const gifText = document.getElementById("gifHotkey").value
@@ -295,7 +326,9 @@ async function hotkeyConfigClose() {
     document.getElementById("hotkeyConfig").classList.remove("is-active")
 }
 
-// Opens the Electron accelerator documentation.
+/**
+ * Opens the Electron accelerator documentation.
+ */
 function openAcceleratorDocs() {
     shell.openExternal("https://electronjs.org/docs/api/accelerator")
 }
@@ -342,7 +375,9 @@ new Vue({
     },
 })
 
-// Toggles the file config.
+/**
+ * Toggles the file config.
+ */
 const toggleFileConfig = (toggle = false) => {
     if (toggle) {
         activeModal = "fileConfig"
@@ -350,7 +385,9 @@ const toggleFileConfig = (toggle = false) => {
     document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active")
 }
 
-// Toggles the MFL config.
+/**
+ * Toggles the MFL config.
+ */
 const toggleMFLConfig = (toggle = false) => {
     if (toggle) {
         activeModal = "mflConfig"
@@ -397,6 +434,9 @@ const activeUploaderConfig = new Vue({
                 }
             }
         },
+        /**
+         * Resets a config value.
+         */
         resetValue(option) {
             delete config[option.value]
             saveConfig()
@@ -442,10 +482,16 @@ const activeUploaderConfig = new Vue({
             activeUploaderConfig.$forceUpdate()
             saveConfig()
         },
+        /**
+         * Closes the active config.
+         */
         closeActiveConfig() {
             this.$set(this, "exception", "")
             document.getElementById("activeUploaderConfig").classList.remove("is-active")
         },
+        /**
+         * Validates the config.
+         */
         validateConfig() {
             this.$set(this, "exception", "")
             this.$set(this, "exceptionData", "")
@@ -467,6 +513,9 @@ const activeUploaderConfig = new Vue({
             }
             return true
         },
+        /**
+         * Gets the uploaders filename.
+         */
         getFilename() {
             const uploaders = require(`${__dirname}/uploaders`)
             for (const file in uploaders) {
@@ -476,6 +525,9 @@ const activeUploaderConfig = new Vue({
                 }
             }
         },
+        /**
+         * Tests the uploader.
+         */
         testUploader() {
             if (!this.validateConfig()) {
                 return
@@ -493,6 +545,9 @@ const activeUploaderConfig = new Vue({
                 }
             })
         },
+        /**
+         * Sets the uploader as default.
+         */
         setDefaultUploader() {
             if (!this.validateConfig()) {
                 return
@@ -506,7 +561,9 @@ const activeUploaderConfig = new Vue({
     },
 })
 
-// The Art of the Bodge: How I Made The Emoji Keyboard <https://www.youtube.com/watch?v=lIFE7h3m40U>
+/**
+ * The Art of the Bodge: How I Made The Emoji Keyboard <https://www.youtube.com/watch?v=lIFE7h3m40U>
+ */
 const optionWebviewBodge = option => {
     setTimeout(() => {
         const x = document.getElementById(option.value)
@@ -528,7 +585,9 @@ const optionWebviewBodge = option => {
     }, 200)
 }
 
-// Shows the uploader config page.
+/**
+ * Shows the uploader config page.
+ */
 function showUploaderConfig() {
     activeModal = "uploaderConfig"
     document.getElementById("uploaderConfig").classList.add("is-active")
@@ -545,6 +604,9 @@ new Vue({
         checkUploadCheckbox: config.upload_capture,
     },
     methods: {
+        /**
+         * Renders all of the uploaders.
+         */
         renderUploader: async(uploader, uploaderKey) => {
             const options = []
             for (const optionKey in uploader.config_options) {
@@ -595,6 +657,9 @@ new Vue({
             document.getElementById("activeUploaderConfig").classList.add("is-active")
             activeModal = "activeUploaderConfig"
         },
+        /**
+         * Toggles a checkbox.
+         */
         toggleCheckbox() {
             this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox)
             config.upload_capture = this.checkUploadCheckbox
@@ -603,7 +668,9 @@ new Vue({
     },
 })
 
-// Hides the uploader config page.
+/**
+ * Hides the uploader config page.
+ */
 function hideUploaderConfig() {
     document.getElementById("uploaderConfig").classList.remove("is-active")
 }
@@ -616,6 +683,9 @@ new Vue({
         languages: i18n.langPackInfo,
     },
     methods: {
+        /**
+         * Sets the language.
+         */
         changeLanguage(language) {
             this.currentLang = language
             config.language = language
@@ -624,7 +694,9 @@ new Vue({
     },
 })
 
-// Handles exporting the config into a *.mconf file.
+/**
+ * Handles exporting the config into a *.mconf file.
+ */
 const exportMconf = async() => {
     const exported = mconf.new()
     const saveFilei18n = await i18n.getPoPhrase("Save file...", "gui")
@@ -654,7 +726,9 @@ const exportMconf = async() => {
     })
 }
 
-// Handles importing the config from a *.mconf file.
+/**
+ * Handles importing the config from a *.mconf file.
+ */
 const importMconf = async() => {
     const saveFilei18n = await i18n.getPoPhrase("Open file...", "gui")
     dialog.showOpenDialog({
@@ -722,7 +796,9 @@ new Vue({
     },
 })
 
-// Shows the link shortener.
+/**
+ * Shows the link shortener.
+ */
 const showShortener = () => {
     ipcRenderer.send("show-short")
 }

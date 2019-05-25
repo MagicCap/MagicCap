@@ -38,7 +38,10 @@ db.exec("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `succe
 // Makes sure that the config table exists.
 db.exec("CREATE TABLE IF NOT EXISTS `config` (`key` TEXT NOT NULL, `value` TEXT NOT NULL)")
 
-// Creates the default config.
+/**
+ * Creates the default config.
+ * @returns The default config object.
+ */
 async function getDefaultConfig() {
     let picsDir = app.getPath("pictures")
     picsDir += `${sep}MagicCap${sep}`

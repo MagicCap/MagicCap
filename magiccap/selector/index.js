@@ -133,7 +133,9 @@ freezeServer.get("/selector/magnify", async(req, res) => {
 })
 freezeServer.listen(freezeServerPort, "127.0.0.1")
 
-// Spawns all browser windows.
+/**
+ * Spawns all the required windows.
+ */
 const spawnWindows = (displays, primaryId) => {
     const windows = []
     for (let index in displays) {
@@ -165,7 +167,9 @@ const spawnWindows = (displays, primaryId) => {
     return windows
 }
 
-// Gets the displays in order.
+/**
+ * Gets all the displays in order.
+ */
 const getOrderedDisplays = () => {
     const electronScreen = require("electron").screen
     return electronScreen.getAllDisplays().sort((a, b) => {
