@@ -6,7 +6,7 @@ const magicImports = require("magicimports")
 const { stat, writeFile } = magicImports("fs-nextra")
 const { app, dialog } = magicImports("electron")
 const { get } = magicImports("chainfetch")
-const async_child_process = magicImports("async-child-process")
+const asyncChildProcess = magicImports("async-child-process")
 const sudo = magicImports("sudo-prompt")
 const i18n = magicImports("./i18n")
 const WebSocket = require("ws")
@@ -45,7 +45,7 @@ async function downloadBin() {
         if (asset.name == `magiccap-updater-${osPart}`) {
             const updaterBuffer = await get(asset.browser_download_url).toBuffer()
             await writeFile(`${require("os").homedir()}/magiccap-updater`, updaterBuffer.body)
-            await async_child_process.execAsync(`chmod 777 "${require("os").homedir()}/magiccap-updater"`)
+            await asyncChildProcess.execAsync(`chmod 777 "${require("os").homedir()}/magiccap-updater"`)
             break
         }
     }

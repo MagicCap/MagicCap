@@ -90,11 +90,11 @@ const createMenu = async() => {
 
 // Gets configured uploaders (EXCEPT THE DEFAULT UPLOADER!).
 function getConfiguredUploaders() {
-    const default_uploader = nameUploaderMap[localConfig.uploader_type]
+    const defaultUploader = nameUploaderMap[localConfig.uploader_type]
     let configured = []
     for (const uploaderName in importedUploaders) {
         const uploader = importedUploaders[uploaderName]
-        if (default_uploader == uploader.name) {
+        if (defaultUploader == uploader.name) {
             continue
         }
         let allOptions = true

@@ -21,6 +21,7 @@ module.exports = {
 		runClipboardCapture: true,
 	},
 	rules: {
+		"camelcase": ["error", {"properties": "never"}],
 		"no-compare-neg-zero": "error",
 		"no-extra-parens": ["warn", "all", { "nestedBinaryExpressions": false }],
 		"no-template-curly-in-string": "error",

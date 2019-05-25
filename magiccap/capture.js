@@ -61,16 +61,16 @@ module.exports = class CaptureCore {
     }
 
     // Logs uploads.
-    async _logUpload(filename, success, url, file_path) {
+    async _logUpload(filename, success, url, filePath) {
         const timestamp = new Date().getTime()
-        await captureStatement.run(filename, Number(success), timestamp, url, file_path)
+        await captureStatement.run(filename, Number(success), timestamp, url, filePath)
         try {
             global.window.webContents.send("screenshot-upload", {
                 filename: filename,
                 success: Number(success),
                 timestamp: timestamp,
                 url: url,
-                file_path: file_path,
+                file_path: filePath,
             })
         } catch (err) {
             // This isn't too important, we should just ignore.
@@ -84,8 +84,8 @@ module.exports = class CaptureCore {
                 let url
                 if (uploader || config.upload_capture) {
                     if (!uploader) {
-                        const uploader_type = uploader || config.uploader_type
-                        const uploaderName = nameUploaderMap[uploader_type]
+                        const uploaderType = uploader || config.uploader_type
+                        const uploaderName = nameUploaderMap[uploaderType]
                         if (uploaderName === undefined) {
                             const notFoundi18n = await i18n.getPoPhrase("Uploader not found.", "capture")
                             throw new Error(notFoundi18n)
