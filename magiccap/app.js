@@ -19,6 +19,7 @@ const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
 const i18n = magicImports("./i18n")
 const { showShortener } = require("./shortener")
 const Sentry = require("@sentry/electron")
+const hotkeys = require("./hotkeys")
 
 // All of the loaded uploaders.
 global.importedUploaders = {}
@@ -30,11 +31,6 @@ for (const uploaderName in uploaders) {
     const import_ = uploaders[uploaderName]
     importedUploaders[import_.name] = import_
     nameUploaderMap[uploaderName] = import_.name
-}
-
-// Fixes odd capture issues on macOS.
-function thisShouldFixMacIssuesAndIdkWhy() {
-    console.log("Running capture hotkey.")
 }
 
 // Creates a menu on Mac.
@@ -277,39 +273,7 @@ const initialiseScript = async() => {
     tray = new Tray(`${__dirname}/icons/taskbar.png`)
     await createContextMenu()
     if (process.platform === "darwin") createMenu()
-
-    if (localConfig.hotkey) {
-        try {
-            globalShortcut.register(localConfig.hotkey, async() => {
-                thisShouldFixMacIssuesAndIdkWhy()
-                await runCapture(false)
-            })
-        } catch (_) {
-            dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"))
-        }
-    }
-
-    if (localConfig.gif_hotkey) {
-        try {
-            globalShortcut.register(localConfig.gif_hotkey, async() => {
-                thisShouldFixMacIssuesAndIdkWhy()
-                await runCapture(true)
-            })
-        } catch (_) {
-            dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"))
-        }
-    }
-
-    if (localConfig.clipboard_hotkey) {
-        try {
-            globalShortcut.register(localConfig.clipboard_hotkey, async() => {
-                thisShouldFixMacIssuesAndIdkWhy()
-                await runClipboardCapture()
-            })
-        } catch (_) {
-            dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"))
-        }
-    }
+    await hotkeys()
 }
 
 // Shows the link shortener.
@@ -328,31 +292,7 @@ ipcMain.on("config-edit", async(event, data) => {
 ipcMain.on("test-uploader", async(event, data) => event.sender.send("test-uploader-res", await testUploader(uploaders[data])))
 
 // Handles the hotkey changing.
-ipcMain.on("hotkey-change", async(event, c) => {
-    try {
-        globalShortcut.unregisterAll()
-        if (c.hotkey) {
-            globalShortcut.register(c.hotkey, async() => {
-                thisShouldFixMacIssuesAndIdkWhy()
-                await runCapture(false)
-            })
-        }
-        if (c.gif_hotkey) {
-            globalShortcut.register(c.gif_hotkey, async() => {
-                thisShouldFixMacIssuesAndIdkWhy()
-                await runCapture(true)
-            })
-        }
-        if (c.clipboard_hotkey) {
-            globalShortcut.register(c.clipboard_hotkey, async() => {
-                thisShouldFixMacIssuesAndIdkWhy()
-                await runClipboardCapture()
-            })
-        }
-    } catch (_) {
-        dialog.showErrorBox("MagicCap", await i18n.getPoPhrase("The hotkey you gave was invalid.", "app"))
-    }
-})
+ipcMain.on("hotkey-change", hotkeys)
 
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })

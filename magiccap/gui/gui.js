@@ -290,7 +290,7 @@ async function hotkeyConfigClose() {
         }
     }
 
-    ipcRenderer.send("hotkey-change", config)
+    ipcRenderer.send("hotkey-change")
 
     document.getElementById("hotkeyConfig").classList.remove("is-active")
 }

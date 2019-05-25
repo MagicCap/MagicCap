@@ -17,6 +17,8 @@ module.exports = {
 		Vue: true,
 		saveConfig: true,
 		payload: true,
+		runCapture: true,
+		runClipboardCapture: true,
 	},
 	rules: {
 		"no-compare-neg-zero": "error",
