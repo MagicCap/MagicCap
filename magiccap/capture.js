@@ -177,30 +177,29 @@ module.exports = class CaptureCore {
     }
 
     // Sets the filename.
-    _filenameGen(name) {
-        if (name === undefined) {
-            // Get pattern
-            let setFilename = "screenshot_%date%_%time%"
-            if (config.file_naming_pattern) {
-                setFilename = config.file_naming_pattern
-            }
-
-            // Sub in fixed patterns
-            setFilename = setFilename.replace(/%date%/g, moment().format("DD-MM-YYYY"))
-            setFilename = setFilename.replace(/%time%/g, moment().format("HH-mm-ss"))
-
-            // Sub in dynamic patterns
-            setFilename = this._replacePatternCallback(setFilename, '"', this._getRandomString)
-            setFilename = this._replacePatternCallback(setFilename, "%emoji%", this._getRandomEmoji)
-
-            // Set with correct prefix
-            this._filename = `${setFilename}.${this.filetype}`
-        } else {
-            this._filename = name
-        }
-    }
     filename(name) {
-        this.promiseQueue.push(async() => this._filenameGen(name))
+        this.promiseQueue.push(async() => {
+            if (name === undefined) {
+                // Get pattern
+                let setFilename = "screenshot_%date%_%time%"
+                if (config.file_naming_pattern) {
+                    setFilename = config.file_naming_pattern
+                }
+
+                // Sub in fixed patterns
+                setFilename = setFilename.replace(/%date%/g, moment().format("DD-MM-YYYY"))
+                setFilename = setFilename.replace(/%time%/g, moment().format("HH-mm-ss"))
+
+                // Sub in dynamic patterns
+                setFilename = this._replacePatternCallback(setFilename, '"', this._getRandomString)
+                setFilename = this._replacePatternCallback(setFilename, "%emoji%", this._getRandomEmoji)
+
+                // Set with correct prefix
+                this._filename = `${setFilename}.${this.filetype}`
+            } else {
+                this._filename = name
+            }
+        })
         return this
     }
 
