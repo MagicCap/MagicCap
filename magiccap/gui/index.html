@@ -241,7 +241,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Uploader Configuration$</p>
-                    <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:hideUploaderConfig()"></a>
+                    <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body" id="uploaderConfigBody">
                     <label class="checkbox">
@@ -296,7 +296,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Hotkey Configuration$</p>
-                    <a class="delete" aria-label="close" id="hotkeyConfigClose" href="javascript:hotkeyConfigClose()"></a>
+                    <button class="delete" aria-label="close" id="hotkeyConfigClose" v-on:click="hotkeyConfigClose()"></button>
                 </header>
                 <section class="modal-card-body" id="hotkeyConfigBody">
                     <p>$You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.$</p>

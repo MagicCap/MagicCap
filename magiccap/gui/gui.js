@@ -12,6 +12,11 @@ let activeModal
  */
 function closeCurrentModal() {
     if (activeModal) {
+        // Support custom close methods
+        const del = document.getElementById(activeModal).querySelector("button.delete")
+        if (del) return del.click()
+
+        // Assume normal
         document.getElementById(activeModal).classList.remove("is-active")
         activeModal = undefined
     }
@@ -93,6 +98,12 @@ document.head.appendChild(stylesheet)
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
+    // Register modal background click to close listeners
+    Array.from(document.getElementsByClassName("modal-background")).forEach(element => {
+        element.addEventListener("click", closeCurrentModal)
+    })
+
+    // Show the content
     document.body.style.display = "initial"
     ipcRenderer.send("window-show")
 }
@@ -278,6 +289,16 @@ function showHotkeyConfig() {
     document.getElementById("hotkeyConfig").classList.add("is-active")
 }
 
+// Handles the clipboard actions.
+new Vue({
+    el: "#hotkeyConfig",
+    data: {
+        gifHotkey: config.gif_hotkey || "",
+        screenshotHotkey: config.hotkey || "",
+        clipboardHotkey: config.clipboard_hotkey || "",
+    },
+})
+
 /**
  * Allows you to close the hotkey config.
  */
@@ -327,16 +348,6 @@ async function hotkeyConfigClose() {
 function openAcceleratorDocs() {
     shell.openExternal("https://electronjs.org/docs/api/accelerator")
 }
-
-// Handles rendering the hotkey config body.
-new Vue({
-    el: "#hotkeyConfigBody",
-    data: {
-        gifHotkey: config.gif_hotkey || "",
-        screenshotHotkey: config.hotkey || "",
-        clipboardHotkey: config.clipboard_hotkey || "",
-    },
-})
 
 // Repoints path for later.
 const sep = require("path").sep
@@ -642,13 +653,6 @@ new Vue({
         },
     },
 })
-
-/**
- * Hides the uploader config page.
- */
-function hideUploaderConfig() {
-    document.getElementById("uploaderConfig").classList.remove("is-active")
-}
 
 // Handles the MFL config.
 new Vue({
