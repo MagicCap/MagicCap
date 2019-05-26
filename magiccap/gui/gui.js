@@ -245,7 +245,7 @@ function showFileConfig() {
 /**
  * Shows the MFL config.
  */
-function showMFLConfig()  {
+function showMFLConfig() {
     activeModal = "mflConfig"
     document.getElementById("mflConfig").classList.add("is-active")
 }
