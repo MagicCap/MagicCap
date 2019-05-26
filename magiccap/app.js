@@ -264,7 +264,7 @@ async function createContextMenu() {
     const i18nClipboard = await i18n.getPoPhrase("Clipboard Capture", "app")
     const i18nUploadTo = await i18n.getPoPhrase("Upload File to...", "app")
     const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app")
-    const i18nPreferences = await i18n.getPoPhrase("Preferences", "app")
+    const i18nPreferences = await i18n.getPoPhrase("Preferences...", "app")
     const i18nQuit = await i18n.getPoPhrase("Quit", "app")
     const contextMenuTmp = [
         { label: i18nCapture, accelerator: config.hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
