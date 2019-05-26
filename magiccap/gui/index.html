@@ -3,55 +3,78 @@
     <head>
         <title>MagicCap</title>
         <script src="../node_modules/vue/dist/vue.min.js"></script>
+        <link href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet"/>
     </head>
 
     <body style="display: none">
         <div class="columns is-gapless" style="margin: 0;">
-            <aside class="column is-2 aside hero is-fullheight" id="sidebar"
-                   style="position: fixed; width: 15%; background: transparent;">
+            <aside class="column is-2 aside hero is-fullheight" id="sidebar">
                 <aside class="menu">
                     <ul class="menu-list">
                         <li>
-                            <a href="javascript:showAbout()">$About$</a>
+                            <a href="javascript:showAbout()"
+                               title="$View the version and authors$">
+                                <i class="fas fa-info"></i> $About$</a>
                         </li>
                         <li v-if="clipboardAction">
-                            <a href="javascript:showClipboardAction()">$Clipboard Action$</a>
+                            <a href="javascript:showClipboardAction()"
+                               title="$Control what will be on your clipboard after capture$">
+                                <i class="far fa-clipboard"></i> $Clipboard Action$</a>
                         </li>
                         <li v-if="fileConfig">
-                            <a href="javascript:showFileConfig()">$File Configuration$</a>
+                            <a href="javascript:showFileConfig()"
+                               title="$Configure capture file naming and local file saving$">
+                                <i class="far fa-file-alt"></i> $File Configuration$</a>
                         </li>
                         <li v-if="hotkeyConfig">
-                            <a href="javascript:showHotkeyConfig()">$Hotkey Configuration$</a>
+                            <a href="javascript:showHotkeyConfig()"
+                               title="$Define hotkeys to trigger capture actions$">
+                                <i class="far fa-keyboard"></i> $Hotkey Configuration$</a>
                         </li>
                         <li v-if="uploaderConfig">
-                            <a href="javascript:showUploaderConfig()">$Uploader Configuration$</a>
+                            <a href="javascript:showUploaderConfig()"
+                               title="$Enable uploading captures and configure the upload target$">
+                                <i class="fas fa-upload"></i> $Uploader Configuration$</a>
                         </li>
                         <li v-if="betaUpdates">
-                            <a href="javascript:showBetaUpdates()">$Beta Updates$</a>
+                            <a href="javascript:showBetaUpdates()"
+                               title="$Toggle receiving beta updates before their stable release$">
+                                <i class="fas fa-cloud-download-alt"></i> $Beta Updates$</a>
                         </li>
-<!--                         <li>
-                            <a href="javascript:showMFLConfig()">$Change Language$</a>
+                        <!-- <li>
+                            <a href="javascript:showMFLConfig()"
+                               title="$Configure the language of the application$">
+                                <i class="fas fa-globe-europe"></i> $Change Language$</a>
                         </li> -->
                         <li v-if="toggleTheme">
-                            <a href="javascript:toggleTheme()">$Toggle Theme$</a>
+                            <a href="javascript:toggleTheme()"
+                               title="$Switch between light and dark mode$">
+                                <i class="fas fa-adjust"></i> $Toggle Theme$</a>
                         </li>
+
                         <hr style="margin: 8px">
+
                         <li v-if="shortener">
-                            <a href="javascript:showShortener()">$Link Shortener$</a>
+                            <a href="javascript:showShortener()"
+                               title="$Shorten links using s.magiccap.me$">
+                                <i class="fas fa-link"></i> $Link Shortener$</a>
                         </li>
                         <li>
-                            <a href="javascript:runCapture()">$Screen Capture$</a>
+                            <a href="javascript:runCapture()">
+                                <i class="fas fa-camera"></i> $Screen Capture$</a>
                         </li>
                         <li>
-                            <a href="javascript:runGifCapture()">$GIF Capture$</a>
+                            <a href="javascript:runGifCapture()">
+                                <i class="fas fa-video"></i> $GIF Capture$</a>
                         </li>
                         <li>
-                            <a href="javascript:runClipboardCapture()">$Clipboard Capture$</a>
+                            <a href="javascript:runClipboardCapture()">
+                                <i class="fas fa-clipboard-check"></i> $Clipboard Capture$</a>
                         </li>
                     </ul>
                 </aside>
             </aside>
-            <div class="column" style="margin: 0 0 0 15%;">
+            <div class="column">
                 <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
                     <tbody id="mainTableBody">
                         <tr v-for="capture in captures" :key="capture.timestamp">
