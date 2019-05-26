@@ -213,7 +213,7 @@ ipcMain.on("window-show", () => {
  */
 async function dropdownMenuUpload(uploader) {
     const selectFilei18n = await i18n.getPoPhrase("Select file...", "app")
-    await dialog.showOpenDialog({
+    await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
         title: selectFilei18n,
         multiSelections: false,
         openDirectory: false,
