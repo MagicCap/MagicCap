@@ -104,7 +104,7 @@ msgid "Make files upload after capturing."
 msgstr ""
 
 # gui/index.template.html:217
-msgid "Make files save after capturing."
+msgid "Save files to your device after capturing."
 msgstr ""
 
 # gui/index.template.html:219

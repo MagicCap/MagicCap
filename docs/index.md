@@ -29,7 +29,7 @@ This is what will be in your clipboard after the capture. You can choose from th
 ### File Configuration
 There are several options you can configure here:
 
-- **Make files save after capturing.** - This toggles whether files save to your drive after capturing or not.
+- **Save files to your device after capturing.** - This toggles whether files save to your drive after capturing or not.
 - **File Naming Pattern** - This is where you can configure how file names are created. You can use " to represent a random character, %date% for the date and %time% for the time. It is important to note that you can combine patterns, so `"""""_%date%_%time%` is acceptable. Here is how it would look in several patterns for example:
     - `"""""` - `Qgg4k` (This pattern randomises from a-z/A-Z/0-9 every capture)
     - `%date%` - `19-10-2018` (This would be the date on the capture day)
