@@ -81,7 +81,7 @@ document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getV
 // Sets the colour scheme.
 const stylesheet = document.createElement("link")
 stylesheet.setAttribute("rel", "stylesheet")
-stylesheet.setAttribute("href", `${config.light_theme ? "light" : "dark"}.css`)
+stylesheet.setAttribute("href", `css/${config.light_theme ? "light" : "dark"}.css`)
 document.head.appendChild(stylesheet)
 
 // Unhides the body/window when the page has loaded.

@@ -211,8 +211,14 @@
                     <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeClipboardConfig()"></a>
                 </header>
                 <section class="modal-card-body">
-                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2"> $Copy the uploaded URL to the clipboard (requires file uploads to be on).$<br>
-                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1"> $Copy the image to the clipboard.$
+                    <label class="input_container">$Copy the uploaded URL to the clipboard (requires file uploads to be on).$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Copy the image to the clipboard.$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1">
+                        <span class="custom_input"></span>
+                    </label>
                 </section>
             </div>
         </div>

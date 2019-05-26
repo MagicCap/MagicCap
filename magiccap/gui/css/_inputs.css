@@ -1,0 +1,64 @@
+.input_container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.input_container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.input_container span.custom_input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+.input_container:hover span.custom_input {
+    background-color: #ccc;
+}
+
+.input_container input:checked ~ span.custom_input {
+    background-color: #2196F3;
+}
+
+.input_container span.custom_input:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.input_container input:checked ~ span.custom_input:after {
+    display: block;
+}
+
+.input_container input[type="radio"] ~ span.custom_input {
+    border-radius: 50%;
+}
+
+.input_container input[type="radio"] ~ span.custom_input:after {
+    top: 8px;
+    left: 8px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: white;
+}
+
+.input_container input[type="checkbox"] ~ span.custom_input:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
