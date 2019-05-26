@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2019-05-17 16:03\n"
+"PO-Revision-Date: 2019-05-26 18:45\n"
 
 # app.js:40
 msgid "Application"
@@ -84,7 +84,7 @@ msgid "Clipboard Capture"
 msgstr ""
 
 # app.js:308
-msgid "Config"
+msgid "Preferences"
 msgstr ""
 
 # app.js:309
@@ -96,6 +96,6 @@ msgid "Shorten Link..."
 msgstr ""
 
 # app.js:311
-msgid "Exit"
+msgid "Quit"
 msgstr ""
 
