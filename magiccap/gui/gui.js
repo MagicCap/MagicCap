@@ -7,6 +7,21 @@
 // Handles escape to close.
 let activeModal
 
+/**
+ * Closes the active modal if there is one.
+ */
+function closeCurrentModal() {
+    if (activeModal) {
+        // Support custom close methods (Use a button with a delete class and onclick event to support this)
+        const del = document.getElementById(activeModal).querySelector("button.delete")
+        if (del) del.click()
+
+        // Assume normal closing
+        document.getElementById(activeModal).classList.remove("is-active")
+        activeModal = undefined
+    }
+}
+
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
 document.addEventListener("keydown", e => {
     // key is I, and the alt key is held down
@@ -16,10 +31,7 @@ document.addEventListener("keydown", e => {
     }
     // Handles escape to close.
     if (e.code == "Escape") {
-        if (activeModal) {
-            document.getElementById(activeModal).classList.remove("is-active")
-            activeModal = undefined
-        }
+        closeCurrentModal()
     }
 })
 
@@ -78,24 +90,23 @@ new Vue({
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`
 
-// Changes the colour scheme.
+// Sets the colour scheme.
 const stylesheet = document.createElement("link")
 stylesheet.setAttribute("rel", "stylesheet")
-
-if (config.light_theme) {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css")
-} else {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
-}
-document.body.parentElement.classList.add(config.light_theme ? "light" : "dark")
+stylesheet.setAttribute("href", `css/${config.light_theme ? "light" : "dark"}.css`)
+document.head.appendChild(stylesheet)
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
+    // Register modal background click to close listeners
+    Array.from(document.getElementsByClassName("modal-background")).forEach(element => {
+        element.addEventListener("click", closeCurrentModal)
+    })
+
+    // Show the content
     document.body.style.display = "initial"
     ipcRenderer.send("window-show")
 }
-
-document.getElementsByTagName("head")[0].appendChild(stylesheet)
 
 // Defines the capture database.
 const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
@@ -174,25 +185,11 @@ new Vue({
 })
 
 /**
- * Handles the clipboard action close button.
- */
-function closeClipboardConfig() {
-    document.getElementById("clipboardAction").classList.remove("is-active")
-}
-
-/**
  * Shows the clipboard action settings page.
  */
 function showClipboardAction() {
     activeModal = "clipboardAction"
     document.getElementById("clipboardAction").classList.add("is-active")
-}
-
-/**
- * Handles the beta updates close button.
- */
-function closeBetaUpdates() {
-    document.getElementById("betaUpdates").classList.remove("is-active")
 }
 
 /**
@@ -238,10 +235,19 @@ function showAbout() {
 }
 
 /**
- * Handles the about close button.
+ * Shows the file config.
  */
-function closeAbout() {
-    document.getElementById("about").classList.remove("is-active")
+function showFileConfig() {
+    activeModal = "fileConfig"
+    document.getElementById("fileConfig").classList.add("is-active")
+}
+
+/**
+ * Shows the MFL config.
+ */
+function showMFLConfig() {
+    activeModal = "mflConfig"
+    document.getElementById("mflConfig").classList.add("is-active")
 }
 
 /**
@@ -282,6 +288,16 @@ function showHotkeyConfig() {
     activeModal = "hotkeyConfig"
     document.getElementById("hotkeyConfig").classList.add("is-active")
 }
+
+// Handles the clipboard actions.
+new Vue({
+    el: "#hotkeyConfig",
+    data: {
+        gifHotkey: config.gif_hotkey || "",
+        screenshotHotkey: config.hotkey || "",
+        clipboardHotkey: config.clipboard_hotkey || "",
+    },
+})
 
 /**
  * Allows you to close the hotkey config.
@@ -333,16 +349,6 @@ function openAcceleratorDocs() {
     shell.openExternal("https://electronjs.org/docs/api/accelerator")
 }
 
-// Handles rendering the hotkey config body.
-new Vue({
-    el: "#hotkeyConfigBody",
-    data: {
-        gifHotkey: config.gif_hotkey || "",
-        screenshotHotkey: config.hotkey || "",
-        clipboardHotkey: config.clipboard_hotkey || "",
-    },
-})
-
 // Repoints path for later.
 const sep = require("path").sep
 
@@ -374,26 +380,6 @@ new Vue({
         },
     },
 })
-
-/**
- * Toggles the file config.
- */
-const toggleFileConfig = (toggle = false) => {
-    if (toggle) {
-        activeModal = "fileConfig"
-    }
-    document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active")
-}
-
-/**
- * Toggles the MFL config.
- */
-const toggleMFLConfig = (toggle = false) => {
-    if (toggle) {
-        activeModal = "mflConfig"
-    }
-    document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active")
-}
 
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
@@ -667,13 +653,6 @@ new Vue({
         },
     },
 })
-
-/**
- * Hides the uploader config page.
- */
-function hideUploaderConfig() {
-    document.getElementById("uploaderConfig").classList.remove("is-active")
-}
 
 // Handles the MFL config.
 new Vue({

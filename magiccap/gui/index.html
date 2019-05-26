@@ -1,143 +1,83 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title>MagicCap</title>
         <script src="../node_modules/vue/dist/vue.min.js"></script>
+        <link href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet"/>
     </head>
-
-    <style>
-        html, body {
-            font-size: 15px !important;
-        }
-
-        ::-webkit-scrollbar {
-            width: .9em
-        }
-
-        ::-webkit-scrollbar-track {
-            padding: .1em;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            border: .2em solid transparent;
-            border-radius: .4em;
-        }
-
-        .dark::-webkit-scrollbar {
-            background-color: #343434;
-        }
-
-        .dark::-webkit-scrollbar-thumb {
-            border-color: #343434;
-            background: #232323;
-        }
-
-        .dark::-webkit-scrollbar-thumb:hover {
-            background: #1b1b1b;
-        }
-
-        .dark::-webkit-scrollbar-thumb:active {
-            background: #121212;
-        }
-
-        .light::-webkit-scrollbar {
-            background-color: #efefef;
-        }
-
-        .light::-webkit-scrollbar-thumb {
-            border-color: #efefef;
-            background: #bcbcbc;
-        }
-
-        .light::-webkit-scrollbar-thumb:hover {
-            background: #ababab;
-        }
-
-        .light::-webkit-scrollbar-thumb:active {
-            background: #9a9a9a;
-        }
-
-        .divider {
-            width:5px;
-            height:auto;
-            display:inline-block;
-        }
-
-        .rounded-img {
-            border-radius: 50%;
-        }
-
-        .menu .menu-list a {
-            border-radius: 0;
-            transition: all 300ms ease;
-        }
-
-        .dark .menu .menu-list a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: #fff;
-        }
-
-        .light .menu .menu-list a:hover {
-            background: rgba(0, 0, 0, 0.2);
-            color: #343434;
-        }
-
-        .dark table.table {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .light table.table {
-            background: rgba(0, 0, 0, 0.1);
-        }
-    </style>
 
     <body style="display: none">
         <div class="columns is-gapless" style="margin: 0;">
-            <aside class="column is-2 aside hero is-fullheight" id="sidebar"
-                   style="position: fixed; width: 15%; background: transparent;">
+            <aside class="column is-2 aside hero is-fullheight" id="sidebar">
                 <aside class="menu">
                     <ul class="menu-list">
                         <li>
-                            <a href="javascript:showAbout()">$About$</a>
+                            <a href="javascript:showAbout()"
+                               data-tooltip="$View the version and authors$">
+                                <i class="fas fa-info"></i> $About$</a>
                         </li>
                         <li v-if="clipboardAction">
-                            <a href="javascript:showClipboardAction()">$Clipboard Action$</a>
+                            <a href="javascript:showClipboardAction()"
+                               data-tooltip="$Control what will be on your clipboard after capture$">
+                                <i class="far fa-clipboard"></i> $Clipboard Action$</a>
                         </li>
                         <li v-if="fileConfig">
-                            <a href="javascript:toggleFileConfig(true)">$File Configuration$</a>
+                            <a href="javascript:showFileConfig()"
+                               data-tooltip="$Configure capture file naming and local file saving$">
+                                <i class="far fa-file-alt"></i> $File Configuration$</a>
                         </li>
                         <li v-if="hotkeyConfig">
-                            <a href="javascript:showHotkeyConfig()">$Hotkey Configuration$</a>
+                            <a href="javascript:showHotkeyConfig()"
+                               data-tooltip="$Define hotkeys to trigger capture actions$">
+                                <i class="far fa-keyboard"></i> $Hotkey Configuration$</a>
                         </li>
                         <li v-if="uploaderConfig">
-                            <a href="javascript:showUploaderConfig()">$Uploader Configuration$</a>
+                            <a href="javascript:showUploaderConfig()"
+                               data-tooltip="$Enable uploading captures and configure the upload target$">
+                                <i class="fas fa-upload"></i> $Uploader Configuration$</a>
                         </li>
                         <li v-if="betaUpdates">
-                            <a href="javascript:showBetaUpdates()">$Beta Updates$</a>
+                            <a href="javascript:showBetaUpdates()"
+                               data-tooltip="$Toggle receiving beta updates before their stable release$">
+                                <i class="fas fa-cogs"></i> $Beta Updates$</a>
                         </li>
-<!--                         <li>
-                            <a href="javascript:toggleMFLConfig(true)">$Change Language$</a>
+                        <!-- <li>
+                            <a href="javascript:showMFLConfig()"
+                               data-tooltip="$Configure the language of the application$">
+                                <i class="fas fa-globe-europe"></i> $Change Language$</a>
                         </li> -->
                         <li v-if="toggleTheme">
-                            <a href="javascript:toggleTheme()">$Toggle Theme$</a>
+                            <a href="javascript:toggleTheme()"
+                               data-tooltip="$Switch between light and dark mode$">
+                                <i class="fas fa-palette"></i> $Toggle Theme$</a>
                         </li>
-                        <hr style="margin: 8px">
+
+                        <li><hr/></li>
+
                         <li v-if="shortener">
-                            <a href="javascript:showShortener()">$Link Shortener$</a>
+                            <a href="javascript:showShortener()"
+                               data-tooltip="$Shorten links using s.magiccap.me$">
+                                <i class="fas fa-link"></i> $Link Shortener$</a>
                         </li>
                         <li>
-                            <a href="javascript:runCapture()">$Screen Capture$</a>
+                            <a href="javascript:runCapture()"
+                               data-tooltip="$Run the screen capture tool in MagicCap$">
+                                <i class="fas fa-camera"></i> $Screen Capture$</a>
                         </li>
                         <li>
-                            <a href="javascript:runGifCapture()">$GIF Capture$</a>
+                            <a href="javascript:runGifCapture()"
+                               data-tooltip="$Capture a GIF recording of the screen$">
+                                <i class="fas fa-video"></i> $GIF Capture$</a>
                         </li>
                         <li>
-                            <a href="javascript:runClipboardCapture()">$Clipboard Capture$</a>
+                            <a href="javascript:runClipboardCapture()"
+                               data-tooltip="$Capture the current image on your clipboard$">
+                                <i class="fas fa-clipboard-check"></i> $Clipboard Capture$</a>
                         </li>
                     </ul>
                 </aside>
             </aside>
-            <div class="column" style="margin: 0 0 0 15%;">
+            <div class="column">
                 <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
                     <tbody id="mainTableBody">
                         <tr v-for="capture in captures" :key="capture.timestamp">
@@ -165,7 +105,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Change Language$</p>
-                    <a class="delete" aria-label="close" id="mflConfigClose" href="javascript:toggleMFLConfig(false)"></a>
+                    <a class="delete" aria-label="close" id="mflConfigClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
                     <p>$NOTE: Changing the language requires a restart of MagicCap to work fully.$</p>
@@ -226,11 +166,10 @@
                                 <div class="field">
                                     <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div class="control">
-                                        <label class="checkbox">
+                                        <label class="input_container">{{ option.translatedName }}
                                             <input type="checkbox" :id="option.value" :checked="getDefaultValue(option)" v-on:change="changeOption(option)">
-                                            {{ option.translatedName }}
+                                            <span class="custom_input"></span>
                                         </label>
-                                        <br>
                                     </div>
                                 </div>
                             </div>
@@ -278,7 +217,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$About$</p>
-                    <a class="delete" aria-label="close" id="aboutClose" href="javascript:closeAbout()"></a>
+                    <a class="delete" aria-label="close" id="aboutClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
                     <h1 class="title" id="magiccap-ver">MagicCap</h1>
@@ -293,11 +232,17 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Clipboard Action$</p>
-                    <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeClipboardConfig()"></a>
+                    <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
-                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2"> $Copy the uploaded URL to the clipboard (requires file uploads to be on).$<br>
-                    <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1"> $Copy the image to the clipboard.$
+                    <label class="input_container">$Copy the uploaded URL to the clipboard (requires file uploads to be on).$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Copy the image to the clipboard.$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1">
+                        <span class="custom_input"></span>
+                    </label>
                 </section>
             </div>
         </div>
@@ -306,12 +251,19 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Beta Updates$</p>
-                    <a class="delete" aria-label="close" href="javascript:closeBetaUpdates()"></a>
+                    <a class="delete" aria-label="close" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
-                    <p>$Beta updates contain more functionality, but the functionality might be broken in some aspects or unstable.$</p><br>
-                    <input type="radio" name="BetaAction" v-on:click="changeAction(false)" :checked="!action"> $Only get stable updates.$<br>
-                    <input type="radio" name="BetaAction" v-on:click="changeAction(true)" :checked="action"> $Get stable and beta updates.$
+                    <p>$Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable.$</p>
+                    <br/>
+                    <label class="input_container">$Only get stable updates.$
+                        <input type="radio" name="BetaAction" v-on:click="changeAction(false)" :checked="!action">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Get stable and beta updates.$
+                        <input type="radio" name="BetaAction" v-on:click="changeAction(true)" :checked="action">
+                        <span class="custom_input"></span>
+                    </label>
                 </section>
             </div>
         </div>
@@ -320,21 +272,21 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Uploader Configuration$</p>
-                    <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:hideUploaderConfig()"></a>
+                    <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body" id="uploaderConfigBody">
-                    <label class="checkbox">
+                    <label class="input_container">$Upload files once they are captured.$
                         <input type="checkbox" id="uploaderConfigCheckbox" :checked="checkUploadCheckbox" v-on:change="toggleCheckbox()">
-                        $Make files upload after capturing.$
+                        <span class="custom_input"></span>
                     </label>
-                    <br><br>
+                    <br/>
                     <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploader, uploaderKey)" v-for="(uploader, uploaderKey) in uploaders">
                         <span class="icon is-medium">
                             <img class="rounded-img" :src="'../icons/' + uploader.icon">
                         </span>
                         <p>{{ uploaderKey }}</p>
                     </a>
-                    <br><br>
+                    <br/><br/>
                     <a class="button" href="javascript:exportMconf()">$Export Uploader Configurations$</a>
                     <a class="button" href="javascript:importMconf()" style="padding-left: 10px">$Import Uploader Configurations$</a>
                 </section>
@@ -345,13 +297,13 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$File Configuration$</p>
-                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:toggleFileConfig(false)"></a>
+                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body" id="fileConfigBody">
                     <div class="field">
-                        <label class="checkbox">
+                        <label class="input_container">$Save files to your device after capturing.$
                             <input type="checkbox" id="fileConfigCheckbox" v-on:click="saveItem('fileConfigCheckbox', 'save_capture', true)" :checked="fileConfigCheckboxI">
-                            $Make files save after capturing.$
+                            <span class="custom_input"></span>
                         </label>
                     </div>
                     <div class="field">
@@ -375,7 +327,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Hotkey Configuration$</p>
-                    <a class="delete" aria-label="close" id="hotkeyConfigClose" href="javascript:hotkeyConfigClose()"></a>
+                    <button class="delete" aria-label="close" id="hotkeyConfigClose" v-on:click="hotkeyConfigClose()"></button>
                 </header>
                 <section class="modal-card-body" id="hotkeyConfigBody">
                     <p>$You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.$</p>
