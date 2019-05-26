@@ -10,4 +10,5 @@ module.exports = {
     s3: require("./s3"),
     sharex: require("./sharex"),
     ultrashare: require("./ultrashare"),
+    sftp: require("./sftp"),
 }
