@@ -135,29 +135,27 @@ module.exports = class CaptureCore {
                     // We need to save this and tailor the return.
                     this._fp = `${config.save_path}${this._filename}`
                     await fsnextra.writeFile(this._fp, this.buffer)
-                    switch (config.clipboard_action) {
-                        case 1: {
-                            clipboard.writeImage(
-                                nativeImage.createFromBuffer(this.buffer)
-                            )
-                            break
-                        }
-                        case 2: {
-                            if (!url) {
-                                const noURLi18n = await i18n.getPoPhrase("URL not found to put into the clipboard. Do you have uploading on?", "capture")
-                                throw new Error(noURLi18n)
-                            }
-                            clipboard.writeText(url)
-                            break
-                        }
-                        default: {
-                            throw new Error(
-                                "Unknown clipboard action."
-                            )
-                        }
+                }
+                switch (config.clipboard_action) {
+                    case 1: {
+                        clipboard.writeImage(
+                            nativeImage.createFromBuffer(this.buffer)
+                        )
+                        break
                     }
-                } else if (url) {
-                    clipboard.writeText(url)
+                    case 2: {
+                        if (!url) {
+                            const noURLi18n = await i18n.getPoPhrase("URL not found to put into the clipboard. Do you have uploading on?", "capture")
+                            throw new Error(noURLi18n)
+                        }
+                        clipboard.writeText(url)
+                        break
+                    }
+                    default: {
+                        throw new Error(
+                            "Unknown clipboard action."
+                        )
+                    }
                 }
                 await this._logUpload(this._filename, true, url, this._fp)
             } catch (e) {
