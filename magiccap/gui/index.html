@@ -276,7 +276,11 @@
                 </header>
                 <section class="modal-card-body" id="uploaderConfigBody">
                     <label class="input_container">$Upload files once they are captured.$
-                        <input type="checkbox" id="uploaderConfigCheckbox" :checked="checkUploadCheckbox" v-on:change="toggleCheckbox()">
+                        <input type="checkbox" id="uploaderUploadCheckbox" :checked="checkUploaderUpload" v-on:change="toggleUpload()">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Open link in browser once uploaded.$
+                        <input type="checkbox" id="uploaderOpenCheckbox" :checked="checkUploaderOpen" v-on:change="toggleOpen()">
                         <span class="custom_input"></span>
                     </label>
                     <br/>
