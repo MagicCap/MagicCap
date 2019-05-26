@@ -229,9 +229,16 @@
                     <a class="delete" aria-label="close" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
-                    <p>$Beta updates contain more functionality, but the functionality might be broken in some aspects or unstable.$</p><br>
-                    <input type="radio" name="BetaAction" v-on:click="changeAction(false)" :checked="!action"> $Only get stable updates.$<br>
-                    <input type="radio" name="BetaAction" v-on:click="changeAction(true)" :checked="action"> $Get stable and beta updates.$
+                    <p>$Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable.$</p>
+                    <br/>
+                    <label class="input_container">$Only get stable updates.$
+                        <input type="radio" name="BetaAction" v-on:click="changeAction(false)" :checked="!action">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Get stable and beta updates.$
+                        <input type="radio" name="BetaAction" v-on:click="changeAction(true)" :checked="action">
+                        <span class="custom_input"></span>
+                    </label>
                 </section>
             </div>
         </div>
