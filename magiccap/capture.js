@@ -38,7 +38,6 @@ module.exports = class CaptureCore {
         this.promiseQueue = []
     }
 
-
     /**
      * Sets the file path if it is known.
      * @param {String} location - The location where the file is.
