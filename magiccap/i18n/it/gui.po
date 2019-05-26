@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
-"PO-Revision-Date: 2019-05-17 16:04\n"
+"PO-Revision-Date: 2019-05-26 18:35\n"
 
 # gui/index.template.html:26
 # gui/index.template.html:161
@@ -99,10 +99,6 @@ msgstr ""
 
 # gui/index.template.html:202
 msgid "This software is licensed under the {license} license."
-msgstr ""
-
-# gui/index.template.html:203
-msgid "The emoji data used is licensed under the {emojiLicense} license."
 msgstr ""
 
 # gui/index.template.html:179
