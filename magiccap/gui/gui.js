@@ -78,24 +78,17 @@ new Vue({
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`
 
-// Changes the colour scheme.
+// Sets the colour scheme.
 const stylesheet = document.createElement("link")
 stylesheet.setAttribute("rel", "stylesheet")
-
-if (config.light_theme) {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css")
-} else {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
-}
-document.body.parentElement.classList.add(config.light_theme ? "light" : "dark")
+stylesheet.setAttribute("href", `${config.light_theme ? "light" : "dark"}.css`)
+document.head.appendChild(stylesheet)
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
     document.body.style.display = "initial"
     ipcRenderer.send("window-show")
 }
-
-document.getElementsByTagName("head")[0].appendChild(stylesheet)
 
 // Defines the capture database.
 const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
