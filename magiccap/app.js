@@ -262,20 +262,23 @@ async function createContextMenu() {
     const i18nCapture = await i18n.getPoPhrase("Screen Capture", "app")
     const i18nGif = await i18n.getPoPhrase("GIF Capture", "app")
     const i18nClipboard = await i18n.getPoPhrase("Clipboard Capture", "app")
-    const i18nConfig = await i18n.getPoPhrase("Config", "app")
     const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app")
     const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app")
-    const i18nExit = await i18n.getPoPhrase("Exit", "app")
+    const i18nPreferences = await i18n.getPoPhrase("Preferences", "app")
+    const i18nQuit = await i18n.getPoPhrase("Quit", "app")
     const contextMenuTmp = [
         { label: i18nCapture, type: "normal", click: async() => { await runCapture(false) } },
         { label: i18nGif, type: "normal", click: async() => { await runCapture(true) } },
         { label: i18nClipboard, type: "normal", click: async() => { await runClipboardCapture() } },
-        { label: i18nConfig, type: "normal", click: openConfig },
+        { type: "separator" },
         { label: i18nUploadTo, submenu: uploadDropdown },
-        { label: i18nExit, type: "normal", role: "quit" },
+        // Link shortener inserted here if allowed
+        { type: "separator" },
+        { label: i18nPreferences, type: "normal", click: openConfig },
+        { label: i18nQuit, type: "normal", role: "quit" },
     ]
     if (global.liteTouchConfig ? global.liteTouchConfig.link_shortener_allowed : true) {
-        contextMenuTmp.splice(3, 0, { label: i18nShort, type: "normal", click: showShortener })
+        contextMenuTmp.splice(4, 0, { label: i18nShort, type: "normal", click: showShortener })
     }
     const contextMenu = Menu.buildFromTemplate(contextMenuTmp)
     tray.setContextMenu(contextMenu)

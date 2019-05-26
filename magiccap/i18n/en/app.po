@@ -70,7 +70,7 @@ msgid "Clipboard Capture"
 msgstr ""
 
 # app.js:308
-msgid "Config"
+msgid "Preferences"
 msgstr ""
 
 # app.js:309
@@ -82,5 +82,5 @@ msgid "Shorten Link..."
 msgstr ""
 
 # app.js:311
-msgid "Exit"
+msgid "Quit"
 msgstr ""
