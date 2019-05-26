@@ -8,7 +8,7 @@ const magicImports = require("magicimports")
 const gifman = require("gifman")
 const moment = magicImports("moment")
 const fsnextra = magicImports("fs-nextra")
-const { clipboard, nativeImage, Tray, dialog } = magicImports("electron")
+const { clipboard, nativeImage, Tray, dialog, shell } = magicImports("electron")
 const i18n = require("./i18n")
 const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 const selector = require("./selector")
@@ -156,6 +156,9 @@ module.exports = class CaptureCore {
                             "Unknown clipboard action."
                         )
                     }
+                }
+                if (url && config.upload_open) {
+                    shell.openExternal(url)
                 }
                 await this._logUpload(this._filename, true, url, this._fp)
             } catch (e) {

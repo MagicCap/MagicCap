@@ -587,7 +587,8 @@ new Vue({
     el: "#uploaderConfigBody",
     data: {
         uploaders: importedUploaders,
-        checkUploadCheckbox: config.upload_capture,
+        checkUploaderUpload: config.upload_capture,
+        checkUploaderOpen: config.upload_open,
     },
     methods: {
         /**
@@ -644,11 +645,19 @@ new Vue({
             activeModal = "activeUploaderConfig"
         },
         /**
-         * Toggles a checkbox.
+         * Toggles the upload checkbox.
          */
-        toggleCheckbox() {
-            this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox)
-            config.upload_capture = this.checkUploadCheckbox
+        toggleUpload() {
+            this.$set(this, "checkUploaderUpload", !this.checkUploaderUpload)
+            config.upload_capture = this.checkUploaderUpload
+            saveConfig()
+        },
+        /**
+         * Toggles the open checkbox.
+         */
+        toggleOpen() {
+            this.$set(this, "checkUploaderOpen", !this.checkUploaderOpen)
+            config.upload_open = this.checkUploaderOpen
             saveConfig()
         },
     },
