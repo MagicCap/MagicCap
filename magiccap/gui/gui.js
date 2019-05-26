@@ -306,38 +306,39 @@ async function hotkeyConfigClose() {
     const text = document.getElementById("screenshotHotkey").value
     const gifText = document.getElementById("gifHotkey").value
     const clipboardText = document.getElementById("clipboardHotkey").value
+    let changed = false
 
     if (config.hotkey !== text) {
+        changed = true
         if (text === "") {
             config.hotkey = null
-            await saveConfig()
         } else {
             config.hotkey = text
-            await saveConfig()
         }
     }
 
     if (config.gif_hotkey !== gifText) {
+        changed = true
         if (gifText === "") {
             config.gif_hotkey = null
-            await saveConfig()
         } else {
             config.gif_hotkey = gifText
-            await saveConfig()
         }
     }
 
     if (config.clipboard_hotkey !== clipboardText) {
+        changed = true
         if (clipboardText === "") {
             config.clipboard_hotkey = null
-            await saveConfig()
         } else {
             config.clipboard_hotkey = clipboardText
-            await saveConfig()
         }
     }
 
-    ipcRenderer.send("hotkey-change")
+    if (changed) {
+        await saveConfig()
+        ipcRenderer.send("hotkey-change")
+    }
 
     document.getElementById("hotkeyConfig").classList.remove("is-active")
 }

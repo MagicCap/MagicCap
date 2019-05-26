@@ -267,9 +267,9 @@ async function createContextMenu() {
     const i18nPreferences = await i18n.getPoPhrase("Preferences", "app")
     const i18nQuit = await i18n.getPoPhrase("Quit", "app")
     const contextMenuTmp = [
-        { label: i18nCapture, type: "normal", click: async() => { await runCapture(false) } },
-        { label: i18nGif, type: "normal", click: async() => { await runCapture(true) } },
-        { label: i18nClipboard, type: "normal", click: async() => { await runClipboardCapture() } },
+        { label: i18nCapture, accelerator: config.hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
+        { label: i18nGif, accelerator: config.gif_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(true) } },
+        { label: i18nClipboard, accelerator: config.clipboard_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runClipboardCapture() } },
         { type: "separator" },
         { label: i18nUploadTo, submenu: uploadDropdown },
         // Link shortener inserted here if allowed
@@ -317,7 +317,10 @@ ipcMain.on("config-edit", async(event, data) => {
 ipcMain.on("test-uploader", async(event, data) => event.sender.send("test-uploader-res", await testUploader(uploaders[data])))
 
 // Handles the hotkey changing.
-ipcMain.on("hotkey-change", hotkeys)
+ipcMain.on("hotkey-change", async() => {
+    hotkeys()
+    await createContextMenu()
+})
 
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
