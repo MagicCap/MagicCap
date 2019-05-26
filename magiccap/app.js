@@ -213,7 +213,7 @@ ipcMain.on("window-show", () => {
  */
 async function dropdownMenuUpload(uploader) {
     const selectFilei18n = await i18n.getPoPhrase("Select file...", "app")
-    await dialog.showOpenDialog({
+    await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
         title: selectFilei18n,
         multiSelections: false,
         openDirectory: false,
@@ -262,14 +262,14 @@ async function createContextMenu() {
     const i18nCapture = await i18n.getPoPhrase("Screen Capture", "app")
     const i18nGif = await i18n.getPoPhrase("GIF Capture", "app")
     const i18nClipboard = await i18n.getPoPhrase("Clipboard Capture", "app")
-    const i18nUploadTo = await i18n.getPoPhrase("Upload to...", "app")
+    const i18nUploadTo = await i18n.getPoPhrase("Upload File to...", "app")
     const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app")
-    const i18nPreferences = await i18n.getPoPhrase("Preferences", "app")
+    const i18nPreferences = await i18n.getPoPhrase("Preferences...", "app")
     const i18nQuit = await i18n.getPoPhrase("Quit", "app")
     const contextMenuTmp = [
-        { label: i18nCapture, type: "normal", click: async() => { await runCapture(false) } },
-        { label: i18nGif, type: "normal", click: async() => { await runCapture(true) } },
-        { label: i18nClipboard, type: "normal", click: async() => { await runClipboardCapture() } },
+        { label: i18nCapture, accelerator: config.hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
+        { label: i18nGif, accelerator: config.gif_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(true) } },
+        { label: i18nClipboard, accelerator: config.clipboard_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runClipboardCapture() } },
         { type: "separator" },
         { label: i18nUploadTo, submenu: uploadDropdown },
         // Link shortener inserted here if allowed
@@ -320,7 +320,10 @@ ipcMain.on("config-edit", async(event, data) => {
 ipcMain.on("test-uploader", async(event, data) => event.sender.send("test-uploader-res", await testUploader(uploaders[data])))
 
 // Handles the hotkey changing.
-ipcMain.on("hotkey-change", hotkeys)
+ipcMain.on("hotkey-change", async() => {
+    hotkeys()
+    await createContextMenu()
+})
 
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })

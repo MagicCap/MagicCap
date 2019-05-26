@@ -161,8 +161,12 @@ msgstr ""
 msgid "Copy the image to the clipboard."
 msgstr ""
 
-# gui/index.template.html:194
+# gui/index.template.html:278
 msgid "Upload files once they are captured."
+msgstr ""
+
+# gui/index.template.html:282
+msgid "Open link in browser once uploaded."
 msgstr ""
 
 # gui/index.template.html:217

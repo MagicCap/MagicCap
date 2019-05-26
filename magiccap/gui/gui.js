@@ -306,38 +306,39 @@ async function hotkeyConfigClose() {
     const text = document.getElementById("screenshotHotkey").value
     const gifText = document.getElementById("gifHotkey").value
     const clipboardText = document.getElementById("clipboardHotkey").value
+    let changed = false
 
     if (config.hotkey !== text) {
+        changed = true
         if (text === "") {
             config.hotkey = null
-            await saveConfig()
         } else {
             config.hotkey = text
-            await saveConfig()
         }
     }
 
     if (config.gif_hotkey !== gifText) {
+        changed = true
         if (gifText === "") {
             config.gif_hotkey = null
-            await saveConfig()
         } else {
             config.gif_hotkey = gifText
-            await saveConfig()
         }
     }
 
     if (config.clipboard_hotkey !== clipboardText) {
+        changed = true
         if (clipboardText === "") {
             config.clipboard_hotkey = null
-            await saveConfig()
         } else {
             config.clipboard_hotkey = clipboardText
-            await saveConfig()
         }
     }
 
-    ipcRenderer.send("hotkey-change")
+    if (changed) {
+        await saveConfig()
+        ipcRenderer.send("hotkey-change")
+    }
 
     document.getElementById("hotkeyConfig").classList.remove("is-active")
 }
@@ -587,7 +588,8 @@ new Vue({
     el: "#uploaderConfigBody",
     data: {
         uploaders: importedUploaders,
-        checkUploadCheckbox: config.upload_capture,
+        checkUploaderUpload: config.upload_capture,
+        checkUploaderOpen: config.upload_open,
     },
     methods: {
         /**
@@ -644,11 +646,19 @@ new Vue({
             activeModal = "activeUploaderConfig"
         },
         /**
-         * Toggles a checkbox.
+         * Toggles the upload checkbox.
          */
-        toggleCheckbox() {
-            this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox)
-            config.upload_capture = this.checkUploadCheckbox
+        toggleUpload() {
+            this.$set(this, "checkUploaderUpload", !this.checkUploaderUpload)
+            config.upload_capture = this.checkUploaderUpload
+            saveConfig()
+        },
+        /**
+         * Toggles the open checkbox.
+         */
+        toggleOpen() {
+            this.$set(this, "checkUploaderOpen", !this.checkUploaderOpen)
+            config.upload_open = this.checkUploaderOpen
             saveConfig()
         },
     },
