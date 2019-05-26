@@ -140,11 +140,10 @@
                                 <div class="field">
                                     <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div class="control">
-                                        <label class="checkbox">
+                                        <label class="input_container">{{ option.translatedName }}
                                             <input type="checkbox" :id="option.value" :checked="getDefaultValue(option)" v-on:change="changeOption(option)">
-                                            {{ option.translatedName }}
+                                            <span class="custom_input"></span>
                                         </label>
-                                        <br>
                                     </div>
                                 </div>
                             </div>
@@ -244,18 +243,18 @@
                     <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body" id="uploaderConfigBody">
-                    <label class="checkbox">
+                    <label class="input_container">$Upload files once they are captured.$
                         <input type="checkbox" id="uploaderConfigCheckbox" :checked="checkUploadCheckbox" v-on:change="toggleCheckbox()">
-                        $Make files upload after capturing.$
+                        <span class="custom_input"></span>
                     </label>
-                    <br><br>
+                    <br/>
                     <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploader, uploaderKey)" v-for="(uploader, uploaderKey) in uploaders">
                         <span class="icon is-medium">
                             <img class="rounded-img" :src="'../icons/' + uploader.icon">
                         </span>
                         <p>{{ uploaderKey }}</p>
                     </a>
-                    <br><br>
+                    <br/><br/>
                     <a class="button" href="javascript:exportMconf()">$Export Uploader Configurations$</a>
                     <a class="button" href="javascript:importMconf()" style="padding-left: 10px">$Import Uploader Configurations$</a>
                 </section>

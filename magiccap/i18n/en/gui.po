@@ -100,7 +100,7 @@ msgid "Copy the image to the clipboard."
 msgstr ""
 
 # gui/index.template.html:194
-msgid "Make files upload after capturing."
+msgid "Upload files once they are captured."
 msgstr ""
 
 # gui/index.template.html:217

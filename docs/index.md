@@ -40,7 +40,7 @@ There are several options you can configure here:
 This allows you to create hotkeys for Window/Selection Capture based on [this documentation](https://electronjs.org/docs/api/accelerator).
 
 ### Upload Configuration
-The upload configuration allows for extremely flexible configuration of uploaders. Firstly, you can `Make files upload after capturing.`. This dictates whether the files actually get uploaded. Then there are several buttons for all of the supported uploaders. They will all contain "Set as Default Uploader" which will allow you to set it as default and there may be specific options for each uploader.
+The upload configuration allows for extremely flexible configuration of uploaders. Firstly, you can `Upload files once they are captured.`. This dictates whether the files actually get uploaded. Then there are several buttons for all of the supported uploaders. They will all contain "Set as Default Uploader" which will allow you to set it as default and there may be specific options for each uploader.
 
 ### Toggle Theme
 This toggles between the light and dark theme.
