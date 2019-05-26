@@ -10,43 +10,109 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
-"PO-Revision-Date: 2019-05-26 18:35\n"
+"PO-Revision-Date: 2019-05-26 18:45\n"
 
-# gui/index.template.html:26
+# gui/index.template.html:16
+msgid "View the version and authors"
+msgstr ""
+
+# gui/index.template.html:17
 # gui/index.template.html:161
 msgid "About"
 msgstr ""
 
-# gui/index.template.html:29
-msgid "Selection Capture"
+# gui/index.template.html:21
+msgid "Control what will be on your clipboard after capture"
 msgstr ""
 
-# gui/index.template.html:32
-msgid "Window Capture"
-msgstr ""
-
-# gui/index.template.html:35
+# gui/index.template.html:22
 # gui/index.template.html:175
 msgid "Clipboard Action"
 msgstr ""
 
-# gui/index.template.html:38
+# gui/index.template.html:26
+msgid "Configure capture file naming and local file saving"
+msgstr ""
+
+# gui/index.template.html:27
 # gui/index.template.html:210
 msgid "File Configuration"
 msgstr ""
 
-# gui/index.template.html:41
+# gui/index.template.html:31
+msgid "Define hotkeys to trigger capture actions"
+msgstr ""
+
+# gui/index.template.html:32
 # gui/index.template.html:240
 msgid "Hotkey Configuration"
 msgstr ""
 
-# gui/index.template.html:44
+# gui/index.template.html:36
+msgid "Enable uploading captures and configure the upload target"
+msgstr ""
+
+# gui/index.template.html:37
 # gui/index.template.html:188
 msgid "Uploader Configuration"
 msgstr ""
 
+# gui/index.template.html:41
+msgid "Toggle receiving beta updates before their stable release"
+msgstr ""
+
+# gui/index.template.html:42
+# gui/index.template.html:206
+msgid "Beta Updates"
+msgstr ""
+
+# gui/index.template.html:46
+msgid "Configure the language of the application"
+msgstr ""
+
 # gui/index.template.html:47
+# gui/index.template.html:82
+msgid "Change Language"
+msgstr ""
+
+# gui/index.template.html:51
+msgid "Switch between light and dark mode"
+msgstr ""
+
+# gui/index.template.html:52
 msgid "Toggle Theme"
+msgstr ""
+
+# gui/index.template.html:59
+msgid "Shorten links using s.magiccap.me"
+msgstr ""
+
+# gui/index.template.html:60
+msgid "Link Shortener"
+msgstr ""
+
+# gui/index.template.html:64
+msgid "Run the screen capture tool in MagicCap"
+msgstr ""
+
+# gui/index.template.html:65
+msgid "Screen Capture"
+msgstr ""
+
+# gui/index.template.html:69
+msgid "Capture a GIF recording of the screen"
+msgstr ""
+
+# gui/index.template.html:70
+msgid "GIF Capture"
+msgstr ""
+
+# gui/index.template.html:74
+msgid "Capture the current image on your clipboard"
+msgstr ""
+
+# gui/index.template.html:75
+msgid "Clipboard Capture"
 msgstr ""
 
 # gui/index.template.html:65
@@ -110,11 +176,11 @@ msgid "Copy the image to the clipboard."
 msgstr ""
 
 # gui/index.template.html:194
-msgid "Make files upload after capturing."
+msgid "Upload files once they are captured."
 msgstr ""
 
 # gui/index.template.html:217
-msgid "Make files save after capturing."
+msgid "Save files to your device after capturing."
 msgstr ""
 
 # gui/index.template.html:219
@@ -185,11 +251,6 @@ msgstr ""
 msgid "Success"
 msgstr ""
 
-# gui/index.template.html:47
-# gui/index.template.html:82
-msgid "Change Language"
-msgstr ""
-
 # gui/index.template.html:86
 msgid "NOTE: Changing the language requires a restart of MagicCap to work fully."
 msgstr ""
@@ -206,13 +267,8 @@ msgstr ""
 msgid "This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?"
 msgstr ""
 
-# gui/index.template.html:44
-# gui/index.template.html:206
-msgid "Beta Updates"
-msgstr ""
-
 # gui/index.template.html:210
-msgid "Beta updates contain more functionality, but the functionality might be broken in some aspects or unstable."
+msgid "Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable."
 msgstr ""
 
 # gui/index.template.html:211
@@ -221,10 +277,6 @@ msgstr ""
 
 # gui/index.template.html:212
 msgid "Get stable and beta updates."
-msgstr ""
-
-# gui/index.template.html:32
-msgid "Link Shortener"
 msgstr ""
 
 msgid "Test Uploader"
