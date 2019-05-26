@@ -14,8 +14,7 @@ const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir(
 const selector = require("./selector")
 const sharp = magicImports("sharp")
 const notifier = magicImports("node-notifier")
-// Source: https://raw.githubusercontent.com/missive/emoji-mart/master/data/apple.json
-const appleEmojis = require("./emojis/apple.json").emojis
+const emojis = Object.values(require("emojilib").lib).map(x => x.char)
 
 // Defines if we are in a GIF.
 let inGif = false
@@ -183,13 +182,7 @@ module.exports = class CaptureCore {
      * @returns The random emoji.
      */
     _getRandomEmoji() {
-        // Choose a random
-        const emojiArray = Object.values(appleEmojis)
-        let emoji = emojiArray[Math.floor(Math.random() * emojiArray.length)]
-
-        // Convert from code point to emoji string
-        emoji = String.fromCodePoint(parseInt(emoji.b, 16))
-        return emoji
+        return emojis[Math.floor(Math.random() * emojis.length)]
     }
 
     /**
