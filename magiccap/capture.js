@@ -8,12 +8,11 @@ const magicImports = require("magicimports")
 const gifman = require("gifman")
 const moment = magicImports("moment")
 const fsnextra = magicImports("fs-nextra")
-const { clipboard, nativeImage, Tray, dialog } = magicImports("electron")
+const { clipboard, nativeImage, Tray, dialog, shell, Notification } = magicImports("electron")
 const i18n = require("./i18n")
 const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 const selector = require("./selector")
 const sharp = magicImports("sharp")
-const notifier = magicImports("node-notifier")
 const emojis = Object.values(require("emojilib").lib).map(x => x.char)
 
 // Defines if we are in a GIF.
@@ -33,6 +32,7 @@ module.exports = class CaptureCore {
         this._filename = null
         this._log = false
         this._fp = null
+        this._url = null
         this.filetype = filetype
         this.buffer = buffer
         this.promiseQueue = []
@@ -67,11 +67,14 @@ module.exports = class CaptureCore {
      */
     notify(result) {
         this.promiseQueue.push(async() => {
-            notifier.notify({
+            const notification = new Notification({
                 title: "MagicCap",
-                message: result,
-                icon: `${__dirname}/icons/taskbar@2x.png`,
+                body: result,
+                sound: true,
             })
+            const cls = this
+            notification.on("click", () => shell.openExternal(cls._url || cls._fp))
+            notification.show()
         })
         return this
     }
@@ -130,6 +133,7 @@ module.exports = class CaptureCore {
                         }
                     }
                     url = await uploader.upload(this.buffer, this.filetype, this._filename)
+                    this._url = url
                 }
                 if (!this._fp && config.save_capture && config.save_path) {
                     // We need to save this and tailor the return.
