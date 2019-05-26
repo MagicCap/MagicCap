@@ -70,11 +70,11 @@ msgid "Clipboard Capture"
 msgstr ""
 
 # app.js:308
-msgid "Preferences"
+msgid "Preferences..."
 msgstr ""
 
 # app.js:309
-msgid "Upload to..."
+msgid "Upload File to..."
 msgstr ""
 
 # app.js:310
