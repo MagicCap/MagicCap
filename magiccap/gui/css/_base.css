@@ -39,22 +39,6 @@ html, body {
     margin: 0 0 0 17%;
 }
 
-.menu .menu-list li > a {
-    border-radius: 0;
-    font-size: 0.95em;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: all 300ms ease;
-}
-
-.menu .menu-list li > a > *[class*="fa"] {
-    vertical-align: sub;
-    width: 1.4em;
-    text-align: center;
-    font-size: 1.6em;
-}
-
 .modal .delete {
     width: 28px;
     max-width: 28px;

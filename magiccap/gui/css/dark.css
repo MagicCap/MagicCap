@@ -4,6 +4,7 @@
 @import url("../../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
 @import url("_base.css");
 @import url("_inputs.css");
+@import url("_menu.css");
 
 ::-webkit-scrollbar {
     background-color: #343434;
