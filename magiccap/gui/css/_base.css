@@ -33,3 +33,24 @@ html, body {
     border-radius: 0;
     transition: all 300ms ease;
 }
+
+.modal .delete {
+    width: 28px;
+    max-width: 28px;
+    min-width: 28px;
+    height: 28px;
+    max-height: 28px;
+    min-height: 28px;
+}
+
+.modal .delete:hover {
+    background-color: rgba(10, 10, 10, .5);
+}
+
+.modal .delete:hover::before {
+    height: 3px;
+}
+
+.modal .delete:hover::after {
+    width: 3px;
+}
