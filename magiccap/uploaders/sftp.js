@@ -62,7 +62,7 @@ module.exports = {
             throw new Error(SFTPErr.replace("{err}", `${err}`))
         }
 
-        let baseURL = config.ftp_domain
+        let baseURL = config.sftp_domain
         if (baseURL.endsWith("/") || baseURL.endsWith("\\")) {
             baseURL = baseURL.slice(0, -1)
         }
