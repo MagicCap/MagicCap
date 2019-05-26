@@ -131,7 +131,7 @@ module.exports = class CaptureCore {
                     }
                     url = await uploader.upload(this.buffer, this.filetype, this._filename)
                 }
-                if (!this._fp && config.save_capture) {
+                if (!this._fp && config.save_capture && config.save_path) {
                     // We need to save this and tailor the return.
                     this._fp = `${config.save_path}${this._filename}`
                     await fsnextra.writeFile(this._fp, this.buffer)
