@@ -3,7 +3,7 @@
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
 html, body {
-    font-size: 15px !important;
+    font-size: 15px;
 }
 
 ::-webkit-scrollbar {
