@@ -26,7 +26,7 @@ const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?
 // The main capture core.
 module.exports = class CaptureCore {
     /**
-     *Creates an instance of CaptureCore.
+     * Creates an instance of CaptureCore.
      * @param {Buffer} buffer - The buffer for the capture. If this is ommited, it will be set to undefined.
      * @param {String} filetype - Sets the filetype for the capture. If this is left ommited, it will be set to undefined.
      */
@@ -100,7 +100,6 @@ module.exports = class CaptureCore {
         }
     }
 
-    // Handles the uploading/saving of the capture.
     /**
      * This is used to allow for the normal capture workflow to be ran.
      * @param {Object} uploader - The uploader to use. If ommited, runs through the default capture workflow.
