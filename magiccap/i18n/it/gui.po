@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
-"PO-Revision-Date: 2019-05-26 18:45\n"
+"PO-Revision-Date: 2019-05-26 21:14\n"
 
 # gui/index.template.html:16
 msgid "View the version and authors"
@@ -175,8 +175,12 @@ msgstr ""
 msgid "Copy the image to the clipboard."
 msgstr ""
 
-# gui/index.template.html:194
+# gui/index.template.html:278
 msgid "Upload files once they are captured."
+msgstr ""
+
+# gui/index.template.html:282
+msgid "Open link in browser once uploaded."
 msgstr ""
 
 # gui/index.template.html:217
