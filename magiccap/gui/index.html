@@ -39,7 +39,7 @@
                         <li v-if="betaUpdates">
                             <a href="javascript:showBetaUpdates()"
                                title="$Toggle receiving beta updates before their stable release$">
-                                <i class="fas fa-cloud-download-alt"></i> $Beta Updates$</a>
+                                <i class="fas fa-cogs"></i> $Beta Updates$</a>
                         </li>
                         <!-- <li>
                             <a href="javascript:showMFLConfig()"
@@ -49,7 +49,7 @@
                         <li v-if="toggleTheme">
                             <a href="javascript:toggleTheme()"
                                title="$Switch between light and dark mode$">
-                                <i class="fas fa-adjust"></i> $Toggle Theme$</a>
+                                <i class="fas fa-palette"></i> $Toggle Theme$</a>
                         </li>
 
                         <hr style="margin: 8px">
@@ -60,15 +60,18 @@
                                 <i class="fas fa-link"></i> $Link Shortener$</a>
                         </li>
                         <li>
-                            <a href="javascript:runCapture()">
+                            <a href="javascript:runCapture()"
+                               title="$Run the screen capture tool in MagicCap$">
                                 <i class="fas fa-camera"></i> $Screen Capture$</a>
                         </li>
                         <li>
-                            <a href="javascript:runGifCapture()">
+                            <a href="javascript:runGifCapture()"
+                               title="$Capture a GIF recording of the screen$">
                                 <i class="fas fa-video"></i> $GIF Capture$</a>
                         </li>
                         <li>
-                            <a href="javascript:runClipboardCapture()">
+                            <a href="javascript:runClipboardCapture()"
+                               title="$Capture the current image on your clipboard$">
                                 <i class="fas fa-clipboard-check"></i> $Clipboard Capture$</a>
                         </li>
                     </ul>

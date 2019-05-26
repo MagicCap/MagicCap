@@ -77,12 +77,28 @@ msgstr ""
 msgid "Link Shortener"
 msgstr ""
 
-# gui/index.template.html:29
-msgid "Selection Capture"
+# gui/index.template.html:64
+msgid "Run the screen capture tool in MagicCap"
 msgstr ""
 
-# gui/index.template.html:32
-msgid "Window Capture"
+# gui/index.template.html:65
+msgid "Screen Capture"
+msgstr ""
+
+# gui/index.template.html:69
+msgid "Capture a GIF recording of the screen"
+msgstr ""
+
+# gui/index.template.html:70
+msgid "GIF Capture"
+msgstr ""
+
+# gui/index.template.html:74
+msgid "Capture the current image on your clipboard"
+msgstr ""
+
+# gui/index.template.html:75
+msgid "Clipboard Capture"
 msgstr ""
 
 # gui/index.template.html:65
