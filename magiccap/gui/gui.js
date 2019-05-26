@@ -12,11 +12,11 @@ let activeModal
  */
 function closeCurrentModal() {
     if (activeModal) {
-        // Support custom close methods
+        // Support custom close methods (Use a button with a delete class and onclick event to support this)
         const del = document.getElementById(activeModal).querySelector("button.delete")
-        if (del) return del.click()
+        if (del) del.click()
 
-        // Assume normal
+        // Assume normal closing
         document.getElementById(activeModal).classList.remove("is-active")
         activeModal = undefined
     }
