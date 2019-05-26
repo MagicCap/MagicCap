@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2019-05-26 18:45\n"
+"PO-Revision-Date: 2019-05-26 21:14\n"
 
 # app.js:40
 msgid "Application"
@@ -84,11 +84,11 @@ msgid "Clipboard Capture"
 msgstr ""
 
 # app.js:308
-msgid "Preferences"
+msgid "Preferences..."
 msgstr ""
 
 # app.js:309
-msgid "Upload to..."
+msgid "Upload File to..."
 msgstr ""
 
 # app.js:310
