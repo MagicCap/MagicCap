@@ -267,8 +267,8 @@ async function createContextMenu() {
     const i18nPreferences = await i18n.getPoPhrase("Preferences...", "app")
     const i18nQuit = await i18n.getPoPhrase("Quit", "app")
     const contextMenuTmp = [
-        { label: i18nCapture, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
-        { label: i18nGif, registerAccelerator: false, type: "normal", click: async() => { await runCapture(true) } },
+        { label: i18nCapture, accelerator: config.hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
+        { label: i18nGif, accelerator: config.gif_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(true) } },
         { label: i18nClipboard, accelerator: config.clipboard_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runClipboardCapture() } },
         { type: "separator" },
         { label: i18nUploadTo, submenu: uploadDropdown },
