@@ -18,7 +18,7 @@
                             <a href="javascript:showClipboardAction()">$Clipboard Action$</a>
                         </li>
                         <li v-if="fileConfig">
-                            <a href="javascript:toggleFileConfig(true)">$File Configuration$</a>
+                            <a href="javascript:showFileConfig()">$File Configuration$</a>
                         </li>
                         <li v-if="hotkeyConfig">
                             <a href="javascript:showHotkeyConfig()">$Hotkey Configuration$</a>
@@ -30,7 +30,7 @@
                             <a href="javascript:showBetaUpdates()">$Beta Updates$</a>
                         </li>
 <!--                         <li>
-                            <a href="javascript:toggleMFLConfig(true)">$Change Language$</a>
+                            <a href="javascript:showMFLConfig()">$Change Language$</a>
                         </li> -->
                         <li v-if="toggleTheme">
                             <a href="javascript:toggleTheme()">$Toggle Theme$</a>
@@ -79,7 +79,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Change Language$</p>
-                    <a class="delete" aria-label="close" id="mflConfigClose" href="javascript:toggleMFLConfig(false)"></a>
+                    <a class="delete" aria-label="close" id="mflConfigClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
                     <p>$NOTE: Changing the language requires a restart of MagicCap to work fully.$</p>
@@ -192,7 +192,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$About$</p>
-                    <a class="delete" aria-label="close" id="aboutClose" href="javascript:closeAbout()"></a>
+                    <a class="delete" aria-label="close" id="aboutClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
                     <h1 class="title" id="magiccap-ver">MagicCap</h1>
@@ -208,7 +208,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Clipboard Action$</p>
-                    <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeClipboardConfig()"></a>
+                    <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
                     <label class="input_container">$Copy the uploaded URL to the clipboard (requires file uploads to be on).$
@@ -227,7 +227,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$Beta Updates$</p>
-                    <a class="delete" aria-label="close" href="javascript:closeBetaUpdates()"></a>
+                    <a class="delete" aria-label="close" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
                     <p>$Beta updates contain more functionality, but the functionality might be broken in some aspects or unstable.$</p><br>
@@ -266,7 +266,7 @@
             <div class="modal-card">
                 <header class="modal-card-head">
                     <p class="modal-card-title">$File Configuration$</p>
-                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:toggleFileConfig(false)"></a>
+                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body" id="fileConfigBody">
                     <div class="field">

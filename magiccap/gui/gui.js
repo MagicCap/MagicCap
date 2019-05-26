@@ -7,6 +7,16 @@
 // Handles escape to close.
 let activeModal
 
+/**
+ * Closes the active modal if there is one.
+ */
+function closeCurrentModal() {
+    if (activeModal) {
+        document.getElementById(activeModal).classList.remove("is-active")
+        activeModal = undefined
+    }
+}
+
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
 document.addEventListener("keydown", e => {
     // key is I, and the alt key is held down
@@ -16,10 +26,7 @@ document.addEventListener("keydown", e => {
     }
     // Handles escape to close.
     if (e.code == "Escape") {
-        if (activeModal) {
-            document.getElementById(activeModal).classList.remove("is-active")
-            activeModal = undefined
-        }
+        closeCurrentModal()
     }
 })
 
@@ -167,25 +174,11 @@ new Vue({
 })
 
 /**
- * Handles the clipboard action close button.
- */
-function closeClipboardConfig() {
-    document.getElementById("clipboardAction").classList.remove("is-active")
-}
-
-/**
  * Shows the clipboard action settings page.
  */
 function showClipboardAction() {
     activeModal = "clipboardAction"
     document.getElementById("clipboardAction").classList.add("is-active")
-}
-
-/**
- * Handles the beta updates close button.
- */
-function closeBetaUpdates() {
-    document.getElementById("betaUpdates").classList.remove("is-active")
 }
 
 /**
@@ -231,10 +224,19 @@ function showAbout() {
 }
 
 /**
- * Handles the about close button.
+ * Shows the file config.
  */
-function closeAbout() {
-    document.getElementById("about").classList.remove("is-active")
+function showFileConfig() {
+    activeModal = "fileConfig"
+    document.getElementById("fileConfig").classList.add("is-active")
+}
+
+/**
+ * Shows the MFL config.
+ */
+function showMFLConfig()  {
+    activeModal = "mflConfig"
+    document.getElementById("mflConfig").classList.add("is-active")
 }
 
 /**
@@ -367,26 +369,6 @@ new Vue({
         },
     },
 })
-
-/**
- * Toggles the file config.
- */
-const toggleFileConfig = (toggle = false) => {
-    if (toggle) {
-        activeModal = "fileConfig"
-    }
-    document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active")
-}
-
-/**
- * Toggles the MFL config.
- */
-const toggleMFLConfig = (toggle = false) => {
-    if (toggle) {
-        activeModal = "mflConfig"
-    }
-    document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active")
-}
 
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
