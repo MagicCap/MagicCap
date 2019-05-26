@@ -14,7 +14,7 @@ const magicImports = require("magicimports")
 const { readFile } = magicImports("fs-nextra")
 const testUploader = require("./test_uploader")
 let capture = require(`${__dirname}/capture.js`)
-const { app, Tray, Menu, dialog, globalShortcut, BrowserWindow, ipcMain } = magicImports("electron")
+const { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain } = magicImports("electron")
 const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
 const i18n = magicImports("./i18n")
 const { showShortener } = require("./shortener")
@@ -156,8 +156,8 @@ global.runClipboardCapture = runClipboardCapture
  * Opens the configuration GUI.
  */
 async function openConfig() {
-    let vibrancy
-    if (process.platform == "darwin") vibrancy = config.light_theme ? "light" : "dark"
+    const vibrancy = config.light_theme ? "light" : "dark"
+    if (process.platform === "darwin") systemPreferences.setAppLevelAppearance(vibrancy)
 
     if (window) {
         window.setVibrancy(vibrancy)
@@ -297,7 +297,10 @@ async function initialiseScript() {
 
     tray = new Tray(`${__dirname}/icons/taskbar.png`)
     await createContextMenu()
-    if (process.platform === "darwin") createMenu()
+    if (process.platform === "darwin") {
+        systemPreferences.setAppLevelAppearance(config.light_theme ? "light" : "dark")
+        createMenu()
+    }
     await hotkeys()
 }
 
