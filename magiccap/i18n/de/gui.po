@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2019-05-26 21:14\n"
+"PO-Revision-Date: 2019-05-27 11:37\n"
 
 # gui/index.template.html:16
 msgid "View the version and authors"
@@ -58,12 +58,12 @@ msgid "Uploader Configuration"
 msgstr ""
 
 # gui/index.template.html:41
-msgid "Toggle receiving beta updates before their stable release"
+msgid "Check for updates and toggle receiving beta updates"
 msgstr ""
 
 # gui/index.template.html:42
-# gui/index.template.html:206
-msgid "Beta Updates"
+# gui/index.template.html:253
+msgid "Updates"
 msgstr ""
 
 # gui/index.template.html:46
@@ -275,11 +275,24 @@ msgstr ""
 msgid "Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable."
 msgstr ""
 
-# gui/index.template.html:211
+# gui/index.template.html:257
+# gui/gui.js:211
+msgid "Check for Updates"
+msgstr ""
+
+# gui/gui.js:207
+msgid "Checking..."
+msgstr ""
+
+# gui/index.template.html:259
+msgid "Beta Updates"
+msgstr ""
+
+# gui/index.template.html:262
 msgid "Only get stable updates."
 msgstr ""
 
-# gui/index.template.html:212
+# gui/index.template.html:266
 msgid "Get stable and beta updates."
 msgstr ""
 
