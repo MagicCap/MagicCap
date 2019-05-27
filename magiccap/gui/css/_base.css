@@ -38,3 +38,19 @@ html, body {
 .column.aside + .column {
     margin: 0 0 0 15%;
 }
+
+.button {
+    cursor: default;
+}
+
+a {
+    cursor: default;
+}
+
+.urlDisplay {
+    cursor: pointer;
+}
+
+.delete {
+    cursor: default;
+}
