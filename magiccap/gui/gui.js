@@ -553,8 +553,8 @@ const activeUploaderConfig = new Vue({
                 return
             }
 
-            const filename = this.getFilename()
-            config.uploader_type = filename
+            const file = this.getFilename()
+            config.uploader_type = file
             saveConfig()
             this.exception += "ayyyyDefaultSaved"
         },
@@ -711,15 +711,15 @@ const exportMconf = async() => {
             },
         ],
         showsTagField: false,
-    }, async filename => {
-        if (filename === undefined) {
+    }, async file => {
+        if (file === undefined) {
             return
         }
-        if (!filename.endsWith(".mconf")) {
-            filename += ".mconf"
+        if (!file.endsWith(".mconf")) {
+            file += ".mconf"
         }
         try {
-            await writeJSON(filename, exported, {
+            await writeJSON(file, exported, {
                 spaces: 4,
             })
         } catch (err) {
@@ -744,13 +744,13 @@ const importMconf = async() => {
         multiSelections: false,
         openDirectory: false,
         showsTagField: false,
-    }, async filename => {
-        if (filename === undefined) {
+    }, async file => {
+        if (file === undefined) {
             return
         }
         let data
         try {
-            data = await readJSON(filename[0])
+            data = await readJSON(file[0])
         } catch (err) {
             console.log(err)
             return
