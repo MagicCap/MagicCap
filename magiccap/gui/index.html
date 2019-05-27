@@ -313,12 +313,13 @@
                             <span class="custom_input"></span>
                         </label>
                     </div>
-                    <div class="field">
+                    <div class="field fileNamePattern">
                         <label class="label" for="fileNamingPattern">$File Naming Pattern:$</label>
-                        <p style="padding-bottom: 10px">$You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time.$</p>
+                        <p>$You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time.$</p>
                         <div class="control">
                             <input class="input" type="text" id="fileNamingPattern" placeholder="$File Naming Pattern$" :value="fileNamingPatternI" v-on:change="saveNamingPattern()">
                         </div>
+                        <p>$Filename Preview:$ <code id="fileNamingPreview" class="preview">{{fileNamingPreview}}</code></p>
                     </div>
                     <div class="field">
                         <label class="label" for="fileSaveFolder">$File Save Folder:$</label>

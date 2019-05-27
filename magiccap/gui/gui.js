@@ -53,6 +53,7 @@ const i18n = require("./i18n")
 const mconf = require("./mconf")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
+const filename = require(`${__dirname}/filename.js`)
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -373,6 +374,7 @@ new Vue({
         fileConfigCheckboxI: config.save_capture || false,
         fileNamingPatternI: config.file_naming_pattern || "screenshot_%date%_%time%",
         fileSaveFolderI: config.save_path,
+        fileNamingPreview: filename.newFilename(),
     },
     methods: {
         saveSaveCapture: () => {
@@ -382,6 +384,7 @@ new Vue({
         saveNamingPattern: () => {
             config.file_naming_pattern = document.getElementById("fileNamingPattern").value
             saveConfig()
+            document.getElementById("fileNamingPreview").textContent = filename.newFilename()
         },
         saveFilePath: () => {
             let p = document.getElementById("fileSaveFolder").value

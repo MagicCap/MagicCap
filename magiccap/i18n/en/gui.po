@@ -189,6 +189,10 @@ msgstr ""
 msgid "You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time."
 msgstr ""
 
+# gui/index.template.html:322
+msgid "Filename Preview:"
+msgstr ""
+
 # gui/index.template.html:224
 msgid "File Naming Pattern"
 msgstr ""
