@@ -53,7 +53,6 @@ const i18n = require("./i18n")
 const mconf = require("./mconf")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
-const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -204,8 +203,14 @@ function showBetaUpdates() {
 /**
  * Checks for updates.
  */
-function checkForUpdates() {
-    autoUpdateLoop.manualCheck()
+async function checkForUpdates(elm) {
+    elm.textContent = await i18n.getPoPhrase("Checking...", "gui")
+    elm.disabled = true
+    ipcRenderer.send("check-for-updates")
+    ipcRenderer.once("check-for-updates-done", async() => {
+        elm.textContent = await i18n.getPoPhrase("Check for Updates", "gui")
+        elm.disabled = false
+    })
 }
 
 // Handles new screenshots.

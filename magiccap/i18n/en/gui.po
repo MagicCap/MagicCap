@@ -262,7 +262,12 @@ msgid "Beta updates provide newer features and improved functionality, but befor
 msgstr ""
 
 # gui/index.template.html:257
+# gui/gui.js:211
 msgid "Check for Updates"
+msgstr ""
+
+# gui/gui.js:207
+msgid "Checking..."
 msgstr ""
 
 # gui/index.template.html:259

@@ -331,6 +331,12 @@ ipcMain.on("hotkey-change", async() => {
     await createContextMenu()
 })
 
+// Allows for update checking in the gui
+ipcMain.on("check-for-updates", async event => {
+    await autoUpdateLoop.manualCheck()
+    event.sender.send("check-for-updates-done")
+})
+
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
 
