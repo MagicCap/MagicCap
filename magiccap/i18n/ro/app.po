@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
-"PO-Revision-Date: 2019-05-26 21:14\n"
+"PO-Revision-Date: 2019-05-27 10:50\n"
 
 # app.js:40
 msgid "Application"
@@ -88,7 +88,7 @@ msgid "Preferences..."
 msgstr ""
 
 # app.js:309
-msgid "Upload File to..."
+msgid "Upload File To..."
 msgstr ""
 
 # app.js:310
@@ -97,5 +97,9 @@ msgstr ""
 
 # app.js:311
 msgid "Quit"
+msgstr ""
+
+# app.js:269
+msgid "Check For Updates..."
 msgstr ""
 
