@@ -6,14 +6,13 @@
 // Imports go here.
 const magicImports = require("magicimports")
 const gifman = require("gifman")
-const moment = magicImports("moment")
 const fsnextra = magicImports("fs-nextra")
 const { clipboard, nativeImage, Tray, dialog, shell, Notification } = magicImports("electron")
 const i18n = require("./i18n")
 const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 const selector = require("./selector")
 const sharp = magicImports("sharp")
-const emojis = Object.values(require("emojilib").lib).map(x => x.char)
+const filename = require(`${__dirname}/filename.js`)
 
 // Defines if we are in a GIF.
 let inGif = false
@@ -80,17 +79,17 @@ module.exports = class CaptureCore {
 
     /**
      * This is used internally to do the upload logging.
-     * @param {String} filename - The filename which was uploaded.
+     * @param {String} file - The filename which was uploaded.
      * @param {Boolean} success - Whether the upload was successful.
      * @param {String} url - The URL of the capture.
      * @param {String} filePath - The filepath to the capture.
      */
-    async _logUpload(filename, success, url, filePath) {
+    async _logUpload(file, success, url, filePath) {
         const timestamp = new Date().getTime()
-        await captureStatement.run(filename, Number(success), timestamp, url, filePath)
+        await captureStatement.run(file, Number(success), timestamp, url, filePath)
         try {
             global.window.webContents.send("screenshot-upload", {
-                filename: filename,
+                filename: file,
                 success: Number(success),
                 timestamp: timestamp,
                 url: url,
@@ -173,68 +172,6 @@ module.exports = class CaptureCore {
     }
 
     /**
-     * Used internally to generate a random character.
-     * @returns {String} - The random character.
-     */
-    static _getRandomString() {
-        const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-        return charset.charAt(Math.floor(Math.random() * charset.length))
-    }
-
-    /**
-     * Used internally to generate a random emoji.
-     * @returns {String} - The random emoji.
-     */
-    static _getRandomEmoji() {
-        return emojis[Math.floor(Math.random() * emojis.length)]
-    }
-
-    /**
-     * Replaces patterns using callbacks.
-     * @param {String} string - The original string.
-     * @param {String} pattern - The pattern to use for splitting the string.
-     * @param {Function} called - The function to call.
-     * @returns {String} - The modified string.
-     */
-    static _replacePatternCallback(string, pattern, called) {
-        if (string.includes(pattern)) {
-            let finalString = ""
-            const stringSplit = string.split(new RegExp(`(${pattern})`))
-            for (const part in stringSplit) {
-                if (stringSplit[part] === pattern) {
-                    finalString += called()
-                } else {
-                    finalString += stringSplit[part]
-                }
-            }
-            return finalString
-        }
-        return string
-    }
-
-    /**
-     * Gets a new filename based on the user configured pattern.
-     * @returns {String} - The filename.
-     */
-    static newFilename() {
-        // Get pattern
-        let filename = "screenshot_%date%_%time%"
-        if (config.file_naming_pattern) {
-            filename = config.file_naming_pattern
-        }
-
-        // Sub in fixed patterns
-        filename = filename.replace(/%date%/g, moment().format("DD-MM-YYYY"))
-        filename = filename.replace(/%time%/g, moment().format("HH-mm-ss"))
-
-        // Sub in dynamic patterns
-        filename = this._replacePatternCallback(filename, '"', this._getRandomString)
-        filename = this._replacePatternCallback(filename, "%emoji%", this._getRandomEmoji)
-
-        return filename
-    }
-
-    /**
      * Sets the capture filename.
      * @param {String} name - Sets the filename to the string specified. If this is ommited, it will be generated using the usual workflow.
      * @returns The CaptureCore class this was called from.
@@ -242,7 +179,7 @@ module.exports = class CaptureCore {
     filename(name) {
         this.promiseQueue.push(async() => {
             if (name === undefined) {
-                const setFilename = this.constructor.newFilename()
+                const setFilename = filename.newFilename()
                 // Set with correct prefix
                 this._filename = `${setFilename}.${this.filetype}`
             } else {
@@ -299,14 +236,14 @@ module.exports = class CaptureCore {
     /**
      * Allows for file uploads and creates a new instance of the CaptureCore class.
      * @param {Buffer} buffer - The buffer to upload.
-     * @param {String} filename - The filename of the file.
+     * @param {String} file - The filename of the file.
      * @param {String} fp - The file path to the file.
      * @returns A new instance of the CaptureCore class.
      */
-    static file(buffer, filename, fp) {
-        const extension = filename.split(".").pop().toLowerCase()
+    static file(buffer, file, fp) {
+        const extension = file.split(".").pop().toLowerCase()
         const cls = new CaptureCore(buffer, extension)
-        cls.filename(filename).fp(fp)
+        cls.filename(file).fp(fp)
         return cls
     }
 
