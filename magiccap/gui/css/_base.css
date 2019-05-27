@@ -32,9 +32,9 @@ html, body {
 .column.aside {
     background: transparent;
     position: fixed;
-    width: 17%;
+    width: 15%;
 }
 
 .column.aside + .column {
-    margin: 0 0 0 17%;
+    margin: 0 0 0 15%;
 }
