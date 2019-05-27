@@ -44,12 +44,12 @@ msgid "Uploader Configuration"
 msgstr ""
 
 # gui/index.template.html:41
-msgid "Toggle receiving beta updates before their stable release"
+msgid "Check for updates and toggle receiving beta updates"
 msgstr ""
 
 # gui/index.template.html:42
 # gui/index.template.html:206
-msgid "Beta Updates"
+msgid "Updates"
 msgstr ""
 
 # gui/index.template.html:46
