@@ -86,7 +86,7 @@
                             <td>{{ new Date(capture.timestamp).toLocaleString() }}</td>
                             <td v-if="capture.url === undefined"></td>
                             <td v-else>
-                                <a v-on:click="openScreenshotURL(capture.url)" class="urlDisplay">{{ capture.url }}</a>
+                                <a v-on:click="openScreenshotURL(capture.url)" class="url">{{ capture.url }}</a>
                             </td>
                             <td v-if="capture.success === 0"></td>
                             <td v-else>

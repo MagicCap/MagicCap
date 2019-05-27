@@ -43,18 +43,10 @@ html, body {
     margin: 0 0 0 15%;
 }
 
-.button {
+a, button, .button, .delete {
     cursor: default;
 }
 
-a {
-    cursor: default;
-}
-
-.urlDisplay {
+.url {
     cursor: pointer;
-}
-
-.delete {
-    cursor: default;
 }
