@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
-"PO-Revision-Date: 2019-05-27 11:37\n"
+"PO-Revision-Date: 2019-05-27 11:47\n"
 
 # gui/index.template.html:16
 msgid "View the version and authors"
@@ -45,7 +45,7 @@ msgstr ""
 
 # gui/index.template.html:32
 # gui/index.template.html:240
-msgid "Hotkey Configuration"
+msgid "Hotkey Settings"
 msgstr ""
 
 # gui/index.template.html:36
@@ -54,7 +54,7 @@ msgstr ""
 
 # gui/index.template.html:37
 # gui/index.template.html:188
-msgid "Uploader Configuration"
+msgid "Uploader Settings"
 msgstr ""
 
 # gui/index.template.html:41
