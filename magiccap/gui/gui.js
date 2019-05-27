@@ -375,21 +375,18 @@ new Vue({
         fileSaveFolderI: config.save_path,
     },
     methods: {
-        saveItem: (key, configKey, checkbox, path) => {
-            let i
-            if (checkbox) {
-                i = document.getElementById(key).checked
-            } else {
-                i = document.getElementById(key).value
-            }
-
-            if (path) {
-                if (!i.endsWith(sep)) {
-                    i += sep
-                }
-            }
-
-            config[configKey] = i
+        saveSaveCapture: () => {
+            config.save_capture = document.getElementById("fileConfigCheckbox").checked
+            saveConfig()
+        },
+        saveNamingPattern: () => {
+            config.file_naming_pattern = document.getElementById("fileNamingPattern").value
+            saveConfig()
+        },
+        saveFilePath: () => {
+            let p = document.getElementById("fileSaveFolder").value
+            if (!p.endsWith(sep)) p += sep
+            config.save_path = p
             saveConfig()
         },
     },

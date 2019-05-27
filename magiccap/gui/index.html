@@ -309,7 +309,7 @@
                 <section class="modal-card-body" id="fileConfigBody">
                     <div class="field">
                         <label class="input_container">$Save files to your device after capturing.$
-                            <input type="checkbox" id="fileConfigCheckbox" v-on:click="saveItem('fileConfigCheckbox', 'save_capture', true)" :checked="fileConfigCheckboxI">
+                            <input type="checkbox" id="fileConfigCheckbox" v-on:click="saveSaveCapture()" :checked="fileConfigCheckboxI">
                             <span class="custom_input"></span>
                         </label>
                     </div>
@@ -317,13 +317,13 @@
                         <label class="label" for="fileNamingPattern">$File Naming Pattern:$</label>
                         <p style="padding-bottom: 10px">$You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time.$</p>
                         <div class="control">
-                            <input class="input" type="text" id="fileNamingPattern" placeholder="$File Naming Pattern$" :value="fileNamingPatternI" v-on:change="saveItem('fileNamingPattern', 'file_naming_pattern')">
+                            <input class="input" type="text" id="fileNamingPattern" placeholder="$File Naming Pattern$" :value="fileNamingPatternI" v-on:change="saveNamingPattern()">
                         </div>
                     </div>
                     <div class="field">
                         <label class="label" for="fileSaveFolder">$File Save Folder:$</label>
                         <div class="control">
-                            <input class="input" type="text" id="fileSaveFolder" placeholder="$File Save Folder$" :value="fileSaveFolderI" v-on:change="saveItem('fileSaveFolder', 'save_path', false, true)">
+                            <input class="input" type="text" id="fileSaveFolder" placeholder="$File Save Folder$" :value="fileSaveFolderI" v-on:change="saveFilePath()">
                         </div>
                     </div>
                 </section>
