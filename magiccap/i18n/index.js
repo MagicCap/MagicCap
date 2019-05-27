@@ -72,6 +72,10 @@ const poParseHtml = async htmlData => {
             .replace(/"/g, "&quot;")
             .replace("{license}", '<a href="javascript:openMPL()">MPL-2.0</a>')
             .replace("{acceleratorDocs}", `<a href="javascript:openAcceleratorDocs()">${i18nThisDocumentation}</a>`)
+            .replace("{patternRandStr}", '<code>"</code>')
+            .replace("{patternRandEmoji}", "<code>%emoji%</code>")
+            .replace("{patternDate}", "<code>%date%</code>")
+            .replace("{patternTime}", "<code>%time%</code>")
         htmlDone = htmlDone.replace(regexParse[0], poParsed)
     }
     return htmlDone
