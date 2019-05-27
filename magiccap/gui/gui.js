@@ -53,6 +53,7 @@ const i18n = require("./i18n")
 const mconf = require("./mconf")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
+const filename = require(`${__dirname}/filename.js`)
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -373,23 +374,22 @@ new Vue({
         fileConfigCheckboxI: config.save_capture || false,
         fileNamingPatternI: config.file_naming_pattern || "screenshot_%date%_%time%",
         fileSaveFolderI: config.save_path,
+        fileNamingPreview: filename.newFilename(),
     },
     methods: {
-        saveItem: (key, configKey, checkbox, path) => {
-            let i
-            if (checkbox) {
-                i = document.getElementById(key).checked
-            } else {
-                i = document.getElementById(key).value
-            }
-
-            if (path) {
-                if (!i.endsWith(sep)) {
-                    i += sep
-                }
-            }
-
-            config[configKey] = i
+        saveSaveCapture: () => {
+            config.save_capture = document.getElementById("fileConfigCheckbox").checked
+            saveConfig()
+        },
+        saveNamingPattern: () => {
+            config.file_naming_pattern = document.getElementById("fileNamingPattern").value
+            saveConfig()
+            document.getElementById("fileNamingPreview").textContent = filename.newFilename()
+        },
+        saveFilePath: () => {
+            let p = document.getElementById("fileSaveFolder").value
+            if (!p.endsWith(sep)) p += sep
+            config.save_path = p
             saveConfig()
         },
     },
@@ -553,8 +553,8 @@ const activeUploaderConfig = new Vue({
                 return
             }
 
-            const filename = this.getFilename()
-            config.uploader_type = filename
+            const file = this.getFilename()
+            config.uploader_type = file
             saveConfig()
             this.exception += "ayyyyDefaultSaved"
         },
@@ -711,15 +711,15 @@ const exportMconf = async() => {
             },
         ],
         showsTagField: false,
-    }, async filename => {
-        if (filename === undefined) {
+    }, async file => {
+        if (file === undefined) {
             return
         }
-        if (!filename.endsWith(".mconf")) {
-            filename += ".mconf"
+        if (!file.endsWith(".mconf")) {
+            file += ".mconf"
         }
         try {
-            await writeJSON(filename, exported, {
+            await writeJSON(file, exported, {
                 spaces: 4,
             })
         } catch (err) {
@@ -744,13 +744,13 @@ const importMconf = async() => {
         multiSelections: false,
         openDirectory: false,
         showsTagField: false,
-    }, async filename => {
-        if (filename === undefined) {
+    }, async file => {
+        if (file === undefined) {
             return
         }
         let data
         try {
-            data = await readJSON(filename[0])
+            data = await readJSON(file[0])
         } catch (err) {
             console.log(err)
             return

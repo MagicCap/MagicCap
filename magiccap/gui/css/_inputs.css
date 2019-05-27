@@ -65,3 +65,13 @@
     border-width: 0 3px 3px 0;
     transform: rotate(45deg);
 }
+
+.fileNamePattern .control {
+    margin: 10px 0;
+}
+
+.fileNamePattern code.preview {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: .6em;
+    padding: .3em .6em;
+}
