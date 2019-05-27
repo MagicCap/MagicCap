@@ -2,6 +2,10 @@
  * Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
+* {
+    -webkit-user-drag: none;
+}
+
 html, body {
     font-size: 15px;
 }
