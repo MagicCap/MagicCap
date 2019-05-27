@@ -1,0 +1,365 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <title>MagicCap</title>
+        <script src="../node_modules/vue/dist/vue.min.js"></script>
+        <link href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet"/>
+    </head>
+
+    <body style="display: none">
+        <div class="columns is-gapless" style="margin: 0;">
+            <aside class="column is-2 aside hero is-fullheight" id="sidebar">
+                <aside class="menu">
+                    <ul class="menu-list">
+                        <li>
+                            <a href="javascript:showAbout()"
+                               data-tooltip="$View the version and authors$">
+                                <i class="fas fa-info"></i> $About$</a>
+                        </li>
+                        <li v-if="clipboardAction">
+                            <a href="javascript:showClipboardAction()"
+                               data-tooltip="$Control what will be on your clipboard after capture$">
+                                <i class="far fa-clipboard"></i> $Clipboard Action$</a>
+                        </li>
+                        <li v-if="fileConfig">
+                            <a href="javascript:showFileConfig()"
+                               data-tooltip="$Configure capture file naming and local file saving$">
+                                <i class="far fa-file-alt"></i> $File Configuration$</a>
+                        </li>
+                        <li v-if="hotkeyConfig">
+                            <a href="javascript:showHotkeyConfig()"
+                               data-tooltip="$Define hotkeys to trigger capture actions$">
+                                <i class="far fa-keyboard"></i> $Hotkey Settings$</a>
+                        </li>
+                        <li v-if="uploaderConfig">
+                            <a href="javascript:showUploaderConfig()"
+                               data-tooltip="$Enable uploading captures and configure the upload target$">
+                                <i class="fas fa-upload"></i> $Uploader Settings$</a>
+                        </li>
+                        <li v-if="betaUpdates">
+                            <a href="javascript:showBetaUpdates()"
+                               data-tooltip="$Check for updates and toggle receiving beta updates$">
+                                <i class="fas fa-cogs"></i> $Updates$</a>
+                        </li>
+                        <!-- <li>
+                            <a href="javascript:showMFLConfig()"
+                               data-tooltip="$Configure the language of the application$">
+                                <i class="fas fa-globe-europe"></i> $Change Language$</a>
+                        </li> -->
+                        <li v-if="toggleTheme">
+                            <a href="javascript:toggleTheme()"
+                               data-tooltip="$Switch between light and dark mode$">
+                                <i class="fas fa-palette"></i> $Toggle Theme$</a>
+                        </li>
+
+                        <li><hr/></li>
+
+                        <li v-if="shortener">
+                            <a href="javascript:showShortener()"
+                               data-tooltip="$Shorten links using s.magiccap.me$">
+                                <i class="fas fa-link"></i> $Link Shortener$</a>
+                        </li>
+                        <li>
+                            <a href="javascript:runCapture()"
+                               data-tooltip="$Run the screen capture tool in MagicCap$">
+                                <i class="fas fa-camera"></i> $Screen Capture$</a>
+                        </li>
+                        <li>
+                            <a href="javascript:runGifCapture()"
+                               data-tooltip="$Capture a GIF recording of the screen$">
+                                <i class="fas fa-video"></i> $GIF Capture$</a>
+                        </li>
+                        <li>
+                            <a href="javascript:runClipboardCapture()"
+                               data-tooltip="$Capture the current image on your clipboard$">
+                                <i class="fas fa-clipboard-check"></i> $Clipboard Capture$</a>
+                        </li>
+                    </ul>
+                </aside>
+            </aside>
+            <div class="column">
+                <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
+                    <tbody id="mainTableBody">
+                        <tr v-for="capture in captures" :key="capture.timestamp">
+                            <td>{{ successMap[capture.success] }}</td>
+                            <td>{{ capture.filename }}</td>
+                            <td>{{ new Date(capture.timestamp).toLocaleString() }}</td>
+                            <td v-if="capture.url === undefined"></td>
+                            <td v-else>
+                                <a v-on:click="openScreenshotURL(capture.url)">{{ capture.url }}</a>
+                            </td>
+                            <td v-if="capture.success === 0"></td>
+                            <td v-else>
+                                    <a class="button is-primary" v-on:click="openScreenshotFile(capture.file_path ? capture.file_path : capture.url)">$View$</a>
+                            </td>
+                            <td>
+                                <a class="button is-danger" v-on:click="rmCapture(capture.timestamp)">$Remove$</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="modal" id="mflConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$Change Language$</p>
+                    <a class="delete" aria-label="close" id="mflConfigClose" href="javascript:closeCurrentModal()"></a>
+                </header>
+                <section class="modal-card-body">
+                    <p>$NOTE: Changing the language requires a restart of MagicCap to work fully.$</p>
+                    <div v-for="(item, key) in languages">
+                        <input type="radio" name="mflLanguageRadio" v-on:click="changeLanguage(key)" :checked="currentLang === key"> {{ item }}<br>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="activeUploaderConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">{{ uploader.name }}</p>
+                    <button class="delete" aria-label="close" id="activeUploaderConfigClose" v-on:click="closeActiveConfig()"></button>
+                </header>
+                <section class="modal-card-body" id="activeUploaderConfigBody">
+                    <article class="message is-danger" v-if="exception === 'requiredStuffMissing'" id="requiredStuffMissing"><div class="message-body">$Required arguments are missing.$</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'blankKey'" id="blankKey"><div class="message-body">$The key you gave was blank.$</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'keyAlreadyUsed'" id="keyAlreadyUsed"><div class="message-body">$The key you gave was already used.$</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'notAnInteger'" id="notAnInteger"><div class="message-body">$You provided a invalid integer.$</div></article>
+                    <article class="message is-success" v-else-if="exception === 'ayyyyDefaultSaved'" id="ayyyyDefaultSaved"><div class="message-body">$Default uploader successfully saved.$</div></article>
+                    <article class="message is-success" v-else-if="exception === 'ayyyyTestWorked'" id="ayyyyTestWorked"><div class="message-body">$Uploader test was successful.$</div></article>
+                    <article class="message is-danger" v-else-if="exception === 'testFailed'" id="testFailed"><div class="message-body">{{ exceptionData }}</div></article>
+                    <div v-if="uploader.options.length === 0">
+                        <p>$There are no configuration options for this uploader.$</p><br>
+                    </div>
+                    <div v-else>
+                        <div v-for="option in uploader.options" :key="option.translatedName">
+                            <div v-if="option.type === 'text' || option.type === 'integer'">
+                                <div class="field">
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" :id="option.value" :placeholder="option.translatedName" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'token_from_json'">
+                                <div class="field">
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
+                                    <div v-if="getDefaultValue(option) === undefined">
+                                        <webview :id="option.value" :src="option.startUrl" :useragent="userAgent" style="height: 450px"></webview>
+                                    </div>
+                                    <div v-else>
+                                        <p>Already set. Do you want to <a v-on:click="resetValue(option)">reset this value?</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'password'">
+                                <div class="field">
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
+                                    <div class="control">
+                                        <input class="input" type="password" :id="option.value" :placeholder="option.translatedName" :value="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'boolean'">
+                                <div class="field">
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
+                                    <div class="control">
+                                        <label class="input_container">{{ option.translatedName }}
+                                            <input type="checkbox" :id="option.value" :checked="getDefaultValue(option)" v-on:change="changeOption(option)">
+                                            <span class="custom_input"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="option.type === 'object'">
+                                <div class="field">
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
+                                    <table class="table is-bordered is-striped is-fullwidth" :id="option.value">
+                                        <tbody>
+                                            <tr v-for="(value, key) in option.items">
+                                                <td>{{ key }}</td>
+                                                <td>{{ value }}</td>
+                                                <td>
+                                                    <a class="button is-danger" v-on:click="deleteRow(key, option)">$Delete Row$</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>
+                                                    <input name="name" class="input" :id="'Key' + option.value" type="text" placeholder="Name">
+                                                </th>
+                                                <th>
+                                                    <input name="value" class="input" :id="'Value' + option.value" type="text" placeholder="Value">
+                                                </th>
+                                                <th>
+                                                    <a class="button is-primary" v-on:click="addToTable(option)">$Add$</a>
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <a class="button is-info" v-on:click="testUploader()" id="testButton">$Test Uploader$</a>
+                    <span style="padding-left: 5px">
+                        <a class="button is-success" v-on:click="setDefaultUploader()">$Set As Default Uploader$</a>
+                    </span>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="about">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$About$</p>
+                    <a class="delete" aria-label="close" id="aboutClose" href="javascript:closeCurrentModal()"></a>
+                </header>
+                <section class="modal-card-body">
+                    <h1 class="title" id="magiccap-ver">MagicCap</h1>
+                    <p>$Copyright (C) Jake Gealer, Rhys O'Kane & Matt Cowley 2018-2019.$</p>
+                    <p>$This software is licensed under the {license} license.$</p>
+                    <p v-if="liteTouch">$Some settings are managed by your system administrator.$</p>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="clipboardAction">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$Clipboard Action$</p>
+                    <a class="delete" aria-label="close" id="clipboardActionClose" href="javascript:closeCurrentModal()"></a>
+                </header>
+                <section class="modal-card-body">
+                    <label class="input_container">$Copy the uploaded URL to the clipboard (requires file uploads to be on).$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Copy the image to the clipboard.$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1">
+                        <span class="custom_input"></span>
+                    </label>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="betaUpdates">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$Updates$</p>
+                    <a class="delete" aria-label="close" href="javascript:closeCurrentModal()"></a>
+                </header>
+                <section class="modal-card-body">
+                    <a class="button" href="#" onclick="checkForUpdates(this)">$Check for Updates$</a>
+                    <hr/>
+                    <p class="modal-card-title">$Beta Updates$</p>
+                    <p>$Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable.$</p>
+                    <br/>
+                    <label class="input_container">$Only get stable updates.$
+                        <input type="radio" name="BetaAction" v-on:click="changeAction(false)" :checked="!action">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Get stable and beta updates.$
+                        <input type="radio" name="BetaAction" v-on:click="changeAction(true)" :checked="action">
+                        <span class="custom_input"></span>
+                    </label>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="uploaderConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$Uploader Settings$</p>
+                    <a class="delete" aria-label="close" id="uploaderConfigClose" href="javascript:closeCurrentModal()"></a>
+                </header>
+                <section class="modal-card-body" id="uploaderConfigBody">
+                    <label class="input_container">$Upload files once they are captured.$
+                        <input type="checkbox" id="uploaderUploadCheckbox" :checked="checkUploaderUpload" v-on:change="toggleUpload()">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Open link in browser once uploaded.$
+                        <input type="checkbox" id="uploaderOpenCheckbox" :checked="checkUploaderOpen" v-on:change="toggleOpen()">
+                        <span class="custom_input"></span>
+                    </label>
+                    <br/>
+                    <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploader, uploaderKey)" v-for="(uploader, uploaderKey) in uploaders">
+                        <span class="icon is-medium">
+                            <img class="rounded-img" :src="'../icons/' + uploader.icon">
+                        </span>
+                        <p>{{ uploaderKey }}</p>
+                    </a>
+                    <br/><br/>
+                    <a class="button" href="javascript:exportMconf()">$Export Uploader Configurations$</a>
+                    <a class="button" href="javascript:importMconf()" style="padding-left: 10px">$Import Uploader Configurations$</a>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="fileConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$File Configuration$</p>
+                    <a class="delete" aria-label="close" id="fileConfigClose" href="javascript:closeCurrentModal()"></a>
+                </header>
+                <section class="modal-card-body" id="fileConfigBody">
+                    <div class="field">
+                        <label class="input_container">$Save files to your device after capturing.$
+                            <input type="checkbox" id="fileConfigCheckbox" v-on:click="saveItem('fileConfigCheckbox', 'save_capture', true)" :checked="fileConfigCheckboxI">
+                            <span class="custom_input"></span>
+                        </label>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="fileNamingPattern">$File Naming Pattern:$</label>
+                        <p style="padding-bottom: 10px">$You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time.$</p>
+                        <div class="control">
+                            <input class="input" type="text" id="fileNamingPattern" placeholder="$File Naming Pattern$" :value="fileNamingPatternI" v-on:change="saveItem('fileNamingPattern', 'file_naming_pattern')">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="fileSaveFolder">$File Save Folder:$</label>
+                        <div class="control">
+                            <input class="input" type="text" id="fileSaveFolder" placeholder="$File Save Folder$" :value="fileSaveFolderI" v-on:change="saveItem('fileSaveFolder', 'save_path', false, true)">
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="modal" id="hotkeyConfig">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">$Hotkey Settings$</p>
+                    <button class="delete" aria-label="close" id="hotkeyConfigClose" v-on:click="hotkeyConfigClose()"></button>
+                </header>
+                <section class="modal-card-body" id="hotkeyConfigBody">
+                    <p>$You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed.$</p>
+                    <br>
+                    <div class="field">
+                        <label class="label" for="screenshotHotkey">$Screenshot Hotkey:$</label>
+                        <div class="control">
+                            <input class="input" type="text" id="screenshotHotkey" placeholder="$Screenshot Hotkey$" :value="screenshotHotkey">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="gifHotkey">$GIF Hotkey:$</label>
+                        <div class="control">
+                            <input class="input" type="text" id="gifHotkey" placeholder="$GIF Hotkey$" :value="gifHotkey">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="clipboardHotkey">$Clipboard Hotkey:$</label>
+                        <div class="control">
+                            <input class="input" type="text" id="clipboardHotkey" placeholder="$Clipboard Hotkey$" :value="clipboardHotkey">
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <script src="gui.js"></script>
+    </body>
+</html>

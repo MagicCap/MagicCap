@@ -2,9 +2,6 @@
 
 On this page, you should find everything you need to know to use MagicCap.
 
-## Requirements
-Linux requires `gnome-screenshot` for this to work. The application should not be ran as root.
-
 ## Installation/Configuration
 You can grab the latest MagicCap release from [here](https://github.com/JakeMakesStuff/MagicCap/releases). From here, you can install it like you would any other application. To configure it, simply click/right click the icon in your taskbar and select "Config". You will be greeted with the GUI:
 
@@ -32,18 +29,18 @@ This is what will be in your clipboard after the capture. You can choose from th
 ### File Configuration
 There are several options you can configure here:
 
-- **Make files save after capturing.** - This toggles whether files save to your drive after capturing or not.
+- **Save files to your device after capturing.** - This toggles whether files save to your drive after capturing or not.
 - **File Naming Pattern** - This is where you can configure how file names are created. You can use " to represent a random character, %date% for the date and %time% for the time. It is important to note that you can combine patterns, so `"""""_%date%_%time%` is acceptable. Here is how it would look in several patterns for example:
     - `"""""` - `Qgg4k` (This pattern randomises from a-z/A-Z/0-9 every capture)
     - `%date%` - `19-10-2018` (This would be the date on the capture day)
     - `%time%` - `10-48-50` (This would be the time when the image was captured)
 - **File Save Folder** - This is the folder that files would save to. MagicCap automatically makes a directory in your pictures folder for this named `MagicCap`.
 
-### Hotkey Configuration
+### Hotkey Settings
 This allows you to create hotkeys for Window/Selection Capture based on [this documentation](https://electronjs.org/docs/api/accelerator).
 
 ### Upload Configuration
-The upload configuration allows for extremely flexible configuration of uploaders. Firstly, you can `Make files upload after capturing.`. This dictates whether the files actually get uploaded. Then there are several buttons for all of the supported uploaders. They will all contain "Set as Default Uploader" which will allow you to set it as default and there may be specific options for each uploader.
+The upload configuration allows for extremely flexible configuration of uploaders. Firstly, you can `Upload files once they are captured.`. This dictates whether the files actually get uploaded. Then there are several buttons for all of the supported uploaders. They will all contain "Set as Default Uploader" which will allow you to set it as default and there may be specific options for each uploader.
 
 ### Toggle Theme
 This toggles between the light and dark theme.

@@ -1,0 +1,31 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+@import "../../node_modules/bulmaswatch/darkly/bulmaswatch.min.css";
+@import "main.css";
+
+::-webkit-scrollbar {
+    background-color: #343434;
+}
+
+::-webkit-scrollbar-thumb {
+    border-color: #343434;
+    background: #232323;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1b1b1b;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #121212;
+}
+
+.menu .menu-list a:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+table.table {
+    background: rgba(255, 255, 255, 0.1);
+}

@@ -1,0 +1,40 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+html, body {
+    font-size: 15px;
+}
+
+::-webkit-scrollbar {
+    width: .9em
+}
+
+::-webkit-scrollbar-track {
+    padding: .1em;
+}
+
+::-webkit-scrollbar-thumb {
+    border: .2em solid transparent;
+    border-radius: .4em;
+}
+
+.divider {
+    width: 5px;
+    height: auto;
+    display: inline-block;
+}
+
+.rounded-img {
+    border-radius: 50%;
+}
+
+.column.aside {
+    background: transparent;
+    position: fixed;
+    width: 15%;
+}
+
+.column.aside + .column {
+    margin: 0 0 0 15%;
+}

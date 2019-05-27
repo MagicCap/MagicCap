@@ -61,6 +61,8 @@ typings/
 .next
 
 \.vs/
+.vscode/
+.idea/
 
 magiccap/build/
 
