@@ -36,7 +36,7 @@ There are several options you can configure here:
     - `%time%` - `10-48-50` (This would be the time when the image was captured)
 - **File Save Folder** - This is the folder that files would save to. MagicCap automatically makes a directory in your pictures folder for this named `MagicCap`.
 
-### Hotkey Configuration
+### Hotkey Settings
 This allows you to create hotkeys for Window/Selection Capture based on [this documentation](https://electronjs.org/docs/api/accelerator).
 
 ### Upload Configuration

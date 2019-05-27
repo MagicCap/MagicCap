@@ -31,7 +31,7 @@ msgstr ""
 
 # gui/index.template.html:32
 # gui/index.template.html:240
-msgid "Hotkey Configuration"
+msgid "Hotkey Settings"
 msgstr ""
 
 # gui/index.template.html:36
