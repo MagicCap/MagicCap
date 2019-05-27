@@ -277,6 +277,7 @@ async function createContextMenu() {
         // Link shortener inserted here if allowed
         { type: "separator" },
         { label: i18nPreferences, type: "normal", click: openConfig },
+        // Auto update here if enabled
         { label: i18nQuit, type: "normal", role: "quit" },
     ]
     if (AUTOUPDATE_ON) {
