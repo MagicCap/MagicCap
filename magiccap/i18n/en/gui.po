@@ -40,7 +40,7 @@ msgstr ""
 
 # gui/index.template.html:37
 # gui/index.template.html:188
-msgid "Uploader Configuration"
+msgid "Uploader Settings"
 msgstr ""
 
 # gui/index.template.html:41
