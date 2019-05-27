@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
-"PO-Revision-Date: 2019-05-27 11:47\n"
+"PO-Revision-Date: 2019-05-27 14:56\n"
 
 # gui/index.template.html:16
 msgid "View the version and authors"
@@ -201,6 +201,10 @@ msgstr ""
 
 # gui/index.template.html:276
 msgid "You can use {patternRandStr} to represent a random character, {patternRandEmoji} for a random emoji, {patternDate} for the date and {patternTime} for the time."
+msgstr ""
+
+# gui/index.template.html:322
+msgid "Filename Preview:"
 msgstr ""
 
 # gui/index.template.html:224
