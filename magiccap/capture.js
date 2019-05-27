@@ -176,7 +176,7 @@ module.exports = class CaptureCore {
      * Used internally to generate a random character.
      * @returns {String} - The random character.
      */
-    _getRandomString() {
+    static _getRandomString() {
         const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         return charset.charAt(Math.floor(Math.random() * charset.length))
     }
@@ -185,7 +185,7 @@ module.exports = class CaptureCore {
      * Used internally to generate a random emoji.
      * @returns {String} - The random emoji.
      */
-    _getRandomEmoji() {
+    static _getRandomEmoji() {
         return emojis[Math.floor(Math.random() * emojis.length)]
     }
 
@@ -196,7 +196,7 @@ module.exports = class CaptureCore {
      * @param {Function} called - The function to call.
      * @returns {String} - The modified string.
      */
-    _replacePatternCallback(string, pattern, called) {
+    static _replacePatternCallback(string, pattern, called) {
         if (string.includes(pattern)) {
             let finalString = ""
             const stringSplit = string.split(new RegExp(`(${pattern})`))
@@ -213,6 +213,28 @@ module.exports = class CaptureCore {
     }
 
     /**
+     * Gets a new filename based on the user configured pattern.
+     * @returns {String} - The filename.
+     */
+    static newFilename() {
+        // Get pattern
+        let filename = "screenshot_%date%_%time%"
+        if (config.file_naming_pattern) {
+            filename = config.file_naming_pattern
+        }
+
+        // Sub in fixed patterns
+        filename = filename.replace(/%date%/g, moment().format("DD-MM-YYYY"))
+        filename = filename.replace(/%time%/g, moment().format("HH-mm-ss"))
+
+        // Sub in dynamic patterns
+        filename = this._replacePatternCallback(filename, '"', this._getRandomString)
+        filename = this._replacePatternCallback(filename, "%emoji%", this._getRandomEmoji)
+
+        return filename
+    }
+
+    /**
      * Sets the capture filename.
      * @param {String} name - Sets the filename to the string specified. If this is ommited, it will be generated using the usual workflow.
      * @returns The CaptureCore class this was called from.
@@ -220,20 +242,7 @@ module.exports = class CaptureCore {
     filename(name) {
         this.promiseQueue.push(async() => {
             if (name === undefined) {
-                // Get pattern
-                let setFilename = "screenshot_%date%_%time%"
-                if (config.file_naming_pattern) {
-                    setFilename = config.file_naming_pattern
-                }
-
-                // Sub in fixed patterns
-                setFilename = setFilename.replace(/%date%/g, moment().format("DD-MM-YYYY"))
-                setFilename = setFilename.replace(/%time%/g, moment().format("HH-mm-ss"))
-
-                // Sub in dynamic patterns
-                setFilename = this._replacePatternCallback(setFilename, '"', this._getRandomString)
-                setFilename = this._replacePatternCallback(setFilename, "%emoji%", this._getRandomEmoji)
-
+                const setFilename = this.constructor.newFilename()
                 // Set with correct prefix
                 this._filename = `${setFilename}.${this.filetype}`
             } else {
