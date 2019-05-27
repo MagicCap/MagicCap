@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: magiccap\n"
-"X-Crowdin-Language: en\n"
+"X-Crowdin-Language: sr-CS\n"
 "X-Crowdin-File: /develop/magiccap/i18n/en/gui.po\n"
 "Project-Id-Version: magiccap\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
-"Language-Team: English\n"
-"Language: en_US\n"
+"Language-Team: Serbian (Latin)\n"
+"Language: sr_CS\n"
 "PO-Revision-Date: 2019-05-27 14:56\n"
 
 # gui/index.template.html:16
@@ -19,7 +19,7 @@ msgstr ""
 # gui/index.template.html:17
 # gui/index.template.html:161
 msgid "About"
-msgstr ""
+msgstr "O Programu"
 
 # gui/index.template.html:21
 msgid "Control what will be on your clipboard after capture"
@@ -37,7 +37,7 @@ msgstr ""
 # gui/index.template.html:27
 # gui/index.template.html:210
 msgid "File Configuration"
-msgstr ""
+msgstr "Datoteka konfiguracije"
 
 # gui/index.template.html:31
 msgid "Define hotkeys to trigger capture actions"
@@ -81,7 +81,7 @@ msgstr ""
 
 # gui/index.template.html:52
 msgid "Toggle Theme"
-msgstr ""
+msgstr "Mračna ili svetla tema"
 
 # gui/index.template.html:59
 msgid "Shorten links using s.magiccap.me"
@@ -117,11 +117,11 @@ msgstr ""
 
 # gui/index.template.html:65
 msgid "View"
-msgstr ""
+msgstr "Prikaz"
 
 # gui/index.template.html:68
 msgid "Remove"
-msgstr ""
+msgstr "Izbriši"
 
 # gui/index.template.html:83
 msgid "Required arguments are missing."
@@ -129,11 +129,11 @@ msgstr ""
 
 # gui/index.template.html:84
 msgid "The key you gave was blank."
-msgstr ""
+msgstr "Ključ koji si dao je prazan."
 
 # gui/index.template.html:85
 msgid "The key you gave was already used."
-msgstr ""
+msgstr "Dao si ključ koji je već korišten."
 
 # gui/index.template.html:86
 msgid "You provided a invalid integer."
@@ -149,11 +149,11 @@ msgstr ""
 
 # gui/index.template.html:130
 msgid "Delete Row"
-msgstr ""
+msgstr "Izbriši red"
 
 # gui/index.template.html:143
 msgid "Add"
-msgstr ""
+msgstr "Dodaj"
 
 # gui/index.template.html:153
 msgid "Set As Default Uploader"
@@ -165,7 +165,7 @@ msgstr ""
 
 # gui/index.template.html:202
 msgid "This software is licensed under the {license} license."
-msgstr ""
+msgstr "Ovaj softver je licenciran pod licencom {license}."
 
 # gui/index.template.html:179
 msgid "Copy the uploaded URL to the clipboard (requires file uploads to be on)."
@@ -213,11 +213,11 @@ msgstr ""
 
 # gui/index.template.html:228
 msgid "File Save Folder:"
-msgstr ""
+msgstr "Fascikla za čuvanje datoteka:"
 
 # gui/index.template.html:230
 msgid "File Save Folder"
-msgstr ""
+msgstr "Fascikla za čuvanje datoteka"
 
 # gui/index.template.html:244
 msgid "You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when this screen is closed."
@@ -249,7 +249,7 @@ msgstr ""
 
 # i18n/index.js:52
 msgid "this documentation"
-msgstr ""
+msgstr "ova dokumentacija"
 
 # gui/gui.js:44
 msgid "Failure"

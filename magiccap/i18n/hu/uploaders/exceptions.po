@@ -3,21 +3,21 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: magiccap\n"
-"X-Crowdin-Language: en\n"
+"X-Crowdin-Language: hu\n"
 "X-Crowdin-File: /develop/magiccap/i18n/en/uploaders/exceptions.po\n"
 "Project-Id-Version: magiccap\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
-"Language-Team: English\n"
-"Language: en_US\n"
-"PO-Revision-Date: 2019-04-28 12:34\n"
+"Language-Team: Hungarian\n"
+"Language: hu_HU\n"
+"PO-Revision-Date: 2019-04-28 12:35\n"
 
 # uploaders/breadmoe.js:31
 # uploaders/elixire.js:25
 # uploaders/novus.js:25
 # uploaders/pomf.js:36
 msgid "Your key is invalid."
-msgstr ""
+msgstr "A megadott kulcs érvénytelen."
 
 # uploaders/breadmoe.js:34
 # uploaders/elixire.js:28
@@ -25,7 +25,7 @@ msgstr ""
 # uploaders/novus.js:28
 # uploaders/pomf.js:39
 msgid "You have been ratelimited!"
-msgstr ""
+msgstr "Korlátozva vagy!"
 
 # uploaders/breadmoe.js:38
 # uploaders/elixire.js:32
@@ -33,7 +33,7 @@ msgstr ""
 # uploaders/novus.js:32
 # uploaders/pomf.js:43
 msgid "There are currently server issues."
-msgstr ""
+msgstr "Jelenleg szerver problémák akadtak."
 
 # uploaders/breadmoe.js:40
 # uploaders/elixire.js:34
@@ -41,73 +41,73 @@ msgstr ""
 # uploaders/novus.js:34
 # uploaders/pomf.js:45
 msgid "Server returned the status {status}."
-msgstr ""
+msgstr "A szerver a következő állapotott jelentette: {status}."
 
 # uploaders/ftp.js:56
 msgid "Could not upload to FTP: {err}"
-msgstr ""
+msgstr "Nem sikerült az FTP feltöltés: {err}"
 
 # uploaders/imgur.js:19
 msgid "Your client ID is invalid."
-msgstr ""
+msgstr "A kliens azonosító érvénytelen."
 
 # uploaders/s3.js:71
 msgid "Failed to upload to S3: {err}"
-msgstr ""
+msgstr "Nem sikerült a feltöltés S3-ra: {err}"
 
 # uploaders/sharex.js:109
 # uploaders/sharex.js:134
 msgid "You cannot parse the result as XML and JSON."
-msgstr ""
+msgstr "Nem értelmezheted az eredményt sem XML-ként, sem JSON-ként."
 
 # uploaders/sharex.js:116
 msgid "Unable to parse to JSON."
-msgstr ""
+msgstr "Nem sikerült a JSON-t értelmezni."
 
 # uploaders/sharex.js:127
 # uploaders/sharex.js:148
 msgid "Could not get the argument specified."
-msgstr ""
+msgstr "Nem található a megadott argumens."
 
 # uploaders/sharex.js:142
 msgid "Unable to parse to XML."
-msgstr ""
+msgstr "Nem sikerült az XML-t értelmezni."
 
 # uploaders/sharex.js:148
 msgid "Could not get the argument specified."
-msgstr ""
+msgstr "Nem található a megadott argumens."
 
 # uploaders/sharex.js:155
 msgid "Index couldn't be parsed to a integer."
-msgstr ""
+msgstr "Nem sikerült az indexet számként értelmezni."
 
 # uploaders/sharex.js:159
 msgid "Regex is undefined."
-msgstr ""
+msgstr "Regex nincs definiálva."
 
 # uploaders/sharex.js:163
 msgid "Regex specified not matched."
-msgstr ""
+msgstr "A megadott regex nem egyezik."
 
 # uploaders/sharex.js:169
 msgid "Unknown ShareX parser."
-msgstr ""
+msgstr "Ismeretlen ShareX értelmező."
 
 # uploaders/sharex.js:202
 msgid "SXCU file could not be opened."
-msgstr ""
+msgstr "Az SXCU fájlt nem sikerült megnyitni."
 
 # uploaders/sharex.js:210
 msgid "Unable to JSON parse the SXCU file."
-msgstr ""
+msgstr "Nem sikerült JSON értelmezni az SXCU fájlt."
 
 # uploaders/sharex.js:216
 msgid "Unable to parse the SXCU file."
-msgstr ""
+msgstr "Nem sikerült az SXCU fájlt értelmezni."
 
 # uploaders/sharex.js:220
 msgid "File type not allowed by this SXCU."
-msgstr ""
+msgstr "Fájltípus nem megengedett ezzel az SXCU-val."
 
 # uploaders/reupload.js:32
 msgid "Invalid format for this uploader."

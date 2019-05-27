@@ -1,30 +1,30 @@
 msgid ""
 msgstr ""
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: magiccap\n"
-"X-Crowdin-Language: en\n"
+"X-Crowdin-Language: sr-CS\n"
 "X-Crowdin-File: /develop/magiccap/i18n/en/uploaders/option_names.po\n"
 "Project-Id-Version: magiccap\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
-"Language-Team: English\n"
-"Language: en_US\n"
+"Language-Team: Serbian (Latin)\n"
+"Language: sr_CS\n"
 "PO-Revision-Date: 2019-04-28 12:34\n"
 
 # uploaders/breadmoe.js:12
 msgid "Key"
-msgstr ""
+msgstr "Ključ"
 
 # uploaders/breadmoe.js:17
 # uploaders/ftp.js:38
 # uploaders/pomf.js:12
 msgid "Domain"
-msgstr ""
+msgstr "Domena"
 
 # uploaders/custom.js:13
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 # uploaders/custom.js:18
 msgid "Image Body"
@@ -32,7 +32,7 @@ msgstr ""
 
 # uploaders/custom.js:23
 msgid "Response Key"
-msgstr ""
+msgstr "Ključ za odgovor"
 
 # uploaders/custom.js:28
 msgid "Headers"
@@ -57,15 +57,15 @@ msgstr ""
 
 # uploaders/ftp.js:22
 msgid "Username"
-msgstr ""
+msgstr "Korisničko ime"
 
 # uploaders/ftp.js:27
 msgid "Password"
-msgstr ""
+msgstr "Lozinka"
 
 # uploaders/ftp.js:32
 msgid "Directory"
-msgstr ""
+msgstr "Direktorijum"
 
 # uploaders/pomf.js:17
 msgid "Token"
@@ -73,7 +73,7 @@ msgstr ""
 
 # uploaders/s3.js:33
 msgid "Access Key ID"
-msgstr ""
+msgstr "Pristup ID ključa"
 
 # uploaders/s3.js:38
 msgid "Secret Access Key"
@@ -93,5 +93,5 @@ msgstr ""
 
 # uploaders/sharex.js:186
 msgid "SXCU File Path"
-msgstr ""
+msgstr "Putanja datoteke SXCU"
 
