@@ -2,6 +2,25 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+
+// Handles escape to close.
+let activeModal
+
+/**
+ * Closes the active modal if there is one.
+ */
+function closeCurrentModal() {
+    if (activeModal) {
+        // Support custom close methods (Use a button with a delete class and onclick event to support this)
+        const del = document.getElementById(activeModal).querySelector("button.delete")
+        if (del) del.click()
+
+        // Assume normal closing
+        document.getElementById(activeModal).classList.remove("is-active")
+        activeModal = undefined
+    }
+}
 
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
 document.addEventListener("keydown", e => {
@@ -9,6 +28,10 @@ document.addEventListener("keydown", e => {
     // and also, ctrl (for Linux) or Cmd (meta, macOS) is held down
     if (e.code == "KeyI" && e.altKey && (e.ctrlKey || e.metaKey)) {
         require("electron").remote.getCurrentWindow().toggleDevTools()
+    }
+    // Handles escape to close.
+    if (e.code == "Escape") {
+        closeCurrentModal()
     }
 })
 
@@ -30,6 +53,7 @@ const i18n = require("./i18n")
 const mconf = require("./mconf")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
+const filename = require(`${__dirname}/filename.js`)
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -67,34 +91,23 @@ new Vue({
 // Sets the MagicCap version.
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`
 
-// Changes the colour scheme.
+// Sets the colour scheme.
 const stylesheet = document.createElement("link")
 stylesheet.setAttribute("rel", "stylesheet")
-
-let platform = remote.getGlobal("platform")
-
-if (config.light_theme) {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/default/bulmaswatch.min.css")
-} else {
-    stylesheet.setAttribute("href", "../node_modules/bulmaswatch/darkly/bulmaswatch.min.css")
-}
-if (platform === "darwin") {
-    if (config.light_theme) {
-        document.getElementById("sidebar").style.backgroundColor = "rgba(255,255,255,0.5)"
-        document.body.parentElement.style.backgroundColor = "rgba(255,255,255,0.5)"
-    } else {
-        document.getElementById("sidebar").style.backgroundColor = "rgba(0,0,0,0.5)"
-        document.body.parentElement.style.backgroundColor = "rgba(0,0,0,0.5)"
-    }
-}
+stylesheet.setAttribute("href", `css/${config.light_theme ? "light" : "dark"}.css`)
+document.head.appendChild(stylesheet)
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
+    // Register modal background click to close listeners
+    Array.from(document.getElementsByClassName("modal-background")).forEach(element => {
+        element.addEventListener("click", closeCurrentModal)
+    })
+
+    // Show the content
     document.body.style.display = "initial"
     ipcRenderer.send("window-show")
 }
-
-document.getElementsByTagName("head")[0].appendChild(stylesheet)
 
 // Defines the capture database.
 const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
@@ -102,7 +115,9 @@ const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 // A list of the displayed captures.
 const displayedCaptures = []
 
-// Handles each capture.
+/**
+ * Gets the captures from the database.
+ */
 function getCaptures() {
     displayedCaptures.length = 0
     const stmt = db.prepare("SELECT * FROM captures ORDER BY timestamp DESC")
@@ -170,24 +185,33 @@ new Vue({
     },
 })
 
-// Handles the clipboard action close button.
-function closeClipboardConfig() {
-    document.getElementById("clipboardAction").classList.remove("is-active")
-}
-
-// Shows the clipboard action settings page.
+/**
+ * Shows the clipboard action settings page.
+ */
 function showClipboardAction() {
+    activeModal = "clipboardAction"
     document.getElementById("clipboardAction").classList.add("is-active")
 }
 
-// Handles the beta updates close button.
-function closeBetaUpdates() {
-    document.getElementById("betaUpdates").classList.remove("is-active")
+/**
+ * Shows the beta updates settings page.
+ */
+function showBetaUpdates() {
+    activeModal = "betaUpdates"
+    document.getElementById("betaUpdates").classList.add("is-active")
 }
 
-// Shows the beta updates  settings page.
-function showBetaUpdates() {
-    document.getElementById("betaUpdates").classList.add("is-active")
+/**
+ * Checks for updates.
+ */
+async function checkForUpdates(elm) {
+    elm.textContent = await i18n.getPoPhrase("Checking...", "gui")
+    elm.disabled = true
+    ipcRenderer.send("check-for-updates")
+    ipcRenderer.once("check-for-updates-done", async() => {
+        elm.textContent = await i18n.getPoPhrase("Check for Updates", "gui")
+        elm.disabled = false
+    })
 }
 
 // Handles new screenshots.
@@ -195,93 +219,150 @@ ipcRenderer.on("screenshot-upload", async() => {
     await getCaptures()
 })
 
-// Runs the fullscreen capture.
+/**
+ * Runs the fullscreen capture.
+ */
 async function runCapture() {
     await remote.getGlobal("runCapture")()
 }
 
-// Runs GIF capture.
+/**
+ * Runs GIF capture.
+ */
 async function runGifCapture() {
     await remote.getGlobal("runCapture")(true)
 }
 
+/**
+ * Runs the Clipboard capture.
+ */
+async function runClipboardCapture() {
+    await remote.getGlobal("runClipboardCapture")()
+}
 
-// Shows the about page.
+/**
+ * Shows the about page.
+ */
 function showAbout() {
+    activeModal = "about"
     document.getElementById("about").classList.add("is-active")
 }
 
-// Handles the about close button.
-function closeAbout() {
-    document.getElementById("about").classList.remove("is-active")
+/**
+ * Shows the file config.
+ */
+function showFileConfig() {
+    activeModal = "fileConfig"
+    document.getElementById("fileConfig").classList.add("is-active")
 }
 
-// Opens the MPL 2.0 license in a browser.
+/**
+ * Shows the MFL config.
+ */
+function showMFLConfig() {
+    activeModal = "mflConfig"
+    document.getElementById("mflConfig").classList.add("is-active")
+}
+
+/**
+ * Opens the MPL 2.0 license in a browser.
+ */
 function openMPL() {
     shell.openExternal("https://www.mozilla.org/en-US/MPL/2.0")
 }
 
-// Saves the config.
+/**
+ * Opens the license for the emoji data in a browser.
+ */
+function openEmojiLicense() {
+    shell.openExternal("https://github.com/missive/emoji-mart/blob/master/LICENSE")
+}
+
+/**
+ * Saves the config.
+ */
 async function saveConfig() {
     saveConfigToDb()
     ipcRenderer.send("config-edit", config)
 }
 
-// Toggles the theme.
+/**
+ * Toggles the theme.
+ */
 async function toggleTheme() {
     config.light_theme = !config.light_theme
     await saveConfig()
     ipcRenderer.send("restartWindow")
 }
 
-// Shows the hotkey config.
+/**
+ * Shows the hotkey config.
+ */
 function showHotkeyConfig() {
+    activeModal = "hotkeyConfig"
     document.getElementById("hotkeyConfig").classList.add("is-active")
 }
 
-// Allows you to close the hotkey config.
+// Handles the clipboard actions.
+new Vue({
+    el: "#hotkeyConfig",
+    data: {
+        gifHotkey: config.gif_hotkey || "",
+        screenshotHotkey: config.hotkey || "",
+        clipboardHotkey: config.clipboard_hotkey || "",
+    },
+})
+
+/**
+ * Allows you to close the hotkey config.
+ */
 async function hotkeyConfigClose() {
     const text = document.getElementById("screenshotHotkey").value
     const gifText = document.getElementById("gifHotkey").value
+    const clipboardText = document.getElementById("clipboardHotkey").value
+    let changed = false
 
     if (config.hotkey !== text) {
+        changed = true
         if (text === "") {
             config.hotkey = null
-            await saveConfig()
         } else {
             config.hotkey = text
-            await saveConfig()
         }
     }
 
     if (config.gif_hotkey !== gifText) {
-        if (text === "") {
+        changed = true
+        if (gifText === "") {
             config.gif_hotkey = null
-            await saveConfig()
         } else {
             config.gif_hotkey = gifText
-            await saveConfig()
         }
     }
 
-    ipcRenderer.send("hotkey-change", config)
+    if (config.clipboard_hotkey !== clipboardText) {
+        changed = true
+        if (clipboardText === "") {
+            config.clipboard_hotkey = null
+        } else {
+            config.clipboard_hotkey = clipboardText
+        }
+    }
+
+    if (changed) {
+        await saveConfig()
+        ipcRenderer.send("hotkey-change")
+    }
 
     document.getElementById("hotkeyConfig").classList.remove("is-active")
 }
 
-// Opens the Electron accelerator documentation.
+/**
+ * Opens the Electron accelerator documentation.
+ */
 function openAcceleratorDocs() {
     shell.openExternal("https://electronjs.org/docs/api/accelerator")
 }
-
-// Handles rendering the hotkey config body.
-new Vue({
-    el: "#hotkeyConfigBody",
-    data: {
-        gifHotkey: config.gif_hotkey || "",
-        screenshotHotkey: config.hotkey || "",
-    },
-})
 
 // Repoints path for later.
 const sep = require("path").sep
@@ -293,34 +374,26 @@ new Vue({
         fileConfigCheckboxI: config.save_capture || false,
         fileNamingPatternI: config.file_naming_pattern || "screenshot_%date%_%time%",
         fileSaveFolderI: config.save_path,
+        fileNamingPreview: filename.newFilename(),
     },
     methods: {
-        saveItem: (key, configKey, checkbox, path) => {
-            let i
-            if (checkbox) {
-                i = document.getElementById(key).checked
-            } else {
-                i = document.getElementById(key).value
-            }
-
-            if (path) {
-                if (!i.endsWith(sep)) {
-                    i += sep
-                }
-            }
-
-            config[configKey] = i
+        saveSaveCapture: () => {
+            config.save_capture = document.getElementById("fileConfigCheckbox").checked
+            saveConfig()
+        },
+        saveNamingPattern: () => {
+            config.file_naming_pattern = document.getElementById("fileNamingPattern").value
+            saveConfig()
+            document.getElementById("fileNamingPreview").textContent = filename.newFilename()
+        },
+        saveFilePath: () => {
+            let p = document.getElementById("fileSaveFolder").value
+            if (!p.endsWith(sep)) p += sep
+            config.save_path = p
             saveConfig()
         },
     },
 })
-
-// Toggles the file config.
-const toggleFileConfig = (toggle = false) => document.getElementById("fileConfig").classList[toggle ? "add" : "remove"]("is-active")
-
-
-// Toggles the MFL config.
-const toggleMFLConfig = (toggle = false) => document.getElementById("mflConfig").classList[toggle ? "add" : "remove"]("is-active")
 
 // Defines the active uploader config.
 const activeUploaderConfig = new Vue({
@@ -331,6 +404,7 @@ const activeUploaderConfig = new Vue({
             options: {},
         },
         exception: "",
+        exceptionData: "",
         userAgent: `MagicCap ${remote.app.getVersion()}; ${config.install_id}`,
     },
     methods: {
@@ -360,6 +434,9 @@ const activeUploaderConfig = new Vue({
                 }
             }
         },
+        /**
+         * Resets a config value.
+         */
         resetValue(option) {
             delete config[option.value]
             saveConfig()
@@ -405,12 +482,19 @@ const activeUploaderConfig = new Vue({
             activeUploaderConfig.$forceUpdate()
             saveConfig()
         },
+        /**
+         * Closes the active config.
+         */
         closeActiveConfig() {
             this.$set(this, "exception", "")
             document.getElementById("activeUploaderConfig").classList.remove("is-active")
         },
-        setDefaultUploader() {
+        /**
+         * Validates the config.
+         */
+        validateConfig() {
             this.$set(this, "exception", "")
+            this.$set(this, "exceptionData", "")
             for (const optionKey in this.uploader.options) {
                 const option = this.uploader.options[optionKey]
                 const c = config[option.value]
@@ -420,32 +504,66 @@ const activeUploaderConfig = new Vue({
                         saveConfig()
                     } else if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
                         this.exception += "notAnInteger"
-                        return
+                        return false
                     } else {
                         this.exception += "requiredStuffMissing"
-                        return
+                        return false
                     }
                 }
             }
-
-            let view = this
+            return true
+        },
+        /**
+         * Gets the uploaders filename.
+         */
+        getFilename() {
             const uploaders = require(`${__dirname}/uploaders`)
-            let filename
             for (const file in uploaders) {
                 const import_ = uploaders[file]
-                if (import_.name === view.uploader.name) {
-                    filename = file
-                    break
+                if (import_.name === this.uploader.name) {
+                    return file
                 }
             }
-            config.uploader_type = filename
+        },
+        /**
+         * Tests the uploader.
+         */
+        testUploader() {
+            if (!this.validateConfig()) {
+                return
+            }
+            const view = this
+            document.getElementById("testButton").classList.add("is-loading")
+            ipcRenderer.send("test-uploader", this.getFilename())
+            ipcRenderer.once("test-uploader-res", (_, res) => {
+                document.getElementById("testButton").classList.remove("is-loading")
+                if (res[0]) {
+                    view.exception += "ayyyyTestWorked"
+                } else {
+                    view.exception += "testFailed"
+                    view.exceptionData += res[1]
+                }
+            })
+        },
+        /**
+         * Sets the uploader as default.
+         */
+        setDefaultUploader() {
+            if (!this.validateConfig()) {
+                return
+            }
+
+            const file = this.getFilename()
+            config.uploader_type = file
             saveConfig()
-            view.exception += "ayyyyDefaultSaved"
+            this.exception += "ayyyyDefaultSaved"
         },
     },
 })
 
-// The Art of the Bodge: How I Made The Emoji Keyboard <https://www.youtube.com/watch?v=lIFE7h3m40U>
+/**
+ * The Art of the Bodge: How I Made The Emoji Keyboard <https://www.youtube.com/watch?v=lIFE7h3m40U>
+ */
 const optionWebviewBodge = option => {
     setTimeout(() => {
         const x = document.getElementById(option.value)
@@ -467,8 +585,11 @@ const optionWebviewBodge = option => {
     }, 200)
 }
 
-// Shows the uploader config page.
+/**
+ * Shows the uploader config page.
+ */
 function showUploaderConfig() {
+    activeModal = "uploaderConfig"
     document.getElementById("uploaderConfig").classList.add("is-active")
 }
 
@@ -480,9 +601,13 @@ new Vue({
     el: "#uploaderConfigBody",
     data: {
         uploaders: importedUploaders,
-        checkUploadCheckbox: config.upload_capture,
+        checkUploaderUpload: config.upload_capture,
+        checkUploaderOpen: config.upload_open,
     },
     methods: {
+        /**
+         * Renders all of the uploaders.
+         */
         renderUploader: async(uploader, uploaderKey) => {
             const options = []
             for (const optionKey in uploader.config_options) {
@@ -531,19 +656,26 @@ new Vue({
             activeUploaderConfig.$set(activeUploaderConfig.uploader, "options", options)
             document.getElementById("uploaderConfig").classList.remove("is-active")
             document.getElementById("activeUploaderConfig").classList.add("is-active")
+            activeModal = "activeUploaderConfig"
         },
-        toggleCheckbox() {
-            this.$set(this, "checkUploadCheckbox", !this.checkUploadCheckbox)
-            config.upload_capture = this.checkUploadCheckbox
+        /**
+         * Toggles the upload checkbox.
+         */
+        toggleUpload() {
+            this.$set(this, "checkUploaderUpload", !this.checkUploaderUpload)
+            config.upload_capture = this.checkUploaderUpload
+            saveConfig()
+        },
+        /**
+         * Toggles the open checkbox.
+         */
+        toggleOpen() {
+            this.$set(this, "checkUploaderOpen", !this.checkUploaderOpen)
+            config.upload_open = this.checkUploaderOpen
             saveConfig()
         },
     },
 })
-
-// Hides the uploader config page.
-function hideUploaderConfig() {
-    document.getElementById("uploaderConfig").classList.remove("is-active")
-}
 
 // Handles the MFL config.
 new Vue({
@@ -553,6 +685,9 @@ new Vue({
         languages: i18n.langPackInfo,
     },
     methods: {
+        /**
+         * Sets the language.
+         */
         changeLanguage(language) {
             this.currentLang = language
             config.language = language
@@ -561,7 +696,9 @@ new Vue({
     },
 })
 
-// Handles exporting the config into a *.mconf file.
+/**
+ * Handles exporting the config into a *.mconf file.
+ */
 const exportMconf = async() => {
     const exported = mconf.new()
     const saveFilei18n = await i18n.getPoPhrase("Save file...", "gui")
@@ -574,15 +711,15 @@ const exportMconf = async() => {
             },
         ],
         showsTagField: false,
-    }, async filename => {
-        if (filename === undefined) {
+    }, async file => {
+        if (file === undefined) {
             return
         }
-        if (!filename.endsWith(".mconf")) {
-            filename += ".mconf"
+        if (!file.endsWith(".mconf")) {
+            file += ".mconf"
         }
         try {
-            await writeJSON(filename, exported, {
+            await writeJSON(file, exported, {
                 spaces: 4,
             })
         } catch (err) {
@@ -591,7 +728,9 @@ const exportMconf = async() => {
     })
 }
 
-// Handles importing the config from a *.mconf file.
+/**
+ * Handles importing the config from a *.mconf file.
+ */
 const importMconf = async() => {
     const saveFilei18n = await i18n.getPoPhrase("Open file...", "gui")
     dialog.showOpenDialog({
@@ -605,13 +744,13 @@ const importMconf = async() => {
         multiSelections: false,
         openDirectory: false,
         showsTagField: false,
-    }, async filename => {
-        if (filename === undefined) {
+    }, async file => {
+        if (file === undefined) {
             return
         }
         let data
         try {
-            data = await readJSON(filename[0])
+            data = await readJSON(file[0])
         } catch (err) {
             console.log(err)
             return
@@ -659,7 +798,9 @@ new Vue({
     },
 })
 
-// Shows the link shortener.
+/**
+ * Shows the link shortener.
+ */
 const showShortener = () => {
     ipcRenderer.send("show-short")
 }

@@ -1,0 +1,43 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+
+.modal .modal-card {
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+}
+
+.modal .modal-card-body hr {
+    background: #4c5759;
+    margin: 1rem 0;
+}
+
+.modal .modal-card-body .modal-card-title {
+    margin-bottom: .5rem;
+}
+
+.modal .modal-background {
+    background: rgba(10, 10, 10, .7);
+}
+
+.modal .delete {
+    width: 28px;
+    max-width: 28px;
+    min-width: 28px;
+    height: 28px;
+    max-height: 28px;
+    min-height: 28px;
+    background: rgba(10, 10, 10, .3);
+}
+
+.modal .delete:hover {
+    background: rgba(10, 10, 10, .5);
+}
+
+.modal .delete:hover::before {
+    height: 3px;
+}
+
+.modal .delete:hover::after {
+    width: 3px;
+}

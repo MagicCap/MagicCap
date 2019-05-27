@@ -9,8 +9,10 @@ const { join } = require("path")
 const { config } = require("../config")
 const PO = require("pofile")
 
-// Used to cache/get *.po files.
 const poCache = new Map()
+/**
+ * Used to cache/get the *.po files.
+ */
 const getPoFile = async file => {
     const cachedPo = poCache[file]
     if (cachedPo !== undefined) {
@@ -25,7 +27,9 @@ const getPoFile = async file => {
     return data
 }
 
-// Used to get a translated phrase from the file specified.
+/**
+ * Used to get a translated phrase from the file specified.
+ */
 const getPoPhrase = async(phrase, file) => {
     let poFile
     try {
@@ -48,8 +52,10 @@ const getPoPhrase = async(phrase, file) => {
     return phrase
 }
 
-// This is used to parse the HTML that needs translating.
 const htmlParseRegex = /\$.+\$/g
+/**
+ * Used to parse the HTML that needs translating.
+ */
 const poParseHtml = async htmlData => {
     let htmlDone = htmlData
     const i18nThisDocumentation = await getPoPhrase("this documentation", "gui")

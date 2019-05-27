@@ -6,11 +6,21 @@ const magicImports = require("magicimports")
 const { stat, writeFile } = magicImports("fs-nextra")
 const { app, dialog } = magicImports("electron")
 const { get } = magicImports("chainfetch")
-const async_child_process = magicImports("async-child-process")
+const asyncChildProcess = magicImports("async-child-process")
 const sudo = magicImports("sudo-prompt")
 const i18n = magicImports("./i18n")
+const WebSocket = require("ws")
 
-// Checks if the autoupdate binaries are installed.
+// Ignores this while the app is open.
+const tempIgnore = []
+
+// Defines if a update is running.
+let updateRunning = false
+
+/**
+ * Checks if the autoupdate binaries are installed.
+ * @returns Boolean saying whether the binary exists.
+ */
 async function checkAutoupdateBin() {
     try {
         await stat(`${require("os").homedir()}/magiccap-updater`)
@@ -20,10 +30,9 @@ async function checkAutoupdateBin() {
     }
 }
 
-// Makes the JS code sleep.
-const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds))
-
-// Downloads the needed autoupdate binaries.
+/**
+ * Downloads the needed autoupdate binaries.
+ */
 async function downloadBin() {
     const githubResp = await get(
         "https://api.github.com/repos/JakeMakesStuff/magiccap-updater/releases"
@@ -41,13 +50,16 @@ async function downloadBin() {
         if (asset.name == `magiccap-updater-${osPart}`) {
             const updaterBuffer = await get(asset.browser_download_url).toBuffer()
             await writeFile(`${require("os").homedir()}/magiccap-updater`, updaterBuffer.body)
-            await async_child_process.execAsync(`chmod 777 "${require("os").homedir()}/magiccap-updater"`)
+            await asyncChildProcess.execAsync(`chmod 777 "${require("os").homedir()}/magiccap-updater"`)
             break
         }
     }
 }
 
-// Checks for any updates.
+/**
+ * Checks for any updates.
+ * @returns A object repersenting if it is up to date and changelogs if it is not.
+ */
 async function checkForUpdates() {
     let res
     try {
@@ -74,7 +86,10 @@ async function checkForUpdates() {
     }
 }
 
-// Does the update.
+/**
+ * Does the update.
+ * @param {object} updateInfo - The object returned by checkForUpdates.
+ */
 async function doUpdate(updateInfo) {
     await new Promise(res => {
         sudo.exec(`"${require("os").homedir()}/magiccap-updater" v${updateInfo.current}`, {
@@ -89,8 +104,11 @@ async function doUpdate(updateInfo) {
     })
 }
 
-// Handles a new update.
-async function handleUpdate(updateInfo, config, tempIgnore) {
+/**
+ * Handles a new update.
+ * @param {object} updateInfo - A object containing the update information.
+ */
+async function handleUpdate(updateInfo) {
     if (tempIgnore.indexOf(updateInfo.current) > -1) {
         return
     }
@@ -127,20 +145,87 @@ async function handleUpdate(updateInfo, config, tempIgnore) {
                 tempIgnore.push(updateInfo.current)
                 break
             case 0:
+                updateRunning = true
                 await doUpdate(updateInfo)
+                updateRunning = false
         }
     })
 }
 
-// The actual autoupdate part.
-module.exports = async function autoUpdateLoop() {
+/**
+ * Handles the initial HTTP update check.
+ */
+async function runHttpUpdateCheck(ignoreConfig) {
+    if (updateRunning || (!ignoreConfig && config.autoupdate_on === false)) {
+        return
+    }
+    const updateInfo = await checkForUpdates()
+    if (!updateInfo.upToDate) {
+        updateRunning = true
+        await handleUpdate(updateInfo)
+        updateRunning = false
+    }
+    return updateInfo.upToDate
+}
+
+
+/**
+ * Handles WebSocket updates.
+ */
+async function handleWebSocketUpdates() {
+    let conn
+    let retry = 0
+    /**
+     * Spawns the WebSocket to do the updates with.
+     */
+    const spawnWs = () => {
+        conn = new WebSocket("wss://api.magiccap.me/version/feed")
+        let deathByError = false
+        conn.on("error", () => {
+            deathByError = true
+            retry += 1
+            console.error(`Update WebSocket failed. Retrying in ${retry} second(s).`)
+            setTimeout(() => { conn = spawnWs() }, retry * 1000)
+        })
+        conn.on("open", () => {
+            retry = 0
+            console.log("Update WebSocket open.")
+            conn.send(JSON.stringify({ t: "watch", beta: true }))
+        })
+        conn.on("message", async data => {
+            data = JSON.parse(data).info
+            if (updateRunning || config.autoupdate_on === false) {
+                return
+            }
+            if (!config.beta_channel && data.beta) {
+                return
+            }
+            const payload = {
+                current: data.version,
+                changelogs: data.changelogs,
+                upToDate: false,
+            }
+            updateRunning = true
+            await handleUpdate(payload)
+            updateRunning = false
+        })
+    }
+    spawnWs()
+}
+
+/**
+ * The loop which automatically checks for updates.
+ */
+async function autoUpdateLoop() {
     if (!AUTOUPDATE_ON) {
         return
     }
 
     if (config.autoupdate_on === false) {
+        // We want undefined to fall through here.
         return
     }
+
     const binExists = await checkAutoupdateBin()
     if (!binExists) {
         let toContinue = await new Promise(async res => {
@@ -175,12 +260,62 @@ module.exports = async function autoUpdateLoop() {
             return
         }
     }
-    let tempIgnore = []
-    for (;;) {
-        const updateInfo = await checkForUpdates()
-        if (!updateInfo.upToDate) {
-            await handleUpdate(updateInfo, config, tempIgnore)
+
+    if (config.autoupdate_on === false) {
+        return
+    }
+
+    runHttpUpdateCheck()
+    handleWebSocketUpdates()
+}
+
+/**
+ * Manually checks for updates.
+ */
+async function manualCheck() {
+    if (!AUTOUPDATE_ON) {
+        return
+    }
+    const binExists = await checkAutoupdateBin()
+    if (!binExists) {
+        const cont = await new Promise(async res => {
+            const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate")
+            const noi18n = await i18n.getPoPhrase("No", "autoupdate")
+            const messagei18n = await i18n.getPoPhrase("In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.", "autoupdate")
+            await dialog.showMessageBox({
+                type: "warning",
+                buttons: [yesi18n, noi18n],
+                title: "MagicCap",
+                message: messagei18n,
+            }, async response => {
+                let toCont = true
+                switch (response) {
+                    case 1:
+                        toCont = false
+                        break
+                    case 0:
+                        await downloadBin()
+                        break
+                }
+                res(toCont)
+            })
+        })
+        if (!cont) {
+            return
         }
-        await sleep(600000)
+    }
+
+    if (await runHttpUpdateCheck(true)) {
+        // Show the up to date message.
+        await dialog.showMessageBox({
+            type: "info",
+            title: "MagicCap",
+            message: "Update Check",
+            detail: "There are currently no updates for your version.",
+        })
     }
 }
+autoUpdateLoop.manualCheck = manualCheck
+
+// Exports the autoupdate function.
+module.exports = autoUpdateLoop

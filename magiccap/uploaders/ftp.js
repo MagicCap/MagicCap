@@ -5,7 +5,7 @@
 const i18n = require("../i18n")
 
 module.exports = {
-    name: "FTP",
+    name: "Passive FTP",
     icon: "ftp.png",
     config_options: {
         Hostname: {
@@ -35,7 +35,7 @@ module.exports = {
             default: "/",
             required: true,
         },
-        Domain: {
+        "Base URL": {
             value: "ftp_domain",
             type: "text",
             required: true,
@@ -58,6 +58,11 @@ module.exports = {
         }
         await client.end()
 
-        return `${config.ftp_domain}/${filename}`
+        let baseURL = config.ftp_domain
+        if (baseURL.endsWith("/") || baseURL.endsWith("\\")) {
+            baseURL = baseURL.slice(0, -1)
+        }
+
+        return `${baseURL}/${filename}`
     },
 }

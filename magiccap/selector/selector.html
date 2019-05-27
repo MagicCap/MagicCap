@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <style>
+            body {
+                overflow: hidden;
+                border: 0;
+                padding: 0;
+                margin: 0;
+                background-image: %IMAGE_URL%;
+            }
+
+            .magnify {
+                left: -200px;
+                top: -200px;
+                position: absolute;
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                z-index: 0;
+                background-size: 100% 100%;
+                background-color: white;
+                image-rendering: pixelated;
+            }
+
+            .position {
+                left: -100px;
+                top: -100px;
+                position: absolute;
+                z-index: 0;
+                color: white;
+                font-family: "Roboto";
+            }
+
+            .properties {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 0;
+            }
+    
+            .clickable-property {
+                width: 30px;
+                padding: 3px;
+                background-color: white;
+            }
+    
+            .clickable-property:hover {
+                background-color: #d4d9db;
+            }
+    
+            .clickable-property.selected {
+                background-color: gray;
+            }
+
+            .selection-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                background-color: black;
+                z-index: -2;
+            }
+
+            @font-face {
+                font-family: "Roboto";
+                src: url("/selector/font") format("truetype");
+            }
+
+            .selection-text {
+                color: white;
+                font-family: "Roboto";
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            // The main payload.
+            const payload = %PAYLOAD%
+        </script>
+
+        <div class="position" id="position">
+            <p id="positions">X: 0 | Y: 0</p>
+        </div>
+        <div class="magnify" id="magnify"></div>
+        <div class="properties" id="UploaderProperties"></div>
+        <div id="selection" style="border: 1px solid white; position: absolute; border-style: dashed; width: 0px; padding: 0; margin: 0; z-index: -1; box-sizing: border-box; left: -10px; top: -10px;"></div>
+        <script src="/selector/js"></script>
+    </body>
+</html>

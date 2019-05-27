@@ -4,10 +4,11 @@ module.exports = {
     ftp: require("./ftp"),
     imgur: require("./imgur"),
     magiccap: require("./magiccap"),
-    novus: require("./novus"),
+    novus: require("./lunus"),
     pomf: require("./pomf"),
     reupload: require("./reupload"),
     s3: require("./s3"),
     sharex: require("./sharex"),
     ultrashare: require("./ultrashare"),
+    sftp: require("./sftp"),
 }

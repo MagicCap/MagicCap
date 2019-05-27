@@ -78,7 +78,7 @@ jobs:
           command: mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
       - run:
           name: Create a MagicCap macOS zip
-          command: cd ./build/MagicCap-darwin-x64 && zip -9 -r ./magiccap-mac.zip . && cd ../..
+          command: cd ./build/MagicCap-darwin-x64 && zip -y -9 -r ./magiccap-mac.zip . && cd ../..
       - run:
           name: Install the AWS CLI.
           command: HOMEBREW_NO_AUTO_UPDATE=1 brew install awscli
@@ -108,7 +108,7 @@ jobs:
           command: go get github.com/tcnksm/ghr && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} ./current/
       - run:
           name: Deploy to the MagicCap API
-          command: curl https://api.magiccap.me/travis/new/$MAGICCAP_API_KEY/$CIRCLE_TAG
+          command: curl https://api.magiccap.me/ci/new/$MAGICCAP_API_KEY/$CIRCLE_TAG
   # Handles the final deploy.
 
 workflows:

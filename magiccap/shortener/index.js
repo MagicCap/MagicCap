@@ -8,7 +8,9 @@ const path = require("path")
 // Defines the window.
 let shortenerWindow = null
 
-// Spawns the shortener window.
+/**
+ * Spawns the shortener window.
+ */
 const showShortener = () => {
     if (shortenerWindow) {
         shortenerWindow.show()
@@ -19,6 +21,9 @@ const showShortener = () => {
         show: false, minimizable: false,
         maximizable: false, alwaysOnTop: true,
         minWidth: 500, minHeight: 200,
+        webPreferences: {
+            nodeIntegration: true,
+        },
     })
     if (process.platform !== "darwin") shortenerWindow.setIcon(`${path.join(__dirname, "..")}/icons/taskbar.png`)
     shortenerWindow.setTitle("MagicCap Link Shortener")

@@ -1,0 +1,51 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+.menu .menu-list li > a {
+    max-width: 100%;
+    border-radius: 0;
+    font-size: 0.95em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: all 300ms ease;
+    position: relative;
+}
+
+.menu .menu-list li > a:hover::before {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 8px 6px 8px 0;
+    border-style: solid;
+    border-color: transparent rgba(0, 0, 0, 0.9) transparent transparent;
+    z-index: 100;
+}
+
+.menu .menu-list li > a:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    text-align: center;
+    color: #fff;
+    padding: 6px 4px;
+    font-size: 14px;
+    min-width: 80px;
+    border-radius: 5px;
+    pointer-events: none;
+}
+
+.menu .menu-list li > a > *[class*="fa"] {
+    vertical-align: sub;
+    width: 1.4em;
+    text-align: center;
+    font-size: 1.6em;
+}
+
+.menu .menu-list li hr {
+    margin: 8px;
+}
