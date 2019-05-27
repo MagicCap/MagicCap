@@ -53,6 +53,7 @@ const i18n = require("./i18n")
 const mconf = require("./mconf")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
+const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -198,6 +199,13 @@ function showClipboardAction() {
 function showBetaUpdates() {
     activeModal = "betaUpdates"
     document.getElementById("betaUpdates").classList.add("is-active")
+}
+
+/**
+ * Checks for updates.
+ */
+function checkForUpdates() {
+    autoUpdateLoop.manualCheck()
 }
 
 // Handles new screenshots.
