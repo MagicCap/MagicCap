@@ -277,6 +277,7 @@ async function createContextMenu() {
         // Link shortener inserted here if allowed
         { type: "separator" },
         { label: i18nPreferences, type: "normal", click: openConfig },
+        // Auto update here if enabled
         { label: i18nQuit, type: "normal", role: "quit" },
     ]
     if (AUTOUPDATE_ON) {
@@ -328,6 +329,12 @@ ipcMain.on("test-uploader", async(event, data) => event.sender.send("test-upload
 ipcMain.on("hotkey-change", async() => {
     hotkeys()
     await createContextMenu()
+})
+
+// Allows for update checking in the gui
+ipcMain.on("check-for-updates", async event => {
+    await autoUpdateLoop.manualCheck()
+    event.sender.send("check-for-updates-done")
 })
 
 // The get uploaders IPC.

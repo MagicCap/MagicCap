@@ -7,6 +7,15 @@
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
 }
 
+.modal .modal-card-body hr {
+    background: #4c5759;
+    margin: 1rem 0;
+}
+
+.modal .modal-card-body .modal-card-title {
+    margin-bottom: .5rem;
+}
+
 .modal .modal-background {
     background: rgba(10, 10, 10, .7);
 }

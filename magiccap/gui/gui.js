@@ -200,6 +200,19 @@ function showBetaUpdates() {
     document.getElementById("betaUpdates").classList.add("is-active")
 }
 
+/**
+ * Checks for updates.
+ */
+async function checkForUpdates(elm) {
+    elm.textContent = await i18n.getPoPhrase("Checking...", "gui")
+    elm.disabled = true
+    ipcRenderer.send("check-for-updates")
+    ipcRenderer.once("check-for-updates-done", async() => {
+        elm.textContent = await i18n.getPoPhrase("Check for Updates", "gui")
+        elm.disabled = false
+    })
+}
+
 // Handles new screenshots.
 ipcRenderer.on("screenshot-upload", async() => {
     await getCaptures()

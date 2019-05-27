@@ -38,8 +38,8 @@
                         </li>
                         <li v-if="betaUpdates">
                             <a href="javascript:showBetaUpdates()"
-                               data-tooltip="$Toggle receiving beta updates before their stable release$">
-                                <i class="fas fa-cogs"></i> $Beta Updates$</a>
+                               data-tooltip="$Check for updates and toggle receiving beta updates$">
+                                <i class="fas fa-cogs"></i> $Updates$</a>
                         </li>
                         <!-- <li>
                             <a href="javascript:showMFLConfig()"
@@ -250,10 +250,13 @@
             <div class="modal-background"></div>
             <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">$Beta Updates$</p>
+                    <p class="modal-card-title">$Updates$</p>
                     <a class="delete" aria-label="close" href="javascript:closeCurrentModal()"></a>
                 </header>
                 <section class="modal-card-body">
+                    <a class="button" href="#" onclick="checkForUpdates(this)">$Check for Updates$</a>
+                    <hr/>
+                    <p class="modal-card-title">$Beta Updates$</p>
                     <p>$Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable.$</p>
                     <br/>
                     <label class="input_container">$Only get stable updates.$
