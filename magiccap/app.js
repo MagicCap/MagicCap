@@ -19,6 +19,7 @@ const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
 const i18n = magicImports("./i18n")
 const { showShortener } = require("./shortener")
 const Sentry = require("@sentry/electron")
+const { AUTOUPDATE_ON } = require("./build_info")
 const hotkeys = require("./hotkeys")
 
 // All of the loaded uploaders.
@@ -262,10 +263,11 @@ async function createContextMenu() {
     const i18nCapture = await i18n.getPoPhrase("Screen Capture", "app")
     const i18nGif = await i18n.getPoPhrase("GIF Capture", "app")
     const i18nClipboard = await i18n.getPoPhrase("Clipboard Capture", "app")
-    const i18nUploadTo = await i18n.getPoPhrase("Upload File to...", "app")
+    const i18nUploadTo = await i18n.getPoPhrase("Upload File To...", "app")
     const i18nShort = await i18n.getPoPhrase("Shorten Link...", "app")
     const i18nPreferences = await i18n.getPoPhrase("Preferences...", "app")
     const i18nQuit = await i18n.getPoPhrase("Quit", "app")
+    const i18nCheckForUpdates = await i18n.getPoPhrase("Check For Updates...", "app")
     const contextMenuTmp = [
         { label: i18nCapture, accelerator: config.hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
         { label: i18nGif, accelerator: config.gif_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(true) } },
@@ -277,6 +279,9 @@ async function createContextMenu() {
         { label: i18nPreferences, type: "normal", click: openConfig },
         { label: i18nQuit, type: "normal", role: "quit" },
     ]
+    if (AUTOUPDATE_ON) {
+        contextMenuTmp.splice(6, 0, { label: i18nCheckForUpdates, type: "normal", click: autoUpdateLoop.manualCheck })
+    }
     if (global.liteTouchConfig ? global.liteTouchConfig.link_shortener_allowed : true) {
         contextMenuTmp.splice(4, 0, { label: i18nShort, type: "normal", click: showShortener })
     }

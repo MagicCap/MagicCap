@@ -74,7 +74,7 @@ msgid "Preferences..."
 msgstr ""
 
 # app.js:309
-msgid "Upload File to..."
+msgid "Upload File To..."
 msgstr ""
 
 # app.js:310
@@ -83,4 +83,8 @@ msgstr ""
 
 # app.js:311
 msgid "Quit"
+msgstr ""
+
+# app.js:269
+msgid "Check For Updates..."
 msgstr ""

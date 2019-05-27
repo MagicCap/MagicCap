@@ -155,8 +155,8 @@ async function handleUpdate(updateInfo) {
 /**
  * Handles the initial HTTP update check.
  */
-async function runHttpUpdateCheck() {
-    if (updateRunning || config.autoupdate_on === false) {
+async function runHttpUpdateCheck(ignoreConfig) {
+    if (updateRunning || (!ignoreConfig && config.autoupdate_on === false)) {
         return
     }
     const updateInfo = await checkForUpdates()
@@ -165,6 +165,7 @@ async function runHttpUpdateCheck() {
         await handleUpdate(updateInfo)
         updateRunning = false
     }
+    return updateInfo.upToDate
 }
 
 
@@ -212,7 +213,10 @@ async function handleWebSocketUpdates() {
     spawnWs()
 }
 
-module.exports = async function autoUpdateLoop() {
+/**
+ * The loop which automatically checks for updates.
+ */
+async function autoUpdateLoop() {
     if (!AUTOUPDATE_ON) {
         return
     }
@@ -264,3 +268,54 @@ module.exports = async function autoUpdateLoop() {
     runHttpUpdateCheck()
     handleWebSocketUpdates()
 }
+
+/**
+ * Manually checks for updates.
+ */
+async function manualCheck() {
+    if (!AUTOUPDATE_ON) {
+        return
+    }
+    const binExists = await checkAutoupdateBin()
+    if (!binExists) {
+        const cont = await new Promise(async res => {
+            const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate")
+            const noi18n = await i18n.getPoPhrase("No", "autoupdate")
+            const messagei18n = await i18n.getPoPhrase("In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.", "autoupdate")
+            await dialog.showMessageBox({
+                type: "warning",
+                buttons: [yesi18n, noi18n],
+                title: "MagicCap",
+                message: messagei18n,
+            }, async response => {
+                let toCont = true
+                switch (response) {
+                    case 1:
+                        toCont = false
+                        break
+                    case 0:
+                        await downloadBin()
+                        break
+                }
+                res(toCont)
+            })
+        })
+        if (!cont) {
+            return
+        }
+    }
+
+    if (await runHttpUpdateCheck(true)) {
+        // Show the up to date message.
+        await dialog.showMessageBox({
+            type: "info",
+            title: "MagicCap",
+            message: "Update Check",
+            detail: "There are currently no updates for your version.",
+        })
+    }
+}
+autoUpdateLoop.manualCheck = manualCheck
+
+// Exports the autoupdate function.
+module.exports = autoUpdateLoop
