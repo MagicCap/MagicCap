@@ -28,7 +28,7 @@ MagicCap supports the following uploaders (this list will expand over time):
 - FTP
 - Pomf
 - imgur
-- i.novus
+- Lunus.xyz
 - i.magiccap
 - reUpload
 - Ultrashare
