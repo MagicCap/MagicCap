@@ -50,3 +50,12 @@ a, button, .button, .delete {
 .url {
     cursor: pointer;
 }
+
+.url::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 0.7em;
+    padding-left: 0.4em;
+    opacity: 0.6;
+    content: "\f35d";
+}
