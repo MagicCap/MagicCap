@@ -264,11 +264,13 @@ module.exports = class CaptureCore {
                     {
                         type: "selection",
                         name: "Blur",
+                        tooltip: await i18n.getPoPhrase("Blur a region within the capture", "capture"),
                         imageLocation: "blur.png",
                     },
                     {
                         type: "selection",
                         name: "__cap__",
+                        tooltip: await i18n.getPoPhrase("Select a region to capture", "capture"),
                         imageLocation: "crosshair.png",
                         active: true,
                     },

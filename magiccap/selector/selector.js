@@ -1,5 +1,6 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Requires Electron.
 const electron = require("electron")
@@ -284,7 +285,8 @@ if (payload.buttons && payload.mainDisplay) {
     for (const buttonId in payload.buttons) {
         const button = payload.buttons[buttonId]
         propertyStr += `
-            <a href="javascript:invokeButton(${buttonId})" style="cursor: default;">
+            <a href="javascript:invokeButton(${buttonId})" style="cursor: default;"
+               data-tooltip="${button.tooltip}" data-tooltip-position="bottom">
                 <img class="clickable-property${button.active ? " selected" : ""}" src="/selector/icons/${button.imageLocation}">
             </a>
         `

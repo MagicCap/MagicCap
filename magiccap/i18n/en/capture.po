@@ -33,3 +33,11 @@ msgstr ""
 # capture.js:303
 msgid "Clipboard does not contain an image."
 msgstr ""
+
+# capture.js:267
+msgid "Blur a region within the capture"
+msgstr ""
+
+# capture.js:273
+msgid "Select a region to capture"
+msgstr ""

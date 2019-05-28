@@ -23,7 +23,7 @@
     color: #fff;
     padding: 6px 4px;
     font-size: 14px;
-    min-width: 80px;
+    width: max-content;
     border-radius: 5px;
     pointer-events: none;
     z-index: 100;
