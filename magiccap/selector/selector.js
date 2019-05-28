@@ -77,10 +77,19 @@ async function moveSelectorMagnifier() {
     const positionElement = document.getElementById("position")
     const x = thisCursor.x - payload.bounds.x
     const y = thisCursor.y - payload.bounds.y
-    magnifyElement.style.left = x
-    magnifyElement.style.top = payload.bounds.height - (payload.bounds.height - y)
-    positionElement.style.left = x + 50
-    positionElement.style.top = payload.bounds.height - (payload.bounds.height - y) + 200
+    const magnifyOffset = 8
+
+    magnifyElement.style.left = x + magnifyOffset
+    magnifyElement.style.top = payload.bounds.height - (payload.bounds.height - y) + magnifyOffset
+    positionElement.style.left = x + magnifyOffset
+    positionElement.style.top = payload.bounds.height - (payload.bounds.height - y) + magnifyOffset + magnifyElement.getBoundingClientRect().height
+    document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
+
+    const cursorX = document.getElementById("cursorX")
+    cursorX.style.left = x
+    const cursorY = document.getElementById("cursorY")
+    cursorY.style.top = payload.bounds.height - (payload.bounds.height - y)
+
     const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${x}&y=${y}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
     const image = new Image()
@@ -88,7 +97,6 @@ async function moveSelectorMagnifier() {
     image.onload = () => {
         magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/crosshair.png"), url(${urlPart})`
     }
-    document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
 }
 moveSelectorMagnifier()
 
@@ -103,6 +111,7 @@ document.body.onmousemove = e => {
     })
 
     if (firstClick) {
+        element.style.boxShadow = ""
         element.style.width = `${Math.abs(e.pageX - firstClick.pageX)}px`
         element.style.height = `${Math.abs(e.pageY - firstClick.pageY)}px`
         element.style.left = e.pageX - firstClick.pageX < 0 ? `${e.pageX}px` : `${firstClick.pageX}px`
