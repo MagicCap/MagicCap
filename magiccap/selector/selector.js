@@ -87,9 +87,9 @@ async function moveSelectorMagnifier() {
     document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
 
     const cursorX = document.getElementById("cursorX")
-    cursorX.style.left = x
+    cursorX.style.left = x - (cursorX.getBoundingClientRect().width / 2)
     const cursorY = document.getElementById("cursorY")
-    cursorY.style.top = payload.bounds.height - (payload.bounds.height - y)
+    cursorY.style.top = payload.bounds.height - (payload.bounds.height - y) - (cursorY.getBoundingClientRect().height / 2)
 
     const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${x}&y=${y}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
