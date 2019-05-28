@@ -110,6 +110,7 @@ document.body.onmousemove = e => {
     })
 
     if (firstClick) {
+        element.style.boxShadow = ""
         element.style.width = `${Math.abs(e.pageX - firstClick.pageX)}px`
         element.style.height = `${Math.abs(e.pageY - firstClick.pageY)}px`
         element.style.left = e.pageX - firstClick.pageX < 0 ? `${e.pageX}px` : `${firstClick.pageX}px`
