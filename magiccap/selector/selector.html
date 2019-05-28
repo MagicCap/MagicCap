@@ -3,6 +3,11 @@
         <style>
             @import url("/tooltips");
 
+            @font-face {
+                font-family: "Roboto";
+                src: url("/selector/font") format("truetype");
+            }
+
             html * {
                 cursor: none
             }
@@ -47,6 +52,7 @@
                 background: rgba(0, 0, 0, 0.4);
                 margin: 0;
                 padding: 2px 4px;
+                border-radius: 2px;
             }
 
             #UploaderProperties {
@@ -106,17 +112,17 @@
                 align-items: center;
                 justify-content: center;
                 position: absolute;
-                background-color: black;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid #fff;
                 z-index: -2;
             }
 
-            @font-face {
-                font-family: "Roboto";
-                src: url("/selector/font") format("truetype");
-            }
-
             .selection-text {
-                color: white;
+                color: #fff;
+                background: rgba(0, 0, 0, 0.8);
+                margin: 0;
+                padding: 4px 16px;
+                border-radius: 8px;
                 font-family: "Roboto";
             }
         </style>
