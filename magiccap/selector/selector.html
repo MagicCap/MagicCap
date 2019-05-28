@@ -3,7 +3,13 @@
         <style>
             @import url("/tooltips");
 
+            @font-face {
+                font-family: "Roboto";
+                src: url("/selector/font") format("truetype");
+            }
+
             html * {
+                user-select: none;
                 cursor: none
             }
 
@@ -12,6 +18,11 @@
                 border: 0;
                 padding: 0;
                 margin: 0;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
                 background-image: %IMAGE_URL%;
             }
 
@@ -47,6 +58,7 @@
                 background: rgba(0, 0, 0, 0.4);
                 margin: 0;
                 padding: 2px 4px;
+                border-radius: 2px;
             }
 
             #UploaderProperties {
@@ -106,18 +118,26 @@
                 align-items: center;
                 justify-content: center;
                 position: absolute;
-                background-color: black;
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid #fff;
                 z-index: -2;
             }
 
-            @font-face {
+            .selection-text {
+                color: #fff;
+                background: rgba(0, 0, 0, 0.8);
+                margin: 0;
+                padding: 4px 16px;
+                border-radius: 8px;
                 font-family: "Roboto";
-                src: url("/selector/font") format("truetype");
             }
 
-            .selection-text {
-                color: white;
-                font-family: "Roboto";
+            #magnify, #position, #cursorX, #cursorY, #UploaderProperties {
+                opacity: 0;
+            }
+
+            body:hover #magnify, body:hover #position, body:hover #cursorX, body:hover #cursorY, body:hover #UploaderProperties {
+                opacity: 1;
             }
         </style>
     </head>

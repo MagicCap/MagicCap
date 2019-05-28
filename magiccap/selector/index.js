@@ -142,11 +142,12 @@ freezeServer.listen(freezeServerPort, "127.0.0.1")
  */
 const spawnWindows = (displays, primaryId) => {
     const windows = []
+    const captureDev = process.argv.includes("-captureDev")
     for (let index in displays) {
         const i = displays[index]
         let win = new BrowserWindow({
             frame: false,
-            alwaysOnTop: true,
+            alwaysOnTop: !captureDev,
             show: false,
             width: i.bounds.width,
             height: i.bounds.height,
@@ -162,6 +163,7 @@ const spawnWindows = (displays, primaryId) => {
             win.setFullScreen(true)
             win.show()
             win.focus()
+            if (captureDev) win.webContents.openDevTools()
         })
         win.loadURL(`http://127.0.0.1:${freezeServerPort}/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
         win.setVisibleOnAllWorkspaces(true)
