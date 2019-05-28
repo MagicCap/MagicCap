@@ -1,7 +1,9 @@
 <html>
     <head>
         <style>
-            html * {cursor:none!important}
+            html * {
+                cursor: none
+            }
 
             body {
                 overflow: hidden;
@@ -15,6 +17,7 @@
                 left: -200px;
                 top: -200px;
                 position: absolute;
+                pointer-events: none;
                 width: 200px;
                 height: 200px;
                 border-radius: 50%;
@@ -42,6 +45,7 @@
             #selection {
                 border: 1px dashed white;
                 position: absolute;
+                pointer-events: none;
                 padding: 0;
                 margin: 0;
                 z-index: -1;
@@ -53,20 +57,20 @@
                 position: absolute;
                 pointer-events: none;
                 z-index: 0;
-                background: rgba(0, 0, 0, 0.3);
-                border: 1px solid rgba(0, 0, 0, 0.5)
+                background: rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.05)
             }
 
             #cursorX {
                 height: 100vh;
                 top: 0;
-                width: 1px;
+                width: 0.5px;
             }
 
             #cursorY {
                 width: 100vw;
                 left: 0;
-                height: 1px;
+                height: 0.5px;
             }
 
             .clickable-property {
