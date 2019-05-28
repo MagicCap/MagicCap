@@ -1,6 +1,8 @@
 <html>
     <head>
         <style>
+            html * {cursor:none!important}
+
             body {
                 overflow: hidden;
                 border: 0;
@@ -16,7 +18,7 @@
                 width: 200px;
                 height: 200px;
                 border-radius: 50%;
-                z-index: 0;
+                z-index: 1;
                 background-size: 100% 100%;
                 background-color: white;
                 image-rendering: pixelated;
@@ -45,6 +47,26 @@
                 z-index: -1;
                 box-sizing: border-box;
                 box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
+            }
+
+            #cursorX, #cursorY {
+                position: absolute;
+                pointer-events: none;
+                z-index: 0;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(0, 0, 0, 0.5)
+            }
+
+            #cursorX {
+                height: 100vh;
+                top: 0;
+                width: 1px;
+            }
+
+            #cursorY {
+                width: 100vw;
+                left: 0;
+                height: 1px;
             }
 
             .clickable-property {
@@ -87,6 +109,8 @@
             const payload = %PAYLOAD%
         </script>
 
+        <div id="cursorX"></div>
+        <div id="cursorY"></div>
         <div id="position">
             <p id="positions">X: 0 | Y: 0</p>
         </div>
