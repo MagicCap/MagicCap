@@ -235,6 +235,11 @@ document.body.onmouseup = async e => {
             </h1>
         `
         document.body.appendChild(selectionBlackness)
+        element.style.top = "-10px"
+        element.style.left = "-10px"
+        element.style.width = "0px"
+        element.style.height = "0px"
+        element.style.boxShadow = "none"
     }
 }
 
