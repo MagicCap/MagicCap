@@ -77,7 +77,8 @@ async function moveSelectorMagnifier() {
     const positionElement = document.getElementById("position")
     const x = thisCursor.x - payload.bounds.x
     const y = thisCursor.y - payload.bounds.y
-    const magnifyOffset = 4
+    const magnifyOffset = 8
+
     magnifyElement.style.left = x + magnifyOffset
     magnifyElement.style.top = payload.bounds.height - (payload.bounds.height - y) + magnifyOffset
     positionElement.style.left = x + magnifyOffset + 50
