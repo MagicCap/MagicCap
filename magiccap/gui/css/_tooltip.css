@@ -1,0 +1,42 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]:hover::before {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    z-index: 100;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    text-align: center;
+    color: #fff;
+    padding: 6px 4px;
+    font-size: 14px;
+    min-width: 80px;
+    border-radius: 5px;
+    pointer-events: none;
+    display: none;
+}
+
+[data-tooltip][data-tooltip-position="right"]:hover::after {
+    display: block;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+[data-tooltip][data-tooltip-position="right"]:hover::before {
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 8px 6px 8px 0;
+    border-color: transparent rgba(0, 0, 0, 0.9) transparent transparent;
+}
