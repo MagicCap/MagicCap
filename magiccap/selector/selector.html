@@ -37,6 +37,16 @@
                 font-size: 0;
             }
 
+            #selection {
+                border: 1px dashed white;
+                position: absolute;
+                padding: 0;
+                margin: 0;
+                z-index: -1;
+                box-sizing: border-box;
+                box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .5);
+            }
+
             .clickable-property {
                 width: 30px;
                 padding: 3px;
@@ -82,7 +92,7 @@
         </div>
         <div id="magnify"></div>
         <div id="UploaderProperties"></div>
-        <div id="selection" style="border: 1px solid white; position: absolute; border-style: dashed; width: 0px; padding: 0; margin: 0; z-index: -1; box-sizing: border-box; left: -10px; top: -10px;"></div>
+        <div id="selection" style="width: 0px; left: -10px; top: -10px;"></div>
         <script src="/selector/js"></script>
     </body>
 </html>

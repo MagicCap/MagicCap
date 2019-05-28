@@ -77,7 +77,7 @@ freezeServer.get("/selector/render", async(req, res) => {
                 key: key,
             },
         })
-        const imageUrl = `url("http://127.0.0.1:${freezeServerPort}/root/dimmer.svg"), url("http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}")`
+        const imageUrl = `url("http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}")`
         if (!selectorHtmlCache) {
             selectorHtmlCache = (await readFile(`${__dirname}/selector.html`)).toString()
         }
