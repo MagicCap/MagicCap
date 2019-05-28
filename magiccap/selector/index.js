@@ -1,6 +1,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2019.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the required imports.
 const { ipcMain, BrowserWindow } = require("electron")
@@ -96,6 +97,9 @@ freezeServer.get("/selector/icons/:icon", (req, res) => {
 })
 freezeServer.get("/root/:file", (req, res) => {
     res.sendFile(`${__dirname}/${path.basename(req.params.file)}`)
+})
+freezeServer.get("/tooltips", (req, res) => {
+    res.sendFile(`${path.join(__dirname, "..")}/gui/css/_tooltip.css`)
 })
 let xyImageMap = new Map()
 freezeServer.get("/selector/magnify", async(req, res) => {

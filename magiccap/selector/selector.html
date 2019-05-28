@@ -1,6 +1,8 @@
 <html>
     <head>
         <style>
+            @import url("/tooltips");
+
             html * {
                 cursor: none
             }
@@ -49,6 +51,7 @@
 
             #UploaderProperties {
                 text-align: center;
+                font-family: "Roboto", sans-serif;
                 margin-top: 20px;
                 font-size: 0;
             }
@@ -67,7 +70,7 @@
             #cursorX, #cursorY {
                 position: absolute;
                 pointer-events: none;
-                z-index: 0;
+                z-index: 50;
                 background: rgba(0, 0, 0, 0.4);
                 border: 1px solid rgba(255, 255, 255, 0.05)
             }
