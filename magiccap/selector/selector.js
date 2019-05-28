@@ -285,7 +285,7 @@ function invokeButton(buttonId) {
 }
 
 // Handles displaying the buttons.
-if (payload.buttons && payload.mainDisplay) {
+if (payload.buttons) {
     let propertyStr = ""
     for (const buttonId in payload.buttons) {
         const button = payload.buttons[buttonId]
