@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
-"PO-Revision-Date: 2019-05-17 16:03\n"
+"PO-Revision-Date: 2019-05-28 16:23\n"
 
 # capture.js:92
 msgid "The screenshot capturing/saving failed."
@@ -46,5 +46,13 @@ msgstr ""
 
 # capture.js:303
 msgid "Clipboard does not contain an image."
+msgstr ""
+
+# capture.js:267
+msgid "Blur a region within the capture"
+msgstr ""
+
+# capture.js:273
+msgid "Select a region to capture"
 msgstr ""
 
