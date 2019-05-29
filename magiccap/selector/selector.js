@@ -70,16 +70,52 @@ function getInbetweenWindows(electronMouse) {
 }
 
 /**
+ * Determines the brightness of an image
+ */
+async function getImageBrightness(url) {
+    return new Promise((resolve, _) => {
+        // Create the image
+        const image = document.createElement("img")
+        image.src = url
+
+        image.onload = () => {
+            // Create canvas
+            const canvas = document.createElement("canvas")
+            canvas.width = image.width
+            canvas.height = image.height
+
+            // Apply image
+            const ctx = canvas.getContext("2d")
+            ctx.drawImage(image, 0, 0)
+
+            // Get raw image data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+            let colorSum = 0
+
+            // Parse rgb for each pixel
+            for (let x = 0; x < imageData.length; x += 4) {
+                const r = imageData[x]
+                const g = imageData[x + 1]
+                const b = imageData[x + 2]
+
+                const avg = Math.floor((r + g + b) / 3)
+                colorSum += avg
+            }
+
+            // Calc overall average and resolve
+            const brightness = Math.floor(colorSum / (image.width * image.height))
+            resolve(brightness)
+        }
+    })
+}
+
+/**
  * Moves the selector magnifier.
  */
 async function moveSelectorMagnifier() {
     const thisCursor = electron.screen.getCursorScreenPoint()
     let x = thisCursor.x - payload.bounds.x
     let y = thisCursor.y - payload.bounds.y
-    const magnifyOffset = 8
-
-    // Update the with new coordinates
-    document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
 
     // Set the cursor crosshair
     const cursorX = document.getElementById("cursorX")
@@ -87,40 +123,52 @@ async function moveSelectorMagnifier() {
     const cursorY = document.getElementById("cursorY")
     cursorY.style.top = `${y - (cursorY.getBoundingClientRect().height / 2)}px`
 
+    // Update the with new coordinates
+    document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
+
     // Set the magifier positions
+    let magnifyX = x
+    let magnifyY = y
+    const magnifyOffset = 8
     const magnifyElement = document.getElementById("magnify")
     const positionElement = document.getElementById("position")
 
     // Check if we're overflowing on the y for the magnifier
-    if ((y + magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height) > window.innerHeight) {
+    if ((magnifyY + magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height) > window.innerHeight) {
         // Uh oh
-        y -= magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height
+        magnifyY -= magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height
         // Extra offset needed to pad correctly
-        y -= magnifyOffset
+        magnifyY -= magnifyOffset
     }
 
     // Check if we're overflowing on the x for the magnifier
-    if ((x + magnifyOffset + magnifyElement.getBoundingClientRect().width) > window.innerWidth) {
+    if ((magnifyX + magnifyOffset + magnifyElement.getBoundingClientRect().width) > window.innerWidth) {
         // Uh oh
-        x -= magnifyOffset + magnifyElement.getBoundingClientRect().width
+        magnifyX -= magnifyOffset + magnifyElement.getBoundingClientRect().width
         // Extra offset needed to pad correctly
-        x -= magnifyOffset
+        magnifyX -= magnifyOffset
     }
 
     // Set the position of our magnifier
-    magnifyElement.style.left = `${x + magnifyOffset}px`
-    magnifyElement.style.top = `${y + magnifyOffset}px`
-    positionElement.style.left = `${x + magnifyOffset}px`
-    positionElement.style.top = `${y + magnifyOffset + magnifyElement.getBoundingClientRect().height}px`
+    magnifyElement.style.left = `${magnifyX + magnifyOffset}px`
+    magnifyElement.style.top = `${magnifyY + magnifyOffset}px`
+    positionElement.style.left = `${magnifyX + magnifyOffset}px`
+    positionElement.style.top = `${magnifyY + magnifyOffset + magnifyElement.getBoundingClientRect().height}px`
 
-    // Set the new magnifier image
+    // Get the new magnifier image
     const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${x}&y=${y}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
-    const image = new Image()
-    image.src = urlPart
-    image.onload = () => {
-        magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/crosshair.png"), url(${urlPart})`
-    }
+
+    // Determine brightness & threshold (max 255)
+    const brightness = await getImageBrightness(urlPart)
+    const brightnessThreshold = 100
+
+    // Decide which crosshair to use
+    let crosshair = "crosshair.png"
+    if (brightness < brightnessThreshold) crosshair = "crosshair_white.png"
+
+    // Apply new magnifier image & crosshair
+    magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/${crosshair}"), url(${urlPart})`
 }
 moveSelectorMagnifier()
 
