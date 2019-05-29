@@ -40,6 +40,7 @@ module.exports = {
 		"no-new-func": "error",
 		"no-new-wrappers": "error",
 		"no-new": "off",
+		"no-octal": "off",
 		"no-octal-escape": "error",
 		"no-return-assign": "error",
 		"no-return-await": "error",

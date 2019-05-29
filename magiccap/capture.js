@@ -5,7 +5,7 @@
 
 // Imports go here.
 const magicImports = require("magicimports")
-const gifman = require("gifman")
+const gifman = require("./gif_capture")
 const fsnextra = magicImports("fs-nextra")
 const { clipboard, nativeImage, Tray, dialog, shell, Notification } = magicImports("electron")
 const i18n = require("./i18n")
@@ -299,10 +299,13 @@ module.exports = class CaptureCore {
 
             if (gif) {
                 inGif = true
-                await gifman.start(
+                const success = await gifman.start(
                     15, selection.start.pageX, selection.start.pageY,
                     selection.width, selection.height, thisDisplay
                 )
+                if (!success) {
+                    throw new Error("Screenshot cancelled.")
+                }
                 const gifIcon = new Tray(`${__dirname}/icons/stop.png`)
                 await new Promise(res => {
                     gifIcon.once("click", () => {
