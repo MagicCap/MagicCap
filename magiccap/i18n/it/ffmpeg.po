@@ -1,0 +1,18 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: crowdin.com\n"
+"X-Crowdin-Project: magiccap\n"
+"X-Crowdin-Language: it\n"
+"X-Crowdin-File: /develop/magiccap/i18n/en/ffmpeg.po\n"
+"Project-Id-Version: magiccap\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Jake Gealer (JakeMakesStuff)\n"
+"Language-Team: Italian\n"
+"Language: it_IT\n"
+"PO-Revision-Date: 2019-05-29 16:04\n"
+
+# ffmpeg.js:15
+msgid "In order for GIF capture to work, MagicCap has to download FFMpeg. Shall I start the download process?"
+msgstr ""
+
