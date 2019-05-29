@@ -74,23 +74,46 @@ function getInbetweenWindows(electronMouse) {
  */
 async function moveSelectorMagnifier() {
     const thisCursor = electron.screen.getCursorScreenPoint()
-    const magnifyElement = document.getElementById("magnify")
-    const positionElement = document.getElementById("position")
-    const x = thisCursor.x - payload.bounds.x
-    const y = thisCursor.y - payload.bounds.y
+    let x = thisCursor.x - payload.bounds.x
+    let y = thisCursor.y - payload.bounds.y
     const magnifyOffset = 8
 
-    magnifyElement.style.left = x + magnifyOffset
-    magnifyElement.style.top = payload.bounds.height - (payload.bounds.height - y) + magnifyOffset
-    positionElement.style.left = x + magnifyOffset
-    positionElement.style.top = payload.bounds.height - (payload.bounds.height - y) + magnifyOffset + magnifyElement.getBoundingClientRect().height
+    // Update the with new coordinates
     document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
 
+    // Set the cursor crosshair
     const cursorX = document.getElementById("cursorX")
-    cursorX.style.left = x - (cursorX.getBoundingClientRect().width / 2)
+    cursorX.style.left = `${x - (cursorX.getBoundingClientRect().width / 2)}px`
     const cursorY = document.getElementById("cursorY")
-    cursorY.style.top = payload.bounds.height - (payload.bounds.height - y) - (cursorY.getBoundingClientRect().height / 2)
+    cursorY.style.top = `${y - (cursorY.getBoundingClientRect().height / 2)}px`
 
+    // Set the magifier positions
+    const magnifyElement = document.getElementById("magnify")
+    const positionElement = document.getElementById("position")
+
+    // Check if we're overflowing on the y for the magnifier
+    if ((y + magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height) > window.innerHeight) {
+        // Uh oh
+        y -= magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height
+        // Extra offset needed to pad correctly
+        y -= magnifyOffset
+    }
+
+    // Check if we're overflowing on the x for the magnifier
+    if ((x + magnifyOffset + magnifyElement.getBoundingClientRect().width) > window.innerWidth) {
+        // Uh oh
+        x -= magnifyOffset + magnifyElement.getBoundingClientRect().width
+        // Extra offset needed to pad correctly
+        x -= magnifyOffset
+    }
+
+    // Set the position of our magnifier
+    magnifyElement.style.left = `${x + magnifyOffset}px`
+    magnifyElement.style.top = `${y + magnifyOffset}px`
+    positionElement.style.left = `${x + magnifyOffset}px`
+    positionElement.style.top = `${y + magnifyOffset + magnifyElement.getBoundingClientRect().height}px`
+
+    // Set the new magnifier image
     const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${x}&y=${y}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
     const image = new Image()
