@@ -12,4 +12,5 @@ module.exports = {
     ultrashare: require("./ultrashare"),
     sftp: require("./sftp"),
     dropbox: require("./dropbox"),
+    gdrive: require("./gdrive"),
 }
