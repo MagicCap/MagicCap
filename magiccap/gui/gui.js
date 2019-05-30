@@ -427,7 +427,7 @@ const activeUploaderConfig = new Vue({
                     if (option.default !== undefined) {
                         return option.default
                     }
-                    if (option.type === "token_from_json") {
+                    if (option.type === "token_from_json" || option.type === "oauth2") {
                         return undefined
                     }
                     return ""
@@ -636,6 +636,16 @@ new Vue({
                         optionWebviewBodge(option)
                         break
                     }
+                    case "oauth2": {
+                        options.push({
+                            type: option.type,
+                            default: option.default,
+                            value: option.value,
+                            required: option.required,
+                            translatedName: translatedOption,
+                        })
+                        break
+                    }
                     case "object": {
                         const i = config[option.value] || option.default || {}
                         options.push({
@@ -803,4 +813,26 @@ new Vue({
  */
 const showShortener = () => {
     ipcRenderer.send("show-short")
+}
+
+/**
+ * Handles authentication via an OAuth2 flow.
+ */
+async function oauthLogin() {
+    document.getElementById("oauthFlowInit").classList.add("is-loading")
+    await ipcRenderer.send("oauth-flow-uploader", activeUploaderConfig.uploader.name)
+    const configDiff = await new Promise(res => {
+        ipcRenderer.once("oauth-flow-uploader-response", (_, diff) => {
+            res(diff)
+        })
+    })
+    document.getElementById("oauthFlowInit").classList.remove("is-loading")
+    if (!configDiff) {
+        return
+    }
+    for (const key of Object.keys(configDiff)) {
+        config[key] = configDiff[key]
+    }
+    saveConfig()
+    activeUploaderConfig.$forceUpdate()
 }

@@ -166,6 +166,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div v-else-if="option.type === 'oauth2'">
+                                <div class="field">
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
+                                    <div v-if="getDefaultValue(option) === undefined">
+                                        <a class="button" id="oauthFlowInit" v-on:click="javascript:oauthLogin()">$Authenticate$</a>
+                                    </div>
+                                    <div v-else>
+                                        <p>Already set. Do you want to <a v-on:click="resetValue(option)">reset this value?</a></p>
+                                    </div>
+                                </div>
+                            </div>
                             <div v-else-if="option.type === 'password'">
                                 <div class="field">
                                     <label class="label" :for="option.value">{{ option.translatedName }}:</label>

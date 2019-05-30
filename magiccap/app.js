@@ -340,6 +340,15 @@ ipcMain.on("check-for-updates", async event => {
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
 
+// Runs any OAuth2 flows for the uploaders.
+const OAuth2 = require("./oauth2")
+ipcMain.on("oauth-flow-uploader", async(event, uploaderName) => {
+    const uploader = importedUploaders[uploaderName]
+    const oAuthResp = await OAuth2(uploader.getOAuthUrl())
+    const r = await uploader.handleOAuthFlow(oAuthResp)
+    event.sender.send("oauth-flow-uploader-response", r ? r : null)
+})
+
 // The app is ready to rock!
 app.on("ready", initialiseScript)
 

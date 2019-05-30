@@ -11,4 +11,5 @@ module.exports = {
     sharex: require("./sharex"),
     ultrashare: require("./ultrashare"),
     sftp: require("./sftp"),
+    dropbox: require("./dropbox"),
 }
