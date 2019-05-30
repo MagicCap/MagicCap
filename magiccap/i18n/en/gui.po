@@ -288,3 +288,21 @@ msgstr ""
 
 msgid "Test Uploader"
 msgstr ""
+
+# gui/index.template.html:239
+# gui/index.template.html:247
+msgid "Debug Information"
+msgstr ""
+
+# gui/index.template.html:251
+msgid "Copy everything below to where the debug information has been requested."
+msgstr ""
+
+# gui/index.template.html:253
+# gui/gui.js:292
+msgid "Copy to clipboard"
+msgstr ""
+
+# gui/gui.js:289
+msgid "Copied!"
+msgstr ""

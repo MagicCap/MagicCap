@@ -45,7 +45,7 @@ const { ipcRenderer, remote, shell } = require("electron")
 global.liteTouchConfig = remote.getGlobal("liteTouchConfig")
 
 // The needed imports.
-const { dialog } = require("electron").remote
+const { dialog, clipboard } = require("electron").remote
 const config = require("./config").config
 const saveConfigToDb = require("./config").saveConfig
 const { writeJSON, readJSON } = require("fs-nextra")
@@ -54,6 +54,7 @@ const mconf = require("./mconf")
 const Sentry = require("@sentry/electron")
 const { AUTOUPDATE_ON } = require("./build_info")
 const filename = require(`${__dirname}/filename.js`)
+const os = require("os")
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -246,6 +247,54 @@ async function runClipboardCapture() {
 function showAbout() {
     activeModal = "about"
     document.getElementById("about").classList.add("is-active")
+}
+
+/**
+ * Returns the config with private info redacted
+ */
+function safeConfig() {
+    let newConfig = {}
+    for (const key in config) {
+        let val = config[key]
+        if (key.toLowerCase().match(/(\b|_)password(\b|_)/g)) val = "PASSWORD REDACTED"
+        if (key.toLowerCase().match(/(\b|_)username(\b|_)/g)) val = "USERNAME REDACTED"
+        if (key.toLowerCase().match(/(\b|_)secret(\b|_)/g)) val = "SECRET REDACTED"
+        if (key.toLowerCase().match(/(\b|_)token(\b|_)/g)) val = "TOKEN REDACTED"
+        if (key.toLowerCase().match(/(\b|_)key(\b|_)/g)) val = "KEY REDACTED"
+        newConfig[key] = val
+    }
+    return newConfig
+}
+
+/**
+ * Shows the debug information page.
+ */
+function showDebug() {
+    // Generate debug information
+    document.getElementById("debugInfo").textContent = `MagicCap Version: ${remote.app.getVersion()}
+System OS: ${os.type()} ${os.release()} / Platform: ${process.platform}
+Installation ID: ${config.install_id}
+Config: ${JSON.stringify(safeConfig())}
+liteTouch Config: ${global.liteTouchConfig}`
+    // Show
+    activeModal = "debug"
+    document.getElementById("debug").classList.add("is-active")
+    // Close about (that's how you get here)
+    document.getElementById("about").classList.remove("is-active")
+}
+
+/**
+ * Copies the debug information to clipboard
+ */
+async function copyDebug() {
+    const button = document.getElementById("debugCopy")
+    button.disabled = true
+    clipboard.writeText(document.getElementById("debugInfo").textContent)
+    button.textContent = await i18n.getPoPhrase("Copied!", "gui")
+    setTimeout(async() => {
+        button.disabled = false
+        button.textContent = await i18n.getPoPhrase("Copy to clipboard", "gui")
+    }, 3000)
 }
 
 /**

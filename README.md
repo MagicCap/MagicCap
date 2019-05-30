@@ -1,14 +1,25 @@
-<img src="https://i.imgur.com/3YKOjAF.png" alt="logo" width="50%" height="50%" href="#">
+<p><img src="https://i.imgur.com/3YKOjAF.png" alt="MagicCap" width="50%"></p>
 
-[![CircleCI](https://circleci.com/gh/MagicCap/MagicCap/tree/master.svg?style=svg)](https://circleci.com/gh/MagicCap/MagicCap/tree/master)
-[![Documentation Status](https://readthedocs.org/projects/magiccap/badge/?version=latest)](https://magiccap.readthedocs.io/en/latest/?badge=latest)
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
-<span class="badge-patreon"><a href="https://patreon.com/jakemakesstuff" title="Donate to this project using Patreon"><img src="https://img.shields.io/badge/patreon-donate-yellow.svg" alt="Patreon donate button" /></a></span>
-<span class="badge-patreon"><a href="https://ko-fi.com/jakemakesstuff" title="Donate to this project using ko-fi"><img src="https://img.shields.io/badge/kofi-donate-yellow.svg" alt="Patreon donate button" /></a></span>
-<a href="https://discord.gg/pTcBGcH">
-        <img src="https://img.shields.io/discord/475694715640217631.svg?logo=discord"
-            alt="chat on Discord">
-</a>
+<p>
+    <a href="https://circleci.com/gh/MagicCap/MagicCap/tree/master" title="CircleCI" target="_blank">
+        <img src="https://img.shields.io/circleci/build/github/MagicCap/MagicCap.svg?logo=CircleCI&logoColor=fff" alt=""/>
+    </a>
+    <a href="https://magiccap.readthedocs.io/en/latest/?badge=latest" title="Read the Docs Documentation" target="_blank">
+        <img src="https://img.shields.io/readthedocs/magiccap.svg?logo=Read-the-Docs&logoColor=fff" alt=""/>
+    </a>
+    <a href="https://opensource.org/licenses/MPL-2.0" title="Licensed under MPL 2.0" target="_blank">
+        <img src="https://img.shields.io/badge/license-MPL%202.0-brightgreen.svg?logo=Mozilla&logoColor=fff" alt=""/>
+    </a>
+    <a href="https://patreon.com/jakemakesstuff" title="Donate to this project using Patreon" target="_blank">
+        <img src="https://img.shields.io/badge/patreon-donate-yellow.svg?logo=Patreon&logoColor=fff" alt=""/>
+    </a>
+    <a href="https://ko-fi.com/jakemakesstuff" title="Donate to this project using ko-fi" target="_blank">
+        <img src="https://img.shields.io/badge/kofi-donate-yellow.svg?logo=Ko-fi&logoColor=fff" alt=""/>
+    </a>
+    <a href="https://discord.gg/pTcBGcH" title="Chat on Discord" target="_blank">
+        <img src="https://img.shields.io/discord/475694715640217631.svg?logo=discord&logoColor=fff&color=7289DA" alt=""/>
+    </a>
+</p>
 
 MagicCap is a image/GIF capture suite for Mac and Linux. You can get a precompiled copy from the releases page of this GitHub page. It has the following features:
 
