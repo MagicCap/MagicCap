@@ -124,7 +124,7 @@ module.exports = class CaptureCore {
                         if (config[uploader.config_options[key].value] === undefined) {
                             if (uploader.config_options[key].default) {
                                 config[uploader.config_options[key].value] = uploader.config_options[key].default
-                            } else {
+                            } else if (uploader.config_options[key].required) {
                                 const missingOptioni18n = await i18n.getPoPhrase("A required config option is missing.", "capture")
                                 throw new Error(missingOptioni18n)
                             }
