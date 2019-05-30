@@ -1,5 +1,5 @@
 ---
-name: Help!
+name: Help ❓
 about: Encountered a problem with MagicCap? Not sure how to fix it?
 
 ---

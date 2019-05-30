@@ -1,6 +1,6 @@
 ---
-name: Report a bug
-about: Report a bug with MagicCap. Only use this if you're 100% sure there's something wrong, otherwise, try "Help!".
+name: Report a bug 🐛
+about: Report a bug with MagicCap. Only use this if you're 100% sure there's something wrong, otherwise, try "Help".
 
 ---
 

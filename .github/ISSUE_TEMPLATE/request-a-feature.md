@@ -1,5 +1,5 @@
 ---
-name: Request a feature
+name: Request a feature 🆕
 about: Suggest a new feature that you would like in MagicCap!
 
 ---
