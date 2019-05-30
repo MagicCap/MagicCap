@@ -10,7 +10,7 @@ msgstr ""
 "Last-Translator: Jake Gealer (JakeMakesStuff)\n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
-"PO-Revision-Date: 2019-05-27 14:56\n"
+"PO-Revision-Date: 2019-05-30 16:00\n"
 
 # gui/index.template.html:16
 msgid "View the version and authors"
@@ -301,5 +301,23 @@ msgid "Get stable and beta updates."
 msgstr ""
 
 msgid "Test Uploader"
+msgstr ""
+
+# gui/index.template.html:239
+# gui/index.template.html:247
+msgid "Debug Information"
+msgstr ""
+
+# gui/index.template.html:251
+msgid "Copy everything below to where the debug information has been requested."
+msgstr ""
+
+# gui/index.template.html:253
+# gui/gui.js:292
+msgid "Copy to clipboard"
+msgstr ""
+
+# gui/gui.js:289
+msgid "Copied!"
 msgstr ""
 
