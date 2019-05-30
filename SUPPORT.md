@@ -1,4 +1,6 @@
-# MagicCap Support
+<p><img src="https://i.imgur.com/3YKOjAF.png" alt="MagicCap" width="50%"></p>
+
+# Get Support!
 
 ## GitHub Issues
 
