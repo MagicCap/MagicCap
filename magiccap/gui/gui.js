@@ -250,14 +250,17 @@ function showAbout() {
 }
 
 /**
- * Returns the config with usernames/passwords redacted
+ * Returns the config with private info redacted
  */
 function safeConfig() {
     let newConfig = {}
     for (const key in config) {
         let val = config[key]
-        if (key.toLowerCase().includes("password")) val = "PASSWORD REDACTED"
-        if (key.toLowerCase().includes("username")) val = "USERNAME REDACTED"
+        if (key.toLowerCase().match(/(\b|_)password(\b|_)/g)) val = "PASSWORD REDACTED"
+        if (key.toLowerCase().match(/(\b|_)username(\b|_)/g)) val = "USERNAME REDACTED"
+        if (key.toLowerCase().match(/(\b|_)secret(\b|_)/g)) val = "SECRET REDACTED"
+        if (key.toLowerCase().match(/(\b|_)token(\b|_)/g)) val = "TOKEN REDACTED"
+        if (key.toLowerCase().match(/(\b|_)key(\b|_)/g)) val = "KEY REDACTED"
         newConfig[key] = val
     }
     return newConfig
