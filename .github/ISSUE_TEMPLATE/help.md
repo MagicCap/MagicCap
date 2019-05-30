@@ -18,7 +18,7 @@ If you're happy to wait (or you were sent here from Discord), read on:
 2.  Delete this line and all above lines before posting your issue! -->
 
 ## Information
-<!-- Replace this with the full output of `Preferences > About > Debug Info` in MagicCap -->
+<!-- Replace this with the full output of `Preferences > About > Debug Information` in MagicCap -->
 
 ## Help request
 
