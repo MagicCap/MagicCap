@@ -7,6 +7,8 @@
 
     <body style="display: none">
         <div class="columns is-gapless" style="margin: 0;">
+
+            <!-- The sidebar menu -->
             <aside class="column is-2 aside hero is-fullheight" id="sidebar">
                 <aside class="menu">
                     <ul class="menu-list">
@@ -88,6 +90,8 @@
                     </ul>
                 </aside>
             </aside>
+
+            <!-- The main capture list table -->
             <div class="column">
                 <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
                     <tbody id="mainTableBody">
@@ -111,6 +115,8 @@
                 </table>
             </div>
         </div>
+
+        <!-- Language popup, currently unused -->
         <div class="modal" id="mflConfig">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -126,6 +132,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- Framework for all uploader config popups -->
         <div class="modal" id="activeUploaderConfig">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -234,6 +242,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- About info modal/popup -->
         <div class="modal" id="about">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -250,6 +260,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- Debug data readout popup, triggered from about -->
         <div class="modal" id="debug">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -265,6 +277,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- Clipboard action modal -->
         <div class="modal" id="clipboardAction">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -284,6 +298,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- Updates (check & beta) modal -->
         <div class="modal" id="betaUpdates">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -308,6 +324,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- General uploader modal -->
         <div class="modal" id="uploaderConfig">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -337,6 +355,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- File naming & saving config popup -->
         <div class="modal" id="fileConfig">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -368,6 +388,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- Hotkey setup modal -->
         <div class="modal" id="hotkeyConfig">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -399,6 +421,8 @@
                 </section>
             </div>
         </div>
+
+        <!-- The script that runs it all -->
         <script src="gui.js"></script>
     </body>
 </html>
