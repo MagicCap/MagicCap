@@ -1,11 +1,32 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
-        "allowJs": true,
-        "outDir": "./dist"
-    },
-    "include": [
-        "src/**/*"
-    ]
+	"compilerOptions": {
+		"alwaysStrict": true,
+		"declaration": false,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"incremental": true,
+		"lib": ["esnext"],
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"noEmitOnError": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"outDir": "./dist",
+		"pretty": true,
+		"removeComments": false,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"strict": true,
+		"strictBindCallApply": true,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
+		"target": "esnext",
+        "allowJs": true
+	},
+	"include": [
+		"src/**/*",
+	]
 }
