@@ -10,7 +10,6 @@
         "url": "git://github.com/JakeMakesStuff/MagicCap.git"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.8.2",
         "@icetee/ftp": "github:icetee/node-ftp#feature/rewrite",
         "@sentry/electron": "0.17.1",
         "aperture": "^5.2.0",
