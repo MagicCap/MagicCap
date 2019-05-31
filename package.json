@@ -10,14 +10,12 @@
         "url": "git://github.com/JakeMakesStuff/MagicCap.git"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.8.2",
         "@icetee/ftp": "github:icetee/node-ftp#feature/rewrite",
         "@sentry/electron": "0.17.1",
         "aperture": "^5.2.0",
         "asciiart-logo": "0.2.6",
         "async-child-process": "1.1.1",
         "better-sqlite3": "5.4.0",
-        "bulmaswatch": "0.7.1",
         "chainfetch": "1.2.2",
         "electron-progressbar": "github:whiteadi/electron-progressbar",
         "emojilib": "^2.4.0",
