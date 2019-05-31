@@ -24,7 +24,7 @@
 		"strictNullChecks": true,
 		"strictPropertyInitialization": true,
 		"target": "esnext",
-        "allowJs": true
+		"allowJs": true
 	},
 	"include": [
 		"src/**/*",
