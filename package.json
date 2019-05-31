@@ -54,9 +54,12 @@
         "typescript": "3.5.1",
         "@types/node": "12.0.4",
         "@typescript-eslint/parser": "1.9.0",
-        "@typescript-eslint/eslint-plugin": "1.9.0"
+        "@typescript-eslint/eslint-plugin": "1.9.0",
+        "walk": "2.3.14",
+        "mkdirp": "0.5.1"
     },
     "scripts": {
+        "copy": "node ./static_copy.js",
         "postinstall": "electron-builder install-app-deps --arch x64",
         "lint": "eslint \"./src/**/*.js\"",
         "lint-and-fix": "eslint \"./src/**/*.js\" --fix",
@@ -64,6 +67,7 @@
         "linuxcompile": "electron-packager . MagicCap --platform linux --arch x64 --out ./build --overwrite --icon ./src/icons/app.ico",
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
         "dev-run": "electron .",
+        "build": "tsc && npm run copy",
         "dev-run-capturedev": "electron . -captureDev"
     }
 }
