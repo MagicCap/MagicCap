@@ -64,6 +64,6 @@ typings/
 .vscode/
 .idea/
 
-magiccap/build/
+build/
 
 \.DS_Store

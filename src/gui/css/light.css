@@ -1,7 +1,7 @@
 /* This code is a part of MagicCap which is a MPL-2.0 licensed project.
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
-@import "../../node_modules/bulmaswatch/default/bulmaswatch.min.css";
+@import "../../../node_modules/bulmaswatch/default/bulmaswatch.min.css";
 @import "main.css";
 
 ::-webkit-scrollbar {

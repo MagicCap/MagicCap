@@ -6,7 +6,7 @@ const magicImports = require("magicimports")
 const { existsSync, renameSync, unlinkSync } = magicImports("fs")
 const { ensureDir } = magicImports("fs-nextra")
 const { darkThemeInformation } = magicImports("./system_dark_theme")
-const { sep } = magicImports("path")
+const { sep, join } = magicImports("path")
 const { homedir } = magicImports("os")
 const { app } = magicImports("electron")
 const newInstallId = require("./install_id")
@@ -14,7 +14,7 @@ const { init } = require("@sentry/electron")
 
 // ASCII!!!!!1111111!
 new Promise(res => {
-    res(require("asciiart-logo")(require(`${__dirname}/package.json`)).render())
+    res(require("asciiart-logo")(require(`${join(__dirname, "..")}/package.json`)).render())
 }).then(render => {
     console.log(render)
 })
