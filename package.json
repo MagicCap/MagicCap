@@ -17,7 +17,6 @@
         "asciiart-logo": "0.2.6",
         "async-child-process": "1.1.1",
         "better-sqlite3": "5.4.0",
-        "bulmaswatch": "0.7.1",
         "chainfetch": "1.2.2",
         "electron-progressbar": "github:whiteadi/electron-progressbar",
         "emojilib": "^2.4.0",

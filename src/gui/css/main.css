@@ -1,8 +1,8 @@
 /* This code is a part of MagicCap which is a MPL-2.0 licensed project.
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
-@import "_base.css";
-@import "_modal.css";
-@import "_inputs.css";
-@import "_menu.css";
-@import "_tooltip.css";
+@import "components/base.css";
+@import "components/modal.css";
+@import "components/inputs.css";
+@import "components/menu.css";
+@import "components/tooltip.css";
