@@ -66,6 +66,6 @@
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
         "dev-run": "npm run build && electron .",
         "build": "rm -rf dist/ && tsc && npm run copy",
-        "dev-run-capturedev": "electron . -captureDev"
+        "dev-run-capturedev": "npm run build && electron . -captureDev"
     }
 }
