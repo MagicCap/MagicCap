@@ -1,12 +1,12 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-const { exec } = require("child_process")
+import { exec } from "child_process"
 
 /**
  * Gets the dark theme information.
  */
-const darkThemeInformation = () => new Promise(res => {
+const darkThemeInformation = (): Promise<boolean> => new Promise(res => {
     switch (process.platform) {
         case "darwin": {
             exec("defaults read -g AppleInterfaceStyle", (err, stdout) => {
@@ -27,4 +27,4 @@ const darkThemeInformation = () => new Promise(res => {
 })
 
 
-module.exports = { darkThemeInformation }
+export = { darkThemeInformation }

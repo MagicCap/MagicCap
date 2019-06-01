@@ -2,8 +2,8 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Requires stuff.
-const { BrowserWindow } = require("electron")
-const express = require("express")
+import { BrowserWindow } from "electron"
+import * as express from "express"
 
 // Defines the promise.
 let unresolvedPromise
@@ -12,7 +12,7 @@ let unresolvedPromise
 let browserWindow
 
 // Handles OAuth2 logins.
-module.exports = async initUrl => {
+export = async(initUrl: string): Promise<Object> => {
     if (browserWindow) {
         browserWindow.show()
         return null
