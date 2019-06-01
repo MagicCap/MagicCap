@@ -2,7 +2,7 @@
     "name": "magiccap",
     "version": "1.1.0b4",
     "description": "A cross platform image capturing suite.",
-    "main": "./src/initialiser.js",
+    "main": "./dist/initialiser.js",
     "author": "Jake Gealer & Rhys O'Kane",
     "license": "MPL-2.0",
     "repository": {
@@ -61,10 +61,10 @@
         "postinstall": "electron-builder install-app-deps --arch x64",
         "lint": "eslint \"./src/**/*.js\"",
         "lint-and-fix": "eslint \"./src/**/*.js\" --fix",
-        "maccompile": "electron-packager . MagicCap --no-deref-symlinks --platform darwin --arch x64 --out ./build --overwrite --icon ./src/icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./src/icons/app.icns",
-        "linuxcompile": "electron-packager . MagicCap --platform linux --arch x64 --out ./build --overwrite --icon ./src/icons/app.ico",
+        "maccompile": "npm run build && electron-packager . MagicCap --ignore='(^\\/src)|(\\/static_copy\\.js)' --no-deref-symlinks --platform darwin --arch x64 --out ./build --overwrite --icon ./dist/icons/app.icns && electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./dist/icons/app.icns",
+        "linuxcompile": "npm run build && electron-packager . MagicCap --ignore='(^\\/src)|(\\/static_copy\\.js)' --platform linux --arch x64 --out ./build --overwrite --icon ./dist/icons/app.ico",
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
-        "dev-run": "electron .",
+        "dev-run": "npm run build && electron .",
         "build": "rm -rf dist/ && tsc && npm run copy",
         "dev-run-capturedev": "electron . -captureDev"
     }
