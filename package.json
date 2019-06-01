@@ -65,7 +65,7 @@
         "linuxcompile": "electron-packager . MagicCap --platform linux --arch x64 --out ./build --overwrite --icon ./src/icons/app.ico",
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
         "dev-run": "electron .",
-        "build": "tsc && npm run copy",
+        "build": "rm -rf dist/ && tsc && npm run copy",
         "dev-run-capturedev": "electron . -captureDev"
     }
 }
