@@ -2,9 +2,14 @@
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
 
+.modal {
+    margin: 0 0 0 15%;
+}
+
 .modal .modal-card {
     border-radius: 10px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);
+    /*box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);*/
+    box-shadow: none;
 }
 
 .modal .modal-card-body hr {
@@ -17,7 +22,8 @@
 }
 
 .modal .modal-background {
-    background: rgba(10, 10, 10, .7);
+    /*background: rgba(10, 10, 10, .7);*/
+    background: #282f2f;
 }
 
 .modal .delete {

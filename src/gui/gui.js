@@ -8,18 +8,22 @@
 let activeModal
 
 /**
- * Closes the active modal if there is one.
+ * Closes the active modal if there is one (and hides all others)
  */
 function closeCurrentModal() {
-    if (activeModal) {
+    // Find all active modals
+    const all = document.querySelectorAll(".modal.is-active")
+    all.forEach(div => {
         // Support custom close methods (Use a button with a delete class and onclick event to support this)
-        const del = document.getElementById(activeModal).querySelector("button.delete")
+        const del = div.querySelector("button.delete")
         if (del) del.click()
 
         // Assume normal closing
-        document.getElementById(activeModal).classList.remove("is-active")
-        activeModal = undefined
-    }
+        div.classList.remove("is-active")
+    })
+
+    // Remove activeModal if was set
+    if (activeModal) activeModal = undefined
 }
 
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
@@ -101,9 +105,9 @@ document.head.appendChild(stylesheet)
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
     // Register modal background click to close listeners
-    Array.from(document.getElementsByClassName("modal-background")).forEach(element => {
+    /* Array.from(document.getElementsByClassName("modal-background")).forEach(element => {
         element.addEventListener("click", closeCurrentModal)
-    })
+    }) */
 
     // Show the content
     document.body.style.display = "initial"
@@ -190,6 +194,7 @@ new Vue({
  * Shows the clipboard action settings page.
  */
 function showClipboardAction() {
+    closeCurrentModal()
     activeModal = "clipboardAction"
     document.getElementById("clipboardAction").classList.add("is-active")
 }
@@ -198,6 +203,7 @@ function showClipboardAction() {
  * Shows the beta updates settings page.
  */
 function showBetaUpdates() {
+    closeCurrentModal()
     activeModal = "betaUpdates"
     document.getElementById("betaUpdates").classList.add("is-active")
 }
@@ -245,6 +251,7 @@ async function runClipboardCapture() {
  * Shows the about page.
  */
 function showAbout() {
+    closeCurrentModal()
     activeModal = "about"
     document.getElementById("about").classList.add("is-active")
 }
@@ -270,6 +277,7 @@ function safeConfig() {
  * Shows the debug information page.
  */
 function showDebug() {
+    closeCurrentModal()
     // Generate debug information
     document.getElementById("debugInfo").textContent = `MagicCap Version: ${remote.app.getVersion()}
 System OS: ${os.type()} ${os.release()} / Platform: ${process.platform}
@@ -279,8 +287,6 @@ liteTouch Config: ${global.liteTouchConfig}`
     // Show
     activeModal = "debug"
     document.getElementById("debug").classList.add("is-active")
-    // Close about (that's how you get here)
-    document.getElementById("about").classList.remove("is-active")
 }
 
 /**
@@ -301,6 +307,7 @@ async function copyDebug() {
  * Shows the file config.
  */
 function showFileConfig() {
+    closeCurrentModal()
     activeModal = "fileConfig"
     document.getElementById("fileConfig").classList.add("is-active")
 }
@@ -309,6 +316,7 @@ function showFileConfig() {
  * Shows the MFL config.
  */
 function showMFLConfig() {
+    closeCurrentModal()
     activeModal = "mflConfig"
     document.getElementById("mflConfig").classList.add("is-active")
 }
@@ -348,6 +356,7 @@ async function toggleTheme() {
  * Shows the hotkey config.
  */
 function showHotkeyConfig() {
+    closeCurrentModal()
     activeModal = "hotkeyConfig"
     document.getElementById("hotkeyConfig").classList.add("is-active")
 }
@@ -638,6 +647,7 @@ const optionWebviewBodge = option => {
  * Shows the uploader config page.
  */
 function showUploaderConfig() {
+    closeCurrentModal()
     activeModal = "uploaderConfig"
     document.getElementById("uploaderConfig").classList.add("is-active")
 }
