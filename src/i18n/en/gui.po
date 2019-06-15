@@ -1,3 +1,11 @@
+# gui/index.template.html:17
+msgid "View all your previous captures"
+msgstr ""
+
+# gui/index.template.html:19
+msgid "Capture History"
+msgstr ""
+
 # gui/index.template.html:16
 msgid "View the version and authors"
 msgstr ""

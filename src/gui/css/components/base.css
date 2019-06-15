@@ -59,3 +59,11 @@ a, button, .button, .delete {
     opacity: 0.6;
     content: "\f35d";
 }
+
+table.table {
+    background: transparent;
+}
+
+table.hidden {
+    display: none;
+}

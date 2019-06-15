@@ -8,18 +8,44 @@
 let activeModal
 
 /**
- * Closes the active modal if there is one.
+ * Closes all active modals with correct dismiss actions & shows capture content
  */
 function closeCurrentModal() {
-    if (activeModal) {
+    // Show table
+    document.getElementById("mainTable").classList.remove("hidden")
+
+    // Find all active modals
+    const all = document.querySelectorAll(".modal.is-active")
+    all.forEach(div => {
         // Support custom close methods (Use a button with a delete class and onclick event to support this)
-        const del = document.getElementById(activeModal).querySelector("button.delete")
+        const del = div.querySelector("button.delete")
         if (del) del.click()
 
         // Assume normal closing
-        document.getElementById(activeModal).classList.remove("is-active")
-        activeModal = undefined
-    }
+        div.classList.remove("is-active")
+    })
+
+    // Remove activeModal if was set
+    if (activeModal) activeModal = undefined
+}
+
+/**
+ * Shows a new modal based on ID (hides existing modals & capture content)
+ */
+function showModal(id) {
+    // Get the modal
+    const modal = document.getElementById(id)
+    if (!modal) return
+
+    // Close existing modals
+    closeCurrentModal()
+
+    // Show the modal
+    modal.classList.add("is-active")
+    activeModal = id
+
+    // Hide captures table
+    document.getElementById("mainTable").classList.add("hidden")
 }
 
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
@@ -101,9 +127,9 @@ document.head.appendChild(stylesheet)
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
     // Register modal background click to close listeners
-    Array.from(document.getElementsByClassName("modal-background")).forEach(element => {
+    /* Array.from(document.getElementsByClassName("modal-background")).forEach(element => {
         element.addEventListener("click", closeCurrentModal)
-    })
+    }) */
 
     // Show the content
     document.body.style.display = "initial"
@@ -190,16 +216,14 @@ new Vue({
  * Shows the clipboard action settings page.
  */
 function showClipboardAction() {
-    activeModal = "clipboardAction"
-    document.getElementById("clipboardAction").classList.add("is-active")
+    showModal("clipboardAction")
 }
 
 /**
  * Shows the beta updates settings page.
  */
 function showBetaUpdates() {
-    activeModal = "betaUpdates"
-    document.getElementById("betaUpdates").classList.add("is-active")
+    showModal("betaUpdates")
 }
 
 /**
@@ -245,8 +269,7 @@ async function runClipboardCapture() {
  * Shows the about page.
  */
 function showAbout() {
-    activeModal = "about"
-    document.getElementById("about").classList.add("is-active")
+    showModal("about")
 }
 
 /**
@@ -277,10 +300,7 @@ Installation ID: ${config.install_id}
 Config: ${JSON.stringify(safeConfig())}
 liteTouch Config: ${global.liteTouchConfig}`
     // Show
-    activeModal = "debug"
-    document.getElementById("debug").classList.add("is-active")
-    // Close about (that's how you get here)
-    document.getElementById("about").classList.remove("is-active")
+    showModal("debug")
 }
 
 /**
@@ -301,16 +321,14 @@ async function copyDebug() {
  * Shows the file config.
  */
 function showFileConfig() {
-    activeModal = "fileConfig"
-    document.getElementById("fileConfig").classList.add("is-active")
+    showModal("fileConfig")
 }
 
 /**
  * Shows the MFL config.
  */
 function showMFLConfig() {
-    activeModal = "mflConfig"
-    document.getElementById("mflConfig").classList.add("is-active")
+    showModal("mflConfig")
 }
 
 /**
@@ -348,8 +366,7 @@ async function toggleTheme() {
  * Shows the hotkey config.
  */
 function showHotkeyConfig() {
-    activeModal = "hotkeyConfig"
-    document.getElementById("hotkeyConfig").classList.add("is-active")
+    showModal("hotkeyConfig")
 }
 
 // Handles the clipboard actions.
@@ -536,7 +553,7 @@ const activeUploaderConfig = new Vue({
          */
         closeActiveConfig() {
             this.$set(this, "exception", "")
-            document.getElementById("activeUploaderConfig").classList.remove("is-active")
+            closeCurrentModal()
         },
         /**
          * Validates the config.
@@ -638,8 +655,7 @@ const optionWebviewBodge = option => {
  * Shows the uploader config page.
  */
 function showUploaderConfig() {
-    activeModal = "uploaderConfig"
-    document.getElementById("uploaderConfig").classList.add("is-active")
+    showModal("uploaderConfig")
 }
 
 // All of the imported uploaders.
