@@ -18,11 +18,13 @@
 [data-tooltip]:hover::after {
     content: attr(data-tooltip);
     position: absolute;
-    background: rgba(0, 0, 0, 0.9);
+    background: #161616;
     text-align: center;
     color: #fff;
     padding: 6px 4px;
     font-size: 14px;
+    line-height: 1;
+    vertical-align: middle;
     width: max-content;
     border-radius: 5px;
     pointer-events: none;
@@ -44,7 +46,7 @@
     transform: translateY(-50%);
     border-left-width: 0;
     border-right-width: 6px;
-    border-right-color: rgba(0, 0, 0, 0.9);
+    border-right-color: #161616;
 }
 
 [data-tooltip][data-tooltip-position="left"]:hover::after {
@@ -61,7 +63,7 @@
     transform: translateY(-50%);
     border-right-width: 0;
     border-left-width: 6px;
-    border-left-color: rgba(0, 0, 0, 0.9);
+    border-left-color: #161616;
 }
 
 [data-tooltip][data-tooltip-position="top"]:hover::after {
@@ -78,7 +80,7 @@
     transform: translateX(-50%);
     border-bottom-width: 0;
     border-top-width: 6px;
-    border-top-color: rgba(0, 0, 0, 0.9);
+    border-top-color: #161616;
 }
 
 [data-tooltip][data-tooltip-position="bottom"]:hover::after {
@@ -95,5 +97,5 @@
     transform: translateX(-50%);
     border-top-width: 0;
     border-bottom-width: 6px;
-    border-bottom-color: rgba(0, 0, 0, 0.9);
+    border-bottom-color: #161616;
 }
