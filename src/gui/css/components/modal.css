@@ -4,6 +4,7 @@
 
 .modal {
     margin: 0 0 0 15%;
+    z-index: -1; /* Allow tooltips in sidebar to work */
 }
 
 .modal .modal-card {
@@ -19,11 +20,6 @@
 
 .modal .modal-card-body .modal-card-title {
     margin-bottom: .5rem;
-}
-
-.modal .modal-background {
-    /*background: rgba(10, 10, 10, .7);*/
-    background: #282f2f;
 }
 
 .modal .delete {

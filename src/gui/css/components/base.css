@@ -60,6 +60,10 @@ a, button, .button, .delete {
     content: "\f35d";
 }
 
+table.table {
+    background: transparent;
+}
+
 table.hidden {
     display: none;
 }

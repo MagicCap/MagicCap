@@ -4,6 +4,10 @@
 @import "bulmaswatch/darkly/bulmaswatch.min.css";
 @import "main.css";
 
+body {
+    color: #fff;
+}
+
 ::-webkit-scrollbar {
     background-color: #343434;
 }
@@ -26,6 +30,10 @@
     color: #fff;
 }
 
-table.table {
-    background: rgba(255, 255, 255, 0.1);
+.column,
+.modal-background,
+.modal-card-foot,
+.modal-card-head,
+.modal-card-body {
+    background: #282f2f;
 }
