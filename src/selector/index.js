@@ -66,6 +66,7 @@ freezeServer.get("/selector/render", async(req, res) => {
         res.send("Invalid key.")
     } else {
         const display = Number(req.query.display)
+        const imageUrl = `http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}`
         const payload = JSON.stringify({
             display: display,
             uuid: req.query.uuid,
@@ -77,13 +78,13 @@ freezeServer.get("/selector/render", async(req, res) => {
                 port: freezeServerPort,
                 key: key,
             },
+            imageUrl,
         })
-        const imageUrl = `url("http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}")`
         if (!selectorHtmlCache) {
             selectorHtmlCache = (await readFile(`${__dirname}/selector.html`)).toString()
         }
         res.contentType("html")
-        res.end(selectorHtmlCache.replace("%IMAGE_URL%", imageUrl).replace("%PAYLOAD%", payload))
+        res.end(selectorHtmlCache.replace("%IMAGE_URL%", `url("${imageUrl}")`).replace("%PAYLOAD%", payload))
     }
 })
 freezeServer.get("/selector/js", (_, res) => {
@@ -99,7 +100,7 @@ freezeServer.get("/root/:file", (req, res) => {
     res.sendFile(`${__dirname}/${path.basename(req.params.file)}`)
 })
 freezeServer.get("/tooltips", (req, res) => {
-    res.sendFile(`${path.join(__dirname, "..")}/gui/css/_tooltip.css`)
+    res.sendFile(`${path.join(__dirname, "..")}/gui/css/components/_tooltip.css`)
 })
 let xyImageMap = new Map()
 freezeServer.get("/selector/magnify", async(req, res) => {
@@ -298,6 +299,7 @@ module.exports = async buttons => {
                     selections: args.selections,
                     width: args.width,
                     height: args.height,
+                    displayEdits: args.displayEdits,
                 })
             }
         })

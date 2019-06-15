@@ -6,6 +6,34 @@
 const electron = require("electron")
 const ipcRenderer = electron.ipcRenderer
 
+// Requires sharp.
+const sharp = require("sharp")
+
+// Requires async-lock.
+const asyncLock = require("async-lock")
+
+// Defines the async lock.
+const lock = new asyncLock()
+
+/**
+ * Handles running an affect.
+ * @param {string} affect - The name of the affect.
+ * @param {Buffer} part - The part to run that affect to.
+ * @returns {Buffer} The affect applied to the part.
+ */
+const runAffect = (affect, part) => new Promise(async(res, rej) => {
+    try {
+        await lock.acquire("affect", async() => {
+            await ipcRenderer.send("run-affect", {
+                affect, data: part,
+            })
+            ipcRenderer.once("affect-res", (_, result) => res(result))
+        })
+    } catch (e) {
+        rej(e)
+    }
+})
+
 // Defines the selection type.
 let selectionType = "__cap__"
 
@@ -203,6 +231,15 @@ document.body.onmousemove = e => {
     }
 }
 
+// Edits that have been made to this display.
+const displayEdits = []
+
+// Defines the background image.
+let backgroundImage
+(async() => {
+    backgroundImage = await (await fetch(payload.imageUrl)).arrayBuffer()
+})()
+
 /**
  * Protects against XSS.
  * @param {string} data - The data to sanitise.
@@ -268,6 +305,7 @@ document.body.onmouseup = async e => {
             selections: selections,
             width: width,
             height: height,
+            displayEdits,
         })
     } else {
         const selection = {
@@ -300,11 +338,16 @@ document.body.onmouseup = async e => {
         selectionBlackness.style.top = element.style.top
         selectionBlackness.style.bottom = element.style.bottom
         selectionBlackness.style.right = element.style.right
-        selectionBlackness.innerHTML = `
-            <h1 class="selection-text">
-                ${xssProtect(selectionType)}
-            </h1>
-        `
+        const left = Number(element.style.left.match(/\d+/)[0])
+        const top = Number(element.style.top.match(/\d+/)[0])
+        const region = await sharp(Buffer.from(backgroundImage))
+            .extract({ left, top, width: Number(element.style.width.match(/\d+/)[0]), height: Number(element.style.height.match(/\d+/)[0]) })
+            .toBuffer()
+        const edit = await runAffect(selectionType, region)
+        displayEdits.push({
+            left, top, edit,
+        })
+        selectionBlackness.style.backgroundImage = `url(${URL.createObjectURL(new Blob([edit], { type: "image/png" }))})`
         document.body.appendChild(selectionBlackness)
         element.style.top = "-10px"
         element.style.left = "-10px"
