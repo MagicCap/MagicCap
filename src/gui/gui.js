@@ -8,9 +8,12 @@
 let activeModal
 
 /**
- * Closes the active modal if there is one (and hides all others)
+ * Closes all active modals with correct dismiss actions & shows capture content
  */
 function closeCurrentModal() {
+    // Show table
+    document.getElementById("mainTable").classList.remove("hidden")
+
     // Find all active modals
     const all = document.querySelectorAll(".modal.is-active")
     all.forEach(div => {
@@ -24,6 +27,25 @@ function closeCurrentModal() {
 
     // Remove activeModal if was set
     if (activeModal) activeModal = undefined
+}
+
+/**
+ * Shows a new modal based on ID (hides existing modals & capture content)
+ */
+function showModal(id) {
+    // Get the modal
+    const modal = document.getElementById(id)
+    if (!modal) return
+
+    // Close existing modals
+    closeCurrentModal()
+
+    // Show the modal
+    modal.classList.add("is-active")
+    activeModal = id
+
+    // Hide captures table
+    document.getElementById("mainTable").classList.add("hidden")
 }
 
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
@@ -194,18 +216,14 @@ new Vue({
  * Shows the clipboard action settings page.
  */
 function showClipboardAction() {
-    closeCurrentModal()
-    activeModal = "clipboardAction"
-    document.getElementById("clipboardAction").classList.add("is-active")
+    showModal("clipboardAction")
 }
 
 /**
  * Shows the beta updates settings page.
  */
 function showBetaUpdates() {
-    closeCurrentModal()
-    activeModal = "betaUpdates"
-    document.getElementById("betaUpdates").classList.add("is-active")
+    showModal("betaUpdates")
 }
 
 /**
@@ -251,9 +269,7 @@ async function runClipboardCapture() {
  * Shows the about page.
  */
 function showAbout() {
-    closeCurrentModal()
-    activeModal = "about"
-    document.getElementById("about").classList.add("is-active")
+    showModal("about")
 }
 
 /**
@@ -277,7 +293,6 @@ function safeConfig() {
  * Shows the debug information page.
  */
 function showDebug() {
-    closeCurrentModal()
     // Generate debug information
     document.getElementById("debugInfo").textContent = `MagicCap Version: ${remote.app.getVersion()}
 System OS: ${os.type()} ${os.release()} / Platform: ${process.platform}
@@ -285,8 +300,7 @@ Installation ID: ${config.install_id}
 Config: ${JSON.stringify(safeConfig())}
 liteTouch Config: ${global.liteTouchConfig}`
     // Show
-    activeModal = "debug"
-    document.getElementById("debug").classList.add("is-active")
+    showModal("debug")
 }
 
 /**
@@ -307,18 +321,14 @@ async function copyDebug() {
  * Shows the file config.
  */
 function showFileConfig() {
-    closeCurrentModal()
-    activeModal = "fileConfig"
-    document.getElementById("fileConfig").classList.add("is-active")
+    showModal("fileConfig")
 }
 
 /**
  * Shows the MFL config.
  */
 function showMFLConfig() {
-    closeCurrentModal()
-    activeModal = "mflConfig"
-    document.getElementById("mflConfig").classList.add("is-active")
+    showModal("mflConfig")
 }
 
 /**
@@ -356,9 +366,7 @@ async function toggleTheme() {
  * Shows the hotkey config.
  */
 function showHotkeyConfig() {
-    closeCurrentModal()
-    activeModal = "hotkeyConfig"
-    document.getElementById("hotkeyConfig").classList.add("is-active")
+    showModal("hotkeyConfig")
 }
 
 // Handles the clipboard actions.
@@ -647,9 +655,7 @@ const optionWebviewBodge = option => {
  * Shows the uploader config page.
  */
 function showUploaderConfig() {
-    closeCurrentModal()
-    activeModal = "uploaderConfig"
-    document.getElementById("uploaderConfig").classList.add("is-active")
+    showModal("uploaderConfig")
 }
 
 // All of the imported uploaders.
