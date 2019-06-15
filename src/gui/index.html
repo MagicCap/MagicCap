@@ -102,7 +102,14 @@
                 <table class="table is-responsive is-fullwidth is-fullheight" id="mainTable">
                     <tbody id="mainTableBody">
                         <tr v-for="capture in captures" :key="capture.timestamp">
-                            <td>{{ successMap[capture.success] }}</td>
+                            <td v-if="capture.success === 0">
+                                <span data-tooltip="$Capture failed$" data-tooltip-position="right">
+                                    <i class="fas fa-times"></i></span>
+                            </td>
+                            <td v-else>
+                                <span data-tooltip="$Capture successful$" data-tooltip-position="right">
+                                    <i class="fas fa-check"></i></span>
+                            </td>
                             <td>{{ capture.filename }}</td>
                             <td>{{ new Date(capture.timestamp).toLocaleString() }}</td>
                             <td v-if="capture.url === undefined"></td>
@@ -262,7 +269,10 @@
                     <p>$Copyright (C) Jake Gealer, Rhys O'Kane & Matt Cowley 2018-2019.$</p>
                     <p>$This software is licensed under the {license} license.$</p>
                     <p v-if="liteTouch">$Some settings are managed by your system administrator.$</p>
-                    <p><br/><small><a href="javascript:showDebug()">$Debug Information$</a></small></p>
+                    <p>
+                        <br/>
+                        <small><a class="button is-small" href="javascript:showDebug()">$Debug Information$</a></small>
+                    </p>
                 </section>
             </div>
         </div>

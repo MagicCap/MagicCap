@@ -245,12 +245,12 @@ msgstr ""
 msgid "this documentation"
 msgstr ""
 
-# gui/gui.js:44
-msgid "Failure"
+# gui/gui.js:100
+msgid "Capture failed"
 msgstr ""
 
-# gui/gui.js:45
-msgid "Success"
+# gui/gui.js:104
+msgid "Capture successful"
 msgstr ""
 
 # gui/index.template.html:86

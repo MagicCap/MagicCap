@@ -155,19 +155,11 @@ function getCaptures() {
 getCaptures();
 
 (async() => {
-    // Defines failure/success.
-    const i18nFailure = await i18n.getPoPhrase("Failure", "gui")
-    const i18nSuccess = await i18n.getPoPhrase("Success", "gui")
-
     // Handles the upload list.
     const mainTable = new Vue({
         el: "#mainTableBody",
         data: {
             captures: displayedCaptures,
-            successMap: [
-                i18nFailure,
-                i18nSuccess,
-            ],
         },
         methods: {
             rmCapture: async timestamp => {
