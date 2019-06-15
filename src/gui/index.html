@@ -18,12 +18,6 @@
                                data-tooltip-position="right">
                                 <i class="far fa-images"></i> $Capture History$</a>
                         </li>
-                        <li>
-                            <a href="javascript:showAbout()"
-                               data-tooltip="$View the version and authors$"
-                               data-tooltip-position="right">
-                                <i class="fas fa-info"></i> $About$</a>
-                        </li>
                         <li v-if="clipboardAction">
                             <a href="javascript:showClipboardAction()"
                                data-tooltip="$Control what will be on your clipboard after capture$"
@@ -47,6 +41,15 @@
                                data-tooltip="$Enable uploading captures and configure the upload target$"
                                data-tooltip-position="right">
                                 <i class="fas fa-upload"></i> $Uploader Settings$</a>
+                        </li>
+
+                        <li><hr/></li>
+
+                        <li>
+                            <a href="javascript:showAbout()"
+                               data-tooltip="$View the version and authors$"
+                               data-tooltip-position="right">
+                                <i class="fas fa-info"></i> $About$</a>
                         </li>
                         <li v-if="betaUpdates">
                             <a href="javascript:showBetaUpdates()"
