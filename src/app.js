@@ -340,6 +340,17 @@ ipcMain.on("check-for-updates", async event => {
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
 
+// Defines the editors.
+const editors = require("./editors")
+
+// The run affect IPC.
+ipcMain.on("run-affect", async(event, data) => {
+    const sentData = data.data
+    const affect = data.affect
+    const res = await editors[affect].apply(sentData)
+    event.sender.send("affect-res", res)
+})
+
 // Runs any OAuth2 flows for the uploaders.
 const OAuth2 = require("./oauth2")
 ipcMain.on("oauth-flow-uploader", async(event, uploaderName) => {

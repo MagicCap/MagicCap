@@ -263,18 +263,22 @@ module.exports = class CaptureCore {
                 selectorArgs = [
                     {
                         type: "selection",
-                        name: "Blur",
-                        tooltip: await i18n.getPoPhrase("Blur a region within the capture", "capture"),
-                        imageLocation: "blur.png",
-                    },
-                    {
-                        type: "selection",
                         name: "__cap__",
                         tooltip: await i18n.getPoPhrase("Select a region to capture", "capture"),
                         imageLocation: "crosshair.png",
                         active: true,
                     },
                 ]
+                const editors = require("./editors")
+                for (const editor of Object.values(editors)) {
+                    selectorArgs.push({
+                        name: editor.name,
+                        tooltip: editor.tooltip,
+                        imageLocation: editor.icon,
+                        type: "selection",
+                        active: false,
+                    })
+                }
             }
 
             const selection = await selector(selectorArgs)
@@ -319,37 +323,13 @@ module.exports = class CaptureCore {
                 cls.buffer = buffer
             } else {
                 const displayFull = selection.screenshots[selection.display]
-                const crops = []
-                if (selection.selections.Blur) {
-                    for (const blurRegion of selection.selections.Blur) {
-                        if (electronScreen.getDisplayNearestPoint({
-                            x: blurRegion.startX,
-                            y: blurRegion.startY,
-                        }).id !== thisDisplay.id) {
-                            continue
-                        }
-
-                        crops.push([
-                            await sharp(displayFull)
-                                .extract({
-                                    left: blurRegion.startPageX,
-                                    top: blurRegion.startPageY,
-                                    width: blurRegion.endPageX - blurRegion.startPageX,
-                                    height: blurRegion.endPageY - blurRegion.startPageY,
-                                })
-                                .blur(50)
-                                .toBuffer(),
-                            blurRegion.startPageX, blurRegion.startPageY,
-                        ])
-                    }
-                }
 
                 let sharpDesktop = sharp(displayFull)
 
-                for (const blur of crops) {
-                    sharpDesktop = sharp(await sharpDesktop.overlayWith(blur[0], {
-                        left: blur[1],
-                        top: blur[2],
+                for (const part of selection.displayEdits) {
+                    sharpDesktop = sharp(await sharpDesktop.overlayWith(part.edit, {
+                        left: part.left,
+                        top: part.top,
                     }).toBuffer())
                 }
 
