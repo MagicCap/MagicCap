@@ -1,2 +1,3 @@
 import Blur from "./blur"
-export { Blur }
+import Pixelate from "./pixelate"
+export { Blur, Pixelate }

@@ -5,5 +5,5 @@ export default {
     description: "Allows you to blur a image.",
     icon: "blur.png",
     expectsImageData: true,
-    apply: partBuff => sharp(partBuff).blur(10).toBuffer(),
+    apply: (partBuff: Buffer): Promise<Buffer>  => sharp(partBuff).blur(10).toBuffer(),
 }
