@@ -4,7 +4,7 @@
 
 .modal {
     margin: 0 0 0 15%;
-    z-index: -1; /* Allow tooltips in sidebar to work */
+    z-index: 0; /* Allow tooltips in sidebar to work */
 }
 
 .modal .modal-card {
@@ -14,7 +14,6 @@
 }
 
 .modal .modal-card-body hr {
-    background: #4c5759;
     margin: 1rem 0;
 }
 

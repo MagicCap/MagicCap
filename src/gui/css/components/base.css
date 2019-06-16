@@ -33,10 +33,19 @@ html, body {
     border-radius: 50%;
 }
 
+.columns {
+    margin: 0 !important;
+}
+
+.columns > .column {
+    min-height: 100vh;
+}
+
 .column.aside {
     background: transparent;
     position: fixed;
     width: 15%;
+    z-index: 10;
 }
 
 .column.aside + .column {
