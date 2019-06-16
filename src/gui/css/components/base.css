@@ -37,6 +37,7 @@ html, body {
     background: transparent;
     position: fixed;
     width: 15%;
+    z-index: 10;
 }
 
 .column.aside + .column {
