@@ -6,7 +6,7 @@
     </head>
 
     <body style="display: none">
-        <div class="columns is-gapless" style="margin: 0;">
+        <div class="columns is-gapless">
 
             <!-- The sidebar menu -->
             <aside class="column aside" id="sidebar">
@@ -180,7 +180,7 @@
                             </div>
                             <div v-else-if="option.type === 'token_from_json'">
                                 <div class="field">
-                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
+                                    <label class="label
                                     <div v-if="getDefaultValue(option) === undefined">
                                         <webview :id="option.value" :src="option.startUrl" :useragent="userAgent" style="height: 450px"></webview>
                                     </div>

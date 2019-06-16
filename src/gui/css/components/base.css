@@ -33,6 +33,10 @@ html, body {
     border-radius: 50%;
 }
 
+.columns {
+    margin: 0 !important;
+}
+
 .columns > .column {
     min-height: 100vh;
 }
