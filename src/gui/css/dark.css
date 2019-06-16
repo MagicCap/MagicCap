@@ -30,6 +30,10 @@ body {
     color: #fff;
 }
 
+hr {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 .column,
 .modal-background,
 .modal-card-foot,
