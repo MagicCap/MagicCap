@@ -6,7 +6,8 @@
 
 :root {/*{{VARS}}*/}
 
-body {
+body,
+.table {
     color: var(--text);
 }
 
@@ -42,6 +43,11 @@ body,
 
 .column.aside {
     background: var(--control-background);
+}
+
+.menu .menu-list a {
+    background: transparent;
+    color: var(--text);
 }
 
 .menu .menu-list a:hover,

@@ -69,6 +69,6 @@
         "dev-run": "npm run build && electron .",
         "build": "npm run dev-colors && rm -rf dist/ && tsc && npm run copy",
         "dev-run-capturedev": "npm run build && electron . -captureDev",
-        "dev-colors": "electron ./src/gui/css/colors.js"
+        "dev-colors": "electron ./src/gui/css/colors.js -dark && electron ./src/gui/css/colors.js -light"
     }
 }

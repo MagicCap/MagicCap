@@ -21,14 +21,15 @@
     
     --window-background: #252525; /* Main background */
     --control-background: #161616; /* Sidebar background */
-    --control-active-background: rgb(41, 41, 41); /* Sidebar item hover/active */
+    --control-active-background: rgba(255, 255, 255, 0.09999999999999998); /* Sidebar item hover/active */
 
     --scroll: rgba(255, 255, 255, 0.25); /* Scroll thumb */
     --scroll-active: rgba(255, 255, 255, 0.55); /* Scroll thumb hover/active */
     --scroll-background: #161616; /* Scroll background */
 }
 
-body {
+body,
+.table {
     color: var(--text);
 }
 
@@ -64,6 +65,11 @@ body,
 
 .column.aside {
     background: var(--control-background);
+}
+
+.menu .menu-list a {
+    background: transparent;
+    color: var(--text);
 }
 
 .menu .menu-list a:hover,
