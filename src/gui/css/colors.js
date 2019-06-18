@@ -31,7 +31,7 @@ const setTheme = theme => {
 const alpha = (color, percent) => Color(color)
     .fade(1 - (percent / 100))
     .rgb()
-    .string(4)
+    .string()
 
 /*
  * Generates the color variables for the given theme
@@ -53,6 +53,8 @@ const generate = dark => {
     --orange: ${sys.getSystemColor("orange")}; /* Warning button */
     --gray: ${sys.getSystemColor("gray")}; /* Default button */
     
+    --shadow: 0 0 3px 0 ${sys.getColor("shadow")};
+    
     --separator: ${alpha(sys.getColor("separator"), 10)};
     --grid: ${alpha(sys.getColor("grid"), 10)};
     --link: ${sys.getColor("link")};
@@ -61,6 +63,7 @@ const generate = dark => {
     --window-background: ${sys.getColor("window-background")}; /* Main background */
     --control-background: ${sys.getColor("control-background")}; /* Sidebar background */
     --control-active-background: ${alpha(sys.getColor("quaternary-label"), 10)}; /* Sidebar item hover/active */
+    --text-background: ${sys.getColor("text-background")}; /* Tooltip background */
 
     --scroll: ${alpha(sys.getColor("tertiary-label"), 25)}; /* Scroll thumb */
     --scroll-active: ${alpha(sys.getColor("secondary-label"), 55)}; /* Scroll thumb hover/active */
