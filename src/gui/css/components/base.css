@@ -11,16 +11,18 @@ html, body {
 }
 
 ::-webkit-scrollbar {
-    width: .9em
+    width: .9rem;
+    height: .9rem;
+    border: 1px solid transparent;
 }
 
 ::-webkit-scrollbar-track {
-    padding: .1em;
+    padding: .1rem;
 }
 
 ::-webkit-scrollbar-thumb {
-    border: .2em solid transparent;
-    border-radius: .4em;
+    border: .21rem solid transparent;
+    border-radius: .4rem;
 }
 
 .divider {
@@ -42,7 +44,6 @@ html, body {
 }
 
 .column.aside {
-    background: transparent;
     position: fixed;
     width: 15%;
     z-index: 10;
@@ -56,6 +57,10 @@ a, button, .button, .delete {
     cursor: default;
 }
 
+a {
+    text-decoration: none;
+}
+
 .url {
     cursor: pointer;
 }
@@ -67,6 +72,11 @@ a, button, .button, .delete {
     padding-left: 0.4em;
     opacity: 0.6;
     content: "\f35d";
+}
+
+.url:hover,
+.url:active {
+    text-decoration: underline;
 }
 
 table.table {

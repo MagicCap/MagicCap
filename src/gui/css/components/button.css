@@ -6,5 +6,6 @@
     padding: 1em 1.5em;
     font-weight: 600;
     font-size: .9em;
+    border-color: transparent;
     transition: all .3s;
 }
