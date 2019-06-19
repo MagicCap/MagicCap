@@ -13,7 +13,7 @@ if (process.platform !== "darwin") {
     app.quit()
 }
 
-/*
+/**
  * Sets the current system theme
  * @param {string} theme - Theme to apply
  */
@@ -22,7 +22,7 @@ const setTheme = theme => {
     sys.getAppLevelAppearance()
 }
 
-/*
+/**
  * Sets the opacity of a given color
  * @param {string} color - The color to be alpha-ed
  * @param {int} percent - The percentage to alpha the color by
@@ -33,7 +33,7 @@ const alpha = (color, percent) => Color(color)
     .rgb()
     .string()
 
-/*
+/**
  * Generates the color variables for the given theme
  * @param {boolean} dark - If the theme should be dark mode
  */
