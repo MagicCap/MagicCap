@@ -86,6 +86,7 @@ pre {
 pre code {
     background: transparent;
     border-radius: unset;
+    border: none;
 }
 
 .input:hover,
