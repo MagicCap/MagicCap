@@ -64,7 +64,14 @@ const generate = dark => {
     --control-background: ${sys.getColor("control-background")}; /* Sidebar background */
     --control-active-background: ${alpha(sys.getColor("quaternary-label"), 10)}; /* Sidebar item hover/active */
     --text-background: ${sys.getColor("text-background")}; /* Tooltip background */
-
+    
+    --control: ${alpha(sys.getColor("control"), 25)}; /* Input background */
+    --control-text: ${alpha(sys.getColor("control-text"), 85)}; /* Input text */
+    --keyboard-focus-indicator: ${alpha(sys.getColor("keyboard-focus-indicator"), 30)}; /* Selected input outline */
+    --selected-control-text: ${alpha(sys.getColor("selected-control-text"), 85)}; /* Selected input text */
+    --selected-content-background: ${sys.getColor("selected-content-background")}; /* Active checkbox/radio background */
+    --placeholder-text: ${alpha(sys.getColor("placeholder-text"), 25)};
+    
     --scroll: ${alpha(sys.getColor("tertiary-label"), 25)}; /* Scroll thumb */
     --scroll-active: ${alpha(sys.getColor("secondary-label"), 55)}; /* Scroll thumb hover/active */
     --scroll-background: ${sys.getColor("control-background")}; /* Scroll background */

@@ -25,7 +25,14 @@
     --control-background: #161616; /* Sidebar background */
     --control-active-background: rgba(255, 255, 255, 0.09999999999999998); /* Sidebar item hover/active */
     --text-background: #161616; /* Tooltip background */
-
+    
+    --control: rgba(255, 255, 255, 0.25); /* Input background */
+    --control-text: rgba(255, 255, 255, 0.85); /* Input text */
+    --keyboard-focus-indicator: rgba(28, 150, 255, 0.30000000000000004); /* Selected input outline */
+    --selected-control-text: rgba(255, 255, 255, 0.85); /* Selected input text */
+    --selected-content-background: #053fc5; /* Active checkbox/radio background */
+    --placeholder-text: rgba(255, 255, 255, 0.25);
+    
     --scroll: rgba(255, 255, 255, 0.25); /* Scroll thumb */
     --scroll-active: rgba(255, 255, 255, 0.55); /* Scroll thumb hover/active */
     --scroll-background: #161616; /* Scroll background */
