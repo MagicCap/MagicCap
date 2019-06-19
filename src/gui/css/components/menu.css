@@ -1,13 +1,28 @@
 /* This code is a part of MagicCap which is a MPL-2.0 licensed project.
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
+.column.aside {
+    position: fixed;
+    width: 15%;
+    z-index: 10;
+    background: var(--control-background);
+}
+
 .menu .menu-list li > a {
+    background: transparent;
+    color: var(--text);
     max-width: 100%;
     border-radius: 0;
     font-size: 0.95em;
     text-overflow: ellipsis;
     white-space: nowrap;
     transition: all 300ms ease;
+}
+
+.menu .menu-list li > a:hover,
+.menu .menu-list li > a:active {
+    background: var(--control-active-background);
+    color: var(--text);
 }
 
 .menu .menu-list li > a > *[class*="fa"] {

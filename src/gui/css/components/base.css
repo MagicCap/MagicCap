@@ -6,23 +6,22 @@
     -webkit-user-drag: none;
 }
 
-html, body {
+html,
+body {
     font-size: 15px;
+    color: var(--text);
+    background: var(--window-background);
 }
 
-::-webkit-scrollbar {
-    width: .9rem;
-    height: .9rem;
-    border: 1px solid transparent;
+hr {
+    background: var(--separator);
 }
 
-::-webkit-scrollbar-track {
-    padding: .1rem;
-}
-
-::-webkit-scrollbar-thumb {
-    border: .21rem solid transparent;
-    border-radius: .4rem;
+a,
+a:hover,
+a:active {
+    color: var(--link);
+    text-decoration: none;
 }
 
 .divider {
@@ -41,12 +40,7 @@ html, body {
 
 .columns > .column {
     min-height: 100vh;
-}
-
-.column.aside {
-    position: fixed;
-    width: 15%;
-    z-index: 10;
+    background: var(--window-background);
 }
 
 .column.aside + .column {
@@ -55,10 +49,6 @@ html, body {
 
 a, button, .button, .delete {
     cursor: default;
-}
-
-a {
-    text-decoration: none;
 }
 
 .url {
@@ -77,12 +67,4 @@ a {
 .url:hover,
 .url:active {
     text-decoration: underline;
-}
-
-table.table {
-    background: transparent;
-}
-
-table.hidden {
-    display: none;
 }

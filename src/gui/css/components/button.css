@@ -9,3 +9,51 @@
     border-color: transparent;
     transition: all .3s;
 }
+
+.button,
+.button:hover,
+.button:active {
+    background: var(--gray);
+    border-color: transparent;
+    color: var(--text);
+}
+
+.button.is-danger,
+.button.is-danger:hover,
+.button.is-danger:active {
+    background: var(--red);
+    border-color: transparent;
+    color: var(--text);
+}
+
+.button.is-primary,
+.button.is-primary:hover,
+.button.is-primary:active {
+    background: var(--blue);
+    border-color: transparent;
+    color: var(--text);
+}
+
+.button.is-info,
+.button.is-info:hover,
+.button.is-info:active {
+    background: var(--blue);
+    border-color: transparent;
+    color: var(--text);
+}
+
+.button.is-success,
+.button.is-success:hover,
+.button.is-success:active {
+    background: var(--green);
+    border-color: transparent;
+    color: var(--text);
+}
+
+.button.is-warning,
+.button.is-warning:hover,
+.button.is-warning:active {
+    background: var(--orange);
+    border-color: transparent;
+    color: var(--text);
+}

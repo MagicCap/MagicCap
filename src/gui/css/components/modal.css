@@ -2,6 +2,13 @@
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
 
+.modal-background,
+.modal-card-foot,
+.modal-card-head,
+.modal-card-body {
+    background: var(--window-background);
+}
+
 .modal {
     margin: 0 0 0 15%;
     z-index: 0; /* Allow tooltips in sidebar to work */

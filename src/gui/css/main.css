@@ -3,9 +3,19 @@
  */
 @import "components/font.css";
 @import "components/base.css";
+@import "components/scroll.css";
+
+@import "components/menu.css";
+@import "components/table.css";
+
 @import "components/modal.css";
 @import "components/inputs.css";
-@import "components/menu.css";
 @import "components/tooltip.css";
 @import "components/button.css";
+
 @import "fontawesome-free/css/all.min.css";
+
+/*
+ * TODO: Codeblocks aren't using the right color
+ * TODO: Tooltips look ugly
+ */
