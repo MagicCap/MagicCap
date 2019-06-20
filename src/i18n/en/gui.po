@@ -161,12 +161,16 @@ msgstr ""
 msgid "This software is licensed under the {license} license."
 msgstr ""
 
-# gui/index.template.html:179
+# gui/index.template.html:309
 msgid "Copy the uploaded URL to the clipboard (requires file uploads to be on)."
 msgstr ""
 
-# gui/index.template.html:180
-msgid "Copy the image to the clipboard."
+# gui/index.template.html:313
+msgid "Copy the captured image to the clipboard."
+msgstr ""
+
+# gui/index.template.html:317
+msgid "Do nothing with the clipboard after a capture."
 msgstr ""
 
 # gui/index.template.html:278

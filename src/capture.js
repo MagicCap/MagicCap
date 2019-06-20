@@ -139,6 +139,9 @@ module.exports = class CaptureCore {
                     await fsnextra.writeFile(this._fp, this.buffer)
                 }
                 switch (config.clipboard_action) {
+                    case 0: {
+                        break
+                    }
                     case 1: {
                         clipboard.writeImage(
                             nativeImage.createFromBuffer(this.buffer)
