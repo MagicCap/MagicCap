@@ -180,7 +180,7 @@
                             </div>
                             <div v-else-if="option.type === 'token_from_json'">
                                 <div class="field">
-                                    <label class="label
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div v-if="getDefaultValue(option) === undefined">
                                         <webview :id="option.value" :src="option.startUrl" :useragent="userAgent" style="height: 450px"></webview>
                                     </div>
@@ -310,8 +310,12 @@
                         <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2">
                         <span class="custom_input"></span>
                     </label>
-                    <label class="input_container">$Copy the image to the clipboard.$
+                    <label class="input_container">$Copy the captured image to the clipboard.$
                         <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Do nothing with the clipboard after a capture.$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(0)" :checked="action === 0">
                         <span class="custom_input"></span>
                     </label>
                 </section>

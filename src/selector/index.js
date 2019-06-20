@@ -100,7 +100,7 @@ freezeServer.get("/root/:file", (req, res) => {
     res.sendFile(`${__dirname}/${path.basename(req.params.file)}`)
 })
 freezeServer.get("/tooltips", (req, res) => {
-    res.sendFile(`${path.join(__dirname, "..")}/gui/css/components/_tooltip.css`)
+    res.sendFile(`${path.join(__dirname, "..")}/gui/css/components/tooltip.css`)
 })
 let xyImageMap = new Map()
 freezeServer.get("/selector/magnify", async(req, res) => {

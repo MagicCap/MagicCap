@@ -1,0 +1,30 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+::-webkit-scrollbar {
+    width: .9rem;
+    height: .9rem;
+    border: 1px solid var(--separator);
+    background-color: var(--scroll-background);
+}
+
+::-webkit-scrollbar-track {
+    padding: .1rem;
+}
+
+::-webkit-scrollbar-thumb {
+    border: .21rem solid transparent;
+    border-radius: .4rem;
+    background: var(--scroll);
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-active);
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: var(--scroll-active);
+    background-clip: content-box;
+}
