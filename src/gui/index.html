@@ -180,7 +180,7 @@
                             </div>
                             <div v-else-if="option.type === 'token_from_json'">
                                 <div class="field">
-                                    <label class="label
+                                    <label class="label" :for="option.value">{{ option.translatedName }}:</label>
                                     <div v-if="getDefaultValue(option) === undefined">
                                         <webview :id="option.value" :src="option.startUrl" :useragent="userAgent" style="height: 450px"></webview>
                                     </div>
