@@ -2,6 +2,9 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
+// Defines the primary colour.
+let primaryColour = [255, 0, 0]
+
 // Requires Electron.
 const electron = require("electron")
 const ipcRenderer = electron.ipcRenderer
@@ -410,7 +413,7 @@ if (payload.buttons) {
             </a>
         `
     }
-    uploaderProperties.innerHTML += propertyStr
+    uploaderProperties.innerHTML = `${propertyStr}${uploaderProperties.innerHTML}`
 }
 
 // Called when a event is recieved from another screen.
@@ -437,3 +440,24 @@ ipcRenderer.on("event-recv", (_, res) => {
         }
     }
 })
+
+/**
+ * This is called when the colour change button is invoked.
+ */
+const changeColour = async() => {
+    const promiseBit = await new Promise(async(res, rej) => {
+        try {
+            await lock.acquire("colour-picker", async() => {
+                await ipcRenderer.send("run-colour-picker", {
+                    r: primaryColour[0],
+                    g: primaryColour[1],
+                    b: primaryColour[2],
+                })
+                ipcRenderer.once("colour-picker-res", (_, result) => res(result))
+            })
+        } catch (e) {
+            rej(e)
+        }
+    })
+    console.log(promiseBit)
+}
