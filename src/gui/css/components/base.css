@@ -6,21 +6,24 @@
     -webkit-user-drag: none;
 }
 
-html, body {
+html,
+body {
+    min-height: 0;
+    min-width: 0;
     font-size: 15px;
+    color: var(--text);
+    background: var(--window-background);
 }
 
-::-webkit-scrollbar {
-    width: .9em
+hr {
+    background: var(--separator);
 }
 
-::-webkit-scrollbar-track {
-    padding: .1em;
-}
-
-::-webkit-scrollbar-thumb {
-    border: .2em solid transparent;
-    border-radius: .4em;
+a,
+a:hover,
+a:active {
+    color: var(--link);
+    text-decoration: none;
 }
 
 .divider {
@@ -39,13 +42,7 @@ html, body {
 
 .columns > .column {
     min-height: 100vh;
-}
-
-.column.aside {
-    background: transparent;
-    position: fixed;
-    width: 15%;
-    z-index: 10;
+    background: var(--window-background);
 }
 
 .column.aside + .column {
@@ -69,10 +66,7 @@ a, button, .button, .delete {
     content: "\f35d";
 }
 
-table.table {
-    background: transparent;
-}
-
-table.hidden {
-    display: none;
+.url:hover,
+.url:active {
+    text-decoration: underline;
 }

@@ -1,6 +1,16 @@
 /* This code is a part of MagicCap which is a MPL-2.0 licensed project.
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
+.modal-background,
+.modal-card-foot,
+.modal-card-head,
+.modal-card-body {
+    background: var(--window-background);
+}
+
+.modal-card-title {
+    color: var(--text);
+}
 
 .modal {
     margin: 0 0 0 15%;
@@ -28,17 +38,16 @@
     height: 28px;
     max-height: 28px;
     min-height: 28px;
-    background: rgba(10, 10, 10, .3);
+    background: var(--control);
+    border: 1px solid var(--separator);
 }
 
 .modal .delete:hover {
-    background: rgba(10, 10, 10, .5);
+    background: var(--control);
+    border: 1px solid var(--separator);
 }
 
-.modal .delete:hover::before {
-    height: 3px;
-}
-
-.modal .delete:hover::after {
-    width: 3px;
+.modal .delete::before,
+.modal .delete::after {
+    background: var(--control-text);
 }
