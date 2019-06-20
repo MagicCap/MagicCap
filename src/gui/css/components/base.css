@@ -8,6 +8,8 @@
 
 html,
 body {
+    min-height: 0;
+    min-width: 0;
     font-size: 15px;
     color: var(--text);
     background: var(--window-background);

@@ -4,6 +4,7 @@
 table.table {
     background: transparent;
     color: var(--text);
+    min-width: 950px;
 }
 
 table.hidden {
