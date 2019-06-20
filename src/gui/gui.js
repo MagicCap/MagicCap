@@ -176,16 +176,19 @@ getCaptures();
     })
 })()
 
-// Defines the clipboard action.
+// Defines the clipboard action (and default).
 let clipboardAction = 2
 if (config.clipboard_action) {
-    if (config.clipboard_action <= 0 || config.clipboard_action >= 3) {
+    if (config.clipboard_action < 0 || config.clipboard_action > 2) {
+        // If invalid option, reset to default
         config.clipboard_action = clipboardAction
         saveConfig()
     } else {
+        // Else, use the config option
         clipboardAction = config.clipboard_action
     }
 } else {
+    // If never set, use the default
     config.clipboard_action = clipboardAction
     saveConfig()
 }

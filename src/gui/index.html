@@ -6,10 +6,10 @@
     </head>
 
     <body style="display: none">
-        <div class="columns is-gapless" style="margin: 0;">
+        <div class="columns is-gapless">
 
             <!-- The sidebar menu -->
-            <aside class="column is-2 aside hero is-fullheight" id="sidebar">
+            <aside class="column aside" id="sidebar">
                 <aside class="menu">
                     <ul class="menu-list">
                         <li>
@@ -17,12 +17,6 @@
                                data-tooltip="$View all your previous captures$"
                                data-tooltip-position="right">
                                 <i class="far fa-images"></i> $Capture History$</a>
-                        </li>
-                        <li>
-                            <a href="javascript:showAbout()"
-                               data-tooltip="$View the version and authors$"
-                               data-tooltip-position="right">
-                                <i class="fas fa-info"></i> $About$</a>
                         </li>
                         <li v-if="clipboardAction">
                             <a href="javascript:showClipboardAction()"
@@ -47,6 +41,15 @@
                                data-tooltip="$Enable uploading captures and configure the upload target$"
                                data-tooltip-position="right">
                                 <i class="fas fa-upload"></i> $Uploader Settings$</a>
+                        </li>
+
+                        <li><hr/></li>
+
+                        <li>
+                            <a href="javascript:showAbout()"
+                               data-tooltip="$View the version and authors$"
+                               data-tooltip-position="right">
+                                <i class="fas fa-info"></i> $About$</a>
                         </li>
                         <li v-if="betaUpdates">
                             <a href="javascript:showBetaUpdates()"
@@ -112,13 +115,13 @@
                             </td>
                             <td>{{ capture.filename }}</td>
                             <td>{{ new Date(capture.timestamp).toLocaleString() }}</td>
-                            <td v-if="capture.url === undefined"></td>
-                            <td v-else>
+                            <td v-if="capture.url">
                                 <a v-on:click="openScreenshotURL(capture.url)" class="url">{{ capture.url }}</a>
                             </td>
+                            <td v-else></td>
                             <td v-if="capture.success === 0"></td>
                             <td v-else>
-                                    <a class="button is-primary" v-on:click="openScreenshotFile(capture.file_path ? capture.file_path : capture.url)">$View$</a>
+                                <a class="button is-primary" v-on:click="capture.file_path ? openScreenshotFile(capture.file_path) : openScreenshotURL(capture.url)">$View$</a>
                             </td>
                             <td>
                                 <a class="button is-danger" v-on:click="rmCapture(capture.timestamp)">$Remove$</a>
@@ -307,8 +310,12 @@
                         <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(2)" :checked="action === 2">
                         <span class="custom_input"></span>
                     </label>
-                    <label class="input_container">$Copy the image to the clipboard.$
+                    <label class="input_container">$Copy the captured image to the clipboard.$
                         <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(1)" :checked="action === 1">
+                        <span class="custom_input"></span>
+                    </label>
+                    <label class="input_container">$Do nothing with the clipboard after a capture.$
+                        <input type="radio" name="clipboardActionRadio" v-on:click="changeAction(0)" :checked="action === 0">
                         <span class="custom_input"></span>
                     </label>
                 </section>

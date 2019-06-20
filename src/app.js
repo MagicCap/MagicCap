@@ -168,8 +168,14 @@ async function openConfig() {
 
     if (app.dock) app.dock.show()
 
+    /*
+     * minWidth: menu.css + table.css + 25 (scrollbar)
+     * minHeight: menu.css + 22 (titlebar)
+     */
     window = new BrowserWindow({
         width: 1250, height: 600,
+        minWidth: 170 + 950 + 25,
+        minHeight: 475 + 22,
         show: false,
         vibrancy: vibrancy,
         backgroundColor: "#00000000",
