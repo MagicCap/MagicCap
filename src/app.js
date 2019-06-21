@@ -346,18 +346,6 @@ ipcMain.on("check-for-updates", async event => {
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
 
-// The main code to fire up a colour picker.
-const pickerLib = require("./colour_selector")
-let colourPickerOpen = false
-ipcMain.on("run-colour-picker", async (event, data) => {
-    if (colourPickerOpen) {
-        event.sender.send("colour-picker-res")
-    }
-    colourPickerOpen = true
-    event.sender.send("colour-picker-res", await pickerLib(data.r, data.g, data.b))
-    colourPickerOpen = false
-})
-
 // Defines the editors.
 const editors = require("./editors")
 
@@ -365,7 +353,8 @@ const editors = require("./editors")
 ipcMain.on("run-affect", async(event, data) => {
     const sentData = data.data
     const affect = data.affect
-    const res = await editors[affect].apply(sentData)
+    const primaryColour = data.primaryColour
+    const res = await editors[affect].apply(sentData, primaryColour)
     event.sender.send("affect-res", res)
 })
 

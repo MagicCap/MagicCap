@@ -153,8 +153,8 @@
         </div>
         <div id="magnify"></div>
         <div id="UploaderProperties">
-            <a href="javascript:changeColour()" style="cursor: default;" data-tooltip="Changes the primary colour." data-tooltip-position="bottom">
-                <img class="clickable-property" src="/selector/icons/${button.imageLocation}">
+            <a style="cursor: default; color: blue; margin: 0;" data-tooltip="Changes the primary colour." data-tooltip-position="bottom">
+                <input type="color" id="ColourSelectionEl" onchange="changeColour()" value="#ff0000" style="width: 34px; height: 34px; padding: 0" class="clickable-property">
             </a>
         </div>
         <div id="selection" style="box-shadow: none; width: 0px; left: -10px; top: -10px;"></div>

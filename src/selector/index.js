@@ -166,7 +166,6 @@ const spawnWindows = (displays, primaryId) => {
             win.focus()
             if (captureDev) win.webContents.openDevTools()
         })
-        //win.webContents.openDevTools()
         win.loadURL(`http://127.0.0.1:${freezeServerPort}/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
         win.setVisibleOnAllWorkspaces(true)
         win.setPosition(i.bounds.x, i.bounds.y)

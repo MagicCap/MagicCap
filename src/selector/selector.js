@@ -28,7 +28,7 @@ const runAffect = (affect, part) => new Promise(async(res, rej) => {
     try {
         await lock.acquire("affect", async() => {
             await ipcRenderer.send("run-affect", {
-                affect, data: part,
+                affect, data: part, primaryColour,
             })
             ipcRenderer.once("affect-res", (_, result) => res(result))
         })
@@ -442,22 +442,13 @@ ipcRenderer.on("event-recv", (_, res) => {
 })
 
 /**
- * This is called when the colour change button is invoked.
+ * Changes the colour in the code.
  */
-const changeColour = async() => {
-    const promiseBit = await new Promise(async(res, rej) => {
-        try {
-            await lock.acquire("colour-picker", async() => {
-                await ipcRenderer.send("run-colour-picker", {
-                    r: primaryColour[0],
-                    g: primaryColour[1],
-                    b: primaryColour[2],
-                })
-                ipcRenderer.once("colour-picker-res", (_, result) => res(result))
-            })
-        } catch (e) {
-            rej(e)
-        }
-    })
-    console.log(promiseBit)
+const changeColour = () => {
+    const hex = document.getElementById("ColourSelectionEl").value.substr(1)
+    const edgeCaseFix = x => x > 255 ? Math.floor((x / 65535) * 255) : x
+    const r = edgeCaseFix(parseInt(hex.substr(0, 2), 16))
+    const g = edgeCaseFix(parseInt(hex.substr(2, 4), 16))
+    const b = edgeCaseFix(parseInt(hex.substr(4, 6), 16))
+    primaryColour = [r, g, b]
 }
