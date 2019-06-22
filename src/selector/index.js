@@ -84,7 +84,10 @@ freezeServer.get("/selector/render", async(req, res) => {
             selectorHtmlCache = (await readFile(`${__dirname}/selector.html`)).toString()
         }
         res.contentType("html")
-        res.end(selectorHtmlCache.replace("%IMAGE_URL%", `url("${imageUrl}")`).replace("%PAYLOAD%", payload))
+        res.end(selectorHtmlCache
+            .replace("%IMAGE_URL%", `url("${imageUrl}")`)
+            .replace("%DARK_MODE%", config.light_theme ? 0 : 1)
+            .replace("%PAYLOAD%", payload))
     }
 })
 freezeServer.get("/selector/js", (_, res) => {
