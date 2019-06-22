@@ -7,9 +7,11 @@ export default {
     expectsImageData: true,
     apply: async(partBuff: Buffer, rgb: Array<Number>): Promise<Buffer>  => {
         const metadata = await sharp(partBuff).metadata()
+        const y = Math.floor(metadata.height / 2)
+        const x = Math.floor(metadata.width / 2)
         const svg = Buffer.from(`
-            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                <circle style="fill:rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})" cx="60" cy="60" r="50"/>
+            <svg viewBox="0 0 ${metadata.width} ${metadata.height}" xmlns="http://www.w3.org/2000/svg">
+                <circle style="fill:rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})" cx="${x}" cy="${y}" r="${x > y ? y : x}"/>
             </svg>
         `)
         return sharp(svg)
