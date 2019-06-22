@@ -21,6 +21,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
+    text-align: center;
 }
 
 #magnify {
@@ -60,10 +61,12 @@ body {
 
 #UploaderProperties {
     font-family: "Roboto", sans-serif;
-    margin-top: 20px;
-    font-size: 0;    display: flex;
+    font-size: 0;
+    display: inline-flex;
+    margin: 20px auto 0 auto;
     flex-direction: row;
     justify-content: center;
+    box-shadow: 0 0 3px 0 var(--shadow);
 }
 
 #UploaderProperties>span {
