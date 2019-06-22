@@ -24,8 +24,9 @@
         <div id="magnify"></div>
         <div id="UploaderProperties">
             <span data-tooltip="Changes the primary colour." data-tooltip-position="bottom">
-                <span><input type="color" id="ColourSelectionEl" onchange="changeColour()" value="#ff0000"
-                             data-clickable/></span>
+                <a href="#" onclick="this.children[0].click()" data-clickable>
+                    <input type="color" id="ColourSelectionEl" onchange="changeColour()" value="#ff0000"/>
+                </a>
             </span>
         </div>
         <div id="selection" style="box-shadow: none; width: 0px; left: -10px; top: -10px;"></div>
