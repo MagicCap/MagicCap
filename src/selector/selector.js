@@ -389,12 +389,12 @@ function invokeButton(buttonId, sendEvent = true) {
     const button = payload.buttons[buttonId]
     switch (button.type) {
         case "selection": {
-            htmlElement.childNodes[1].classList.add("selected")
+            htmlElement.classList.add("selected")
             for (const thisButtonId in payload.buttons) {
                 if (buttonId != thisButtonId) {
                     const thisButton = payload.buttons[thisButtonId]
                     if (thisButton.type === "selection") {
-                        newNodes[thisButtonId].childNodes[1].classList.remove("selected")
+                        newNodes[thisButtonId].classList.remove("selected")
                     }
                 }
             }
@@ -418,10 +418,9 @@ if (payload.buttons) {
     for (const buttonId in payload.buttons) {
         const button = payload.buttons[buttonId]
         propertyStr += `
-            <a href="javascript:invokeButton(${buttonId})" draggable="false"
+            <a href="javascript:invokeButton(${buttonId})" draggable="false" class="${button.active ? "selected" : ""}"
                data-tooltip="${button.tooltip}" data-tooltip-position="bottom">
-                <img class="clickable-property${button.active ? " selected" : ""}" draggable="false"
-                     style="padding: 3px" src="/selector/icons/${button.imageLocation}">
+                <img class="clickable-property" draggable="false" src="/selector/icons/${button.imageLocation}">
             </a>
         `
     }

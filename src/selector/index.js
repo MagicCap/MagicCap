@@ -105,6 +105,9 @@ freezeServer.get("/css/tooltips", (req, res) => {
 freezeServer.get("/css/theme", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/gui/css/${config.light_theme ? "light" : "dark"}.css`)
 })
+freezeServer.get("/css/selector", (req, res) => {
+    res.sendFile(`${__dirname}/selector.css`)
+})
 let xyImageMap = new Map()
 freezeServer.get("/selector/magnify", async(req, res) => {
     const key = req.query.key
