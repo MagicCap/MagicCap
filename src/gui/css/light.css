@@ -11,7 +11,8 @@
     --orange: #fd8208; /* Warning button */
     --gray: #7b7b81; /* Default button */
     
-    --shadow: 0 0 3px 0 #000000;
+    --highlight: #ffffff;
+    --shadow: #000000;
     
     --separator: rgba(0, 0, 0, 0.09999999999999998);
     --grid: rgba(193, 193, 193, 0.09999999999999998);

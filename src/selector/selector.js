@@ -70,9 +70,7 @@ document.addEventListener("keydown", async event => {
 
 // Handles when the mouse is down.
 document.body.onmousedown = async e => {
-    if (e.target.matches(".clickable-property")) {
-        return
-    }
+    if (e.target.matches("[data-clickable]")) return
 
     firstClick = electron.screen.getCursorScreenPoint()
     firstClick.pageX = e.pageX
@@ -269,11 +267,9 @@ function xssProtect(data) {
 
 // Called when the mouse button goes up.
 document.body.onmouseup = async e => {
-    const thisClick = electron.screen.getCursorScreenPoint()
+    if (e.target.matches("[data-clickable]")) return
 
-    if (e.target.matches(".clickable-property")) {
-        return
-    }
+    const thisClick = electron.screen.getCursorScreenPoint()
 
     let inThese, start, end
     if (e.clientX === firstClick.pageX) {
@@ -379,22 +375,21 @@ const uploaderProperties = document.getElementById("UploaderProperties")
  */
 function invokeButton(buttonId, sendEvent = true) {
     const newNodes = []
-    for (const el of uploaderProperties.childNodes) {
-        if (el.nodeName === "A") {
-            newNodes.push(el)
-        }
+    for (const el of uploaderProperties.children) {
+        const a = el.querySelector("a")
+        if (a) newNodes.push(a)
     }
 
     const htmlElement = newNodes[buttonId]
     const button = payload.buttons[buttonId]
     switch (button.type) {
         case "selection": {
-            htmlElement.classList.add("selected")
+            htmlElement.parentElement.classList.add("selected")
             for (const thisButtonId in payload.buttons) {
                 if (buttonId != thisButtonId) {
                     const thisButton = payload.buttons[thisButtonId]
                     if (thisButton.type === "selection") {
-                        newNodes[thisButtonId].classList.remove("selected")
+                        newNodes[thisButtonId].parentElement.classList.remove("selected")
                     }
                 }
             }
@@ -418,10 +413,12 @@ if (payload.buttons) {
     for (const buttonId in payload.buttons) {
         const button = payload.buttons[buttonId]
         propertyStr += `
-            <a href="javascript:invokeButton(${buttonId})" draggable="false" class="${button.active ? "selected" : ""}"
-               data-tooltip="${button.tooltip}" data-tooltip-position="bottom">
-                <img class="clickable-property" draggable="false" src="/selector/icons/${button.imageLocation}">
-            </a>
+            <span data-tooltip="${button.tooltip}" data-tooltip-position="bottom"
+                  class="${button.active ? "selected" : ""}">
+                <a href="javascript:invokeButton(${buttonId})" draggable="false" data-clickable>
+                    <img draggable="false" src="/selector/icons/${button.imageLocation}"/>
+                </a>
+            </span>
         `
     }
     uploaderProperties.innerHTML = `${propertyStr}${uploaderProperties.innerHTML}`
