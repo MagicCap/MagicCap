@@ -68,9 +68,12 @@ document.addEventListener("keydown", async event => {
     }
 })
 
+// Defines the uploader properties HTML element.
+const uploaderProperties = document.getElementById("UploaderProperties")
+
 // Handles when the mouse is down.
 document.body.onmousedown = async e => {
-    if (e.target.matches("[data-clickable]")) return
+    if (uploaderProperties.contains(e.target)) return
 
     firstClick = electron.screen.getCursorScreenPoint()
     firstClick.pageX = e.pageX
@@ -267,7 +270,7 @@ function xssProtect(data) {
 
 // Called when the mouse button goes up.
 document.body.onmouseup = async e => {
-    if (e.target.matches("[data-clickable]")) return
+    if (uploaderProperties.contains(e.target)) return
 
     const thisClick = electron.screen.getCursorScreenPoint()
 
@@ -365,9 +368,6 @@ document.body.onmouseup = async e => {
     }
 }
 
-// Defines the uploader properties HTML element.
-const uploaderProperties = document.getElementById("UploaderProperties")
-
 
 /**
  * This is called when a button is invoked.
@@ -415,7 +415,7 @@ if (payload.buttons) {
         propertyStr += `
             <span data-tooltip="${button.tooltip}" data-tooltip-position="bottom"
                   class="${button.active ? "selected" : ""}">
-                <a href="javascript:invokeButton(${buttonId})" draggable="false" data-clickable>
+                <a href="javascript:invokeButton(${buttonId})" draggable="false">
                     <img draggable="false" src="/selector/icons/${button.imageLocation}"/>
                 </a>
             </span>
