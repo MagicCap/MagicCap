@@ -1,2 +1,7 @@
 import Blur from "./blur"
-export { Blur }
+import Pixelate from "./pixelate"
+import Rectangle from "./rectangle"
+import Circle from "./circle"
+import HollowCircle from "./hollow_circle"
+import HollowRectangle from "./hollow_rectangle"
+export { Blur, Pixelate, Rectangle, HollowRectangle, Circle, HollowCircle }

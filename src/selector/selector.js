@@ -2,6 +2,9 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
+// Defines the primary colour.
+let primaryColour = [255, 0, 0]
+
 // Requires Electron.
 const electron = require("electron")
 const ipcRenderer = electron.ipcRenderer
@@ -25,7 +28,7 @@ const runAffect = (affect, part) => new Promise(async(res, rej) => {
     try {
         await lock.acquire("affect", async() => {
             await ipcRenderer.send("run-affect", {
-                affect, data: part,
+                affect, data: part, primaryColour,
             })
             ipcRenderer.once("affect-res", (_, result) => res(result))
         })
@@ -407,11 +410,16 @@ if (payload.buttons) {
             <a href="javascript:invokeButton(${buttonId})" draggable="false"
                data-tooltip="${button.tooltip}" data-tooltip-position="bottom">
                 <img class="clickable-property${button.active ? " selected" : ""}" draggable="false"
-                     src="/selector/icons/${button.imageLocation}">
+                     style="padding: 3px" src="/selector/icons/${button.imageLocation}">
             </a>
         `
     }
-    uploaderProperties.innerHTML += propertyStr
+    uploaderProperties.innerHTML = `${propertyStr}${uploaderProperties.innerHTML}`
+
+    // What in the name of fuck Chrome? This should work in CSS!
+    document.getElementById("ColourSelectionEl").style.border = "none"
+} else {
+    uploaderProperties.innerHTML = ""
 }
 
 // Called when a event is recieved from another screen.
@@ -438,3 +446,15 @@ ipcRenderer.on("event-recv", (_, res) => {
         }
     }
 })
+
+/**
+ * Changes the colour in the code.
+ */
+const changeColour = () => {
+    const hex = document.getElementById("ColourSelectionEl").value.substr(1)
+    const edgeCaseFix = x => x > 255 ? Math.floor((x / 65535) * 255) : x
+    const r = edgeCaseFix(parseInt(hex.substr(0, 2), 16))
+    const g = edgeCaseFix(parseInt(hex.substr(2, 4), 16))
+    const b = edgeCaseFix(parseInt(hex.substr(4, 6), 16))
+    primaryColour = [r, g, b]
+}

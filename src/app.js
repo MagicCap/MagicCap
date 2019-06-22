@@ -353,7 +353,8 @@ const editors = require("./editors")
 ipcMain.on("run-affect", async(event, data) => {
     const sentData = data.data
     const affect = data.affect
-    const res = await editors[affect].apply(sentData)
+    const primaryColour = data.primaryColour
+    const res = await editors[affect].apply(sentData, primaryColour)
     event.sender.send("affect-res", res)
 })
 

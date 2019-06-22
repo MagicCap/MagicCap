@@ -273,10 +273,11 @@ module.exports = class CaptureCore {
                     },
                 ]
                 const editors = require("./editors")
-                for (const editor of Object.values(editors)) {
+                for (const key in editors) {
+                    const editor = editors[key]
                     selectorArgs.push({
-                        name: editor.name,
-                        tooltip: editor.tooltip,
+                        name: key,
+                        tooltip: editor.description,
                         imageLocation: editor.icon,
                         type: "selection",
                         active: false,

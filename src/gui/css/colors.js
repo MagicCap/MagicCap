@@ -1,8 +1,7 @@
 /* This code is a part of MagicCap which is a MPL-2.0 licensed project.
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
-const magicImports = require("magicimports")
-const { app, systemPreferences } = magicImports("electron")
+const { systemPreferences } = require("electron")
 const fs = require("fs")
 const sys = systemPreferences
 const Color = require("color")
@@ -10,7 +9,7 @@ const Color = require("color")
 // Verify macOS
 if (process.platform !== "darwin") {
     console.error("Colors will only be built on macOS")
-    app.quit()
+    process.exit(0)
 }
 
 /**
@@ -90,4 +89,4 @@ if (process.argv.includes("-dark")) generate(true)
 else if (process.argv.includes("-light")) generate(false)
 
 // Done
-app.quit()
+process.exit(0)
