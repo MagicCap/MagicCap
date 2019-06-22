@@ -99,8 +99,11 @@ freezeServer.get("/selector/icons/:icon", (req, res) => {
 freezeServer.get("/root/:file", (req, res) => {
     res.sendFile(`${__dirname}/${path.basename(req.params.file)}`)
 })
-freezeServer.get("/tooltips", (req, res) => {
+freezeServer.get("/css/tooltips", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/gui/css/components/tooltip.css`)
+})
+freezeServer.get("/css/theme", (req, res) => {
+    res.sendFile(`${path.join(__dirname, "..")}/gui/css/${config.light_theme ? "light" : "dark"}.css`)
 })
 let xyImageMap = new Map()
 freezeServer.get("/selector/magnify", async(req, res) => {

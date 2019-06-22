@@ -4,9 +4,6 @@
 /* This code is a part of MagicCap which is a MPL-2.0 licensed project.
  * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
  */
-@import "bulmaswatch/default/bulmaswatch.min.css";
-@import "main.css";
-
 :root {
     --red: #fc2125; /* Primary/Info button */
     --green: #29c832; /* Success button */

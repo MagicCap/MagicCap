@@ -407,9 +407,10 @@ if (payload.buttons) {
     for (const buttonId in payload.buttons) {
         const button = payload.buttons[buttonId]
         propertyStr += `
-            <a href="javascript:invokeButton(${buttonId})" style="cursor: default;"
+            <a href="javascript:invokeButton(${buttonId})" draggable="false"
                data-tooltip="${button.tooltip}" data-tooltip-position="bottom">
-                <img class="clickable-property${button.active ? " selected" : ""}" style="padding: 3px" src="/selector/icons/${button.imageLocation}">
+                <img class="clickable-property${button.active ? " selected" : ""}" draggable="false"
+                     style="padding: 3px" src="/selector/icons/${button.imageLocation}">
             </a>
         `
     }
