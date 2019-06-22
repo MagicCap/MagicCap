@@ -48,6 +48,17 @@ function showModal(id) {
     document.getElementById("mainTable").classList.add("hidden")
 }
 
+/**
+ * Adds a stylesheet to the head of the document
+ * @param {string} sheet - The link to the stylesheet to include
+ */
+function addStylesheet(sheet) {
+    const stylesheet = document.createElement("link")
+    stylesheet.setAttribute("rel", "stylesheet")
+    stylesheet.setAttribute("href", sheet)
+    document.head.appendChild(stylesheet)
+}
+
 // Allow devtools to be opened (placing this at the top just in case something breaks whilst loading)
 document.addEventListener("keydown", e => {
     // key is I, and the alt key is held down
@@ -119,10 +130,9 @@ new Vue({
 document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`
 
 // Sets the colour scheme.
-const stylesheet = document.createElement("link")
-stylesheet.setAttribute("rel", "stylesheet")
-stylesheet.setAttribute("href", `css/${config.light_theme ? "light" : "dark"}.css`)
-document.head.appendChild(stylesheet)
+addStylesheet(`css/bulmaswatch/${config.light_theme ? "default" : "darkly"}/bulmaswatch.min.css`)
+addStylesheet(`css/main.css`)
+addStylesheet(`css/${config.light_theme ? "light" : "dark"}.css`)
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
