@@ -409,11 +409,16 @@ if (payload.buttons) {
         propertyStr += `
             <a href="javascript:invokeButton(${buttonId})" style="cursor: default;"
                data-tooltip="${button.tooltip}" data-tooltip-position="bottom">
-                <img class="clickable-property${button.active ? " selected" : ""}" src="/selector/icons/${button.imageLocation}">
+                <img class="clickable-property${button.active ? " selected" : ""}" style="padding: 3px" src="/selector/icons/${button.imageLocation}">
             </a>
         `
     }
     uploaderProperties.innerHTML = `${propertyStr}${uploaderProperties.innerHTML}`
+
+    // What in the name of fuck Chrome? This should work in CSS!
+    document.getElementById("ColourSelectionEl").style.border = "none"
+} else {
+    uploaderProperties.innerHTML = ""
 }
 
 // Called when a event is recieved from another screen.
