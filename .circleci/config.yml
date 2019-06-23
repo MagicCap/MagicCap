@@ -50,7 +50,7 @@ jobs:
           command: sudo apt install -y python-pip && pip install awscli --user
       - run:
           name: Upload to Amazon S3
-          command: ~/.local/bin/aws s3 cp ./build/MagicCap-linux-x64/magiccap-linux.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/ --acl public-read
+          command: ~/.local/bin/aws s3 cp --endpoint=https://sfo2.digitaloceanspaces.com ./build/MagicCap-linux-x64/magiccap-linux.zip s3://magiccap-s3/upgrades/$CIRCLE_TAG/ --acl public-read
   # Creates a build for Linux and uploads it to Amazon S3.
 
   macbuild:
@@ -84,10 +84,10 @@ jobs:
           command: HOMEBREW_NO_AUTO_UPDATE=1 brew install awscli
       - run:
           name: Upload magiccap-mac.zip to Amazon S3
-          command: aws s3 cp ./build/MagicCap-darwin-x64/magiccap-mac.zip s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/ --acl public-read
+          command: aws s3 cp --endpoint=https://sfo2.digitaloceanspaces.com ./build/MagicCap-darwin-x64/magiccap-mac.zip s3://magiccap-s3/upgrades/$CIRCLE_TAG/ --acl public-read
       - run:
           name: Upload magiccap-mac.dmg to Amazon S3
-          command: aws s3 cp ./build/magiccap-mac.dmg s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/ --acl public-read
+          command: aws s3 cp --endpoint=https://sfo2.digitaloceanspaces.com ./build/magiccap-mac.dmg s3://magiccap-s3/upgrades/$CIRCLE_TAG/ --acl public-read
   # Creates a build for macOS and uploads it to Amazon S3.
 
   final_deploy:
@@ -102,7 +102,7 @@ jobs:
           command: mkdir ./current/  
       - run:
           name: Pull release from Amazon S3
-          command: ~/.local/bin/aws s3 cp s3://s3.magiccap.me/upgrades/$CIRCLE_TAG/ current --recursive
+          command: ~/.local/bin/aws s3 cp --endpoint=https://sfo2.digitaloceanspaces.com s3://magiccap-s3/upgrades/$CIRCLE_TAG/ current --recursive
       - run:
           name: Create GitHub release
           command: go get github.com/tcnksm/ghr && ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${CIRCLE_TAG} ./current/
