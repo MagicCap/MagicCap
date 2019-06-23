@@ -444,6 +444,11 @@ ipcRenderer.on("event-recv", (_, res) => {
         }
         case "selection-type-change": {
             selectionType = res.args.selectionType
+            for (const selectorId in payload.buttons) {
+                if (payload.buttons[selectorId].name === selectionType) {
+                    invokeButton(selectorId)
+                }
+            }
             break
         }
         case "selection-made": {
