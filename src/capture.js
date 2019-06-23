@@ -332,16 +332,16 @@ module.exports = class CaptureCore {
 
                 for (const part of selection.displayEdits) {
                     sharpDesktop = sharp(await sharpDesktop.overlayWith(part.edit, {
-                        left: part.left,
-                        top: part.top,
+                        left: Math.floor(part.left),
+                        top: Math.floor(part.top),
                     }).toBuffer())
                 }
 
                 const cropped = await sharpDesktop.extract({
-                    top: selection.start.pageY,
-                    left: selection.start.pageX,
-                    width: selection.width,
-                    height: selection.height,
+                    top: Math.floor(selection.start.pageY),
+                    left: Math.floor(selection.start.pageX),
+                    width: Math.floor(selection.width),
+                    height: Math.floor(selection.height),
                 }).toBuffer()
 
                 cls.buffer = cropped
