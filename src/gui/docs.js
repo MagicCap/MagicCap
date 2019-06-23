@@ -3,25 +3,28 @@ const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE
 const HELP_BODY = document.getElementById("helpModalBody")
 const HELP_TITLE = document.getElementById("helpModalTitle")
 const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
+const MD_ONLY = true
 const MD = window.markdownit({
     html: true,
     linkify: true,
     typographer: true,
 })
 
+const titleCase = str => str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+
 function fileElement(item) {
     const li = document.createElement("li")
     const a = document.createElement("a")
     a.href = `javascript:showDocs("${encodeURI(item.url)}")`
     a.setAttribute("data-link-wrapped", true)
-    a.textContent = item.name
+    a.textContent = nameFormat(item.name)
     li.appendChild(a)
     return li
 }
 
 function directoryElement(item, contents) {
     const li = document.createElement("li")
-    const text = document.createTextNode(item.name)
+    const text = document.createTextNode(nameFormat(item.name))
     const br = document.createElement("br")
     const ul = document.createElement("ul")
     contents.forEach(child => {
@@ -36,6 +39,17 @@ function directoryElement(item, contents) {
     return li
 }
 
+function nameFormat(name) {
+    if (name.includes(".")) {
+        name = name
+            .split(".")
+            .slice(0, -1)
+            .join(".")
+    }
+
+    return titleCase(name.replace(/_/g, " "))
+}
+
 async function getStruct(url) {
     let data = []
     try {
@@ -44,6 +58,7 @@ async function getStruct(url) {
         for (const index in json) {
             const item = json[index]
             if (item.type === "file") {
+                if (MD_ONLY && !item.name.endsWith(".md")) continue
                 data.push({
                     name: item.name,
                     path: item.path,
@@ -52,6 +67,7 @@ async function getStruct(url) {
                 })
             } else if (item.type === "dir") {
                 const contents = await getStruct(item.url)
+                if (contents.length === 0) continue
                 data.push({
                     name: item.name,
                     path: item.path,
@@ -78,17 +94,22 @@ async function getStructure() {
 }
 
 function renderDoc(markdown, back, full) {
+
+    const backButton = () => {
+        const a = document.createElement("a")
+        a.href = "javascript:showHelpModal()"
+        a.className = "button is-primary is-small"
+        a.innerText = "Back"
+        return a
+    }
+
     HELP_BODY.innerHTML = ""
     HELP_BODY.style.width = full ? "100%" : "auto"
     HELP_BODY.style.height = full ? "100%" : "auto"
     HELP_BODY.style.margin = `${full ? "0" : "auto"} 10vw`
 
     if (back) {
-        const a = document.createElement("a")
-        a.href = "javascript:showHelpModal()"
-        a.className = "button is-primary is-small"
-        a.innerText = "Back"
-        HELP_BODY.appendChild(a)
+        HELP_BODY.appendChild(backButton())
     }
 
     const div = document.createElement("div")
@@ -101,6 +122,10 @@ function renderDoc(markdown, back, full) {
         item.setAttribute("data-link-wrapped", true)
     })
     HELP_BODY.appendChild(div)
+
+    if (back) {
+        HELP_BODY.appendChild(backButton())
+    }
 }
 
 async function showDocs(url) {
@@ -109,7 +134,8 @@ async function showDocs(url) {
     const response = await fetch(url)
     const json = await response.json()
 
-    HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${(json.path.startsWith(BASE_DIR) ? json.path.substr(BASE_DIR.length) : json.path).replace(/^\/+/g, "")}`
+    const path = json.path.startsWith(BASE_DIR) ? json.path.substr(BASE_DIR.length) : json.path
+    HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${nameFormat(path.replace(/^\/+/g, ""))}`
     renderDoc(atob(json.content), true, true)
 }
 

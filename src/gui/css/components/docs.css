@@ -31,7 +31,7 @@
 }
 
 .markdown {
-    margin-top: 1em;
+    margin: 1em 0;
 }
 
 .markdown h1 {
@@ -60,7 +60,11 @@
 
 .markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
     text-transform: unset;
-    margin: 0.15em 0;
+    margin: 0.25em 0;
+}
+
+.markdown p, .markdown table {
+    margin: 0.2em 0;
 }
 
 .markdown blockquote {
