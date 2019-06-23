@@ -452,6 +452,9 @@ ipcRenderer.on("event-recv", (_, res) => {
  */
 const changeColour = () => {
     const hex = document.getElementById("ColourSelectionEl").value.substr(1)
+    /**
+     * Fixes a small edgecase.
+     */
     const edgeCaseFix = x => x > 255 ? Math.floor((x / 65535) * 255) : x
     const r = edgeCaseFix(parseInt(hex.substr(0, 2), 16))
     const g = edgeCaseFix(parseInt(hex.substr(2, 4), 16))
