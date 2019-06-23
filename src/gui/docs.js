@@ -1,12 +1,19 @@
-const BASE_URL = "https://api.github.com/repos/MagicCap/MagicCap/contents/docs?ref=develop"
+const BASE_DIR = "docs/"
+const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
 const HELP_BODY = document.getElementById("helpModalBody")
 const HELP_TITLE = document.getElementById("helpModalTitle")
 const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
+const MD = window.markdownit({
+    html: true,
+    linkify: true,
+    typographer: true,
+})
 
 function fileElement(item) {
     const li = document.createElement("li")
     const a = document.createElement("a")
     a.href = `javascript:showDocs("${encodeURI(item.url)}")`
+    a.setAttribute("data-link-wrapped", true)
     a.textContent = item.name
     li.appendChild(a)
     return li
@@ -66,21 +73,46 @@ async function getStructure() {
     return ul
 }
 
+function renderDoc(markdown, back, full) {
+    HELP_BODY.innerHTML = ""
+    HELP_BODY.style.width = full ? "100%" : "auto"
+    HELP_BODY.style.height = full ? "100%" : "auto"
+
+    if (back) {
+        const a = document.createElement("a")
+        a.href = "javascript:showHelpModal()"
+        a.className = "button is-primary is-small"
+        a.innerText = "Back"
+        HELP_BODY.appendChild(a)
+    }
+
+    const div = document.createElement("div")
+    div.className = "markdown"
+    div.innerHTML = MD.render(markdown)
+    div.querySelectorAll("a:not([data-link-wrapped])").forEach(item => {
+        const link = String(item.href)
+        item.href = `javascript:openURL("${encodeURI(link)}")`
+        item.classList.add("url")
+        item.setAttribute("data-link-wrapped", true)
+    })
+    HELP_BODY.appendChild(div)
+}
+
 async function showDocs(url) {
-    HELP_BODY.textContent = "Loading..."
+    renderDoc("## Loading file...", true, false)
 
     const response = await fetch(url)
     const json = await response.json()
 
     HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${json.path}`
-    HELP_BODY.textContent = atob(json.content)
+    renderDoc(atob(json.content), true, true)
 }
 
 async function showHelpModal() {
     HELP_TITLE.textContent = HELP_TITLE_DEFAULT
-    HELP_BODY.textContent = "Loading..."
+    renderDoc("## Loading menu...", false, false)
     showModal("helpModal")
 
     const html = await getStructure()
-    HELP_BODY.innerHTML = html.outerHTML
+    renderDoc(html.outerHTML, false, true)
 }

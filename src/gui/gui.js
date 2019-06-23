@@ -341,17 +341,25 @@ function showMFLConfig() {
 }
 
 /**
+ * Opens a URL
+ * @param {string} url - The URL to open externally
+ */
+function openURL(url) {
+    shell.openExternal(url)
+}
+
+/**
  * Opens the MPL 2.0 license in a browser.
  */
 function openMPL() {
-    shell.openExternal("https://www.mozilla.org/en-US/MPL/2.0")
+    openURL("https://www.mozilla.org/en-US/MPL/2.0")
 }
 
 /**
  * Opens the license for the emoji data in a browser.
  */
 function openEmojiLicense() {
-    shell.openExternal("https://github.com/missive/emoji-mart/blob/master/LICENSE")
+    openURL("https://github.com/missive/emoji-mart/blob/master/LICENSE")
 }
 
 /**
@@ -436,7 +444,7 @@ async function hotkeyConfigClose() {
  * Opens the Electron accelerator documentation.
  */
 function openAcceleratorDocs() {
-    shell.openExternal("https://electronjs.org/docs/api/accelerator")
+    openURL("https://electronjs.org/docs/api/accelerator")
 }
 
 // Repoints path for later.
