@@ -1,3 +1,5 @@
+// This code is a part of MagicCap which is a MPL-2.0 licensed project.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 const BASE_DIR = "docs"
 const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=MattIPv4/docs`
 const HELP_BODY = document.getElementById("helpModalBody")
@@ -10,8 +12,18 @@ const MD = window.markdownit({
     typographer: true,
 })
 
+/**
+ * Converts a string to title case
+ * @param {string} str - The string to convert
+ * @returns {string}
+ */
 const titleCase = str => str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
 
+/**
+ * Generates an HTML item for the file item given
+ * @param item - The file item to generate HTML for
+ * @returns {HTMLLIElement}
+ */
 function fileElement(item) {
     const li = document.createElement("li")
     const a = document.createElement("a")
@@ -22,6 +34,12 @@ function fileElement(item) {
     return li
 }
 
+/**
+ * Creates an HTML item for a directory object and given item contents
+ * @param item - The directory item
+ * @param contents - The contents of the given directory
+ * @returns {HTMLLIElement}
+ */
 function directoryElement(item, contents) {
     const li = document.createElement("li")
     const text = document.createTextNode(nameFormat(item.name))
@@ -39,6 +57,11 @@ function directoryElement(item, contents) {
     return li
 }
 
+/**
+ * Formats a file item name; Stripping file extension, replacing underscores & hyphens with spaces, using title case
+ * @param {string} name - The name to format
+ * @returns {string}
+ */
 function nameFormat(name) {
     if (name.includes(".")) {
         name = name
@@ -47,9 +70,14 @@ function nameFormat(name) {
             .join(".")
     }
 
-    return titleCase(name.replace(/_/g, " "))
+    return titleCase(name.replace(/[_-]/g, " "))
 }
 
+/**
+ * Recursively generates the structure data for a given GitHub API repo url
+ * @param {string} url - The GitHub API repo contents URL to scan
+ * @returns {Promise<Array>}
+ */
 async function getStruct(url) {
     let data = []
     try {
@@ -83,6 +111,10 @@ async function getStruct(url) {
     return data
 }
 
+/**
+ * Fetches the full structure data and generates the HTML menu for the repo contents
+ * @returns {Promise<HTMLUListElement>}
+ */
 async function getStructure() {
     const data = await getStruct(BASE_URL)
     const ul = document.createElement("ul")
@@ -93,8 +125,17 @@ async function getStructure() {
     return ul
 }
 
+/**
+ * Renders the given markdown (or HTML) to the help modal body
+ * @param {string} markdown - The markdown (or HTML) to render
+ * @param back
+ * @param full
+ */
 function renderDoc(markdown, back, full) {
-
+    /**
+     * Generates a back button to return to the main help menu
+     * @returns {HTMLAnchorElement}
+     */
     const backButton = () => {
         const a = document.createElement("a")
         a.href = "javascript:showHelpModal()"
@@ -128,6 +169,11 @@ function renderDoc(markdown, back, full) {
     }
 }
 
+/**
+ * Show the help doc file at the given GitHub API file url
+ * @param {string} url - The GitHUB API file location to display
+ * @returns {Promise<void>}
+ */
 async function showDocs(url) {
     renderDoc("## Loading file...", true, false)
 
@@ -139,6 +185,10 @@ async function showDocs(url) {
     renderDoc(atob(json.content), true, true)
 }
 
+/**
+ * Trigger the initial help (documentation) modal with the file menu
+ * @returns {Promise<void>}
+ */
 async function showHelpModal() {
     HELP_TITLE.textContent = HELP_TITLE_DEFAULT
     renderDoc("## Loading menu...", false, false)
