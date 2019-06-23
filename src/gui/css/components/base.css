@@ -22,6 +22,7 @@ hr {
 a,
 a:hover,
 a:active {
+    -webkit-user-drag: none;
     color: var(--link);
     text-decoration: none;
 }

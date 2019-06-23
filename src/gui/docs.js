@@ -70,6 +70,7 @@ async function getStruct(url) {
 async function getStructure() {
     const data = await getStruct(BASE_URL)
     const ul = document.createElement("ul")
+    ul.className = "docs-menu"
     data.forEach(item => {
         ul.appendChild(item.html)
     })
@@ -80,6 +81,7 @@ function renderDoc(markdown, back, full) {
     HELP_BODY.innerHTML = ""
     HELP_BODY.style.width = full ? "100%" : "auto"
     HELP_BODY.style.height = full ? "100%" : "auto"
+    HELP_BODY.style.margin = `${full ? "0" : "auto"} 10vw`
 
     if (back) {
         const a = document.createElement("a")

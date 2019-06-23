@@ -1,0 +1,35 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+.docs-menu,
+.docs-menu ul {
+    user-select: none;
+    display: inline-block;
+    color: var(--placeholder-text);
+}
+
+.docs-menu ul {
+    width: 100%;
+}
+
+.docs-menu a {
+    color: var(--text);
+    background: transparent;
+    cursor: default;
+    text-decoration: none;
+    height: 100%;
+    display: block;
+    margin-left: -1em;
+    padding: 0 1.5em 0 1em;
+    position: relative;
+    width: 100%;
+}
+
+.docs-menu a:hover {
+    color: var(--text);
+    background: var(--selected-content-background);
+}
+
+.markdown {
+    margin-top: 1em;
+}
