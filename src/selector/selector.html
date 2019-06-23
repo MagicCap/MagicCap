@@ -3,140 +3,13 @@
         <style>
             @import url("/css/tooltips");
             @import url("/css/theme");
-
-            @font-face {
-                font-family: "Roboto";
-                src: url("/selector/font") format("truetype");
-            }
-
-            html * {
-                user-select: none;
-                cursor: none
-            }
+            @import url("/css/selector");
 
             body {
-                overflow: hidden;
-                border: 0;
-                padding: 0;
-                margin: 0;
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
                 background-image: %IMAGE_URL%;
             }
-
-            #magnify {
-                left: -180px;
-                top: -180px;
-                position: absolute;
-                pointer-events: none;
-                width: 180px;
-                height: 180px;
-                border-radius: 50%;
-                border: 2px solid rgba(0, 0, 0, 0.8);
-                z-index: 1;
-                background-size: 100% 100%;
-                background-color: white;
-                image-rendering: pixelated;
-            }
-
-            #position {
-                width: 180px;
-                display: flex;
-                justify-content: center;
-                left: -180px;
-                top: -100px;
-                position: absolute;
-                z-index: 0;
-            }
-
-            #positions {
-                display: inline-block;
-                color: white;
-                font-family: "Roboto", sans-serif;
-                background: rgba(0, 0, 0, 0.4);
-                margin: 0;
-                padding: 2px 4px;
-                border-radius: 2px;
-            }
-
-            #UploaderProperties {
-                text-align: center;
-                font-family: "Roboto", sans-serif;
-                margin-top: 20px;
-                font-size: 0;
-            }
-
-            #selection {
-                border: 1px dashed white;
-                position: absolute;
-                pointer-events: none;
-                padding: 0;
-                margin: 0;
-                z-index: -1;
-                box-sizing: border-box;
-                box-shadow: 0 0 0 300vmax rgba(0, 0, 0, 0.4);
-            }
-
-            #cursorX, #cursorY {
-                position: absolute;
-                pointer-events: none;
-                z-index: 50;
-                background: rgba(0, 0, 0, 0.4);
-                border: 1px solid rgba(255, 255, 255, 0.3);
-            }
-
-            #cursorX {
-                height: 100vh;
-                top: 0;
-                width: 0.5px;
-            }
-
-            #cursorY {
-                width: 100vw;
-                left: 0;
-                height: 0.5px;
-            }
-
-            .clickable-property {
-                width: 30px;
-                background-color: #555;
-            }
-
-            .clickable-property:hover {
-                background-color: #ccc;
-            }
-
-            .clickable-property.selected {
-                background-color: #77f;
-            }
-
-            .selection-container {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                border: 1px solid #fff;
-                z-index: -2;
-            }
-
-            .selection-text {
-                color: #fff;
-                background: rgba(0, 0, 0, 0.8);
-                margin: 0;
-                padding: 4px 16px;
-                border-radius: 8px;
-                font-family: "Roboto";
-            }
-
-            #magnify, #position, #cursorX, #cursorY, #UploaderProperties {
-                opacity: 0;
-            }
-
-            body:hover #magnify, body:hover #position, body:hover #cursorX, body:hover #cursorY, body:hover #UploaderProperties {
-                opacity: 1;
+            #UploaderProperties>span>*>img {
+                filter: invert(%DARK_MODE%);
             }
         </style>
     </head>
@@ -153,8 +26,11 @@
         </div>
         <div id="magnify"></div>
         <div id="UploaderProperties">
-            <span style="cursor: default; color: blue; vertical-align: 6px;" data-tooltip="Changes the primary colour." data-tooltip-position="bottom">
-                <input type="color" id="ColourSelectionEl" onchange="changeColour()" value="#ff0000" style="width: 36px; height: 36px" class="clickable-property">
+            <span data-tooltip="Changes the primary colour." data-tooltip-position="bottom">
+                <a href="#" onclick="this.children[0].click()" draggable="false">
+                    <input type="color" id="ColourSelectionEl" onchange="changeColour()" value="#ff0000"
+                           draggable="false"/>
+                </a>
             </span>
         </div>
         <div id="selection" style="box-shadow: none; width: 0px; left: -10px; top: -10px;"></div>

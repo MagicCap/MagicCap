@@ -49,7 +49,8 @@ const generate = dark => {
     --orange: ${sys.getSystemColor("orange")}; /* Warning button */
     --gray: ${sys.getSystemColor("gray")}; /* Default button */
     
-    --shadow: 0 0 3px 0 ${sys.getColor("shadow")};
+    --highlight: ${sys.getColor("highlight")};
+    --shadow: ${sys.getColor("shadow")};
     
     --separator: ${alpha(sys.getColor("separator"), 10)};
     --grid: ${alpha(sys.getColor("grid"), 10)};

@@ -68,11 +68,12 @@ document.addEventListener("keydown", async event => {
     }
 })
 
+// Defines the uploader properties HTML element.
+const uploaderProperties = document.getElementById("UploaderProperties")
+
 // Handles when the mouse is down.
 document.body.onmousedown = async e => {
-    if (e.target.matches(".clickable-property")) {
-        return
-    }
+    if (uploaderProperties.contains(e.target)) return
 
     firstClick = electron.screen.getCursorScreenPoint()
     firstClick.pageX = e.pageX
@@ -269,11 +270,9 @@ function xssProtect(data) {
 
 // Called when the mouse button goes up.
 document.body.onmouseup = async e => {
-    const thisClick = electron.screen.getCursorScreenPoint()
+    if (uploaderProperties.contains(e.target)) return
 
-    if (e.target.matches(".clickable-property")) {
-        return
-    }
+    const thisClick = electron.screen.getCursorScreenPoint()
 
     let inThese, start, end
     if (e.clientX === firstClick.pageX) {
@@ -369,9 +368,6 @@ document.body.onmouseup = async e => {
     }
 }
 
-// Defines the uploader properties HTML element.
-const uploaderProperties = document.getElementById("UploaderProperties")
-
 
 /**
  * This is called when a button is invoked.
@@ -379,22 +375,21 @@ const uploaderProperties = document.getElementById("UploaderProperties")
  */
 function invokeButton(buttonId, sendEvent = true) {
     const newNodes = []
-    for (const el of uploaderProperties.childNodes) {
-        if (el.nodeName === "A") {
-            newNodes.push(el)
-        }
+    for (const el of uploaderProperties.children) {
+        const a = el.querySelector("a")
+        if (a) newNodes.push(a)
     }
 
     const htmlElement = newNodes[buttonId]
     const button = payload.buttons[buttonId]
     switch (button.type) {
         case "selection": {
-            htmlElement.childNodes[1].classList.add("selected")
+            htmlElement.parentElement.classList.add("selected")
             for (const thisButtonId in payload.buttons) {
                 if (buttonId != thisButtonId) {
                     const thisButton = payload.buttons[thisButtonId]
                     if (thisButton.type === "selection") {
-                        newNodes[thisButtonId].childNodes[1].classList.remove("selected")
+                        newNodes[thisButtonId].parentElement.classList.remove("selected")
                     }
                 }
             }
@@ -418,11 +413,12 @@ if (payload.buttons) {
     for (const buttonId in payload.buttons) {
         const button = payload.buttons[buttonId]
         propertyStr += `
-            <a href="javascript:invokeButton(${buttonId})" draggable="false"
-               data-tooltip="${button.tooltip}" data-tooltip-position="bottom">
-                <img class="clickable-property${button.active ? " selected" : ""}" draggable="false"
-                     style="padding: 3px" src="/selector/icons/${button.imageLocation}">
-            </a>
+            <span data-tooltip="${button.tooltip}" data-tooltip-position="bottom"
+                  class="${button.active ? "selected" : ""}">
+                <a href="javascript:invokeButton(${buttonId})" draggable="false">
+                    <img draggable="false" src="/selector/icons/${button.imageLocation}"/>
+                </a>
+            </span>
         `
     }
     uploaderProperties.innerHTML = `${propertyStr}${uploaderProperties.innerHTML}`

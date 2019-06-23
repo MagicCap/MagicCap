@@ -84,7 +84,10 @@ freezeServer.get("/selector/render", async(req, res) => {
             selectorHtmlCache = (await readFile(`${__dirname}/selector.html`)).toString()
         }
         res.contentType("html")
-        res.end(selectorHtmlCache.replace("%IMAGE_URL%", `url("${imageUrl}")`).replace("%PAYLOAD%", payload))
+        res.end(selectorHtmlCache
+            .replace("%IMAGE_URL%", `url("${imageUrl}")`)
+            .replace("%DARK_MODE%", config.light_theme ? 0 : 1)
+            .replace("%PAYLOAD%", payload))
     }
 })
 freezeServer.get("/selector/js", (_, res) => {
@@ -104,6 +107,9 @@ freezeServer.get("/css/tooltips", (req, res) => {
 })
 freezeServer.get("/css/theme", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/gui/css/${config.light_theme ? "light" : "dark"}.css`)
+})
+freezeServer.get("/css/selector", (req, res) => {
+    res.sendFile(`${__dirname}/selector.css`)
 })
 let xyImageMap = new Map()
 freezeServer.get("/selector/magnify", async(req, res) => {

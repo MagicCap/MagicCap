@@ -1,0 +1,207 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+@font-face {
+    font-family: "Roboto";
+    src: url("/selector/font") format("truetype");
+}
+
+html * {
+    user-select: none;
+    cursor: none
+}
+
+body {
+    overflow: hidden;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+#magnify {
+    left: -180px;
+    top: -180px;
+    position: absolute;
+    pointer-events: none;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.8);
+    z-index: 1;
+    background-size: 100% 100%;
+    background-color: white;
+    image-rendering: pixelated;
+}
+
+#position {
+    width: 180px;
+    display: flex;
+    justify-content: center;
+    left: -180px;
+    top: -100px;
+    position: absolute;
+    z-index: 0;
+}
+
+#positions {
+    display: inline-block;
+    color: white;
+    font-family: "Roboto", sans-serif;
+    background: rgba(0, 0, 0, 0.4);
+    margin: 0;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+#UploaderProperties {
+    font-family: "Roboto", sans-serif;
+    font-size: 0;
+    display: inline-flex;
+    margin: 20px auto 0 auto;
+    flex-direction: row;
+    justify-content: center;
+    box-shadow: 0 0 3px 0 var(--shadow);
+}
+
+#UploaderProperties>span {
+    width: 60px;
+    height: 20px;
+    border: 1px solid var(--separator);
+}
+
+#UploaderProperties>span>* {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+#UploaderProperties>span,
+#UploaderProperties>span>* {
+    background: var(--control-background);
+}
+
+#UploaderProperties>span>*::before {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to bottom, var(--highlight), var(--shadow));
+    opacity: 0.1;
+}
+
+#UploaderProperties>span:first-child,
+#UploaderProperties>span:first-child>* {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+#UploaderProperties>span:not(:first-child) {
+    border-left: none;
+}
+
+#UploaderProperties>span:last-child,
+#UploaderProperties>span:last-child>* {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+#UploaderProperties>span.selected,
+#UploaderProperties>span.selected>* {
+    background: var(--selected-content-background);
+}
+
+#UploaderProperties>span.selected>*>img {
+    filter: invert(1);
+}
+
+#UploaderProperties>span>*>* {
+    height: 18px;
+    width: 18px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+}
+
+/* Color inputs are dumb af */
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    border-radius: 2px;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+}
+
+#selection {
+    border: 1px dashed white;
+    position: absolute;
+    pointer-events: none;
+    padding: 0;
+    margin: 0;
+    z-index: -1;
+    box-sizing: border-box;
+    box-shadow: 0 0 0 300vmax rgba(0, 0, 0, 0.4);
+}
+
+#cursorX, #cursorY {
+    position: absolute;
+    pointer-events: none;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+#cursorX {
+    height: 100vh;
+    top: 0;
+    width: 0.5px;
+}
+
+#cursorY {
+    width: 100vw;
+    left: 0;
+    height: 0.5px;
+}
+
+.selection-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    border: 1px solid #fff;
+    z-index: -2;
+}
+
+.selection-text {
+    color: #fff;
+    background: rgba(0, 0, 0, 0.8);
+    margin: 0;
+    padding: 4px 16px;
+    border-radius: 8px;
+    font-family: "Roboto";
+}
+
+#magnify, #position, #cursorX, #cursorY, #UploaderProperties {
+    opacity: 0;
+}
+
+body:hover #magnify, body:hover #position, body:hover #cursorX, body:hover #cursorY, body:hover #UploaderProperties {
+    opacity: 1;
+}
