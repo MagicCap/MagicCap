@@ -377,7 +377,7 @@ const uploaderProperties = document.getElementById("UploaderProperties")
  * This is called when a button is invoked.
  * @param {int} buttonId - The ID of the button.
  */
-function invokeButton(buttonId) {
+function invokeButton(buttonId, sendEvent = true) {
     const newNodes = []
     for (const el of uploaderProperties.childNodes) {
         if (el.nodeName === "A") {
@@ -399,12 +399,14 @@ function invokeButton(buttonId) {
                 }
             }
             selectionType = button.name
-            ipcRenderer.send(`${payload.uuid}-event-send`, {
-                type: "selection-type-change",
-                args: {
-                    selectionType: selectionType,
-                },
-            })
+            if (sendEvent) {
+                ipcRenderer.send(`${payload.uuid}-event-send`, {
+                    type: "selection-type-change",
+                    args: {
+                        selectionType: selectionType,
+                    },
+                })
+            }
             break
         }
     }
@@ -446,7 +448,7 @@ ipcRenderer.on("event-recv", (_, res) => {
             selectionType = res.args.selectionType
             for (const selectorId in payload.buttons) {
                 if (payload.buttons[selectorId].name === selectionType) {
-                    invokeButton(selectorId)
+                    invokeButton(selectorId, false)
                 }
             }
             break
