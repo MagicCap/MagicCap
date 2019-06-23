@@ -1,4 +1,4 @@
-const BASE_DIR = "docs/"
+const BASE_DIR = "docs"
 const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
 const HELP_BODY = document.getElementById("helpModalBody")
 const HELP_TITLE = document.getElementById("helpModalTitle")
@@ -38,34 +38,37 @@ function directoryElement(item, contents) {
 
 async function getStruct(url) {
     let data = []
-    const response = await fetch(url)
-    const json = await response.json()
-    for (const index in json) {
-        const item = json[index]
-        if (item.type === "file") {
-            data.push({
-                name: item.name,
-                path: item.path,
-                type: item.type,
-                html: fileElement(item),
-            })
-        } else if (item.type === "dir") {
-            const contents = await getStruct(item.url)
-            data.push({
-                name: item.name,
-                path: item.path,
-                type: item.type,
-                contents: contents,
-                html: directoryElement(item, contents),
-            })
+    try {
+        const response = await fetch(url)
+        const json = await response.json()
+        for (const index in json) {
+            const item = json[index]
+            if (item.type === "file") {
+                data.push({
+                    name: item.name,
+                    path: item.path,
+                    type: item.type,
+                    html: fileElement(item),
+                })
+            } else if (item.type === "dir") {
+                const contents = await getStruct(item.url)
+                data.push({
+                    name: item.name,
+                    path: item.path,
+                    type: item.type,
+                    contents: contents,
+                    html: directoryElement(item, contents),
+                })
+            }
         }
+    } catch (e) {
+        console.error(url, e)
     }
     return data
 }
 
 async function getStructure() {
     const data = await getStruct(BASE_URL)
-    console.log(data)
     const ul = document.createElement("ul")
     data.forEach(item => {
         ul.appendChild(item.html)
@@ -104,7 +107,7 @@ async function showDocs(url) {
     const response = await fetch(url)
     const json = await response.json()
 
-    HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${json.path}`
+    HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${(json.path.startsWith(BASE_DIR) ? json.path.substr(BASE_DIR.length) : json.path).replace(/^\/+/g, "")}`
     renderDoc(atob(json.content), true, true)
 }
 
