@@ -429,6 +429,9 @@ if (payload.buttons) {
     uploaderProperties.innerHTML = ""
 }
 
+// Is this a botch? Yes. Does it stop a infinite loop? Yes.
+let doNotCallColourEdit = false
+
 // Called when a event is recieved from another screen.
 ipcRenderer.on("event-recv", (_, res) => {
     if (res.display == payload.display) {
@@ -459,6 +462,9 @@ ipcRenderer.on("event-recv", (_, res) => {
         }
         case "colour-change": {
             primaryColour = res.args.primaryColour
+            doNotOpenColourEdit = true
+            document.getElementById("ColourSelectionEl").value = res.args.hex
+            doNotOpenColourEdit = false
         }
     }
 })
@@ -467,6 +473,9 @@ ipcRenderer.on("event-recv", (_, res) => {
  * Changes the colour in the code.
  */
 const changeColour = () => {
+    if (doNotCallColourEdit) {
+        return
+    }
     const hex = document.getElementById("ColourSelectionEl").value.substr(1)
     /**
      * Fixes a small edgecase.
@@ -478,6 +487,6 @@ const changeColour = () => {
     primaryColour = [r, g, b]
     ipcRenderer.send(`${payload.uuid}-event-send`, {
         type: "colour-change",
-        args: { primaryColour },
+        args: { primaryColour, hex: `#${hex}` },
     })
 }
