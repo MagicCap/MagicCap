@@ -452,6 +452,10 @@ ipcRenderer.on("event-recv", (_, res) => {
             } else {
                 selections[res.args.selectionType] = [res.args]
             }
+            break
+        }
+        case "colour-change": {
+            primaryColour = res.args.primaryColour
         }
     }
 })
@@ -469,4 +473,8 @@ const changeColour = () => {
     const g = edgeCaseFix(parseInt(hex.substr(2, 4), 16))
     const b = edgeCaseFix(parseInt(hex.substr(4, 6), 16))
     primaryColour = [r, g, b]
+    ipcRenderer.send(`${payload.uuid}-event-send`, {
+        type: "colour-change",
+        args: { primaryColour },
+    })
 }
