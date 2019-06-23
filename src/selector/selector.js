@@ -462,9 +462,9 @@ ipcRenderer.on("event-recv", (_, res) => {
         }
         case "colour-change": {
             primaryColour = res.args.primaryColour
-            doNotOpenColourEdit = true
+            doNotCallColourEdit = true
             document.getElementById("ColourSelectionEl").value = res.args.hex
-            doNotOpenColourEdit = false
+            doNotCallColourEdit = false
         }
     }
 })
