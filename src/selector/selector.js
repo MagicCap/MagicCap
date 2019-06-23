@@ -43,21 +43,30 @@ let selectionType = "__cap__"
 // Defines all of the selections made across all of the windows.
 const selections = {}
 
-// Handles when keys are pushed.
-document.addEventListener("keydown", async event => {
-    switch (event.key) {
-        case "Escape": {
-            await ipcRenderer.send("screen-close")
-            break
-        }
-    }
-})
-
 // Defines the position of the first click.
 let firstClick = null
 
 // This is the element for the selection.
 const element = document.getElementById("selection")
+
+// Handles when keys are pushed.
+document.addEventListener("keydown", async event => {
+    switch (event.key) {
+        case "Escape": {
+            if (firstClick) {
+                firstClick = null
+                element.style.top = "-10px"
+                element.style.left = "-10px"
+                element.style.width = "0px"
+                element.style.height = "0px"
+                element.style.boxShadow = "none"
+            } else {
+                await ipcRenderer.send("screen-close")
+            }
+            break
+        }
+    }
+})
 
 // Handles when the mouse is down.
 document.body.onmousedown = async e => {
