@@ -559,6 +559,7 @@ const activeUploaderConfig = new Vue({
         closeActiveConfig() {
             this.$set(this, "exception", "")
             closeCurrentModal()
+            showUploaderConfig()
         },
         /**
          * Validates the config.

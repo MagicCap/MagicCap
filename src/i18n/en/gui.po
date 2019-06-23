@@ -273,7 +273,11 @@ msgstr ""
 msgid "This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?"
 msgstr ""
 
-# gui/index.template.html:210
+# gui/index.template.html:334
+msgid "Although MagicCap will automatically check for updates, you can always manually check for updates to ensure you are on the latest update."
+msgstr ""
+
+# gui/index.template.html:338
 msgid "Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable."
 msgstr ""
 
