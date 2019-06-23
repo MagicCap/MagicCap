@@ -1,10 +1,12 @@
 const BASE_URL = "https://api.github.com/repos/MagicCap/MagicCap/contents/docs?ref=develop"
 const HELP_BODY = document.getElementById("helpModalBody")
+const HELP_TITLE = document.getElementById("helpModalTitle")
+const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
 
 function fileElement(item) {
     const li = document.createElement("li")
     const a = document.createElement("a")
-    a.href = `javascript:showDocs("${encodeURI(item.download_url)}")`
+    a.href = `javascript:showDocs("${encodeURI(item.url)}")`
     a.textContent = item.name
     li.appendChild(a)
     return li
@@ -38,7 +40,6 @@ async function getStruct(url) {
                 name: item.name,
                 path: item.path,
                 type: item.type,
-                contents: item.download_url,
                 html: fileElement(item),
             })
         } else if (item.type === "dir") {
@@ -65,9 +66,21 @@ async function getStructure() {
     return ul
 }
 
+async function showDocs(url) {
+    HELP_BODY.textContent = "Loading..."
+
+    const response = await fetch(url)
+    const json = await response.json()
+
+    HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${json.path}`
+    HELP_BODY.textContent = atob(json.content)
+}
+
 async function showHelpModal() {
+    HELP_TITLE.textContent = HELP_TITLE_DEFAULT
     HELP_BODY.textContent = "Loading..."
     showModal("helpModal")
+
     const html = await getStructure()
     HELP_BODY.innerHTML = html.outerHTML
 }
