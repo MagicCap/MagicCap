@@ -1,5 +1,5 @@
 const BASE_DIR = "docs"
-const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
+const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=MattIPv4/docs`
 const HELP_BODY = document.getElementById("helpModalBody")
 const HELP_TITLE = document.getElementById("helpModalTitle")
 const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
