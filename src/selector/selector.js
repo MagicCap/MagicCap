@@ -104,7 +104,7 @@ function getInbetweenWindows(electronMouse) {
  * Determines the brightness of an image
  */
 async function getImageBrightness(url) {
-    return new Promise((resolve, _) => {
+    return new Promise(resolve => {
         // Create the image
         const image = document.createElement("img")
         image.src = url
