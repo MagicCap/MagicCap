@@ -9,17 +9,20 @@ let activeModal
 
 /**
  * Closes all active modals with correct dismiss actions & shows capture content
+ * @param {boolean} [custom=true] - If custom close events should be called (disable if running from inside a custom close event or you'll loop)
  */
-function closeCurrentModal() {
+function closeCurrentModal(custom = true) {
     // Show table
     document.getElementById("mainTable").classList.remove("hidden")
 
     // Find all active modals
     const all = document.querySelectorAll(".modal.is-active")
     all.forEach(div => {
-        // Support custom close methods (Use a button with a delete class and onclick event to support this)
-        const del = div.querySelector("button.delete")
-        if (del) del.click()
+        if (custom) {
+            // Support custom close methods (Use a button with a delete class and onclick event to support this)
+            const del = div.querySelector("button.delete")
+            if (del) del.click()
+        }
 
         // Assume normal closing
         div.classList.remove("is-active")
@@ -31,6 +34,7 @@ function closeCurrentModal() {
 
 /**
  * Shows a new modal based on ID (hides existing modals & capture content)
+ * @param {string} id - The string ID of the modal to show
  */
 function showModal(id) {
     // Get the modal
@@ -425,7 +429,7 @@ async function hotkeyConfigClose() {
         ipcRenderer.send("hotkey-change")
     }
 
-    document.getElementById("hotkeyConfig").classList.remove("is-active")
+    closeCurrentModal(false)
 }
 
 /**
@@ -558,7 +562,7 @@ const activeUploaderConfig = new Vue({
          */
         closeActiveConfig() {
             this.$set(this, "exception", "")
-            closeCurrentModal()
+            closeCurrentModal(false)
             showUploaderConfig()
         },
         /**
