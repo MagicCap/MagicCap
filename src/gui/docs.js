@@ -81,8 +81,21 @@ function nameFormat(name) {
 async function getStruct(url) {
     let data = []
     try {
+        // Fetch the GitHub data
         const response = await fetch(url)
         const json = await response.json()
+
+        // Sort by type then name
+        json.sort((a, b) => {
+            if (a.type === b.type) {
+                // Use name once type is the same
+                return a.name.localeCompare(b.name)
+            }
+            // Files before directories
+            return b.type.localeCompare(a.type)
+        })
+
+        // Loop and process
         for (const index in json) {
             const item = json[index]
             if (item.type === "file") {
@@ -192,6 +205,7 @@ async function showDocs(url) {
 async function showHelpModal() {
     HELP_TITLE.textContent = HELP_TITLE_DEFAULT
     renderDoc("## Loading menu...", false, false)
+    // eslint-disable-next-line no-undef
     showModal("helpModal")
 
     const html = await getStructure()
