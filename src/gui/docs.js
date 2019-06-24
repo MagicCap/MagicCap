@@ -195,7 +195,8 @@ async function showDocs(url) {
 
     const path = json.path.startsWith(BASE_DIR) ? json.path.substr(BASE_DIR.length) : json.path
     HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${nameFormat(path.replace(/^\/+/g, ""))}`
-    renderDoc(atob(json.content), true, true)
+    const content = `${atob(json.content)}<br/><br/><hr/>\n> *This file is open source on our GitHub repository at [${json.html_url}](${json.html_url}).*`
+    renderDoc(content, true, true)
 }
 
 /**
