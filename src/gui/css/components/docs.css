@@ -21,8 +21,6 @@
     display: block;
     margin-left: -1em;
     padding: 0 1.5em 0 1em;
-    position: relative;
-    width: 100%;
 }
 
 .docs-menu a:hover {
