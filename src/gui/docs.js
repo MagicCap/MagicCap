@@ -80,33 +80,33 @@ function nameFormat(name) {
  */
 async function getStruct(url) {
     let data = []
-    try {
-        // Fetch the GitHub data
-        const response = await fetch(url)
-        const json = await response.json()
+    // Fetch the GitHub data
+    const response = await fetch(url)
+    const json = await response.json()
 
-        // Sort by type then name
-        json.sort((a, b) => {
-            if (a.type === b.type) {
-                // Use name once type is the same
-                return a.name.localeCompare(b.name)
-            }
-            // Files before directories
-            return b.type.localeCompare(a.type)
-        })
+    // Sort by type then name
+    json.sort((a, b) => {
+        if (a.type === b.type) {
+            // Use name once type is the same
+            return a.name.localeCompare(b.name)
+        }
+        // Files before directories
+        return b.type.localeCompare(a.type)
+    })
 
-        // Loop and process
-        for (const index in json) {
-            const item = json[index]
-            if (item.type === "file") {
-                if (MD_ONLY && !item.name.endsWith(".md")) continue
-                data.push({
-                    name: item.name,
-                    path: item.path,
-                    type: item.type,
-                    html: fileElement(item),
-                })
-            } else if (item.type === "dir") {
+    // Loop and process
+    for (const index in json) {
+        const item = json[index]
+        if (item.type === "file") {
+            if (MD_ONLY && !item.name.endsWith(".md")) continue
+            data.push({
+                name: item.name,
+                path: item.path,
+                type: item.type,
+                html: fileElement(item),
+            })
+        } else if (item.type === "dir") {
+            try {
                 const contents = await getStruct(item.url)
                 if (contents.length === 0) continue
                 data.push({
@@ -116,10 +116,26 @@ async function getStruct(url) {
                     contents: contents,
                     html: directoryElement(item, contents),
                 })
+            } catch (e) {
+                // If a recursive dir fails who cares, but first call should raise the error, hence catch is here
+                console.log(item.url, e)
+
+                // Create an error message
+                const li = document.createElement("li")
+                li.style.fontStyle = "italic"
+                li.textContent = "Failed to load this directory"
+                const contents = [{ name: "*Failed to load this directory*", html: li }]
+
+                // Append directory with error message child
+                data.push({
+                    name: item.name,
+                    path: item.path,
+                    type: item.type,
+                    contents: contents,
+                    html: directoryElement(item, contents),
+                })
             }
         }
-    } catch (e) {
-        console.error(url, e)
     }
     return data
 }
@@ -210,6 +226,11 @@ async function showHelpModal() {
     // eslint-disable-next-line no-undef
     showModal("helpModal")
 
-    const html = await getStructure()
-    renderDoc(html.outerHTML, false, true, false)
+    try {
+        const html = await getStructure()
+        renderDoc(html.outerHTML, false, true, false)
+    } catch (e) {
+        console.log(BASE_URL, e)
+        renderDoc(`<div style="text-align: center;"><h3>Unfortunately the help documentation could not be loaded at this time. Please try again later.</h3></div><br/><br/><hr/><p>Debug Information:</p><pre><code>${e}</code></pre>`, false, false, true)
+    }
 }
