@@ -141,10 +141,11 @@ async function getStructure() {
 /**
  * Renders the given markdown (or HTML) to the help modal body
  * @param {string} markdown - The markdown (or HTML) to render
- * @param back
- * @param full
+ * @param {boolean} back - Display the back buttons
+ * @param {boolean} full - Make the modal body full width/height
+ * @param {boolean} cls - Give the wrapper the .markdown class
  */
-function renderDoc(markdown, back, full) {
+function renderDoc(markdown, back, full, cls) {
     /**
      * Generates a back button to return to the main help menu
      * @returns {HTMLAnchorElement}
@@ -167,7 +168,7 @@ function renderDoc(markdown, back, full) {
     }
 
     const div = document.createElement("div")
-    div.className = "markdown"
+    div.className = cls ? "markdown" : ""
     div.innerHTML = MD.render(markdown)
     div.querySelectorAll("a:not([data-link-wrapped])").forEach(item => {
         const link = String(item.href)
@@ -188,15 +189,15 @@ function renderDoc(markdown, back, full) {
  * @returns {Promise<void>}
  */
 async function showDocs(url) {
-    renderDoc("## Loading file...", true, false)
+    renderDoc("## Loading file...", true, false, true)
 
     const response = await fetch(url)
     const json = await response.json()
 
     const path = json.path.startsWith(BASE_DIR) ? json.path.substr(BASE_DIR.length) : json.path
     HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${nameFormat(path.replace(/^\/+/g, ""))}`
-    const content = `${atob(json.content)}<br/><br/><hr/>\n> *This file is open source on our GitHub repository at [${json.html_url}](${json.html_url}).*`
-    renderDoc(content, true, true)
+    const content = `${atob(json.content)}\n\n<hr/>\n\n> *This file is open source on our GitHub repository at [${json.html_url}](${json.html_url}).*`
+    renderDoc(content, true, true, true)
 }
 
 /**
@@ -205,10 +206,10 @@ async function showDocs(url) {
  */
 async function showHelpModal() {
     HELP_TITLE.textContent = HELP_TITLE_DEFAULT
-    renderDoc("## Loading menu...", false, false)
+    renderDoc("## Loading menu...", false, false, true)
     // eslint-disable-next-line no-undef
     showModal("helpModal")
 
     const html = await getStructure()
-    renderDoc(html.outerHTML, false, true)
+    renderDoc(html.outerHTML, false, true, false)
 }

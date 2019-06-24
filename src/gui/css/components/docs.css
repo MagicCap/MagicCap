@@ -3,6 +3,8 @@
  */
 .docs-menu,
 .docs-menu ul {
+    list-style: none;
+    padding: 0;
     user-select: none;
     display: inline-block;
     color: var(--placeholder-text);
@@ -26,80 +28,4 @@
 .docs-menu a:hover {
     color: var(--text);
     background: var(--selected-content-background);
-}
-
-.markdown {
-    margin: 1em 0;
-}
-
-.markdown h1 {
-    font-size: xx-large;
-}
-
-.markdown h2 {
-    font-size: x-large;
-}
-
-.markdown h3 {
-    font-size: large;
-}
-
-.markdown h4 {
-    font-size: medium;
-}
-
-.markdown h5 {
-    font-size: unset;
-}
-
-.markdown h6 {
-    font-size: small;
-}
-
-.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
-    text-transform: unset;
-    margin: 0.25em 0;
-}
-
-.markdown p, .markdown table {
-    margin: 0.2em 0;
-}
-
-.markdown blockquote {
-    margin: .05em .05em .05em .15em;
-    border-left: 2px solid var(--separator);
-    padding-left: .6em;
-}
-
-.markdown ul,
-.markdown ol {
-    margin-left: .15em;
-}
-
-.markdown table {
-    background: var(--text-background);
-    border: 0.2em solid var(--text-background);
-}
-
-.markdown table tr th,
-.markdown table tr td {
-    padding: 0.1em 0.3em;
-}
-
-.markdown table thead {
-    border-bottom: 2px solid var(--separator);
-}
-
-.markdown table tr:not(:last-child) {
-    border-bottom: 1px solid var(--separator);
-}
-
-.markdown table tr th:not(:first-child),
-.markdown table tr td:not(:first-child) {
-    border-left: 1px solid var(--separator);
-}
-
-.markdown code,
-.markdown pre {
-    padding: .05em .3em;
 }
