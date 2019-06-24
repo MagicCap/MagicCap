@@ -78,6 +78,11 @@
     margin-left: .15em;
 }
 
+.markdown table {
+    background: var(--text-background);
+    border: 0.2em solid var(--text-background);
+}
+
 .markdown table tr th,
 .markdown table tr td {
     padding: 0.1em 0.3em;
@@ -94,4 +99,9 @@
 .markdown table tr th:not(:first-child),
 .markdown table tr td:not(:first-child) {
     border-left: 1px solid var(--separator);
+}
+
+.markdown code,
+.markdown pre {
+    padding: .05em .3em;
 }
