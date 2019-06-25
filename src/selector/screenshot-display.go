@@ -33,7 +33,8 @@ func main() {
 	handler := func(ctx *fasthttp.RequestCtx) {
 		queryValues := ctx.QueryArgs()
 		if string(queryValues.Peek("key")) != id {
-			panic("Invalid key.")
+			ctx.Error("Invalid key.", 400)
+			return
 		}
 		display_id, _ := strconv.Atoi(string(queryValues.Peek("display")))
 
