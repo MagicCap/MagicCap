@@ -181,16 +181,25 @@ async function handleWebSocketUpdates() {
         const conn = new WebSocket("wss://api.magiccap.me/version/feed")
         let deathByError = false
 
+        /**
+         * Runs on a connection error.
+         */
         const err = () => {
             deathByError = true
             retry += 1
             console.error(`Update WebSocket failed. Retrying in ${retry} second(s).`)
-            setTimeout(() => { conn = spawnWs() }, retry * 1000)
+            setTimeout(() => spawnWs(), retry * 1000)
         }
 
+        /**
+         * Sends the error event.
+         */
         conn.on("error", err)
 
         let heartbeatRes
+        /**
+         * Handles the heartbeat.
+         */
         const handleHeartbeat = async() => {
             if (!deathByError) {
                 conn.send(JSON.stringify({ t: "heartbeat" }))
