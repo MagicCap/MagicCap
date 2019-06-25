@@ -47,6 +47,7 @@ func main() {
 		png.Encode(buf, img)
 
 		ctx.SetBody(buf.Bytes())
+		ctx.SetContentType("image/png")
 	}
 
 	fmt.Printf("%s", id)
