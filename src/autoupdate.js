@@ -187,6 +187,9 @@ async function handleWebSocketUpdates() {
         const err = () => {
             deathByError = true
             retry += 1
+            if (retry > 120) {
+                retry = 120
+            }
             console.error(`Update WebSocket failed. Retrying in ${retry} second(s).`)
             setTimeout(() => spawnWs(), retry * 1000)
         }
