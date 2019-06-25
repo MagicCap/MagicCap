@@ -173,27 +173,54 @@ async function runHttpUpdateCheck(ignoreConfig) {
  * Handles WebSocket updates.
  */
 async function handleWebSocketUpdates() {
-    let conn
     let retry = 0
     /**
      * Spawns the WebSocket to do the updates with.
      */
     const spawnWs = () => {
-        conn = new WebSocket("wss://api.magiccap.me/version/feed")
+        const conn = new WebSocket("wss://api.magiccap.me/version/feed")
         let deathByError = false
-        conn.on("error", () => {
+
+        const err = () => {
             deathByError = true
             retry += 1
             console.error(`Update WebSocket failed. Retrying in ${retry} second(s).`)
             setTimeout(() => { conn = spawnWs() }, retry * 1000)
-        })
+        }
+
+        conn.on("error", err)
+
+        let heartbeatRes
+        const handleHeartbeat = async() => {
+            if (!deathByError) {
+                conn.send(JSON.stringify({ t: "heartbeat" }))
+                const heartbeatPromise = new Promise(res => {
+                    heartbeatRes = res
+                })
+                const timeoutPromise = new Promise(res => setTimeout(() => res(false), 3000))
+                const res = await Promise.race([heartbeatPromise, timeoutPromise])
+                if (!res) {
+                    err()
+                } else {
+                    setTimeout(handleHeartbeat, 1000)
+                }
+            }
+        }
+
         conn.on("open", () => {
             retry = 0
             console.log("Update WebSocket open.")
             conn.send(JSON.stringify({ t: "watch", beta: true }))
+            handleHeartbeat()
         })
+
         conn.on("message", async data => {
-            data = JSON.parse(data).info
+            data = JSON.parse(data)
+            if (data.t === "heartbeat_ack") {
+                heartbeatRes(true)
+                return
+            }
+            data = data.info
             if (updateRunning || config.autoupdate_on === false) {
                 return
             }
