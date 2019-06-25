@@ -76,8 +76,16 @@ document.body.onmousedown = async e => {
     if (uploaderProperties.contains(e.target)) return
 
     firstClick = electron.screen.getCursorScreenPoint()
-    firstClick.pageX = e.pageX
-    firstClick.pageY = e.pageY
+
+    // Yeah fuck you Ubuntu.
+    const scaleFactor = electron.screen.getDisplayNearestPoint(firstClick).scaleFactor
+
+    firstClick.nonScaleAwarePageX = e.pageX
+    firstClick.nonScaleAwarePageY = e.pageY
+    firstClick.x = Math.floor(firstClick.x * scaleFactor)
+    firstClick.y = Math.floor(firstClick.y * scaleFactor)
+    firstClick.pageX = Math.floor(e.pageX * scaleFactor)
+    firstClick.pageY = Math.floor(e.pageY * scaleFactor)
 }
 
 /**
@@ -164,8 +172,14 @@ async function moveSelectorMagnifier() {
     const cursorY = document.getElementById("cursorY")
     cursorY.style.top = `${y - (cursorY.getBoundingClientRect().height / 2)}px`
 
+    // Fuck you too Ubuntu.
+    const actualMousePoint = electron.screen.getCursorScreenPoint()
+    const theDisplay = electron.screen.getDisplayNearestPoint(actualMousePoint)
+    const actualX = Math.floor(actualMousePoint.x * theDisplay.scaleFactor)
+    const actualY = Math.floor(actualMousePoint.y * theDisplay.scaleFactor)
+
     // Update the with new coordinates
-    document.getElementById("positions").textContent = `X: ${x} | Y: ${y}`
+    document.getElementById("positions").textContent = `X: ${actualX} | Y: ${actualY}`
 
     // Set the magifier positions
     let magnifyX = x
@@ -197,7 +211,7 @@ async function moveSelectorMagnifier() {
     positionElement.style.top = `${magnifyY + magnifyOffset + magnifyElement.getBoundingClientRect().height}px`
 
     // Get the new magnifier image
-    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${x}&y=${y}`)
+    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${actualX}&y=${actualY}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
 
     // Determine brightness & threshold (max 255)
@@ -225,10 +239,10 @@ document.body.onmousemove = e => {
 
     if (firstClick) {
         element.style.boxShadow = ""
-        element.style.width = `${Math.abs(e.pageX - firstClick.pageX)}px`
-        element.style.height = `${Math.abs(e.pageY - firstClick.pageY)}px`
-        element.style.left = e.pageX - firstClick.pageX < 0 ? `${e.pageX}px` : `${firstClick.pageX}px`
-        element.style.top = e.pageY - firstClick.pageY < 0 ? `${e.pageY}px` : `${firstClick.pageY}px`
+        element.style.width = `${Math.abs(e.pageX - firstClick.nonScaleAwarePageX)}px`
+        element.style.height = `${Math.abs(e.pageY - firstClick.nonScaleAwarePageY)}px`
+        element.style.left = e.pageX - firstClick.nonScaleAwarePageX < 0 ? `${e.pageX}px` : `${firstClick.nonScaleAwarePageX}px`
+        element.style.top = e.pageY - firstClick.nonScaleAwarePageY < 0 ? `${e.pageY}px` : `${firstClick.nonScaleAwarePageY}px`
     } else {
         const inThese = getInbetweenWindows(thisClick)
 
@@ -272,6 +286,10 @@ function xssProtect(data) {
 document.body.onmouseup = async e => {
     if (uploaderProperties.contains(e.target)) return
 
+    // Fuck you too Ubuntu.
+    const actualMousePoint = electron.screen.getCursorScreenPoint()
+    const theDisplay = electron.screen.getDisplayNearestPoint(actualMousePoint)
+
     const thisClick = electron.screen.getCursorScreenPoint()
 
     let inThese, start, end
@@ -285,12 +303,12 @@ document.body.onmouseup = async e => {
 
     const posInfo = element.getBoundingClientRect()
 
-    const width = posInfo.width
-    const height = posInfo.height
+    const width = posInfo.width * theDisplay.scaleFactor
+    const height = posInfo.height * theDisplay.scaleFactor
 
     start = {
-        pageX: posInfo.x,
-        pageY: posInfo.y,
+        pageX: posInfo.x * theDisplay.scaleFactor,
+        pageY: posInfo.y * theDisplay.scaleFactor,
     }
     start.x = start.pageX + payload.bounds.x
     start.y = start.pageY + payload.bounds.y
@@ -349,10 +367,10 @@ document.body.onmouseup = async e => {
         selectionBlackness.style.top = element.style.top
         selectionBlackness.style.bottom = element.style.bottom
         selectionBlackness.style.right = element.style.right
-        const left = Number(element.style.left.match(/\d+/)[0])
-        const top = Number(element.style.top.match(/\d+/)[0])
+        const left = Math.floor(Number(element.style.left.match(/\d+/)[0]) * theDisplay.scaleFactor)
+        const top = Math.floor(Number(element.style.top.match(/\d+/)[0]) * theDisplay.scaleFactor)
         const region = await sharp(Buffer.from(backgroundImage))
-            .extract({ left, top, width: Number(element.style.width.match(/\d+/)[0]), height: Number(element.style.height.match(/\d+/)[0]) })
+            .extract({ left, top, width: Math.floor(Number(element.style.width.match(/\d+/)[0]) * theDisplay.scaleFactor), height: Math.floor(Number(element.style.height.match(/\d+/)[0]) * theDisplay.scaleFactor) })
             .toBuffer()
         const edit = await runAffect(selectionType, region)
         displayEdits.push({
