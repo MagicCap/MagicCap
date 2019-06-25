@@ -193,10 +193,6 @@ function renderDoc(markdown, back, full, cls) {
         item.setAttribute("data-link-wrapped", true)
     })
     HELP_BODY.appendChild(div)
-
-    if (back) {
-        HELP_BODY.appendChild(backButton())
-    }
 }
 
 /**
