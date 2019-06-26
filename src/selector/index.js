@@ -87,7 +87,8 @@ freezeServer.get("/selector/render", async(req, res) => {
         res.end(selectorHtmlCache
             .replace("%IMAGE_URL%", `url("${imageUrl}")`)
             .replace("%DARK_MODE%", config.light_theme ? 0 : 1)
-            .replace("%PAYLOAD%", payload))
+            .replace("%PAYLOAD%", payload)
+            .replace("%ADD_TO_BODY_IF_LINUX%", process.platform === "linux" ? "background-size: 100%;" : ""))
     }
 })
 freezeServer.get("/selector/js", (_, res) => {
