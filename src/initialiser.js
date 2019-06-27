@@ -8,7 +8,7 @@ const { ensureDir } = magicImports("fs-nextra")
 const { darkThemeInformation } = magicImports("./system_dark_theme")
 const { sep, join } = magicImports("path")
 const { homedir } = magicImports("os")
-const { app } = magicImports("electron")
+const { app, Notification } = magicImports("electron")
 const newInstallId = require("./install_id")
 const { init } = require("@sentry/electron")
 
@@ -85,14 +85,13 @@ if (existsSync("/usr/share/magiccap_deployment_info.json")) {
             newInstallId().then(installId => {
                 config.install_id = installId
                 saveConfig()
-            })
-            const notifier = magicImports("node-notifier")
-            notifier.notify({
-                title: "Welcome to MagicCap 1.0.0",
-                message: "Your old configuration has been migrated. We hope you enjoy this update!",
-                icon: `${__dirname}/icons/taskbar@2x.png`,
-                wait: true,
-            })
+            });
+
+            (new Notification({
+                title: "Welcome to MagicCap",
+                body: "Your old configuration has been migrated. We hope you enjoy this update!",
+                sound: true,
+            })).show()
         } else {
             getDefaultConfig().then(newConfig => {
                 for (const i in newConfig) {
