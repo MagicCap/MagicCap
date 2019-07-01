@@ -1,18 +1,23 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 
-const { AUTOUPDATE_ON } = require(`${__dirname}/build_info`)
-const magicImports = require("magicimports")
-const { stat, writeFile } = magicImports("fs-nextra")
-const { app, dialog } = magicImports("electron")
-const { get } = magicImports("chainfetch")
-const asyncChildProcess = magicImports("async-child-process")
-const sudo = magicImports("sudo-prompt")
-const i18n = magicImports("./i18n")
-const WebSocket = require("ws")
+import { AUTOUPDATE_ON } from "./build_info"
+import { stat, writeFile } from "fs-nextra"
+import { app, dialog } from "electron"
+import { get } from "chainfetch"
+// @ts-ignore
+import * as asyncChildProcess from "async-child-process"
+// @ts-ignore
+import * as sudo from "sudo-prompt"
+import * as i18n from "./i18n"
+import * as WebSocket from "ws"
+
+// Declares the config stuff.
+declare const config: any
+declare const saveConfig: () => void
 
 // Ignores this while the app is open.
-const tempIgnore = []
+const tempIgnore: string[] = []
 
 // Defines if a update is running.
 let updateRunning = false
@@ -90,11 +95,11 @@ async function checkForUpdates() {
  * Does the update.
  * @param {object} updateInfo - The object returned by checkForUpdates.
  */
-async function doUpdate(updateInfo) {
+async function doUpdate(updateInfo: any) {
     await new Promise(res => {
         sudo.exec(`"${require("os").homedir()}/magiccap-updater" v${updateInfo.current}`, {
             name: "MagicCap",
-        }, error => {
+        }, (error: Error) => {
             if (error) {
                 console.log(error)
                 throw error
@@ -108,7 +113,7 @@ async function doUpdate(updateInfo) {
  * Handles a new update.
  * @param {object} updateInfo - A object containing the update information.
  */
-async function handleUpdate(updateInfo) {
+async function handleUpdate(updateInfo: any) {
     if (tempIgnore.indexOf(updateInfo.current) > -1) {
         return
     }
@@ -155,7 +160,7 @@ async function handleUpdate(updateInfo) {
 /**
  * Handles the initial HTTP update check.
  */
-async function runHttpUpdateCheck(ignoreConfig) {
+async function runHttpUpdateCheck(ignoreConfig: boolean) {
     if (updateRunning || (!ignoreConfig && config.autoupdate_on === false)) {
         return
     }
@@ -199,7 +204,7 @@ async function handleWebSocketUpdates() {
          */
         conn.on("error", err)
 
-        let heartbeatRes
+        let heartbeatRes: undefined | ((result: boolean) => void)
         /**
          * Handles the heartbeat.
          */
@@ -226,10 +231,10 @@ async function handleWebSocketUpdates() {
             handleHeartbeat()
         })
 
-        conn.on("message", async data => {
-            data = JSON.parse(data)
+        conn.on("message", async x => {
+            let data: any = JSON.parse(x as string)
             if (data.t === "heartbeat_ack") {
-                heartbeatRes(true)
+                heartbeatRes!(true)
                 return
             }
             data = data.info
@@ -255,7 +260,7 @@ async function handleWebSocketUpdates() {
 /**
  * The loop which automatically checks for updates.
  */
-async function autoUpdateLoop() {
+export default async function autoUpdateLoop() {
     if (!AUTOUPDATE_ON) {
         return
     }
@@ -304,7 +309,7 @@ async function autoUpdateLoop() {
         return
     }
 
-    runHttpUpdateCheck()
+    runHttpUpdateCheck(false)
     handleWebSocketUpdates()
 }
 
@@ -355,6 +360,3 @@ async function manualCheck() {
     }
 }
 autoUpdateLoop.manualCheck = manualCheck
-
-// Exports the autoupdate function.
-module.exports = autoUpdateLoop

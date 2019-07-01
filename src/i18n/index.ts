@@ -2,19 +2,19 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Gets the language pack information.
+import { readFile } from "fs-nextra"
+import { readdirSync, statSync } from "fs"
+import { join } from "path"
+import { config } from "../config"
+import * as PO from "pofile"
 const nativeLangNames = require("./native_lang_names.json")
-const { readFile } = require("fs-nextra")
-const { readdirSync, statSync } = require("fs")
-const { join } = require("path")
-const { config } = require("../config")
-const PO = require("pofile")
 
-const poCache = new Map()
+const poCache: Map<string, PO.PO> = new Map()
 /**
  * Used to cache/get the *.po files.
  */
-const getPoFile = async file => {
-    const cachedPo = poCache[file]
+export const getPoFile = async (file: string) => {
+    const cachedPo = poCache.get(file)
     if (cachedPo !== undefined) {
         return cachedPo
     }
@@ -23,14 +23,14 @@ const getPoFile = async file => {
     const _file = await readFile(fp)
     const data = PO.parse(_file.toString())
 
-    poCache[file] = data
+    poCache.set(file, data)
     return data
 }
 
 /**
  * Used to get a translated phrase from the file specified.
  */
-const getPoPhrase = async(phrase, file) => {
+export const getPoPhrase = async(phrase: string, file: string) => {
     let poFile
     try {
         poFile = await getPoFile(file)
@@ -56,7 +56,7 @@ const htmlParseRegex = /\$.+\$/g
 /**
  * Used to parse the HTML that needs translating.
  */
-const poParseHtml = async htmlData => {
+export const poParseHtml = async (htmlData: string) => {
     let htmlDone = htmlData
     const i18nThisDocumentation = await getPoPhrase("this documentation", "gui")
     for (;;) {
@@ -82,16 +82,9 @@ const poParseHtml = async htmlData => {
 }
 
 // Handles showing all of the language packs.
-const langPackInfo = new Map()
+export const langPackInfo: Map<string, string> = new Map()
 for (const file of readdirSync(`${__dirname}`)) {
     if (statSync(join(`${__dirname}`, file)).isDirectory()) {
-        langPackInfo[file] = nativeLangNames[file]
+        langPackInfo.set(file, nativeLangNames[file])
     }
-}
-
-// Exports all the things.
-module.exports = {
-    getPoPhrase: getPoPhrase,
-    langPackInfo: langPackInfo,
-    poParseHtml: poParseHtml,
 }

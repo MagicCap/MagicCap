@@ -4,27 +4,37 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
+// Declares a bunch of stuff.
+declare const nameUploaderMap: any
+declare const importedUploaders: any
+declare const liteTouchConfig: any
+
 // Defines the config.
-let { config: localConfig, saveConfig } = require("./config")
-global.config = localConfig
-global.saveConfig = saveConfig
+import * as configInfo from "./config"
+import capture from "./capture"
+let { config: localConfig } = configInfo
+eval(`
+    global.config = localConfig;
+    global.saveConfig = configInfo.saveConfig;
+`)
+declare const config: any
 
 // Main imports.
-const magicImports = require("magicimports")
-const { readFile } = magicImports("fs-nextra")
-const testUploader = require("./test_uploader")
-let capture = require(`${__dirname}/capture.js`)
-const { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain } = magicImports("electron")
-const autoUpdateLoop = require(`${__dirname}/autoupdate.js`)
-const i18n = magicImports("./i18n")
-const { showShortener } = require("./shortener")
-const Sentry = require("@sentry/electron")
-const { AUTOUPDATE_ON } = require("./build_info")
-const hotkeys = require("./hotkeys")
+import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain } from "electron"
+import { readFile } from "fs-nextra"
+import testUploader from "./test_uploader"
+import autoUpdateLoop from "./autoupdate"
+import * as i18n from "./i18n"
+import { showShortener } from "./shortener"
+import * as Sentry from "@sentry/electron"
+import { AUTOUPDATE_ON } from "./build_info"
+import hotkeys from "./hotkeys"
 
 // All of the loaded uploaders.
-global.importedUploaders = {}
-global.nameUploaderMap = {}
+eval(`
+    global.importedUploaders = {}
+    global.nameUploaderMap = {}
+`)
 
 // Loads all of the uploaders.
 const uploaders = require(`${__dirname}/uploaders`)
@@ -88,6 +98,7 @@ async function createMenu() {
             },
         ],
     }
+    // @ts-ignore
     Menu.setApplicationMenu(Menu.buildFromTemplate([application, edit]))
 }
 
@@ -126,7 +137,7 @@ autoUpdateLoop()
 if (app.dock) app.dock.hide()
 
 // Predefines the task tray and window.
-let tray, window
+let tray: Tray | undefined, window: BrowserWindow | undefined
 
 /**
  *
@@ -134,13 +145,13 @@ let tray, window
  *
  * @param {boolean} gif - Is the capture a GIF?
  */
-async function runCapture(gif) {
-    await capture.region(gif).filename().upload()
+async function runCapture(gif: boolean) {
+    await capture.region(gif).filename(undefined).upload()
         .notify("Screen capture successful.")
         .log()
         .run()
 }
-global.runCapture = runCapture
+eval("global.runCapture = runCapture")
 
 /**
  * Runs the clipboard capture functionality.
@@ -151,7 +162,7 @@ async function runClipboardCapture() {
         .log()
         .run()
 }
-global.runClipboardCapture = runClipboardCapture
+eval("global.runClipboardCapture = runClipboardCapture")
 
 /**
  * Opens the configuration GUI.
@@ -183,17 +194,18 @@ async function openConfig() {
             nodeIntegration: true,
         },
     })
+    // @ts-ignore
     if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`)
-    global.platform = process.platform
+    eval("global.platform = process.platform")
     window.setTitle("MagicCap")
     const pageContent = await i18n.poParseHtml((await readFile(`${__dirname}/gui/index.html`)).toString())
     window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
         baseURLForDataURL: `file://${__dirname}/gui/`,
     })
-    global.window = window
+    eval("global.window = window")
 
     window.on("closed", () => {
-        window = null
+        eval("window = null")
         if (app.dock) app.dock.hide()
     })
 }
@@ -205,35 +217,36 @@ app.on("window-all-closed", () => {
 
 // Restart the window on theme change (fixes bug with vibrancy)
 ipcMain.on("restartWindow", () => {
-    window.close()
+    window!.close()
     openConfig()
 })
 
 // Shows the window.
 ipcMain.on("window-show", () => {
-    window.show()
+    window!.show()
 })
 
 /**
  * Does the dropdown menu uploads.
  * @param {Object} uploader - Defines the uploader to use.
  */
-async function dropdownMenuUpload(uploader) {
+async function dropdownMenuUpload(uploader: any) {
     const selectFilei18n = await i18n.getPoPhrase("Select file...", "app")
-    await dialog.showOpenDialog(BrowserWindow.getFocusedWindow(), {
+    await dialog.showOpenDialog(BrowserWindow.getFocusedWindow()!, {
         title: selectFilei18n,
+        // @ts-ignore
         multiSelections: false,
         openDirectory: false,
-    }, async filePaths => {
+    }, async (filePaths: string[]) => {
         if (filePaths) {
             const path = filePaths[0]
             const buffer = await readFile(path)
             const filename = path
                 .split("\\")
-                .pop()
+                .pop()!
                 .split("/")
                 .pop()
-            await capture.file(buffer, filename, path).upload(uploader).notify("File successfully uploaded.")
+            await capture.file(buffer as Buffer, filename as string, path).upload(uploader).notify("File successfully uploaded.")
                 .log()
                 .run()
         }
@@ -289,11 +302,13 @@ async function createContextMenu() {
     if (AUTOUPDATE_ON) {
         contextMenuTmp.splice(6, 0, { label: i18nCheckForUpdates, type: "normal", click: autoUpdateLoop.manualCheck })
     }
-    if (global.liteTouchConfig ? global.liteTouchConfig.link_shortener_allowed : true) {
+    if (liteTouchConfig ? liteTouchConfig.link_shortener_allowed : true) {
+        // @ts-ignore
         contextMenuTmp.splice(4, 0, { label: i18nShort, type: "normal", click: showShortener })
     }
+    // @ts-ignore
     const contextMenu = Menu.buildFromTemplate(contextMenuTmp)
-    tray.setContextMenu(contextMenu)
+    tray!.setContextMenu(contextMenu)
 }
 
 let eReady = false
@@ -322,14 +337,14 @@ ipcMain.on("show-short", () => {
 })
 
 // When the config changes, this does.
-ipcMain.on("config-edit", async(event, data) => {
-    global.config = data
+ipcMain.on("config-edit", async(event: any, data: any) => {
+    eval("global.config = data")
     localConfig = data
     await createContextMenu()
 })
 
 // Tests a uploader.
-ipcMain.on("test-uploader", async(event, data) => event.sender.send("test-uploader-res", await testUploader(uploaders[data])))
+ipcMain.on("test-uploader", async(event: any, data: any) => event.sender.send("test-uploader-res", await testUploader(uploaders[data])))
 
 // Handles the hotkey changing.
 ipcMain.on("hotkey-change", async() => {
@@ -338,19 +353,19 @@ ipcMain.on("hotkey-change", async() => {
 })
 
 // Allows for update checking in the gui
-ipcMain.on("check-for-updates", async event => {
+ipcMain.on("check-for-updates", async (event: any) => {
     await autoUpdateLoop.manualCheck()
     event.sender.send("check-for-updates-done")
 })
 
 // The get uploaders IPC.
-ipcMain.on("get-uploaders", event => { event.returnValue = importedUploaders })
+ipcMain.on("get-uploaders", (event: any) => { event.returnValue = importedUploaders })
 
 // Defines the editors.
 const editors = require("./editors")
 
 // The run affect IPC.
-ipcMain.on("run-affect", async(event, data) => {
+ipcMain.on("run-affect", async(event: any, data: any) => {
     const sentData = data.data
     const affect = data.affect
     const primaryColour = data.primaryColour
@@ -360,7 +375,7 @@ ipcMain.on("run-affect", async(event, data) => {
 
 // Runs any OAuth2 flows for the uploaders.
 const OAuth2 = require("./oauth2")
-ipcMain.on("oauth-flow-uploader", async(event, uploaderName) => {
+ipcMain.on("oauth-flow-uploader", async(event: any, uploaderName: string) => {
     const uploader = importedUploaders[uploaderName]
     const oAuthResp = await OAuth2(uploader.getOAuthUrl())
     const r = await uploader.handleOAuthFlow(oAuthResp)

@@ -2,36 +2,28 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Gets the platform.
-const platform = require("os").platform()
+import { platform } from "os"
+// @ts-ignore
+import * as apertureInitialiser from "aperture"
+import ffmpegFetcher from "./ffmpeg"
+import { spawn } from "child_process"
+import * as tempDir from "temp-dir"
+import * as uuid from "uuid/v4"
+import * as fsNextra from "fs-nextra"
 
 // Imports Aperture if this is macOS.
-let aperture
-if (platform === "darwin") {
-    aperture = require("aperture")()
+let aperture: undefined | any
+if (platform() === "darwin") {
+    aperture = apertureInitialiser()
 } else {
-    aperture = null
+    aperture = undefined
 }
 
 // Defines if this is recording.
-let recording = null
-
-// Requires the FFMpeg fetcher.
-const ffmpegFetcher = require("./ffmpeg")
+let recording: any = null
 
 // Gets the FFMpeg binary location.
-let ffmpeg
-
-// Imports child process stuff.
-const { spawn } = require("child_process")
-
-// Used to get the temporary directory.
-const tempDir = require("temp-dir")
-
-// Defines the UUIDv4 generator.
-const uuid = require("uuid/v4")
-
-// Requires FS Nextra for filesystem stuff.
-const fsNextra = require("fs-nextra")
+let ffmpeg: any
 
 /**
  * Starts recording.
@@ -43,7 +35,7 @@ const fsNextra = require("fs-nextra")
  * @param {Screen} displayInfo - The Electron display information.
  * @returns A boolean repersenting if the GIF capture started.
  */
-async function start(fps, x, y, width, height, displayInfo) {
+export async function start(fps: number, x: number, y: number, width: number, height: number, displayInfo: { bounds: { height: number; }; id: any; }) {
     if (recording) {
         throw new Error("Already recording.")
     }
@@ -72,7 +64,7 @@ async function start(fps, x, y, width, height, displayInfo) {
     } else {
         // *sighs*
         const tempFile = `${tempDir}/${uuid()}.mp4`
-        const args = ["-y", "-video_size", `${width}x${height}`, "-framerate", fps, "-f", "x11grab", "-i", `:0.0+${x},${y}`, tempFile]
+        const args: string[] = ["-y", "-video_size", `${width}x${height}`, "-framerate", `${fps}`, "-f", "x11grab", "-i", `:0.0+${x},${y}`, tempFile]
         const childProcess = spawn(ffmpeg, args)
         recording = [childProcess, tempFile]
     }
@@ -84,7 +76,7 @@ async function start(fps, x, y, width, height, displayInfo) {
  * @param {Boolean} mp4 - Defines if this should return a MP4.
  * @returns A buffer with the GIF/MP4 contents.
  */
-async function stop(mp4) {
+export async function stop(mp4: boolean) {
     if (!recording) {
         throw new Error("Not recording.")
     }
@@ -101,7 +93,7 @@ async function stop(mp4) {
         recording = null
 
         await new Promise(res => {
-            childProcess.on("close", code => {
+            childProcess.on("close", (code: number) => {
                 if (code !== 0) {
                     throw new Error("Recording failed.")
                 }
@@ -130,7 +122,7 @@ async function stop(mp4) {
     )
 
     await new Promise(res => {
-        ffmpegPaleteGen.on("close", code => {
+        ffmpegPaleteGen.on("close", (code: number) => {
             if (code !== 0) {
                 throw new Error("GIF encoding failed.")
             }
@@ -148,7 +140,7 @@ async function stop(mp4) {
     )
 
     await new Promise(res => {
-        ffmpegProcess.on("close", code => {
+        ffmpegProcess.on("close", (code: number) => {
             if (code !== 0) {
                 throw new Error("GIF encoding failed.")
             }
@@ -162,6 +154,3 @@ async function stop(mp4) {
     await fsNextra.unlink(tempFile)
     return buffer
 }
-
-// Exports start and stop.
-module.exports = { start, stop }

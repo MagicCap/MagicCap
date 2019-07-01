@@ -2,15 +2,14 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Requirements for initialisation.
-const magicImports = require("magicimports")
-const { existsSync, renameSync, unlinkSync } = magicImports("fs")
-const { ensureDir } = magicImports("fs-nextra")
-const { darkThemeInformation } = magicImports("./system_dark_theme")
-const { sep, join } = magicImports("path")
-const { homedir } = magicImports("os")
-const { app, Notification } = magicImports("electron")
-const newInstallId = require("./install_id")
-const { init } = require("@sentry/electron")
+import { existsSync, renameSync, unlinkSync } from "fs"
+import { ensureDir } from "fs-nextra"
+import darkThemeInformation from "./system_dark_theme"
+import { sep, join } from "path"
+import { homedir } from "os"
+import { app, Notification } from "electron"
+import newInstallId from "./install_id"
+import { init } from "@sentry/electron"
 
 // ASCII!!!!!1111111!
 new Promise(res => {
@@ -57,23 +56,28 @@ async function getDefaultConfig() {
     }
     await ensureDir(config.save_path).catch(async error => {
         if (!(error.errno === -4075 || error.errno === -17)) {
-            config.Remove("save_path")
+            delete config["save_path"]
         }
     })
     return config
 }
 
 // Puts the lite touch configuration into memory if it exists.
+declare const liteTouchConfig: any
 if (existsSync("/usr/share/magiccap_deployment_info.json")) {
-    global.liteTouchConfig = require("/usr/share/magiccap_deployment_info.json")
-    if (global.liteTouchConfig.config.save_path && global.liteTouchConfig.config.save_path.startsWith("$H")) {
-        global.liteTouchConfig.config.save_path = global.liteTouchConfig.config.save_path.replace("$H", homedir())
+    // Stop TypeScript complaining about this.
+    eval(`global.liteTouchConfig = require("/usr/share/magiccap_deployment_info.json")`)
+
+    if (liteTouchConfig.config.save_path && liteTouchConfig.config.save_path.startsWith("$H")) {
+        liteTouchConfig.config.save_path = liteTouchConfig.config.save_path.replace("$H", homedir())
     }
 } else {
-    global.liteTouchConfig = undefined
+    // Stop TypeScript complaining about this.
+    eval("global.liteTouchConfig = undefined")
+
+    const { config, saveConfig } = require("./config")
 
     // Handles the configuration (migration).
-    const { config, saveConfig } = require("./config")
     if (Object.keys(config).length === 0) {
         if (existsSync(`${homedir()}/magiccap.json`)) {
             const oldConfig = require(`${homedir()}/magiccap.json`)
@@ -90,11 +94,13 @@ if (existsSync("/usr/share/magiccap_deployment_info.json")) {
             (new Notification({
                 title: "Welcome to MagicCap",
                 body: "Your old configuration has been migrated. We hope you enjoy this update!",
+                // @ts-ignore
                 sound: true,
             })).show()
         } else {
             getDefaultConfig().then(newConfig => {
                 for (const i in newConfig) {
+                    // @ts-ignore
                     config[i] = newConfig[i]
                 }
                 saveConfig()

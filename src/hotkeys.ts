@@ -2,8 +2,13 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Requires stuff.
-const { globalShortcut, dialog } = require("electron")
-const i18n = require("./i18n")
+import { globalShortcut, dialog } from "electron"
+import * as i18n from "./i18n"
+
+// Declares the config and capture launchers.
+declare const config: any
+declare const runCapture: (gif: Boolean) => Promise<void>
+declare const runClipboardCapture: () => Promise<void>
 
 /**
  * Fixes odd capture issues on macOS.
@@ -13,7 +18,7 @@ function thisShouldFixMacIssuesAndIdkWhy() {
 }
 
 // Handles hotkey management.
-module.exports = async() => {
+export default async() => {
     globalShortcut.unregisterAll()
     try {
         if (config.hotkey) {

@@ -2,15 +2,18 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Requires stuff.
-const { lstat, unlink, chmod } = require("fs-nextra")
-const { dialog } = require("electron")
-const ProgressBar = require("electron-progressbar")
-const i18n = require("./i18n")
-const request = require("request")
-const requestProgress = require("request-progress")
-const os = require("os")
-const fs = require("fs")
-const asyncChildProcess = require("async-child-process")
+import { lstat, unlink, chmod } from "fs-nextra"
+import { dialog } from "electron"
+// @ts-ignore
+import * as ProgressBar from "electron-progressbar"
+import * as i18n from "./i18n"
+import * as request from "request"
+// @ts-ignore
+import * as requestProgress from "request-progress"
+import * as os from "os"
+import * as fs from "fs"
+// @ts-ignore
+import * as asyncChildProcess from "async-child-process"
 
 /**
  * Downloads the FFMpeg binaries which are needed.
@@ -27,17 +30,23 @@ function downloadBin() {
             if (!fpA) {
                 done()
             }
-            for (const fpIndex in fpA) {
+            for (const fpIndexFfsTypeScript in fpA) {
+                const fpIndex = (fpIndexFfsTypeScript as unknown) as number
                 const fp = fpA[fpIndex]
                 const fstat = await lstat(fp)
                 if (fstat.isFile()) {
                     done(fp)
                 } else {
-                    let progressBar
+                    let progressBar: any
                     const tempPath = `${os.tmpdir()}/ffmpeg_magiccap.tar.xz`
                     const promise = new Promise((res, rej) => {
                         requestProgress(request(`https://s3.magiccap.me/ffmpeg/${os.platform() === "linux" ? "linux.tar.xz" : "mac"}`))
-                            .on("progress", state => {
+                            .on("progress", (state: {
+                                size: {
+                                    total: Number,
+                                    transferred: Number,
+                                }
+                            }) => {
                                 if (!progressBar) {
                                     progressBar = new ProgressBar({
                                         text: "Downloading FFMpeg...",
@@ -50,7 +59,7 @@ function downloadBin() {
                                     progressBar.value += state.size.transferred
                                 }
                             })
-                            .on("error", err => {
+                            .on("error", (err: Error) => {
                                 progressBar.close()
                                 rej(err)
                             })
@@ -88,7 +97,8 @@ function downloadBin() {
                         await unlink(tempPath)
                     }
 
-                    await chmod(`${fp}/ffmpeg`, 0777)
+                    // @ts-ignore
+                    await chmod(`${fp}/ffmpeg`, "0777")
                     done(`${fp}/ffmpeg`)
                     return
                 }
@@ -97,8 +107,12 @@ function downloadBin() {
     })
 }
 
+// Declares config and save config.
+declare const config: any
+declare const saveConfig: () => void
+
 // The main FFMpeg fetcher.
-module.exports = async() => {
+export default async() => {
     if (config.ffmpeg_path && fs.existsSync(config.ffmpeg_path)) {
         return config.ffmpeg_path
     }

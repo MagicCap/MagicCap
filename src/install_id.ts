@@ -2,12 +2,11 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Requirements go here.
-const magicImports = require("magicimports")
-const { machineId } = require("node-machine-id")
-const { get } = magicImports("chainfetch")
+import { machineId } from "node-machine-id"
+import { get } from "chainfetch"
 
 // Creates the install ID.
-module.exports = async function newInstallId() {
+export default async function newInstallId() {
     const newMachineId = await machineId()
     const siteGet = await get(`https://api.magiccap.me/install_id/new/${newMachineId}`)
     return siteGet.body

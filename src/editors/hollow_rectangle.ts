@@ -13,7 +13,7 @@ export default {
             </svg>
         `)
         return sharp(svg)
-            .resize({ width: metadata.width, height: metadata.height, })
+            .resize(metadata.width!, metadata.height!)
             .png()
             .toBuffer()
     },

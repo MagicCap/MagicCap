@@ -4,15 +4,21 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Imports go here.
-const magicImports = require("magicimports")
-const gifman = require("./gif_capture")
-const fsnextra = magicImports("fs-nextra")
-const { clipboard, nativeImage, Tray, dialog, shell, Notification } = magicImports("electron")
-const i18n = require("./i18n")
-const captureDatabase = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
-const selector = require("./selector")
-const sharp = magicImports("sharp")
-const filename = require(`${__dirname}/filename.js`)
+import * as gifman from "./gif_capture"
+import * as fsnextra from "fs-nextra"
+import * as electron from "electron"
+import * as i18n from "./i18n"
+import * as sharp from "sharp"
+import filename from "./filename"
+import * as SQLite3 from "better-sqlite3"
+import * as selector from "./selector"
+const captureDatabase = SQLite3(`${require("os").homedir()}/magiccap.db`)
+const { clipboard, nativeImage, Tray, dialog, shell, Notification } = electron
+
+// Declares needed stuff.
+declare const config: any
+declare const nameUploaderMap: any
+declare const importedUploaders: any
 
 // Defines if we are in a GIF.
 let inGif = false
@@ -21,19 +27,27 @@ let inGif = false
 const captureStatement = captureDatabase.prepare("INSERT INTO captures VALUES (?, ?, ?, ?, ?)")
 
 // The main capture core.
-module.exports = class CaptureCore {
+export default class CaptureCore {
+    private _filename: null | string
+    private _log: boolean
+    private _fp: null | string
+    private _url: null | string
+    private filetype: string
+    private buffer: Buffer
+    private promiseQueue: Array<() => Promise<void>>
+
     /**
      * Creates an instance of CaptureCore.
      * @param {Buffer} buffer - The buffer for the capture. If this is ommited, it will be set to undefined.
      * @param {String} filetype - Sets the filetype for the capture. If this is left ommited, it will be set to undefined.
      */
-    constructor(buffer, filetype) {
+    constructor(buffer: Buffer | undefined, filetype: string | undefined) {
         this._filename = null
         this._log = false
         this._fp = null
         this._url = null
-        this.filetype = filetype
-        this.buffer = buffer
+        this.filetype = (filetype as unknown) as string
+        this.buffer = (buffer as unknown) as Buffer
         this.promiseQueue = []
     }
 
@@ -42,9 +56,9 @@ module.exports = class CaptureCore {
      * @param {String} location - The location where the file is.
      * @returns The CaptureCore class this was called from.
      */
-    fp(location) {
+    fp(location: string) {
         this._fp = location
-        this.filetype = this._fp.split(".").pop().toLowerCase()
+        this.filetype = this._fp.split(".").pop()!.toLowerCase()
         return this
     }
 
@@ -63,15 +77,16 @@ module.exports = class CaptureCore {
      * @param {String} result - What to print in the notification.
      * @returns The CaptureCore class this was called from.
      */
-    notify(result) {
+    notify(result: string) {
         this.promiseQueue.push(async() => {
             const notification = new Notification({
                 title: "MagicCap",
                 body: result,
+                // @ts-ignore
                 sound: true,
             })
             const cls = this
-            notification.on("click", () => shell.openExternal(cls._url || cls._fp))
+            notification.on("click", () => shell.openExternal(cls._url || cls._fp!))
             notification.show()
         })
         return this
@@ -84,10 +99,11 @@ module.exports = class CaptureCore {
      * @param {String} url - The URL of the capture.
      * @param {String} filePath - The filepath to the capture.
      */
-    async _logUpload(file, success, url, filePath) {
+    async _logUpload(file: string, success: boolean, url: string | null, filePath: string | null) {
         const timestamp = new Date().getTime()
         await captureStatement.run(file, Number(success), timestamp, url, filePath)
         try {
+            // @ts-ignore
             global.window.webContents.send("screenshot-upload", {
                 filename: file,
                 success: Number(success),
@@ -105,7 +121,7 @@ module.exports = class CaptureCore {
      * @param {Object} uploader - The uploader to use. If ommited, runs through the default capture workflow.
      * @returns The CaptureCore class this was called from.
      */
-    upload(uploader) {
+    upload(uploader?: any) {
         this.promiseQueue.push(async() => {
             try {
                 let url
@@ -165,9 +181,9 @@ module.exports = class CaptureCore {
                 if (url && config.upload_open) {
                     shell.openExternal(url)
                 }
-                await this._logUpload(this._filename, true, url, this._fp)
+                await this._logUpload(this._filename!, true, url, this._fp!)
             } catch (e) {
-                await this._logUpload(this._filename, false, null, null)
+                await this._logUpload(this._filename!, false, null, null)
                 throw e
             }
         })
@@ -179,7 +195,7 @@ module.exports = class CaptureCore {
      * @param {String} name - Sets the filename to the string specified. If this is ommited, it will be generated using the usual workflow.
      * @returns The CaptureCore class this was called from.
      */
-    filename(name) {
+    filename(name?: string) {
         this.promiseQueue.push(async() => {
             if (name === undefined) {
                 const setFilename = filename.newFilename()
@@ -215,7 +231,7 @@ module.exports = class CaptureCore {
      * @returns A new instance of the CaptureCore class.
      */
     static clipboard() {
-        const cls = new CaptureCore()
+        const cls = new CaptureCore(undefined, undefined)
         cls.promiseQueue.push(async() => {
             // Attempt to fetch the nativeimage from the clipboard
             let image = clipboard.readImage()
@@ -227,10 +243,12 @@ module.exports = class CaptureCore {
             }
 
             // Convert nativeimage to png buffer (clipboard doesn't support animated gifs)
+            // @ts-ignore
             image = image.toPNG()
 
             // Set up in class.
             cls.filetype = "png"
+            // @ts-ignore
             cls.buffer = image
         })
         return cls
@@ -243,8 +261,8 @@ module.exports = class CaptureCore {
      * @param {String} fp - The file path to the file.
      * @returns A new instance of the CaptureCore class.
      */
-    static file(buffer, file, fp) {
-        const extension = file.split(".").pop().toLowerCase()
+    static file(buffer: Buffer, file: string, fp: string) {
+        const extension = file.split(".").pop()!.toLowerCase()
         const cls = new CaptureCore(buffer, extension)
         cls.filename(file).fp(fp)
         return cls
@@ -255,7 +273,7 @@ module.exports = class CaptureCore {
      * @param {Boolean} gif - Defines if the user asked for a GIF.
      * @returns A new instance of the CaptureCore class.
      */
-    static region(gif) {
+    static region(gif: boolean) {
         const cls = new CaptureCore(undefined, gif ? "gif" : "png")
         cls.promiseQueue.push(async() => {
             if (gif && inGif) {
@@ -290,7 +308,7 @@ module.exports = class CaptureCore {
                 throw new Error("Screenshot cancelled.")
             }
 
-            const electronScreen = magicImports("electron").screen
+            const electronScreen = electron.screen
 
             const displays = electronScreen.getAllDisplays().sort((a, b) => {
                 let sub = a.bounds.x - b.bounds.x
@@ -321,9 +339,10 @@ module.exports = class CaptureCore {
                     })
                 })
                 gifIcon.setImage(`${__dirname}/icons/cog.png`)
-                const buffer = await gifman.stop()
+                const buffer = await gifman.stop(false)
                 await gifIcon.destroy()
                 inGif = false
+                // @ts-ignore
                 cls.buffer = buffer
             } else {
                 const displayFull = selection.screenshots[selection.display]

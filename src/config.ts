@@ -2,24 +2,25 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Loads the config.
-const magicImports = require("magicimports")
-const db = magicImports("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
+import * as SQLite3 from "better-sqlite3"
+const db = SQLite3(`${require("os").homedir()}/magiccap.db`)
 
 // The statement to get all configuration options.
 const configGetStmt = db.prepare("SELECT * FROM config;")
 const configInsertStmt = db.prepare("INSERT INTO config VALUES (?, ?);")
 
 // Places all of the items into the object.
-let config = {}
-if (global.liteTouchConfig) {
-    config = global.liteTouchConfig.config
+declare const liteTouchConfig: any
+export let config = {} as any
+if (liteTouchConfig) {
+    config = liteTouchConfig.config
 }
 for (const i of configGetStmt.iterate()) {
     config[i.key] = JSON.parse(i.value)
 }
 
 // The config saving transaction.
-const configSaveTransaction = db.transaction(newConfig => {
+const configSaveTransaction = db.transaction((newConfig: any) => {
     db.exec("DELETE FROM config")
     for (const i in newConfig) {
         if (newConfig[i] !== undefined) {
@@ -31,9 +32,6 @@ const configSaveTransaction = db.transaction(newConfig => {
 /**
  * Saves the config.
  */
-const saveConfig = () => {
+export const saveConfig = () => {
     configSaveTransaction(config)
 }
-
-// Exports this file.
-module.exports = { config, saveConfig }

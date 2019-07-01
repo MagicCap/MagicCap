@@ -6,7 +6,7 @@ import { exec } from "child_process"
 /**
  * Gets the dark theme information.
  */
-const darkThemeInformation = (): Promise<boolean> => new Promise(res => {
+export default (): Promise<boolean> => new Promise(res => {
     switch (process.platform) {
         case "darwin": {
             exec("defaults read -g AppleInterfaceStyle", (err, stdout) => {
@@ -25,6 +25,3 @@ const darkThemeInformation = (): Promise<boolean> => new Promise(res => {
         }
     }
 })
-
-
-export = { darkThemeInformation }

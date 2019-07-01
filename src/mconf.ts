@@ -2,46 +2,55 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Imports go here.
-const i18n = require(`${__dirname}/i18n`)
+import * as i18n from "./i18n"
 
 /**
  * Parses the *.mconf file.
- * @param {object} data - The JSON parsed data.
+ * @param {Object} data - The JSON parsed data.
  * @returns - All the configuration items that are being changed.
  */
-async function parse(data) {
-    if (data.version !== 1) {
+async function parse(data: {
+    version: number,
+    config_items: undefined | object,
+}) {
+    const version = data["version"] as Number
+    if (version !== 1) {
         const wrongVerErr = await i18n.getPoPhrase("This version of MagicCap cannot read the config file given.", "mconf")
         throw new Error(wrongVerErr)
     }
-    if (data.config_items === undefined || typeof data.config_items !== "object") {
+    if (data["config_items"] === undefined || typeof data["config_items"] !== "object") {
         const cantParseErr = await i18n.getPoPhrase("MagicCap couldn't parse the config file.", "mconf")
         throw new Error(cantParseErr)
     }
-    return data.config_items
+    return data["config_items"]
 }
 
 
 /**
  * Gets the values of a object.
  *
- * @param {object} item - The item you want values from.
+ * @param {any} item - The item you want values from.
  * @returns The values.
  */
-function values(item) {
-    const x = []
-    for (const i in item) {
-        x.push(item[i])
+function values(item: any) {
+    const x: Array<any> = []
+    for (const i  in item) {
+        const y = item[i] as any
+        x.push(y)
     }
     return x
 }
+
+// Declares the config and imported uploaders.
+declare const importedUploaders: object
+declare const config: any
 
 /**
  * Handles making a new *.mconf's file contents.
  * @returns The parsed mconf file.
  */
 function new_() {
-    const options = {}
+    const options: any = {}
     for (const uploader of values(importedUploaders)) {
         for (const option of values(uploader.config_options)) {
             if (config[option.value] !== undefined) {
@@ -56,7 +65,7 @@ function new_() {
 }
 
 // Things that are exported.
-module.exports = {
+export = {
     new: new_,
     parse: parse,
 }

@@ -8,6 +8,7 @@ export default {
     apply: async(partBuff: Buffer, rgb: Array<Number>): Promise<Buffer>  => {
         const metadata = await sharp(partBuff).metadata()
         return sharp({
+            // @ts-ignore
             create: {
                 width: metadata.width,
                 height: metadata.height,

@@ -2,16 +2,18 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
-const magicImports = require("magicimports")
-const moment = magicImports("moment")
-const emojis = Object.values(require("emojilib").lib).map(x => x.char)
+import * as moment from "moment"
+const emojis = Object.values(require("emojilib").lib).map((x: any) => x.char as string)
 
-module.exports = class Filename {
+// Declares the config.
+declare const config: any
+
+export default class Filename {
     /**
      * Used internally to generate a random character.
      * @returns {String} - The random character.
      */
-    static _getRandomString() {
+    static _getRandomString(): string {
         const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         return charset.charAt(Math.floor(Math.random() * charset.length))
     }
@@ -20,7 +22,7 @@ module.exports = class Filename {
      * Used internally to generate a random emoji.
      * @returns {String} - The random emoji.
      */
-    static _getRandomEmoji() {
+    static _getRandomEmoji(): string {
         return emojis[Math.floor(Math.random() * emojis.length)]
     }
 
@@ -31,7 +33,7 @@ module.exports = class Filename {
      * @param {Function} called - The function to call.
      * @returns {String} - The modified string.
      */
-    static _replacePatternCallback(string, pattern, called) {
+    static _replacePatternCallback(string: string, pattern: string, called: Function): string {
         if (string.includes(pattern)) {
             let finalString = ""
             const stringSplit = string.split(new RegExp(`(${pattern})`))
@@ -51,7 +53,7 @@ module.exports = class Filename {
      * Gets a new filename based on the user configured pattern.
      * @returns {String} - The filename.
      */
-    static newFilename() {
+    static newFilename(): string {
         // Get pattern
         let filename = "screenshot_%date%_%time%"
         if (config.file_naming_pattern) {

@@ -3,7 +3,9 @@
         "module": "commonjs",
         "target": "es2018",
         "allowJs": true,
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "noImplicitAny": true,
+        "strict": true
     },
     "include": [
         "src/**/*"
