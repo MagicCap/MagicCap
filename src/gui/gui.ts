@@ -8,6 +8,11 @@
 import * as electron from "electron"
 import { Scope } from "@sentry/hub"
 import Vue from "vue"
+import { writeJSON, readJSON } from "fs-nextra"
+import * as Sentry from "@sentry/electron"
+import * as os from "os"
+const { ipcRenderer, remote, shell } = electron
+const { dialog, clipboard } = remote
 
 // Handles escape to close.
 let activeModal: undefined | string
@@ -88,19 +93,15 @@ window.onerror = function() {
 }
 
 // Gets the lite touch configuration.
-const { ipcRenderer, remote, shell } = electron
 eval('global.liteTouchConfig = remote.getGlobal("liteTouchConfig")')
-// The needed imports.
-const { dialog, clipboard } = remote
+
+// Gets the config/stuff that needs it.
 const config = require("./config").config
 const saveConfigToDb = require("./config").saveConfig
-const { writeJSON, readJSON } = require("fs-nextra")
 const i18n = require("./i18n")
 const mconf = require("./mconf")
-const Sentry = require("@sentry/electron")
+const { default: filename } = require("./filename")
 const { AUTOUPDATE_ON } = require("./build_info")
-const filename = require(`${__dirname}/filename.js`)
-const os = require("os")
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -838,6 +839,7 @@ const exportMconf = async() => {
             file += ".mconf"
         }
         try {
+            // @ts-ignore
             await writeJSON(file, exported, {
                 spaces: 4,
             })
@@ -886,7 +888,7 @@ const importMconf = async() => {
         }, async response => {
             switch (response) {
                 case 0: {
-                    let parse
+                    let parse: any
                     try {
                         parse = await mconf.parse(data)
                     } catch (err) {

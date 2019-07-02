@@ -1,0 +1,5 @@
+const { readFileSync, writeFileSync } = require("fs")
+let openGui = readFileSync("./dist/gui/gui.js").toString()
+openGui = openGui.replace(/vue_1\.default/g, "vue_1").replace('const vue_1 = require("vue");', 'const vue_1 = require("vue/dist/vue");')
+writeFileSync("./dist/gui/gui.js", openGui)
+console.log("Patched!")

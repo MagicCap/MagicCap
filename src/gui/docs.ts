@@ -1,5 +1,8 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+
+import * as markdownit from "markdown-it"
+
 const BASE_DIR = "docs"
 const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
 const HELP_BODY = document.getElementById("helpModalBody")!
@@ -7,7 +10,7 @@ const HELP_TITLE = document.getElementById("helpModalTitle")!
 const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
 const MD_ONLY = true
 // @ts-ignore
-const MD = window.markdownit({
+const MD = markdownit({
     html: true,
     linkify: true,
     typographer: true,

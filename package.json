@@ -51,6 +51,7 @@
         "@types/async-lock": "^1.1.1",
         "@types/better-sqlite3": "^5.4.0",
         "@types/express": "^4.17.0",
+        "@types/markdown-it": "0.0.8",
         "@types/mime-types": "^2.1.0",
         "@types/node": "12.0.4",
         "@types/node-fetch": "^2.3.7",
@@ -88,7 +89,7 @@
         "linuxcompile": "npm run build && electron-packager . MagicCap --ignore='(^\\/branding)|(^\\/src)|(\\/static_copy\\.js)' --platform linux --arch x64 --out ./build --overwrite --icon ./dist/icons/app.ico",
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
         "dev-run": "npm run build && electron .",
-        "build": "rm -rf dist/ && tsc && npm run copy",
+        "build": "rm -rf dist/ && tsc && node ./monkeypatch_gui_dist.js && npm run copy",
         "dev-run-capturedev": "npm run build && electron . -captureDev",
         "dev-colors": "electron ./src/gui/css/colors.js -dark && electron ./src/gui/css/colors.js -light"
     }

@@ -65,7 +65,7 @@ function new_() {
 }
 
 // Things that are exported.
-export = {
+export default {
     new: new_,
     parse: parse,
 }
