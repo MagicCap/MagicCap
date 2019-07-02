@@ -2,12 +2,11 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-// eslint-disable no-inline-comments
+import { post } from "chainfetch"
 
-const magicImports = require("magicimports")
-const { post } = magicImports("chainfetch")
+declare const config: any
 
-module.exports = {
+export default {
     name: "Custom",
     icon: "custom.png",
     config_options: {
@@ -37,7 +36,7 @@ module.exports = {
             required: false,
         },
     },
-    upload: async(buffer, _, filename) => {
+    upload: async(buffer: Buffer, _: string, filename: string) => {
         let res = await post(config.custom_url)
             .set(config.custom_headers)
             .attach(config.custom_body)

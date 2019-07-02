@@ -2,10 +2,12 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const { S3 } = require("tiny-s3-uploader")
-const mime = require("mime-types")
+import { S3 } from "tiny-s3-uploader"
+import * as mime from "mime-types"
 
-module.exports = {
+declare const config: any
+
+export default {
     name: "S3",
     icon: "s3.png",
     config_options: {
@@ -36,7 +38,7 @@ module.exports = {
             required: true,
         },
     },
-    upload: async(buffer, ext, filename) => {
+    upload: async(buffer: Buffer, ext: string, filename: string) => {
         if (config.s3_endpoint.startsWith("http://")) {
             config.s3_endpoint = config.s3_endpoint.trimStart("http://")
         } else if (config.s3_endpoint.startsWith("https://")) {
@@ -44,7 +46,7 @@ module.exports = {
         }
         const s3 = new S3(config.s3_endpoint, config.s3_access_key_id.trim(), config.s3_secret_access_key.trim(), config.s3_bucket_name)
         await s3.upload(
-            filename, "public-read", mime.lookup(ext), buffer,
+            filename, "public-read", mime.lookup(ext) || "application/octet-stream", buffer,
         )
         let url = config.s3_bucket_url
         if (!url.endsWith("/")) {

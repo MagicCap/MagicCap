@@ -2,11 +2,12 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const magicImports = require("magicimports")
-const { post } = magicImports("chainfetch")
-const i18n = require("../i18n")
+import { post } from "chainfetch"
+import * as i18n from "../i18n"
 
-module.exports = {
+declare const config: any
+
+export default {
     name: "Pomf",
     icon: "pomf.png",
     config_options: {
@@ -21,7 +22,7 @@ module.exports = {
             required: false,
         },
     },
-    upload: async(buffer, fileType) => {
+    upload: async(buffer: Buffer, fileType: string) => {
         let res
         if (config.pomf_token) {
             res = await post(config.pomf_domain)
@@ -40,7 +41,7 @@ module.exports = {
                 throw new Error("You have been ratelimited!")
             }
             default: {
-                if (res.status >= 500 <= 599) {
+                if (res.status >= 500 && res.status <= 599) {
                     throw new Error("There are currently server issues.")
                 }
                 const i18nEdgecase = await i18n.getPoPhrase("Server returned the status {status}.", "uploaders/exceptions")

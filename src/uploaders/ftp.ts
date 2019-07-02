@@ -2,9 +2,12 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018.
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
-const i18n = require("../i18n")
+import * as i18n from "../i18n"
+import * as promiseFtp from "promise-ftp"
 
-module.exports = {
+declare const config: any
+
+export default {
     name: "Passive FTP",
     icon: "ftp.png",
     config_options: {
@@ -41,8 +44,8 @@ module.exports = {
             required: true,
         },
     },
-    upload: async(buffer, _, filename) => {
-        const client = new (require("promise-ftp"))
+    upload: async(buffer: Buffer, _: string, filename: string) => {
+        const client = new promiseFtp()
 
         try {
             await client.connect({

@@ -25,10 +25,13 @@ import { readFile } from "fs-nextra"
 import testUploader from "./test_uploader"
 import autoUpdateLoop from "./autoupdate"
 import * as i18n from "./i18n"
-import { showShortener } from "./shortener"
+import showShortener from "./shortener"
 import * as Sentry from "@sentry/electron"
 import { AUTOUPDATE_ON } from "./build_info"
 import hotkeys from "./hotkeys"
+import uploaders from "./uploaders"
+import OAuth2 from "./oauth2"
+import editors from "./editors"
 
 // All of the loaded uploaders.
 eval(`
@@ -37,8 +40,8 @@ eval(`
 `)
 
 // Loads all of the uploaders.
-const uploaders = require(`${__dirname}/uploaders`)
 for (const uploaderName in uploaders) {
+    // @ts-ignore
     const import_ = uploaders[uploaderName]
     importedUploaders[import_.name] = import_
     nameUploaderMap[uploaderName] = import_.name
@@ -344,6 +347,7 @@ ipcMain.on("config-edit", async(event: any, data: any) => {
 })
 
 // Tests a uploader.
+// @ts-ignore
 ipcMain.on("test-uploader", async(event: any, data: any) => event.sender.send("test-uploader-res", await testUploader(uploaders[data])))
 
 // Handles the hotkey changing.
@@ -361,20 +365,17 @@ ipcMain.on("check-for-updates", async (event: any) => {
 // The get uploaders IPC.
 ipcMain.on("get-uploaders", (event: any) => { event.returnValue = importedUploaders })
 
-// Defines the editors.
-const editors = require("./editors")
-
 // The run affect IPC.
 ipcMain.on("run-affect", async(event: any, data: any) => {
     const sentData = data.data
     const affect = data.affect
     const primaryColour = data.primaryColour
+    // @ts-ignore
     const res = await editors[affect].apply(sentData, primaryColour)
     event.sender.send("affect-res", res)
 })
 
 // Runs any OAuth2 flows for the uploaders.
-const OAuth2 = require("./oauth2")
 ipcMain.on("oauth-flow-uploader", async(event: any, uploaderName: string) => {
     const uploader = importedUploaders[uploaderName]
     const oAuthResp = await OAuth2(uploader.getOAuthUrl())

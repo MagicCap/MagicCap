@@ -1,10 +1,12 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-const i18n = require("../i18n")
-const Client = require("ssh2-sftp-client")
+import * as i18n from "../i18n"
+import * as Client from "ssh2-sftp-client"
 
-module.exports = {
+declare const config: any
+
+export default {
     name: "SFTP",
     icon: "sftp.png",
     config_options: {
@@ -40,7 +42,7 @@ module.exports = {
             required: true,
         },
     },
-    upload: async(buffer, _, filename) => {
+    upload: async(buffer: Buffer, _: string, filename: string) => {
         const sftp = new Client()
 
         try {

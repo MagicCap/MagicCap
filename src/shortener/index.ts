@@ -2,16 +2,16 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Imports the things.
-const { BrowserWindow } = require("electron")
-const path = require("path")
+import { BrowserWindow } from "electron"
+import * as path from "path"
 
 // Defines the window.
-let shortenerWindow = null
+let shortenerWindow: BrowserWindow | null = null
 
 /**
  * Spawns the shortener window.
  */
-const showShortener = () => {
+export default function showShortener() {
     if (shortenerWindow) {
         shortenerWindow.show()
         return
@@ -25,6 +25,7 @@ const showShortener = () => {
             nodeIntegration: true,
         },
     })
+    // @ts-ignore
     if (process.platform !== "darwin") shortenerWindow.setIcon(`${path.join(__dirname, "..")}/icons/taskbar.png`)
     shortenerWindow.setTitle("MagicCap Link Shortener")
     shortenerWindow.loadFile(`${__dirname}/index.html`)
@@ -34,9 +35,6 @@ const showShortener = () => {
     })
 
     shortenerWindow.once("ready-to-show", () => {
-        shortenerWindow.show()
+        shortenerWindow!.show()
     })
 }
-
-// Exports the showShortener function.
-module.exports = { showShortener }

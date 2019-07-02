@@ -3,9 +3,11 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
-const { post } = require("chainfetch")
+import { post } from "chainfetch"
 
-module.exports = {
+declare const config: any
+
+export default {
     name: "UltraShare",
     icon: "ultrashare.svg",
     config_options: {
@@ -25,7 +27,7 @@ module.exports = {
             required: true,
         },
     },
-    upload: async(buffer, fileType) => {
+    upload: async(buffer: Buffer, fileType: string) => {
         try {
             let res
             res = await post(config.ultra_https ? "https://" : `http://${config.ultra_domain}/api/upload`)
@@ -42,7 +44,7 @@ module.exports = {
                     throw new Error("You have been ratelimited!")
                 }
                 default: {
-                    if (res.status >= 500 <= 599) {
+                    if (res.status >= 500 && res.status <= 599) {
                         throw new Error("There are currently server issues.")
                     }
                     throw new Error(`Server returned the status ${res.status}.`)

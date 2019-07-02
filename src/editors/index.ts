@@ -4,4 +4,4 @@ import Rectangle from "./rectangle"
 import Circle from "./circle"
 import HollowCircle from "./hollow_circle"
 import HollowRectangle from "./hollow_rectangle"
-export { Blur, Pixelate, Rectangle, HollowRectangle, Circle, HollowCircle }
+export default { Blur, Pixelate, Rectangle, HollowRectangle, Circle, HollowCircle }

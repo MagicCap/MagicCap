@@ -1,12 +1,13 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-const magicImports = require("magicimports")
-const { put } = magicImports("chainfetch")
-const i18n = require("../i18n")
-const { app } = magicImports("electron")
+import { put } from "chainfetch"
+import * as i18n from "../i18n"
+import { app } from "electron"
 
-module.exports = {
+declare const config: any
+
+export default {
     name: "reUpload",
     icon: "reupload.png",
     config_options: {
@@ -18,7 +19,7 @@ module.exports = {
             endUrlRegex: "https:\\/\\/api.reupload.gg\\/authorize.+",
         },
     },
-    upload: async(buffer, fileType) => {
+    upload: async(buffer: Buffer, fileType: string) => {
         switch (fileType) {
             case "png":
             case "jpg":

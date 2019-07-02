@@ -2,9 +2,12 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // This requires Chainfetch.
-const { post } = require("chainfetch")
+import { post } from "chainfetch"
+import { Request } from "express"
 
-module.exports = {
+declare const config: any
+
+export default {
     name: "Dropbox",
     icon: "dropbox.png",
     config_options: {
@@ -36,7 +39,7 @@ module.exports = {
         },
     },
     getOAuthUrl: () => `https://dropbox.com/oauth2/authorize?client_id=${config.dropbox_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&response_type=code`,
-    handleOAuthFlow: async req => {
+    handleOAuthFlow: async (req: Request) => {
         if (!req.query.code) {
             return
         }
@@ -53,7 +56,7 @@ module.exports = {
             dropbox_uid: response.body.uid,
         }
     },
-    upload: async(buffer, _, filename) => {
+    upload: async(buffer: Buffer, _: string, filename: string) => {
         const dropboxPath = `${config.dropbox_path}${filename}`
         await post("https://content.dropboxapi.com/2/files/upload")
             .set("Authorization", `Bearer ${config.dropbox_token}`)
@@ -62,6 +65,7 @@ module.exports = {
             .send(buffer)
         const dropboxSettings = {
             requested_visibility: config.dropbox_link_password ? "password" : "public",
+            link_password: null,
         }
         if (config.dropbox_link_password) {
             dropboxSettings.link_password = config.dropbox_link_password

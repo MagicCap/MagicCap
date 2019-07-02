@@ -3,10 +3,11 @@
 
 // eslint-disable no-inline-comments
 
-const magicImports = require("magicimports")
-const { post } = magicImports("chainfetch")
-const { readFile } = magicImports("fs-nextra")
-const safeEval = magicImports("safe-eval")
+import { post } from "chainfetch"
+import { readFile } from "fs-nextra"
+import * as safeEval from "safe-eval"
+
+declare const config: any
 
 // Defines image extensions for parsing.
 const imageExtensions = [
@@ -27,8 +28,8 @@ const shareXRegex = /(?!\\)\$[a-z]{3,5}:.+(?!\\)\$/g
  * @param {string} fileType - The file type that is being uploaded.
  * @returns A more friendly object for JS.
  */
-function parseShareXFile(parsedJson, fileType) {
-    const parsed = {}
+function parseShareXFile(parsedJson: any, fileType: string) {
+    const parsed = {} as any
     const fileTypeLower = fileType.toLowerCase()
 
     if (parsedJson.DestinationType === undefined) {
@@ -91,8 +92,8 @@ function parseShareXFile(parsedJson, fileType) {
  * @param {string} body - The string version of the body.
  * @returns The URL for the upload.
  */
-function parseShareXResult(parsedSxcu, body) {
-    const parsing = {}
+function parseShareXResult(parsedSxcu: any, body: string) {
+    const parsing = {} as any
 
     let result = parsedSxcu.resultUrl
     if (result === undefined) {
@@ -190,7 +191,7 @@ function parseShareXResult(parsedSxcu, body) {
     }
 }
 
-module.exports = {
+export default {
     name: "ShareX SXCU",
     icon: "sharex.png",
     config_options: {
@@ -200,7 +201,7 @@ module.exports = {
             required: true,
         },
     },
-    upload: async(buffer, fileType, filename) => {
+    upload: async(buffer: Buffer, fileType: string, filename: string) => {
         const sxcuPath = config.sharex_sxcu_path
         let openedFile
         try {

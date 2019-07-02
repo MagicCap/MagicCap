@@ -10,10 +10,11 @@ const configGetStmt = db.prepare("SELECT * FROM config;")
 const configInsertStmt = db.prepare("INSERT INTO config VALUES (?, ?);")
 
 // Places all of the items into the object.
-declare const liteTouchConfig: any
 export let config = {} as any
-if (liteTouchConfig) {
-    config = liteTouchConfig.config
+// @ts-ignore
+if (global.liteTouchConfig) {
+    // @ts-ignore
+    config = global.liteTouchConfig.config
 }
 for (const i of configGetStmt.iterate()) {
     config[i.key] = JSON.parse(i.value)
