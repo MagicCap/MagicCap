@@ -2,18 +2,21 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
+// Declares the payload.
+declare const payload: any
+
 // Defines the primary colour.
 let primaryColour = [255, 0, 0]
 
 // Requires Electron.
-const electron = require("electron")
+import * as electron from "electron"
 const ipcRenderer = electron.ipcRenderer
 
 // Requires sharp.
-const sharp = require("sharp")
+import * as sharp from "sharp"
 
 // Requires async-lock.
-const asyncLock = require("async-lock")
+import * as asyncLock from "async-lock"
 
 // Defines the async lock.
 const lock = new asyncLock()
@@ -24,13 +27,13 @@ const lock = new asyncLock()
  * @param {Buffer} part - The part to run that affect to.
  * @returns {Buffer} The affect applied to the part.
  */
-const runAffect = (affect, part) => new Promise(async(res, rej) => {
+const runAffect = (affect: string, part: Buffer) => new Promise(async(res, rej) => {
     try {
         await lock.acquire("affect", async() => {
             await ipcRenderer.send("run-affect", {
                 affect, data: part, primaryColour,
             })
-            ipcRenderer.once("affect-res", (_, result) => res(result))
+            ipcRenderer.once("affect-res", (_: any, result: Buffer) => res(result))
         })
     } catch (e) {
         rej(e)
@@ -41,13 +44,13 @@ const runAffect = (affect, part) => new Promise(async(res, rej) => {
 let selectionType = "__cap__"
 
 // Defines all of the selections made across all of the windows.
-const selections = {}
+const selections = {} as any
 
 // Defines the position of the first click.
-let firstClick = null
+let firstClick: null | any = null
 
 // This is the element for the selection.
-const element = document.getElementById("selection")
+const element = document.getElementById("selection")!
 
 // Handles when keys are pushed.
 document.addEventListener("keydown", async event => {
@@ -69,11 +72,11 @@ document.addEventListener("keydown", async event => {
 })
 
 // Defines the uploader properties HTML element.
-const uploaderProperties = document.getElementById("UploaderProperties")
+const uploaderProperties = document.getElementById("UploaderProperties")!
 
 // Handles when the mouse is down.
 document.body.onmousedown = async e => {
-    if (uploaderProperties.contains(e.target)) return
+    if (uploaderProperties.contains(e.target as Node)) return
 
     firstClick = electron.screen.getCursorScreenPoint()
 
@@ -90,21 +93,21 @@ document.body.onmousedown = async e => {
 
 /**
  * Checks if a number is between other numbers. NUMBERRRRRRS!
- * @param {int} x - The number used for comparison.
- * @param {*} min - The minimum number.
- * @param {*} max - The maximum number.
+ * @param {number} x - The number used for comparison.
+ * @param {number} min - The minimum number.
+ * @param {number} max - The maximum number.
  * @returns A boolean repersenting if the number is between min and max.
  */
-function between(x, min, max) {
+function between(x: number, min: number, max: number) {
     return x >= min && x <= max
 }
 
 /**
  * Gets the inbetween windows.
- * @param {*} electronMouse - The Electron mouse input.
+ * @param {any} electronMouse - The Electron mouse input.
  * @returns All inbetween windows in an array.
  */
-function getInbetweenWindows(electronMouse) {
+function getInbetweenWindows(electronMouse: any) {
     const inThese = []
 
     for (const x of payload.activeWindows) {
@@ -121,7 +124,7 @@ function getInbetweenWindows(electronMouse) {
 /**
  * Determines the brightness of an image
  */
-async function getImageBrightness(url) {
+async function getImageBrightness(url: string) {
     return new Promise(resolve => {
         // Create the image
         const image = document.createElement("img")
@@ -134,7 +137,7 @@ async function getImageBrightness(url) {
             canvas.height = image.height
 
             // Apply image
-            const ctx = canvas.getContext("2d")
+            const ctx = canvas.getContext("2d")!
             ctx.drawImage(image, 0, 0)
 
             // Get raw image data
@@ -167,9 +170,9 @@ async function moveSelectorMagnifier() {
     let y = thisCursor.y - payload.bounds.y
 
     // Set the cursor crosshair
-    const cursorX = document.getElementById("cursorX")
+    const cursorX = document.getElementById("cursorX")!
     cursorX.style.left = `${x - (cursorX.getBoundingClientRect().width / 2)}px`
-    const cursorY = document.getElementById("cursorY")
+    const cursorY = document.getElementById("cursorY")!
     cursorY.style.top = `${y - (cursorY.getBoundingClientRect().height / 2)}px`
 
     // Fuck you too Ubuntu.
@@ -180,14 +183,14 @@ async function moveSelectorMagnifier() {
     const actualY = Math.floor(actualMousePoint.y * scaleFactor)
 
     // Update the with new coordinates
-    document.getElementById("positions").textContent = `X: ${actualX} | Y: ${actualY}`
+    document.getElementById("positions")!.textContent = `X: ${actualX} | Y: ${actualY}`
 
     // Set the magifier positions
     let magnifyX = x
     let magnifyY = y
     const magnifyOffset = 8
-    const magnifyElement = document.getElementById("magnify")
-    const positionElement = document.getElementById("position")
+    const magnifyElement = document.getElementById("magnify")!
+    const positionElement = document.getElementById("position")!
 
     // Check if we're overflowing on the y for the magnifier
     if ((magnifyY + magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height) > window.innerHeight) {
@@ -221,7 +224,7 @@ async function moveSelectorMagnifier() {
 
     // Decide which crosshair to use
     let crosshair = "crosshair.png"
-    if (brightness < brightnessThreshold) crosshair = "crosshair_white.png"
+    if (brightness as number < brightnessThreshold) crosshair = "crosshair_white.png"
 
     // Apply new magnifier image & crosshair
     magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/${crosshair}"), url(${urlPart})`
@@ -260,10 +263,10 @@ document.body.onmousemove = e => {
 }
 
 // Edits that have been made to this display.
-const displayEdits = []
+const displayEdits: any[] = []
 
 // Defines the background image.
-let backgroundImage
+let backgroundImage: ArrayBuffer
 (async() => {
     backgroundImage = await (await fetch(payload.imageUrl)).arrayBuffer()
 })()
@@ -273,7 +276,7 @@ let backgroundImage
  * @param {string} data - The data to sanitise.
  * @returns A sanitised string.
  */
-function xssProtect(data) {
+function xssProtect(data: string) {
     const lt = /</g
     const gt = />/g
     const ap = /'/g
@@ -285,7 +288,7 @@ function xssProtect(data) {
 
 // Called when the mouse button goes up.
 document.body.onmouseup = async e => {
-    if (uploaderProperties.contains(e.target)) return
+    if (uploaderProperties.contains(e.target as Node)) return
 
     // Fuck you too Ubuntu.
     const actualMousePoint = electron.screen.getCursorScreenPoint()
@@ -303,7 +306,7 @@ document.body.onmouseup = async e => {
         }
     }
 
-    const posInfo = element.getBoundingClientRect()
+    const posInfo = element.getBoundingClientRect() as any
 
     const width = posInfo.width * scaleFactor
     const height = posInfo.height * scaleFactor
@@ -311,7 +314,7 @@ document.body.onmouseup = async e => {
     start = {
         pageX: posInfo.x * scaleFactor,
         pageY: posInfo.y * scaleFactor,
-    }
+    } as any
     start.x = start.pageX + payload.bounds.x
     start.y = start.pageY + payload.bounds.y
 
@@ -369,16 +372,16 @@ document.body.onmouseup = async e => {
         selectionBlackness.style.top = element.style.top
         selectionBlackness.style.bottom = element.style.bottom
         selectionBlackness.style.right = element.style.right
-        const left = Math.floor(Number(element.style.left.match(/\d+/)[0]) * scaleFactor)
-        const top = Math.floor(Number(element.style.top.match(/\d+/)[0]) * scaleFactor)
+        const left = Math.floor(Number(element.style.left!.match(/\d+/)![0]) * scaleFactor)
+        const top = Math.floor(Number(element.style.top!.match(/\d+/)![0]) * scaleFactor)
         const region = await sharp(Buffer.from(backgroundImage))
-            .extract({ left, top, width: Math.floor(Number(element.style.width.match(/\d+/)[0]) * scaleFactor), height: Math.floor(Number(element.style.height.match(/\d+/)[0]) * scaleFactor) })
+            .extract({ left, top, width: Math.floor(Number(element.style.width!.match(/\d+/)![0]) * scaleFactor), height: Math.floor(Number(element.style.height!.match(/\d+/)![0]) * scaleFactor) })
             .toBuffer()
         const edit = await runAffect(selectionType, region)
         displayEdits.push({
             left, top, edit,
         })
-        selectionBlackness.style.backgroundImage = `url(${URL.createObjectURL(new Blob([edit], { type: "image/png" }))})`
+        selectionBlackness.style.backgroundImage = `url(${URL.createObjectURL(new Blob([edit] as BlobPart[], { type: "image/png" }))})`
         document.body.appendChild(selectionBlackness)
         element.style.top = "-10px"
         element.style.left = "-10px"
@@ -393,22 +396,25 @@ document.body.onmouseup = async e => {
  * This is called when a button is invoked.
  * @param {int} buttonId - The ID of the button.
  */
-function invokeButton(buttonId, sendEvent = true) {
+function invokeButton(buttonId: string, sendEvent = true) {
     const newNodes = []
     for (const el of uploaderProperties.children) {
         const a = el.querySelector("a")
         if (a) newNodes.push(a)
     }
 
+    // @ts-ignore
     const htmlElement = newNodes[buttonId]
     const button = payload.buttons[buttonId]
     switch (button.type) {
         case "selection": {
-            htmlElement.parentElement.classList.add("selected")
+            htmlElement.parentElement!.classList.add("selected")
             for (const thisButtonId in payload.buttons) {
+                // @ts-ignore
                 if (buttonId != thisButtonId) {
                     const thisButton = payload.buttons[thisButtonId]
                     if (thisButton.type === "selection") {
+                        // @ts-ignore
                         newNodes[thisButtonId].parentElement.classList.remove("selected")
                     }
                 }
@@ -444,7 +450,7 @@ if (payload.buttons) {
     uploaderProperties.innerHTML = `${propertyStr}${uploaderProperties.innerHTML}`
 
     // What in the name of fuck Chrome? This should work in CSS!
-    document.getElementById("ColourSelectionEl").style.border = "none"
+    document.getElementById("ColourSelectionEl")!.style.border = "none"
 } else {
     uploaderProperties.innerHTML = ""
 }
@@ -453,7 +459,7 @@ if (payload.buttons) {
 let doNotCallColourEdit = false
 
 // Called when a event is recieved from another screen.
-ipcRenderer.on("event-recv", (_, res) => {
+ipcRenderer.on("event-recv", (_: any, res: any) => {
     if (res.display == payload.display) {
         return
     }
@@ -483,7 +489,8 @@ ipcRenderer.on("event-recv", (_, res) => {
         case "colour-change": {
             primaryColour = res.args.primaryColour
             doNotCallColourEdit = true
-            document.getElementById("ColourSelectionEl").value = res.args.hex
+            // @ts-ignore
+            document.getElementById("ColourSelectionEl")!.value = res.args.hex
             doNotCallColourEdit = false
         }
     }
@@ -496,11 +503,12 @@ const changeColour = () => {
     if (doNotCallColourEdit) {
         return
     }
-    const hex = document.getElementById("ColourSelectionEl").value.substr(1)
+    // @ts-ignore
+    const hex = document.getElementById("ColourSelectionEl")!.value.substr(1)
     /**
      * Fixes a small edgecase.
      */
-    const edgeCaseFix = x => x > 255 ? Math.floor((x / 65535) * 255) : x
+    const edgeCaseFix = (x: number) => x > 255 ? Math.floor((x / 65535) * 255) : x
     const r = edgeCaseFix(parseInt(hex.substr(0, 2), 16))
     const g = edgeCaseFix(parseInt(hex.substr(2, 4), 16))
     const b = edgeCaseFix(parseInt(hex.substr(4, 6), 16))

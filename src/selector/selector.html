@@ -17,7 +17,10 @@
     <body>
         <script>
             // The main payload.
-            const payload = JSON.parse('%PAYLOAD%')
+            const payload = JSON.parse('%PAYLOAD%');
+
+            // This is a hack I know, but I need it for stuff to work.
+            let exports = {};
         </script>
 
         <div id="cursorX"></div>

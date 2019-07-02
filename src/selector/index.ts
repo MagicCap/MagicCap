@@ -4,28 +4,31 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the required imports.
-const { ipcMain, BrowserWindow } = require("electron")
-const uuidv4 = require("uuid/v4")
-const os = require("os")
-const path = require("path")
-const asyncChildProcess = require("async-child-process")
-const { spawn } = require("child_process")
-const httpBufferPromise = require("./http-buffer-promise")
-const express = require("express")
-const sharp = require("sharp")
-const { readFile } = require("fs-nextra")
+import { ipcMain, BrowserWindow, Display } from "electron"
+import * as uuidv4 from "uuid/v4"
+import * as os from "os"
+import * as path from "path"
+import * as asyncChildProcess from "async-child-process"
+import { spawn } from "child_process"
+import httpBufferPromise from "./http-buffer-promise"
+import * as express from "express"
+import * as sharp from "sharp"
+import { readFile } from "fs-nextra"
+
+// Declares the config.
+declare const config: any
 
 // Defines all UUID's.
-let uuids = []
+let uuids: string[] = []
 
 // Defines all active windows.
-let activeWindows = []
+let activeWindows: any[] = []
 
 // Defines all of the screenshots.
-let screenshots = []
+let screenshots: Buffer[] = []
 
 // Defines all of the buttons.
-let globalButtons = []
+let globalButtons: any[] = []
 
 // Defines the platform.
 const platform = os.platform()
@@ -39,7 +42,7 @@ const LOWEST_PORT = 63000
 const HIGHEST_PORT = 63999
 const port = Math.floor(Math.random() * (+HIGHEST_PORT - +LOWEST_PORT)) + +LOWEST_PORT
 const screenshotServer = spawn(`${__dirname}${path.sep}bin${path.sep}screenshot-display-${fullPlatform}`, [`${port}`])
-let screenshotServerKey
+let screenshotServerKey: string
 screenshotServer.stdout.on("data", key => {
     if (!screenshotServerKey) {
         screenshotServerKey = key.toString()
@@ -58,7 +61,7 @@ freezeServer.get("/", (req, res) => {
         res.end(screenshots[display])
     }
 })
-let selectorHtmlCache
+let selectorHtmlCache: string | null
 freezeServer.get("/selector/render", async(req, res) => {
     const key = req.query.key
     if (key !== screenshotServerKey) {
@@ -86,7 +89,7 @@ freezeServer.get("/selector/render", async(req, res) => {
         res.contentType("html")
         res.end(selectorHtmlCache
             .replace("%IMAGE_URL%", `url("${imageUrl}")`)
-            .replace("%DARK_MODE%", config.light_theme ? 0 : 1)
+            .replace("%DARK_MODE%", (config.light_theme ? 0 : 1).toString())
             .replace("%PAYLOAD%", payload)
             .replace("%ADD_TO_BODY_IF_LINUX%", process.platform === "linux" ? "background-size: 100%;" : ""))
     }
@@ -151,7 +154,7 @@ freezeServer.listen(freezeServerPort, "127.0.0.1")
 /**
  * Spawns all the required windows.
  */
-const spawnWindows = (displays, primaryId) => {
+const spawnWindows = (displays: Display[], primaryId: any) => {
     const windows = []
     const captureDev = process.argv.includes("-captureDev")
     for (let index in displays) {
@@ -207,7 +210,7 @@ const getOrderedDisplays = () => {
 let selectorActive = false
 
 // Opens the region selector.
-module.exports = async buttons => {
+export default async (buttons: any[]) => {
     if (selectorActive) {
         return
     }
@@ -257,12 +260,12 @@ module.exports = async buttons => {
         }
     })()
 
-    screenshots = await Promise.all(promises)
+    screenshots = await Promise.all(promises) as Buffer[]
 
     const screens = spawnWindows(displays, primaryId)
 
     for (const screenNumber in screens) {
-        ipcMain.on(`${uuids[screenNumber]}-event-send`, (_, args) => {
+        ipcMain.on(`${uuids[screenNumber]}-event-send`, (_: any, args: any) => {
             for (const browser of screens) {
                 browser.webContents.send("event-recv", {
                     type: args.type,
@@ -274,7 +277,7 @@ module.exports = async buttons => {
     }
     selectorActive = true
     const r = await new Promise(res => {
-        ipcMain.once("screen-close", async(_, args) => {
+        ipcMain.once("screen-close", async(_: any, args: any) => {
             xyImageMap = new Map()
             for (const uuid of uuids) {
                 await ipcMain.removeAllListeners(`${uuid}-event-send`)

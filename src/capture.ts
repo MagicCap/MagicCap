@@ -11,7 +11,8 @@ import * as i18n from "./i18n"
 import * as sharp from "sharp"
 import filename from "./filename"
 import * as SQLite3 from "better-sqlite3"
-import * as selector from "./selector"
+import selector from "./selector"
+import editors from "./editors"
 const captureDatabase = SQLite3(`${require("os").homedir()}/magiccap.db`)
 const { clipboard, nativeImage, Tray, dialog, shell, Notification } = electron
 
@@ -290,8 +291,8 @@ export default class CaptureCore {
                         active: true,
                     },
                 ]
-                const editors = require("./editors")
                 for (const key in editors) {
+                    // @ts-ignore
                     const editor = editors[key]
                     selectorArgs.push({
                         name: key,
@@ -303,6 +304,7 @@ export default class CaptureCore {
                 }
             }
 
+            // @ts-ignore
             const selection = await selector(selectorArgs)
             if (!selection) {
                 throw new Error("Screenshot cancelled.")
