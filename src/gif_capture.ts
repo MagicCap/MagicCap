@@ -35,7 +35,7 @@ let ffmpeg: any
  * @param {Screen} displayInfo - The Electron display information.
  * @returns A boolean repersenting if the GIF capture started.
  */
-export async function start(fps: number, x: number, y: number, width: number, height: number, displayInfo: { bounds: { height: number; }; id: any; }) {
+export async function start(fps: number, x: number, y: number, width: number, height: number, displayInfo: { bounds: { height: number }; id: any }) {
     if (recording) {
         throw new Error("Already recording.")
     }

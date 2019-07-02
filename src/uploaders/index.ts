@@ -16,5 +16,5 @@ import gdrive from "./gdrive"
 export default {
     custom, elixire, ftp, imgur, magiccap, novus, pomf,
     reupload, s3, sharex, ultrashare, sftp, dropbox,
-    gdrive
+    gdrive,
 }

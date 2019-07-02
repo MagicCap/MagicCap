@@ -210,7 +210,7 @@ const getOrderedDisplays = () => {
 let selectorActive = false
 
 // Opens the region selector.
-export default async (buttons: any[]) => {
+export default async(buttons: any[]) => {
     if (selectorActive) {
         return
     }

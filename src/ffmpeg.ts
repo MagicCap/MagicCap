@@ -43,9 +43,9 @@ function downloadBin() {
                         requestProgress(request(`https://s3.magiccap.me/ffmpeg/${os.platform() === "linux" ? "linux.tar.xz" : "mac"}`))
                             .on("progress", (state: {
                                 size: {
-                                    total: Number,
-                                    transferred: Number,
-                                }
+                                    total: number;
+                                    transferred: number;
+                                };
                             }) => {
                                 if (!progressBar) {
                                     progressBar = new ProgressBar({

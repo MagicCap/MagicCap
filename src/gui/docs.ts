@@ -3,6 +3,29 @@
 
 import * as markdownit from "markdown-it"
 
+/**
+ * Converts a string to title case
+ * @param {string} str - The string to convert
+ * @returns {string}
+ */
+const titleCase = (str: string) => str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+
+/**
+ * Formats a file item name; Stripping file extension, replacing underscores & hyphens with spaces, using title case
+ * @param {string} name - The name to format
+ * @returns {string}
+ */
+function nameFormat(name: string) {
+    if (name.includes(".")) {
+        name = name
+            .split(".")
+            .slice(0, -1)
+            .join(".")
+    }
+
+    return titleCase(name.replace(/[_-]/g, " "))
+}
+
 const BASE_DIR = "docs"
 const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
 const HELP_BODY = document.getElementById("helpModalBody")!
@@ -15,13 +38,6 @@ const MD = markdownit({
     linkify: true,
     typographer: true,
 })
-
-/**
- * Converts a string to title case
- * @param {string} str - The string to convert
- * @returns {string}
- */
-const titleCase = (str: string) => str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
 
 /**
  * Generates an HTML item for the file item given
@@ -63,27 +79,11 @@ function directoryElement(item: any, contents: any[]) {
 }
 
 /**
- * Formats a file item name; Stripping file extension, replacing underscores & hyphens with spaces, using title case
- * @param {string} name - The name to format
- * @returns {string}
- */
-function nameFormat(name: string) {
-    if (name.includes(".")) {
-        name = name
-            .split(".")
-            .slice(0, -1)
-            .join(".")
-    }
-
-    return titleCase(name.replace(/[_-]/g, " "))
-}
-
-/**
  * Recursively generates the structure data for a given GitHub API repo url
  * @param {string} url - The GitHub API repo contents URL to scan
  * @returns {Promise<Array<any>>}
  */
-async function getStruct(url: string): Promise<Array<any>> {
+async function getStruct(url: string): Promise<any[]> {
     let data = []
     // Fetch the GitHub data
     const response = await fetch(url)

@@ -78,8 +78,8 @@
     "scripts": {
         "copy": "node ./static_copy.js",
         "postinstall": "electron-builder install-app-deps --arch x64",
-        "lint": "eslint \"./src/**/*.js\"",
-        "lint-and-fix": "eslint \"./src/**/*.js\" --fix",
+        "lint": "eslint \"./src/**/*.ts\"",
+        "lint-and-fix": "eslint \"./src/**/*.ts\" --fix",
         "macpackage": "electron-packager . MagicCap --ignore='(^\\/branding)|(^\\/src)|(\\/static_copy\\.js)' --no-deref-symlinks --platform darwin --arch x64 --out ./build --overwrite --icon ./dist/icons/app.icns",
         "macappsign": "electron-osx-sign --gatekeeper-assess=false --identity=\"Developer ID Application: Jake Gealer (S7UG4ZL2KJ)\" ./build/MagicCap-darwin-x64/MagicCap.app",
         "macdmg": "electron-installer-dmg ./build/MagicCap-darwin-x64/MagicCap.app MagicCap --out=./build --icon=./dist/icons/app.icns",

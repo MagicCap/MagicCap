@@ -5,7 +5,7 @@
 import { get } from "chainfetch"
 
 // Handles creating the shortened link. Returns null on failure.
-export default async (url: string) => {
+export default async(url: string) => {
     let res
     try {
         res = await get(`https://s.magiccap.me/add?url=${encodeURIComponent(url)}`)

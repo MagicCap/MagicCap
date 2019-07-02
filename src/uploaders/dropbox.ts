@@ -39,7 +39,7 @@ export default {
         },
     },
     getOAuthUrl: () => `https://dropbox.com/oauth2/authorize?client_id=${config.dropbox_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&response_type=code`,
-    handleOAuthFlow: async (req: Request) => {
+    handleOAuthFlow: async(req: Request) => {
         if (!req.query.code) {
             return
         }

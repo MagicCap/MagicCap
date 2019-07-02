@@ -10,19 +10,19 @@ import * as i18n from "./i18n"
  * @returns - All the configuration items that are being changed.
  */
 async function parse(data: {
-    version: number,
-    config_items: undefined | object,
+    version: number;
+    config_items: undefined | object;
 }) {
-    const version = data["version"] as Number
+    const version = data.version as number
     if (version !== 1) {
         const wrongVerErr = await i18n.getPoPhrase("This version of MagicCap cannot read the config file given.", "mconf")
         throw new Error(wrongVerErr)
     }
-    if (data["config_items"] === undefined || typeof data["config_items"] !== "object") {
+    if (data.config_items === undefined || typeof data.config_items !== "object") {
         const cantParseErr = await i18n.getPoPhrase("MagicCap couldn't parse the config file.", "mconf")
         throw new Error(cantParseErr)
     }
-    return data["config_items"]
+    return data.config_items
 }
 
 
@@ -33,8 +33,8 @@ async function parse(data: {
  * @returns The values.
  */
 function values(item: any) {
-    const x: Array<any> = []
-    for (const i  in item) {
+    const x: any[] = []
+    for (const i in item) {
         const y = item[i] as any
         x.push(y)
     }

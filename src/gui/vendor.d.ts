@@ -1,6 +1,6 @@
-declare module NodeJS  {
+declare namespace NodeJS {
     interface Global {
-        importedUploaders: any,
-        liteTouchConfig: any,
+        importedUploaders: any;
+        liteTouchConfig: any;
     }
 }

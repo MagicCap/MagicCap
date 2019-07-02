@@ -5,7 +5,7 @@ export default {
     description: "Draws a hollow circle on the screen.",
     icon: "hollow_circle.png",
     expectsImageData: true,
-    apply: async(partBuff: Buffer, rgb: Array<Number>): Promise<Buffer>  => {
+    apply: async(partBuff: Buffer, rgb: number[]): Promise<Buffer> => {
         const metadata = await sharp(partBuff).metadata()
         const y = Math.floor(metadata.height! / 2)
         const x = Math.floor(metadata.width! / 2)

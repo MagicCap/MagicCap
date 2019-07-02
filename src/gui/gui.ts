@@ -182,19 +182,27 @@ getCaptures();
             captures: displayedCaptures,
         },
         methods: {
-            rmCapture: async (timestamp: number) => {
+            rmCapture: async(timestamp: number) => {
                 db.prepare("DELETE FROM captures WHERE timestamp = ?").run(timestamp)
                 await getCaptures()
             },
-            openScreenshotURL: async (url: string) => {
+            openScreenshotURL: async(url: string) => {
                 await shell.openExternal(url)
             },
-            openScreenshotFile: async (filePath: string) => {
+            openScreenshotFile: async(filePath: string) => {
                 await shell.openItem(filePath)
             },
         },
     })
 })()
+
+/**
+ * Saves the config.
+ */
+async function saveConfig() {
+    saveConfigToDb()
+    ipcRenderer.send("config-edit", config)
+}
 
 // Defines the clipboard action (and default).
 let clipboardAction = 2
@@ -220,7 +228,7 @@ new Vue({
         action: clipboardAction,
     },
     methods: {
-        changeAction: async (action: number) => {
+        changeAction: async(action: number) => {
             config.clipboard_action = action
             await saveConfig()
         },
@@ -370,14 +378,6 @@ function openMPL() {
  */
 function openEmojiLicense() {
     openURL("https://github.com/missive/emoji-mart/blob/master/LICENSE")
-}
-
-/**
- * Saves the config.
- */
-async function saveConfig() {
-    saveConfigToDb()
-    ipcRenderer.send("config-edit", config)
 }
 
 /**
@@ -700,7 +700,7 @@ function showUploaderConfig() {
 }
 
 interface Global {
-    spotConfig: any
+    spotConfig: any;
 }
 
 // All of the imported uploaders.
@@ -866,7 +866,7 @@ const importMconf = async() => {
         multiSelections: false,
         openDirectory: false,
         showsTagField: false,
-    }, async (file: any[]) => {
+    }, async(file: any[]) => {
         if (file === undefined) {
             return
         }

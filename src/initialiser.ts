@@ -56,7 +56,7 @@ async function getDefaultConfig() {
     }
     await ensureDir(config.save_path).catch(async error => {
         if (!(error.errno === -4075 || error.errno === -17)) {
-            delete config["save_path"]
+            delete config.save_path
         }
     })
     return config

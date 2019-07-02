@@ -13,7 +13,7 @@ const poCache: Map<string, PO.PO> = new Map()
 /**
  * Used to cache/get the *.po files.
  */
-export const getPoFile = async (file: string) => {
+export const getPoFile = async(file: string) => {
     const cachedPo = poCache.get(file)
     if (cachedPo !== undefined) {
         return cachedPo
@@ -56,7 +56,7 @@ const htmlParseRegex = /\$.+\$/g
 /**
  * Used to parse the HTML that needs translating.
  */
-export const poParseHtml = async (htmlData: string) => {
+export const poParseHtml = async(htmlData: string) => {
     let htmlDone = htmlData
     const i18nThisDocumentation = await getPoPhrase("this documentation", "gui")
     for (;;) {

@@ -35,7 +35,7 @@ export default class CaptureCore {
     private _url: null | string
     private filetype: string
     private buffer: Buffer
-    private promiseQueue: Array<() => Promise<void>>
+    private promiseQueue: (() => Promise<void>)[]
 
     /**
      * Creates an instance of CaptureCore.

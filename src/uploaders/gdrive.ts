@@ -32,7 +32,7 @@ export default {
         },
     },
     getOAuthUrl: () => `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.gdrive_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&response_type=code`,
-    handleOAuthFlow: async (req: Request) => {
+    handleOAuthFlow: async(req: Request) => {
         if (!req.query.code) {
             return
         }

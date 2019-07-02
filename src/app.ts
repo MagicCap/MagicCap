@@ -240,7 +240,7 @@ async function dropdownMenuUpload(uploader: any) {
         // @ts-ignore
         multiSelections: false,
         openDirectory: false,
-    }, async (filePaths: string[]) => {
+    }, async(filePaths: string[]) => {
         if (filePaths) {
             const path = filePaths[0]
             const buffer = await readFile(path)
@@ -357,7 +357,7 @@ ipcMain.on("hotkey-change", async() => {
 })
 
 // Allows for update checking in the gui
-ipcMain.on("check-for-updates", async (event: any) => {
+ipcMain.on("check-for-updates", async(event: any) => {
     await autoUpdateLoop.manualCheck()
     event.sender.send("check-for-updates-done")
 })

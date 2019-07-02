@@ -1,4 +1,3 @@
-
 // Defines the config and API client.
 import { config } from "../config"
 import apiClient from "./api_client"

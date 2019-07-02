@@ -7,7 +7,7 @@ import * as i18n from "./i18n"
 
 // Declares the config and capture launchers.
 declare const config: any
-declare const runCapture: (gif: Boolean) => Promise<void>
+declare const runCapture: (gif: boolean) => Promise<void>
 declare const runClipboardCapture: () => Promise<void>
 
 /**
