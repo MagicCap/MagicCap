@@ -206,6 +206,7 @@ async function openConfig() {
         baseURLForDataURL: `file://${__dirname}/gui/`,
     })
     eval("global.window = window")
+    window.webContents.openDevTools()
 
     window.on("closed", () => {
         eval("window = null")

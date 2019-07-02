@@ -4,8 +4,13 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
+// Imports stuff that is needed.
+import * as electron from "electron"
+import { Scope } from "@sentry/hub"
+import Vue from "vue"
+
 // Handles escape to close.
-let activeModal
+let activeModal: undefined | string
 
 /**
  * Closes all active modals with correct dismiss actions & shows capture content
@@ -13,7 +18,7 @@ let activeModal
  */
 function closeCurrentModal(custom = true) {
     // Show table
-    document.getElementById("mainTable").classList.remove("hidden")
+    document.getElementById("mainTable")!.classList.remove("hidden")
 
     // Find all active modals
     const all = document.querySelectorAll(".modal.is-active")
@@ -21,6 +26,7 @@ function closeCurrentModal(custom = true) {
         if (custom) {
             // Support custom close methods (Use a button with a delete class and onclick event to support this)
             const del = div.querySelector("button.delete")
+            // @ts-ignore
             if (del) del.click()
         }
 
@@ -36,7 +42,7 @@ function closeCurrentModal(custom = true) {
  * Shows a new modal based on ID (hides existing modals & capture content)
  * @param {string} id - The string ID of the modal to show
  */
-function showModal(id) {
+function showModal(id: string) {
     // Get the modal
     const modal = document.getElementById(id)
     if (!modal) return
@@ -49,14 +55,14 @@ function showModal(id) {
     activeModal = id
 
     // Hide captures table
-    document.getElementById("mainTable").classList.add("hidden")
+    document.getElementById("mainTable")!.classList.add("hidden")
 }
 
 /**
  * Adds a stylesheet to the head of the document
  * @param {string} sheet - The link to the stylesheet to include
  */
-function addStylesheet(sheet) {
+function addStylesheet(sheet: string) {
     const stylesheet = document.createElement("link")
     stylesheet.setAttribute("rel", "stylesheet")
     stylesheet.setAttribute("href", sheet)
@@ -68,7 +74,7 @@ document.addEventListener("keydown", e => {
     // key is I, and the alt key is held down
     // and also, ctrl (for Linux) or Cmd (meta, macOS) is held down
     if (e.code == "KeyI" && e.altKey && (e.ctrlKey || e.metaKey)) {
-        require("electron").remote.getCurrentWindow().toggleDevTools()
+        electron.remote.getCurrentWindow().webContents.toggleDevTools()
     }
     // Handles escape to close.
     if (e.code == "Escape") {
@@ -78,15 +84,14 @@ document.addEventListener("keydown", e => {
 
 // Open devtools when things break
 window.onerror = function() {
-    require("electron").remote.getCurrentWindow().openDevTools()
+    electron.remote.getCurrentWindow().webContents.openDevTools()
 }
 
 // Gets the lite touch configuration.
-const { ipcRenderer, remote, shell } = require("electron")
-global.liteTouchConfig = remote.getGlobal("liteTouchConfig")
-
+const { ipcRenderer, remote, shell } = electron
+eval('global.liteTouchConfig = remote.getGlobal("liteTouchConfig")')
 // The needed imports.
-const { dialog, clipboard } = require("electron").remote
+const { dialog, clipboard } = remote
 const config = require("./config").config
 const saveConfigToDb = require("./config").saveConfig
 const { writeJSON, readJSON } = require("fs-nextra")
@@ -104,7 +109,7 @@ Sentry.init({
 
 
 // Configures the Sentry scope.
-Sentry.configureScope(scope => {
+Sentry.configureScope((scope: Scope) => {
     scope.setUser({ id: config.install_id })
 })
 
@@ -131,7 +136,7 @@ new Vue({
 })
 
 // Sets the MagicCap version.
-document.getElementById("magiccap-ver").innerText = `MagicCap v${remote.app.getVersion()}`
+document.getElementById("magiccap-ver")!.innerText = `MagicCap v${remote.app.getVersion()}`
 
 // Sets the colour scheme.
 addStylesheet(`css/bulmaswatch/${config.light_theme ? "default" : "darkly"}/bulmaswatch.min.css`)
@@ -154,7 +159,7 @@ window.onload = () => {
 const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
 
 // A list of the displayed captures.
-const displayedCaptures = []
+const displayedCaptures: any[] = []
 
 /**
  * Gets the captures from the database.
@@ -176,14 +181,14 @@ getCaptures();
             captures: displayedCaptures,
         },
         methods: {
-            rmCapture: async timestamp => {
+            rmCapture: async (timestamp: number) => {
                 db.prepare("DELETE FROM captures WHERE timestamp = ?").run(timestamp)
                 await getCaptures()
             },
-            openScreenshotURL: async url => {
+            openScreenshotURL: async (url: string) => {
                 await shell.openExternal(url)
             },
-            openScreenshotFile: async filePath => {
+            openScreenshotFile: async (filePath: string) => {
                 await shell.openItem(filePath)
             },
         },
@@ -214,7 +219,7 @@ new Vue({
         action: clipboardAction,
     },
     methods: {
-        changeAction: async action => {
+        changeAction: async (action: number) => {
             config.clipboard_action = action
             await saveConfig()
         },
@@ -238,12 +243,14 @@ function showBetaUpdates() {
 /**
  * Checks for updates.
  */
-async function checkForUpdates(elm) {
+async function checkForUpdates(elm: HTMLElement) {
     elm.textContent = await i18n.getPoPhrase("Checking...", "gui")
+    // @ts-ignore
     elm.disabled = true
     ipcRenderer.send("check-for-updates")
     ipcRenderer.once("check-for-updates-done", async() => {
         elm.textContent = await i18n.getPoPhrase("Check for Updates", "gui")
+        // @ts-ignore
         elm.disabled = false
     })
 }
@@ -285,7 +292,7 @@ function showAbout() {
  * Returns the config with private info redacted
  */
 function safeConfig() {
-    let newConfig = {}
+    let newConfig = {} as any
     for (const key in config) {
         let val = config[key]
         if (key.toLowerCase().match(/(\b|_)password(\b|_)/g)) val = "PASSWORD REDACTED"
@@ -303,7 +310,7 @@ function safeConfig() {
  */
 function showDebug() {
     // Generate debug information
-    document.getElementById("debugInfo").textContent = `MagicCap Version: ${remote.app.getVersion()}
+    document.getElementById("debugInfo")!.textContent = `MagicCap Version: ${remote.app.getVersion()}
 System OS: ${os.type()} ${os.release()} / Platform: ${process.platform}
 Installation ID: ${config.install_id}
 Config: ${JSON.stringify(safeConfig())}
@@ -317,12 +324,14 @@ liteTouch Config: ${global.liteTouchConfig}`
  */
 async function copyDebug() {
     const button = document.getElementById("debugCopy")
-    button.disabled = true
-    clipboard.writeText(document.getElementById("debugInfo").textContent)
-    button.textContent = await i18n.getPoPhrase("Copied!", "gui")
+    // @ts-ignore
+    button!.disabled = true
+    clipboard.writeText(document.getElementById("debugInfo")!.textContent!)
+    button!.textContent = await i18n.getPoPhrase("Copied!", "gui")
     setTimeout(async() => {
-        button.disabled = false
-        button.textContent = await i18n.getPoPhrase("Copy to clipboard", "gui")
+        // @ts-ignore
+        button!.disabled = false
+        button!.textContent = await i18n.getPoPhrase("Copy to clipboard", "gui")
     }, 3000)
 }
 
@@ -344,7 +353,7 @@ function showMFLConfig() {
  * Opens a URL
  * @param {string} url - The URL to open externally
  */
-function openURL(url) {
+function openURL(url: string) {
     shell.openExternal(url)
 }
 
@@ -400,9 +409,12 @@ new Vue({
  * Allows you to close the hotkey config.
  */
 async function hotkeyConfigClose() {
-    const text = document.getElementById("screenshotHotkey").value
-    const gifText = document.getElementById("gifHotkey").value
-    const clipboardText = document.getElementById("clipboardHotkey").value
+    // @ts-ignore
+    const text = document.getElementById("screenshotHotkey")!.value
+    // @ts-ignore
+    const gifText = document.getElementById("gifHotkey")!.value
+    // @ts-ignore
+    const clipboardText = document.getElementById("clipboardHotkey")!.value
     let changed = false
 
     if (config.hotkey !== text) {
@@ -461,16 +473,19 @@ new Vue({
     },
     methods: {
         saveSaveCapture: () => {
-            config.save_capture = document.getElementById("fileConfigCheckbox").checked
+            // @ts-ignore
+            config.save_capture = document.getElementById("fileConfigCheckbox")!.checked
             saveConfig()
         },
         saveNamingPattern: () => {
-            config.file_naming_pattern = document.getElementById("fileNamingPattern").value
+            // @ts-ignore
+            config.file_naming_pattern = document.getElementById("fileNamingPattern")!.value
             saveConfig()
-            document.getElementById("fileNamingPreview").textContent = filename.newFilename()
+            document.getElementById("fileNamingPreview")!.textContent = filename.newFilename()
         },
         saveFilePath: () => {
-            let p = document.getElementById("fileSaveFolder").value
+            // @ts-ignore
+            let p = document.getElementById("fileSaveFolder")!.value
             if (!p.endsWith(sep)) p += sep
             config.save_path = p
             saveConfig()
@@ -484,14 +499,14 @@ const activeUploaderConfig = new Vue({
     data: {
         uploader: {
             name: "",
-            options: {},
+            options: {} as any,
         },
         exception: "",
         exceptionData: "",
         userAgent: `MagicCap ${remote.app.getVersion()}; ${config.install_id}`,
     },
     methods: {
-        getDefaultValue: option => {
+        getDefaultValue: (option: any) => {
             switch (option.type) {
                 case "boolean": {
                     const c = config[option.value]
@@ -520,38 +535,43 @@ const activeUploaderConfig = new Vue({
         /**
          * Resets a config value.
          */
-        resetValue(option) {
+        resetValue(option: any) {
             delete config[option.value]
             saveConfig()
             this.$forceUpdate()
             optionWebviewBodge(option)
         },
-        changeOption: option => {
-            let res = document.getElementById(option.value).value
+        changeOption: (option: any) => {
+            // @ts-ignore
+            let res: undefined | string = document.getElementById(option.value)!.value
             if (res === "") {
                 res = undefined
             }
             switch (option.type) {
                 case "integer":
+                    // @ts-ignore
                     res = parseInt(res) || option.default || undefined
                     break
                 case "boolean":
-                    res = document.getElementById(option.value).checked
+                    // @ts-ignore
+                    res = document.getElementById(option.value)!.checked
                     break
             }
             config[option.value] = res
             saveConfig()
         },
-        deleteRow: (key, option) => {
+        deleteRow: (key: string, option: any) => {
             delete option.items[key]
             config[option.value] = option.items
             activeUploaderConfig.$forceUpdate()
             saveConfig()
         },
-        addToTable: option => {
+        addToTable: (option: any) => {
             activeUploaderConfig.exception = ""
-            const key = document.getElementById(`Key${option.value}`).value || ""
-            const value = document.getElementById(`Value${option.value}`).value || ""
+            // @ts-ignore
+            const key = document.getElementById(`Key${option.value}`)!.value || ""
+            // @ts-ignore
+            const value = document.getElementById(`Value${option.value}`)!.value || ""
             if (key === "") {
                 activeUploaderConfig.exception += "blankKey"
                 return
@@ -586,7 +606,8 @@ const activeUploaderConfig = new Vue({
                     if (option.default) {
                         config[option.value] = option.default
                         saveConfig()
-                    } else if (option.type === "integer" && !parseInt(document.getElementById(option.value).value)) {
+                    // @ts-ignore
+                    } else if (option.type === "integer" && !parseInt(document.getElementById(option.value)!.value)) {
                         this.exception += "notAnInteger"
                         return false
                     } else {
@@ -617,10 +638,10 @@ const activeUploaderConfig = new Vue({
                 return
             }
             const view = this
-            document.getElementById("testButton").classList.add("is-loading")
+            document.getElementById("testButton")!.classList.add("is-loading")
             ipcRenderer.send("test-uploader", this.getFilename())
-            ipcRenderer.once("test-uploader-res", (_, res) => {
-                document.getElementById("testButton").classList.remove("is-loading")
+            ipcRenderer.once("test-uploader-res", (_: any, res: any) => {
+                document.getElementById("testButton")!.classList.remove("is-loading")
                 if (res[0]) {
                     view.exception += "ayyyyTestWorked"
                 } else {
@@ -648,14 +669,15 @@ const activeUploaderConfig = new Vue({
 /**
  * The Art of the Bodge: How I Made The Emoji Keyboard <https://www.youtube.com/watch?v=lIFE7h3m40U>
  */
-const optionWebviewBodge = option => {
+const optionWebviewBodge = (option: any) => {
     setTimeout(() => {
         const x = document.getElementById(option.value)
         if (x) {
             x.addEventListener("did-navigate", async urlInfo => {
-                const url = urlInfo.url
+                const url = ((urlInfo as unknown) as any).url as string
                 if (url.match(new RegExp(option.endUrlRegex))) {
-                    const webContents = document.getElementById(option.value).getWebContents()
+                    // @ts-ignore
+                    const webContents = document.getElementById(option.value)!.getWebContents() as electron.WebContents
                     const data = JSON.parse(await webContents.executeJavaScript("document.documentElement.innerText")).token
                     if (data) {
                         config[option.value] = data
@@ -676,8 +698,12 @@ function showUploaderConfig() {
     showModal("uploaderConfig")
 }
 
+interface Global {
+    spotConfig: any
+}
+
 // All of the imported uploaders.
-importedUploaders = global.importedUploaders = ipcRenderer.sendSync("get-uploaders")
+const importedUploaders = global.importedUploaders = ipcRenderer.sendSync("get-uploaders")
 
 // Renders all of the uploaders.
 new Vue({
@@ -691,7 +717,7 @@ new Vue({
         /**
          * Renders all of the uploaders.
          */
-        renderUploader: async(uploader, uploaderKey) => {
+        renderUploader: async(uploader: any, uploaderKey: string) => {
             const options = []
             for (const optionKey in uploader.config_options) {
                 const option = uploader.config_options[optionKey]
@@ -747,8 +773,8 @@ new Vue({
             }
             activeUploaderConfig.$set(activeUploaderConfig.uploader, "name", uploaderKey)
             activeUploaderConfig.$set(activeUploaderConfig.uploader, "options", options)
-            document.getElementById("uploaderConfig").classList.remove("is-active")
-            document.getElementById("activeUploaderConfig").classList.add("is-active")
+            document.getElementById("uploaderConfig")!.classList.remove("is-active")
+            document.getElementById("activeUploaderConfig")!.classList.add("is-active")
             activeModal = "activeUploaderConfig"
         },
         /**
@@ -781,7 +807,7 @@ new Vue({
         /**
          * Sets the language.
          */
-        changeLanguage(language) {
+        changeLanguage(language: string) {
             this.currentLang = language
             config.language = language
             saveConfig()
@@ -834,14 +860,15 @@ const importMconf = async() => {
                 name: "MagicCap Configuration File",
             },
         ],
+        // @ts-ignore
         multiSelections: false,
         openDirectory: false,
         showsTagField: false,
-    }, async file => {
+    }, async (file: any[]) => {
         if (file === undefined) {
             return
         }
-        let data
+        let data: any
         try {
             data = await readJSON(file[0])
         } catch (err) {
@@ -883,7 +910,8 @@ new Vue({
         action: Boolean(config.beta_channel),
     },
     methods: {
-        changeAction: actionBool => {
+        changeAction: (actionBool: boolean) => {
+            // @ts-ignore
             this.action = actionBool
             config.beta_channel = actionBool
             saveConfig()
@@ -902,18 +930,18 @@ const showShortener = () => {
  * Handles authentication via an OAuth2 flow.
  */
 async function oauthLogin() {
-    document.getElementById("oauthFlowInit").classList.add("is-loading")
+    document.getElementById("oauthFlowInit")!.classList.add("is-loading")
     await ipcRenderer.send("oauth-flow-uploader", activeUploaderConfig.uploader.name)
     const configDiff = await new Promise(res => {
-        ipcRenderer.once("oauth-flow-uploader-response", (_, diff) => {
+        ipcRenderer.once("oauth-flow-uploader-response", (_: any, diff: any) => {
             res(diff)
         })
-    })
-    document.getElementById("oauthFlowInit").classList.remove("is-loading")
+    }) as any
+    document.getElementById("oauthFlowInit")!.classList.remove("is-loading")
     if (!configDiff) {
         return
     }
-    for (const key of Object.keys(configDiff)) {
+    for (const key of Object.keys(configDiff) as any) {
         config[key] = configDiff[key]
     }
     saveConfig()

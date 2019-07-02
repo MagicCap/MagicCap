@@ -2,10 +2,11 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 const BASE_DIR = "docs"
 const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
-const HELP_BODY = document.getElementById("helpModalBody")
-const HELP_TITLE = document.getElementById("helpModalTitle")
+const HELP_BODY = document.getElementById("helpModalBody")!
+const HELP_TITLE = document.getElementById("helpModalTitle")!
 const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
 const MD_ONLY = true
+// @ts-ignore
 const MD = window.markdownit({
     html: true,
     linkify: true,
@@ -17,17 +18,18 @@ const MD = window.markdownit({
  * @param {string} str - The string to convert
  * @returns {string}
  */
-const titleCase = str => str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
+const titleCase = (str: string) => str.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())
 
 /**
  * Generates an HTML item for the file item given
- * @param item - The file item to generate HTML for
- * @returns {HTMLLIElement}
+ * @param {any} item - The file item to generate HTML for.
+ * @returns {HTMLLIElement} - The HTML element.
  */
-function fileElement(item) {
+function fileElement(item: any) {
     const li = document.createElement("li")
     const a = document.createElement("a")
     a.href = `javascript:showDocs("${encodeURI(item.url)}")`
+    // @ts-ignore
     a.setAttribute("data-link-wrapped", true)
     a.textContent = nameFormat(item.name)
     li.appendChild(a)
@@ -36,11 +38,11 @@ function fileElement(item) {
 
 /**
  * Creates an HTML item for a directory object and given item contents
- * @param item - The directory item
- * @param contents - The contents of the given directory
+ * @param {any} item - The directory item
+ * @param {any[]} contents - The contents of the given directory
  * @returns {HTMLLIElement}
  */
-function directoryElement(item, contents) {
+function directoryElement(item: any, contents: any[]) {
     const li = document.createElement("li")
     const text = document.createTextNode(nameFormat(item.name))
     const br = document.createElement("br")
@@ -62,7 +64,7 @@ function directoryElement(item, contents) {
  * @param {string} name - The name to format
  * @returns {string}
  */
-function nameFormat(name) {
+function nameFormat(name: string) {
     if (name.includes(".")) {
         name = name
             .split(".")
@@ -76,16 +78,16 @@ function nameFormat(name) {
 /**
  * Recursively generates the structure data for a given GitHub API repo url
  * @param {string} url - The GitHub API repo contents URL to scan
- * @returns {Promise<Array>}
+ * @returns {Promise<Array<any>>}
  */
-async function getStruct(url) {
+async function getStruct(url: string): Promise<Array<any>> {
     let data = []
     // Fetch the GitHub data
     const response = await fetch(url)
     const json = await response.json()
 
     // Sort by type then name
-    json.sort((a, b) => {
+    json.sort((a: any, b: any) => {
         if (a.type === b.type) {
             // Use name once type is the same
             return a.name.localeCompare(b.name)
@@ -161,7 +163,7 @@ async function getStructure() {
  * @param {boolean} full - Make the modal body full width/height
  * @param {boolean} cls - Give the wrapper the .markdown class
  */
-function renderDoc(markdown, back, full, cls) {
+function renderDoc(markdown: string, back: boolean, full: boolean, cls: boolean) {
     /**
      * Generates a back button to return to the main help menu
      * @returns {HTMLAnchorElement}
@@ -187,9 +189,12 @@ function renderDoc(markdown, back, full, cls) {
     div.className = cls ? "markdown" : ""
     div.innerHTML = MD.render(markdown)
     div.querySelectorAll("a:not([data-link-wrapped])").forEach(item => {
+        // @ts-ignore
         const link = String(item.href)
+        // @ts-ignore
         item.href = `javascript:openURL("${encodeURI(link)}")`
         item.classList.add("url")
+        // @ts-ignore
         item.setAttribute("data-link-wrapped", true)
     })
     HELP_BODY.appendChild(div)
@@ -200,7 +205,7 @@ function renderDoc(markdown, back, full, cls) {
  * @param {string} url - The GitHUB API file location to display
  * @returns {Promise<void>}
  */
-async function showDocs(url) {
+async function showDocs(url: string) {
     renderDoc("## Loading file...", true, false, true)
 
     const response = await fetch(url)
@@ -211,6 +216,9 @@ async function showDocs(url) {
     const content = `${atob(json.content)}\n\n<hr/>\n\n> *This file is open source on our GitHub repository at [${json.html_url}](${json.html_url}).*`
     renderDoc(content, true, true, true)
 }
+
+// Declares show modal.
+declare const showModal: (name: string) => void
 
 /**
  * Trigger the initial help (documentation) modal with the file menu
