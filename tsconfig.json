@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es2018",
-        "allowJs": false,
+        "allowJs": true,
         "outDir": "./dist",
         "noImplicitAny": true,
         "strict": true
