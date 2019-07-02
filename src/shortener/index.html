@@ -12,46 +12,7 @@
             <br>
             <h1 class="title" id="urlOut">--</h1>
         </div>
-        <script>
-            // Defines the config.
-            const { config } = require("../config");
-            
-            // Sets the theme.
-            const stylesheet = document.createElement("link");
-            stylesheet.setAttribute("rel", "stylesheet");
-            if (config.light_theme) {
-                stylesheet.setAttribute("href", "../../node_modules/bulmaswatch/default/bulmaswatch.min.css");
-            } else {
-                stylesheet.setAttribute("href", "../../node_modules/bulmaswatch/darkly/bulmaswatch.min.css");
-            }
-            document.getElementsByTagName("head")[0].appendChild(stylesheet);
-
-            // Defines the API client.
-            const apiClient = require("./api_client");
-
-            // Handles editing the URL.
-            const inDom = document.getElementById("urlIn");
-            const outDom = document.getElementById("urlOut");
-            inDom.oninput = async() => {
-                if (inDom.value === "") {
-                    outDom.innerHTML = "--";
-                } else {
-                    const res = await apiClient(inDom.value);
-                    if (res === null) {
-                        outDom.innerHTML = "--";
-                    } else {
-                        outDom.innerHTML = `<a href="javascript:openLink('${res}')">${res}</a>`;
-                    }
-                }
-            };
-
-            // Requires shell from electron.
-            const { shell } = require("electron");
-
-            // Used to externally open links.
-            const openLink = url => {
-                shell.openExternal(url);
-            };
-        </script>
+        <script>var exports = {};</script>
+        <script src="handler.js"></script>
     </body>
 </html>

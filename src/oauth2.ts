@@ -6,13 +6,13 @@ import { BrowserWindow } from "electron"
 import * as express from "express"
 
 // Defines the promise.
-let unresolvedPromise
+let unresolvedPromise: undefined | ((arg: null | express.Request) => void)
 
 // Defines the browser window.
-let browserWindow
+let browserWindow: BrowserWindow | undefined
 
 // Handles OAuth2 logins.
-export = async(initUrl: string): Promise<Object> => {
+export default async(initUrl: string): Promise<any> => {
     if (browserWindow) {
         browserWindow.show()
         return null
@@ -31,18 +31,18 @@ export = async(initUrl: string): Promise<Object> => {
         unresolvedPromise = res
     })
     const twoPromise = new Promise(res => {
-        browserWindow.on("close", () => {
+        browserWindow!.on("close", () => {
             if (unresolvedPromise) {
-                browserWindow = null
-                unresolvedPromise = null
+                browserWindow = undefined
+                unresolvedPromise = undefined
                 res(null)
             }
         })
     })
     const res = await Promise.race([onePromise, twoPromise])
     if (res) {
-        unresolvedPromise = null
-        browserWindow = null
+        unresolvedPromise = undefined
+        browserWindow = undefined
     }
     return res
 }
@@ -57,8 +57,8 @@ expressApp.get("/", (req, res) => {
     } else {
         res.send("Request passed through.")
         unresolvedPromise(req)
-        unresolvedPromise = null
-        browserWindow.close()
+        unresolvedPromise = undefined
+        browserWindow!.close()
     }
 })
 

@@ -5,7 +5,7 @@ export default {
     description: "Draws a hollow rectangle on the screen.",
     icon: "hollow_rectangle.png",
     expectsImageData: true,
-    apply: async(partBuff: Buffer, rgb: Array<Number>): Promise<Buffer>  => {
+    apply: async(partBuff: Buffer, rgb: number[]): Promise<Buffer> => {
         const metadata = await sharp(partBuff).metadata()
         const svg = Buffer.from(`
             <svg viewBox="0 0 ${metadata.width} ${metadata.height}" xmlns="http://www.w3.org/2000/svg" version="1.1" preserveAspectRatio="none">
@@ -13,7 +13,7 @@ export default {
             </svg>
         `)
         return sharp(svg)
-            .resize({ width: metadata.width, height: metadata.height, })
+            .resize(metadata.width!, metadata.height!)
             .png()
             .toBuffer()
     },

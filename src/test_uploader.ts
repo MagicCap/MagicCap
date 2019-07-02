@@ -4,10 +4,10 @@ import * as uuidv4 from "uuid/v4"
 import { get } from "chainfetch"
 
 // Used for testing a uploader.
-export = async(uploader: Object): Promise<Array<string | boolean>> => {
+export default async(uploader: any): Promise<(string | boolean)[]> => {
     const logo = await readFile(`${__dirname}/icons/magiccap.png`)
     try {
-        const result = await uploader["upload"](logo, "png", `${uuidv4()}.png`)
+        const result = await uploader.upload(logo, "png", `${uuidv4()}.png`)
         try {
             await get(result)
         } catch (e) {
