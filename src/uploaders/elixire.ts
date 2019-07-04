@@ -4,8 +4,7 @@
 
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "elixi.re",
@@ -19,7 +18,7 @@ export default {
     },
     upload: async(buffer: Buffer, fileType: string) => {
         let res = await post("https://elixi.re/api/upload")
-            .set("Authorization", config.elixire_token)
+            .set("Authorization", config.o.elixire_token)
             .attach("f", buffer, `oof.${fileType}`)
         switch (res.status) {
             case 200: break

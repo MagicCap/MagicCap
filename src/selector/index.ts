@@ -14,9 +14,7 @@ import httpBufferPromise from "./http-buffer-promise"
 import * as express from "express"
 import * as sharp from "sharp"
 import { readFile } from "fs-nextra"
-
-// Declares the config.
-declare const config: any
+import config from "../config"
 
 // Defines all UUID's.
 let uuids: string[] = []
@@ -89,7 +87,7 @@ freezeServer.get("/selector/render", async(req, res) => {
         res.contentType("html")
         res.end(selectorHtmlCache
             .replace("%IMAGE_URL%", `url("${imageUrl}")`)
-            .replace("%DARK_MODE%", (config.light_theme ? 0 : 1).toString())
+            .replace("%DARK_MODE%", (config.o.light_theme ? 0 : 1).toString())
             .replace("%PAYLOAD%", payload)
             .replace("%ADD_TO_BODY_IF_LINUX%", process.platform === "linux" ? "background-size: 100%;" : ""))
     }
@@ -110,7 +108,7 @@ freezeServer.get("/css/tooltips", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/gui/css/components/tooltip.css`)
 })
 freezeServer.get("/css/theme", (req, res) => {
-    res.sendFile(`${path.join(__dirname, "..")}/gui/css/${config.light_theme ? "light" : "dark"}.css`)
+    res.sendFile(`${path.join(__dirname, "..")}/gui/css/${config.o.light_theme ? "light" : "dark"}.css`)
 })
 freezeServer.get("/css/selector", (req, res) => {
     res.sendFile(`${__dirname}/selector.css`)

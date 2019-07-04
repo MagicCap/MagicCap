@@ -3,8 +3,7 @@
 
 import * as i18n from "../i18n"
 import * as Client from "ssh2-sftp-client"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "SFTP",
@@ -47,10 +46,10 @@ export default {
 
         try {
             await sftp.connect({
-                host: config.sftp_host,
-                port: config.sftp_port,
-                username: config.sftp_username,
-                password: config.sftp_password,
+                host: config.o.sftp_host,
+                port: config.o.sftp_port,
+                username: config.o.sftp_username,
+                password: config.o.sftp_password,
             })
         } catch (err) {
             const SFTPErr = await i18n.getPoPhrase("Unable to login to SSH server: {err}", "uploaders/exceptions")
@@ -58,13 +57,13 @@ export default {
         }
 
         try {
-            await sftp.put(buffer, config.sftp_directory)
+            await sftp.put(buffer, config.o.sftp_directory)
         } catch (err) {
             const SFTPErr = await i18n.getPoPhrase("Unable to upload to SSH server: {err}", "uploaders/exceptions")
             throw new Error(SFTPErr.replace("{err}", `${err}`))
         }
 
-        let baseURL = config.sftp_domain
+        let baseURL = config.o.sftp_domain
         if (baseURL.endsWith("/") || baseURL.endsWith("\\")) {
             baseURL = baseURL.slice(0, -1)
         }

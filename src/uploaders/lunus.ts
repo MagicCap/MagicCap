@@ -5,8 +5,7 @@
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
 import { app } from "electron"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "Lunus",
@@ -20,8 +19,8 @@ export default {
     },
     upload: async(buffer: Buffer, fileType: string) => {
         let res = await post("https://i.novuscommunity.co/api/upload")
-            .set("Authorization", `Bearer ${config.novus_token}`)
-            .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.install_id}`)
+            .set("Authorization", `Bearer ${config.o.novus_token}`)
+            .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.o.install_id}`)
             .attach("file", buffer, `oof.${fileType}`)
         switch (res.status) {
             case 200: break

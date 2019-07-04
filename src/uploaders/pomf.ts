@@ -4,8 +4,7 @@
 
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "Pomf",
@@ -24,12 +23,12 @@ export default {
     },
     upload: async(buffer: Buffer, fileType: string) => {
         let res
-        if (config.pomf_token) {
-            res = await post(config.pomf_domain)
-                .set("token", `${config.pomf_token}`)
+        if (config.o.pomf_token) {
+            res = await post(config.o.pomf_domain)
+                .set("token", `${config.o.pomf_token}`)
                 .attach("files[]", buffer, `pomf.${fileType}`)
         } else {
-            res = await post(config.pomf_domain)
+            res = await post(config.o.pomf_domain)
                 .attach("files[]", buffer, `pomf.${fileType}`)
         }
         switch (res.status) {

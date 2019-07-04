@@ -3,10 +3,8 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 import * as moment from "moment"
+import config from "./config"
 const emojis = Object.values(require("emojilib").lib).map((x: any) => x.char as string)
-
-// Declares the config.
-declare const config: any
 
 export default class Filename {
     /**
@@ -56,8 +54,8 @@ export default class Filename {
     static newFilename(): string {
         // Get pattern
         let filename = "screenshot_%date%_%time%"
-        if (config.file_naming_pattern) {
-            filename = config.file_naming_pattern
+        if (config.o.file_naming_pattern) {
+            filename = config.o.file_naming_pattern
         }
 
         // Sub in fixed patterns

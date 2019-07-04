@@ -4,9 +4,9 @@
 // Requires stuff.
 import { globalShortcut, dialog } from "electron"
 import * as i18n from "./i18n"
+import config from "./config"
 
-// Declares the config and capture launchers.
-declare const config: any
+// Declares the capture launchers.
 declare const runCapture: (gif: boolean) => Promise<void>
 declare const runClipboardCapture: () => Promise<void>
 
@@ -21,20 +21,20 @@ function thisShouldFixMacIssuesAndIdkWhy() {
 export default async() => {
     globalShortcut.unregisterAll()
     try {
-        if (config.hotkey) {
-            globalShortcut.register(config.hotkey, async() => {
+        if (config.o.hotkey) {
+            globalShortcut.register(config.o.hotkey, async() => {
                 thisShouldFixMacIssuesAndIdkWhy()
                 await runCapture(false)
             })
         }
-        if (config.gif_hotkey) {
-            globalShortcut.register(config.gif_hotkey, async() => {
+        if (config.o.gif_hotkey) {
+            globalShortcut.register(config.o.gif_hotkey, async() => {
                 thisShouldFixMacIssuesAndIdkWhy()
                 await runCapture(true)
             })
         }
-        if (config.clipboard_hotkey) {
-            globalShortcut.register(config.clipboard_hotkey, async() => {
+        if (config.o.clipboard_hotkey) {
+            globalShortcut.register(config.o.clipboard_hotkey, async() => {
                 thisShouldFixMacIssuesAndIdkWhy()
                 await runClipboardCapture()
             })

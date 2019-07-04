@@ -1,5 +1,5 @@
 // Defines the config and API client.
-import { config } from "../config"
+import config from "../config"
 import apiClient from "./api_client"
 
 // Defines Electron's shell function.
@@ -8,7 +8,7 @@ import { shell } from "electron"
 // Sets the theme.
 const stylesheet = document.createElement("link")
 stylesheet.setAttribute("rel", "stylesheet")
-if (config.light_theme) {
+if (config.o.light_theme) {
     stylesheet.setAttribute("href", "../gui/css/bulmaswatch/default/bulmaswatch.min.css")
 } else {
     stylesheet.setAttribute("href", "../gui/css/bulmaswatch/darkly/bulmaswatch.min.css")

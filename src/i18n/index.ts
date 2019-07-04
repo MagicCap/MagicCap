@@ -5,7 +5,7 @@
 import { readFile } from "fs-nextra"
 import { readdirSync, statSync } from "fs"
 import { join } from "path"
-import { config } from "../config"
+import config from "../config"
 import * as PO from "pofile"
 const nativeLangNames = require("./native_lang_names.json")
 
@@ -19,7 +19,7 @@ export const getPoFile = async(file: string) => {
         return cachedPo
     }
 
-    const fp = `${__dirname}/${config.language || "en"}/${file}.po`
+    const fp = `${__dirname}/${config.o.language || "en"}/${file}.po`
     const _file = await readFile(fp)
     const data = PO.parse(_file.toString())
 

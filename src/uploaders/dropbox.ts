@@ -4,8 +4,7 @@
 // This requires Chainfetch.
 import { post } from "chainfetch"
 import { Request } from "express"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "Dropbox",
@@ -38,14 +37,14 @@ export default {
             required: true,
         },
     },
-    getOAuthUrl: () => `https://dropbox.com/oauth2/authorize?client_id=${config.dropbox_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&response_type=code`,
+    getOAuthUrl: () => `https://dropbox.com/oauth2/authorize?client_id=${config.o.dropbox_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&response_type=code`,
     handleOAuthFlow: async(req: Request) => {
         if (!req.query.code) {
             return
         }
         let response
         try {
-            const urlEncode = `?code=${req.query.code}&grant_type=authorization_code&client_id=${config.dropbox_client_id}&client_secret=${config.dropbox_client_secret}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222`
+            const urlEncode = `?code=${req.query.code}&grant_type=authorization_code&client_id=${config.o.dropbox_client_id}&client_secret=${config.o.dropbox_client_secret}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222`
             response = await post(`https://api.dropboxapi.com/oauth2/token${urlEncode}`).set("Content-Type", "application/x-www-form-urlencoded").toJSON()
         } catch (_) {
             return
@@ -57,21 +56,21 @@ export default {
         }
     },
     upload: async(buffer: Buffer, _: string, filename: string) => {
-        const dropboxPath = `${config.dropbox_path}${filename}`
+        const dropboxPath = `${config.o.dropbox_path}${filename}`
         await post("https://content.dropboxapi.com/2/files/upload")
-            .set("Authorization", `Bearer ${config.dropbox_token}`)
+            .set("Authorization", `Bearer ${config.o.dropbox_token}`)
             .set("Dropbox-API-Arg", JSON.stringify({ path: dropboxPath }))
             .set("Content-Type", "application/octet-stream")
             .send(buffer)
         const dropboxSettings = {
-            requested_visibility: config.dropbox_link_password ? "password" : "public",
+            requested_visibility: config.o.dropbox_link_password ? "password" : "public",
             link_password: null,
         }
-        if (config.dropbox_link_password) {
-            dropboxSettings.link_password = config.dropbox_link_password
+        if (config.o.dropbox_link_password) {
+            dropboxSettings.link_password = config.o.dropbox_link_password
         }
         const urlRes = await post("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings")
-            .set("Authorization", `Bearer ${config.dropbox_token}`)
+            .set("Authorization", `Bearer ${config.o.dropbox_token}`)
             .set("Content-Type", "application/json")
             .send(JSON.stringify({
                 path: dropboxPath,

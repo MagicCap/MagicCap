@@ -4,8 +4,7 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
 import { post } from "chainfetch"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "UltraShare",
@@ -30,8 +29,8 @@ export default {
     upload: async(buffer: Buffer, fileType: string) => {
         try {
             let res
-            res = await post(config.ultra_https ? "https://" : `http://${config.ultra_domain}/api/upload`)
-                .set("Authorization", config.ultra_key)
+            res = await post(config.o.ultra_https ? "https://" : `http://${config.o.ultra_domain}/api/upload`)
+                .set("Authorization", config.o.ultra_key)
                 .set("fileext", fileType)
                 .set("User-Agent", "MagicCapUltraShare/1.0")
                 .send(buffer)

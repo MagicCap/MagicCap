@@ -92,14 +92,12 @@ window.onerror = function() {
     electron.remote.getCurrentWindow().webContents.openDevTools()
 }
 
-// Gets the lite touch configuration.
-eval('global.liteTouchConfig = remote.getGlobal("liteTouchConfig")')
-
 // Gets the config/stuff that needs it.
-const config = require("./config").config
-const saveConfigToDb = require("./config").saveConfig
+const liteTouchConfig = require("./lite_touch").default
+const config = require("./config").default
 const i18n = require("./i18n")
 const mconf = require("./mconf")
+const uploaders = require("./uploaders").uploaders
 const { default: filename } = require("./filename")
 const { AUTOUPDATE_ON } = require("./build_info")
 
@@ -111,14 +109,14 @@ Sentry.init({
 
 // Configures the Sentry scope.
 Sentry.configureScope((scope: Scope) => {
-    scope.setUser({ id: config.install_id })
+    scope.setUser({ id: config.o.install_id })
 })
 
 // Defines the about menu.
 new Vue({
     el: "#about",
     data: {
-        liteTouch: global.liteTouchConfig !== undefined,
+        liteTouch: liteTouchConfig !== undefined,
     },
 })
 
@@ -126,13 +124,13 @@ new Vue({
 new Vue({
     el: "#sidebar",
     data: {
-        clipboardAction: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.ClipboardAction : true,
-        hotkeyConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.HotkeyConfig : true,
-        uploaderConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.UploaderConfig : true,
-        betaUpdates: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.BetaUpdates : AUTOUPDATE_ON,
-        toggleTheme: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.ToggleTheme : true,
-        fileConfig: global.liteTouchConfig ? global.liteTouchConfig.config_allowed.FileConfig : true,
-        shortener: global.liteTouchConfig ? global.liteTouchConfig.link_shortener_allowed : true,
+        clipboardAction: liteTouchConfig ? liteTouchConfig.config_allowed.ClipboardAction : true,
+        hotkeyConfig: liteTouchConfig ? liteTouchConfig.config_allowed.HotkeyConfig : true,
+        uploaderConfig: liteTouchConfig ? liteTouchConfig.config_allowed.UploaderConfig : true,
+        betaUpdates: liteTouchConfig ? liteTouchConfig.config_allowed.BetaUpdates : AUTOUPDATE_ON,
+        toggleTheme: liteTouchConfig ? liteTouchConfig.config_allowed.ToggleTheme : true,
+        fileConfig: liteTouchConfig ? liteTouchConfig.config_allowed.FileConfig : true,
+        shortener: liteTouchConfig ? liteTouchConfig.link_shortener_allowed : true,
     },
 })
 
@@ -140,9 +138,9 @@ new Vue({
 document.getElementById("magiccap-ver")!.innerText = `MagicCap v${remote.app.getVersion()}`
 
 // Sets the colour scheme.
-addStylesheet(`css/bulmaswatch/${config.light_theme ? "default" : "darkly"}/bulmaswatch.min.css`)
+addStylesheet(`css/bulmaswatch/${config.o.light_theme ? "default" : "darkly"}/bulmaswatch.min.css`)
 addStylesheet(`css/main.css`)
-addStylesheet(`css/${config.light_theme ? "light" : "dark"}.css`)
+addStylesheet(`css/${config.o.light_theme ? "light" : "dark"}.css`)
 
 // Unhides the body/window when the page has loaded.
 window.onload = () => {
@@ -200,24 +198,24 @@ getCaptures();
  * Saves the config.
  */
 async function saveConfig() {
-    saveConfigToDb()
-    ipcRenderer.send("config-edit", config)
+    config.save()
+    ipcRenderer.send("config-edit", config.o)
 }
 
 // Defines the clipboard action (and default).
 let clipboardAction = 2
-if (config.clipboard_action) {
-    if (config.clipboard_action < 0 || config.clipboard_action > 2) {
+if (config.o.clipboard_action) {
+    if (config.o.clipboard_action < 0 || config.o.clipboard_action > 2) {
         // If invalid option, reset to default
-        config.clipboard_action = clipboardAction
+        config.o.clipboard_action = clipboardAction
         saveConfig()
     } else {
         // Else, use the config option
-        clipboardAction = config.clipboard_action
+        clipboardAction = config.o.clipboard_action
     }
 } else {
     // If never set, use the default
-    config.clipboard_action = clipboardAction
+    config.o.clipboard_action = clipboardAction
     saveConfig()
 }
 
@@ -229,7 +227,7 @@ new Vue({
     },
     methods: {
         changeAction: async(action: number) => {
-            config.clipboard_action = action
+            config.o.clipboard_action = action
             await saveConfig()
         },
     },
@@ -321,9 +319,9 @@ function showDebug() {
     // Generate debug information
     document.getElementById("debugInfo")!.textContent = `MagicCap Version: ${remote.app.getVersion()}
 System OS: ${os.type()} ${os.release()} / Platform: ${process.platform}
-Installation ID: ${config.install_id}
+Installation ID: ${config.o.install_id}
 Config: ${JSON.stringify(safeConfig())}
-liteTouch Config: ${global.liteTouchConfig}`
+liteTouch Config: ${liteTouchConfig}`
     // Show
     showModal("debug")
 }
@@ -384,7 +382,7 @@ function openEmojiLicense() {
  * Toggles the theme.
  */
 async function toggleTheme() {
-    config.light_theme = !config.light_theme
+    config.o.light_theme = !config.o.light_theme
     await saveConfig()
     ipcRenderer.send("restartWindow")
 }
@@ -400,9 +398,9 @@ function showHotkeyConfig() {
 new Vue({
     el: "#hotkeyConfig",
     data: {
-        gifHotkey: config.gif_hotkey || "",
-        screenshotHotkey: config.hotkey || "",
-        clipboardHotkey: config.clipboard_hotkey || "",
+        gifHotkey: config.o.gif_hotkey || "",
+        screenshotHotkey: config.o.hotkey || "",
+        clipboardHotkey: config.o.clipboard_hotkey || "",
     },
 })
 
@@ -418,30 +416,30 @@ async function hotkeyConfigClose() {
     const clipboardText = document.getElementById("clipboardHotkey")!.value
     let changed = false
 
-    if (config.hotkey !== text) {
+    if (config.o.hotkey !== text) {
         changed = true
         if (text === "") {
-            config.hotkey = null
+            config.o.hotkey = null
         } else {
-            config.hotkey = text
+            config.o.hotkey = text
         }
     }
 
-    if (config.gif_hotkey !== gifText) {
+    if (config.o.gif_hotkey !== gifText) {
         changed = true
         if (gifText === "") {
-            config.gif_hotkey = null
+            config.o.gif_hotkey = null
         } else {
-            config.gif_hotkey = gifText
+            config.o.gif_hotkey = gifText
         }
     }
 
-    if (config.clipboard_hotkey !== clipboardText) {
+    if (config.o.clipboard_hotkey !== clipboardText) {
         changed = true
         if (clipboardText === "") {
-            config.clipboard_hotkey = null
+            config.o.clipboard_hotkey = null
         } else {
-            config.clipboard_hotkey = clipboardText
+            config.o.clipboard_hotkey = clipboardText
         }
     }
 
@@ -467,20 +465,20 @@ const sep = require("path").sep
 new Vue({
     el: "#fileConfig",
     data: {
-        fileConfigCheckboxI: config.save_capture || false,
-        fileNamingPatternI: config.file_naming_pattern || "screenshot_%date%_%time%",
-        fileSaveFolderI: config.save_path,
+        fileConfigCheckboxI: config.o.save_capture || false,
+        fileNamingPatternI: config.o.file_naming_pattern || "screenshot_%date%_%time%",
+        fileSaveFolderI: config.o.save_path,
         fileNamingPreview: filename.newFilename(),
     },
     methods: {
         saveSaveCapture: () => {
             // @ts-ignore
-            config.save_capture = document.getElementById("fileConfigCheckbox")!.checked
+            config.o.save_capture = document.getElementById("fileConfigCheckbox")!.checked
             saveConfig()
         },
         saveNamingPattern: () => {
             // @ts-ignore
-            config.file_naming_pattern = document.getElementById("fileNamingPattern")!.value
+            config.o.file_naming_pattern = document.getElementById("fileNamingPattern")!.value
             saveConfig()
             document.getElementById("fileNamingPreview")!.textContent = filename.newFilename()
         },
@@ -488,7 +486,7 @@ new Vue({
             // @ts-ignore
             let p = document.getElementById("fileSaveFolder")!.value
             if (!p.endsWith(sep)) p += sep
-            config.save_path = p
+            config.o.save_path = p
             saveConfig()
         },
     },
@@ -504,7 +502,7 @@ const activeUploaderConfig = new Vue({
         },
         exception: "",
         exceptionData: "",
-        userAgent: `MagicCap ${remote.app.getVersion()}; ${config.install_id}`,
+        userAgent: `MagicCap ${remote.app.getVersion()}; ${config.o.install_id}`,
     },
     methods: {
         getDefaultValue: (option: any) => {
@@ -623,7 +621,6 @@ const activeUploaderConfig = new Vue({
          * Gets the uploaders filename.
          */
         getFilename() {
-            const uploaders = require(`${__dirname}/uploaders`)
             for (const file in uploaders) {
                 const import_ = uploaders[file]
                 if (import_.name === this.uploader.name) {
@@ -660,7 +657,7 @@ const activeUploaderConfig = new Vue({
             }
 
             const file = this.getFilename()
-            config.uploader_type = file
+            config.o.uploader_type = file
             saveConfig()
             this.exception += "ayyyyDefaultSaved"
         },
@@ -699,20 +696,16 @@ function showUploaderConfig() {
     showModal("uploaderConfig")
 }
 
-interface Global {
-    spotConfig: any;
-}
-
 // All of the imported uploaders.
-const importedUploaders = global.importedUploaders = ipcRenderer.sendSync("get-uploaders")
+const importedUploaders = ipcRenderer.sendSync("get-uploaders")
 
 // Renders all of the uploaders.
 new Vue({
     el: "#uploaderConfigBody",
     data: {
         uploaders: importedUploaders,
-        checkUploaderUpload: config.upload_capture,
-        checkUploaderOpen: config.upload_open,
+        checkUploaderUpload: config.o.upload_capture,
+        checkUploaderOpen: config.o.upload_open,
     },
     methods: {
         /**
@@ -783,7 +776,7 @@ new Vue({
          */
         toggleUpload() {
             this.$set(this, "checkUploaderUpload", !this.checkUploaderUpload)
-            config.upload_capture = this.checkUploaderUpload
+            config.o.upload_capture = this.checkUploaderUpload
             saveConfig()
         },
         /**
@@ -791,7 +784,7 @@ new Vue({
          */
         toggleOpen() {
             this.$set(this, "checkUploaderOpen", !this.checkUploaderOpen)
-            config.upload_open = this.checkUploaderOpen
+            config.o.upload_open = this.checkUploaderOpen
             saveConfig()
         },
     },
@@ -801,7 +794,7 @@ new Vue({
 new Vue({
     el: "#mflConfig",
     data: {
-        currentLang: config.language || "en",
+        currentLang: config.o.language || "en",
         languages: i18n.langPackInfo,
     },
     methods: {
@@ -810,7 +803,7 @@ new Vue({
          */
         changeLanguage(language: string) {
             this.currentLang = language
-            config.language = language
+            config.o.language = language
             saveConfig()
         },
     },
@@ -909,13 +902,13 @@ const importMconf = async() => {
 new Vue({
     el: "#betaUpdates",
     data: {
-        action: Boolean(config.beta_channel),
+        action: Boolean(config.o.beta_channel),
     },
     methods: {
         changeAction: (actionBool: boolean) => {
             // @ts-ignore
             this.action = actionBool
-            config.beta_channel = actionBool
+            config.o.beta_channel = actionBool
             saveConfig()
         },
     },

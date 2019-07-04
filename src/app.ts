@@ -4,22 +4,10 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
-// Declares a bunch of stuff.
-declare const nameUploaderMap: any
-declare const importedUploaders: any
-declare const liteTouchConfig: any
-
-// Defines the config.
-import * as configInfo from "./config"
+// Defines the needed stuff.
+import config from "./config"
 import capture from "./capture"
-let { config: localConfig } = configInfo
-eval(`
-    global.config = localConfig;
-    global.saveConfig = configInfo.saveConfig;
-`)
-declare const config: any
-
-// Main imports.
+import liteTouchConfig from "./lite_touch"
 import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain } from "electron"
 import { readFile } from "fs-nextra"
 import testUploader from "./test_uploader"
@@ -29,23 +17,9 @@ import showShortener from "./shortener"
 import * as Sentry from "@sentry/electron"
 import { AUTOUPDATE_ON } from "./build_info"
 import hotkeys from "./hotkeys"
-import uploaders from "./uploaders"
+import { uploaders, importedUploaders, nameUploaderMap } from "./uploaders"
 import OAuth2 from "./oauth2"
 import editors from "./editors"
-
-// All of the loaded uploaders.
-eval(`
-    global.importedUploaders = {}
-    global.nameUploaderMap = {}
-`)
-
-// Loads all of the uploaders.
-for (const uploaderName in uploaders) {
-    // @ts-ignore
-    const import_ = uploaders[uploaderName]
-    importedUploaders[import_.name] = import_
-    nameUploaderMap[uploaderName] = import_.name
-}
 
 /**
  * Creates the GUI menu on macOS.
@@ -111,7 +85,7 @@ async function createMenu() {
  * @returns {Array} All configured uploader objects
  */
 function getConfiguredUploaders() {
-    const defaultUploader = nameUploaderMap[localConfig.uploader_type]
+    const defaultUploader = nameUploaderMap[config.o.uploader_type]
     let configured = []
     for (const uploaderName in importedUploaders) {
         const uploader = importedUploaders[uploaderName]
@@ -121,7 +95,7 @@ function getConfiguredUploaders() {
         let allOptions = true
         for (const optionName in uploader.config_options) {
             const option = uploader.config_options[optionName]
-            if (!(option.value in localConfig) && option.required && !option.default) {
+            if (!(option.value in config) && option.required && !option.default) {
                 allOptions = false
                 break
             }
@@ -171,7 +145,7 @@ eval("global.runClipboardCapture = runClipboardCapture")
  * Opens the configuration GUI.
  */
 async function openConfig() {
-    const vibrancy = config.light_theme ? "light" : "dark"
+    const vibrancy = config.o.light_theme ? "light" : "dark"
     if (process.platform === "darwin") systemPreferences.setAppLevelAppearance(vibrancy)
 
     if (window) {
@@ -205,6 +179,8 @@ async function openConfig() {
     window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
         baseURLForDataURL: `file://${__dirname}/gui/`,
     })
+    const captureDev = process.argv.includes("-captureDev")
+    if (captureDev) window.webContents.openDevTools()
     eval("global.window = window")
 
     window.on("closed", () => {
@@ -260,7 +236,7 @@ async function dropdownMenuUpload(uploader: any) {
  * Creates the context menu for the MagicCap application.
  */
 async function createContextMenu() {
-    let c = localConfig
+    let c = config.o
     let uploadDropdown = []
     const defaulti18n = await i18n.getPoPhrase("(Default)", "app")
     if (nameUploaderMap[c.uploader_type] in importedUploaders) {
@@ -291,9 +267,9 @@ async function createContextMenu() {
     const i18nQuit = await i18n.getPoPhrase("Quit", "app")
     const i18nCheckForUpdates = await i18n.getPoPhrase("Check For Updates...", "app")
     const contextMenuTmp = [
-        { label: i18nCapture, accelerator: config.hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
-        { label: i18nGif, accelerator: config.gif_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(true) } },
-        { label: i18nClipboard, accelerator: config.clipboard_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runClipboardCapture() } },
+        { label: i18nCapture, accelerator: config.o.hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(false) } },
+        { label: i18nGif, accelerator: config.o.gif_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runCapture(true) } },
+        { label: i18nClipboard, accelerator: config.o.clipboard_hotkey, registerAccelerator: false, type: "normal", click: async() => { await runClipboardCapture() } },
         { type: "separator" },
         { label: i18nUploadTo, submenu: uploadDropdown },
         // Link shortener inserted here if allowed
@@ -322,13 +298,13 @@ async function initialiseScript() {
     eReady = true
 
     Sentry.configureScope(scope => {
-        scope.setUser({ id: localConfig.install_id })
+        scope.setUser({ id: config.o.install_id })
     })
 
     tray = new Tray(`${__dirname}/icons/taskbar.png`)
     await createContextMenu()
     if (process.platform === "darwin") {
-        systemPreferences.setAppLevelAppearance(config.light_theme ? "light" : "dark")
+        systemPreferences.setAppLevelAppearance(config.o.light_theme ? "light" : "dark")
         createMenu()
     }
     await hotkeys()
@@ -341,8 +317,8 @@ ipcMain.on("show-short", () => {
 
 // When the config changes, this does.
 ipcMain.on("config-edit", async(event: any, data: any) => {
-    eval("global.config = data")
-    localConfig = data
+    config.o = data
+    config.save()
     await createContextMenu()
 })
 

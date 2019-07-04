@@ -3,8 +3,7 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 import { post } from "chainfetch"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "Custom",
@@ -37,12 +36,12 @@ export default {
         },
     },
     upload: async(buffer: Buffer, _: string, filename: string) => {
-        let res = await post(config.custom_url)
-            .set(config.custom_headers)
-            .attach(config.custom_body)
+        let res = await post(config.o.custom_url)
+            .set(config.o.custom_headers)
+            .attach(config.o.custom_body)
             .attach("file", buffer, filename)
 
-        if (!config.custom_response) return res.body
-        return res.body[config.custom_response]
+        if (!config.o.custom_response) return res.body
+        return res.body[config.o.custom_response]
     },
 }

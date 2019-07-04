@@ -10,6 +10,8 @@ import { homedir } from "os"
 import { app, Notification } from "electron"
 import newInstallId from "./install_id"
 import { init } from "@sentry/electron"
+import liteTouchConfig from "./lite_touch"
+import config from "./config"
 
 // ASCII!!!!!1111111!
 new Promise(res => {
@@ -44,7 +46,7 @@ db.exec("CREATE TABLE IF NOT EXISTS `config` (`key` TEXT NOT NULL, `value` TEXT 
 async function getDefaultConfig() {
     let picsDir = app.getPath("pictures")
     picsDir += `${sep}MagicCap${sep}`
-    let config = {
+    let defaultConfig = {
         hotkey: null,
         upload_capture: true,
         uploader_type: "magiccap",
@@ -54,62 +56,47 @@ async function getDefaultConfig() {
         light_theme: !await darkThemeInformation(),
         install_id: await newInstallId(),
     }
-    await ensureDir(config.save_path).catch(async error => {
+    await ensureDir(defaultConfig.save_path).catch(async error => {
         if (!(error.errno === -4075 || error.errno === -17)) {
-            delete config.save_path
+            delete defaultConfig.save_path
         }
     })
-    return config
+    return defaultConfig
 }
 
 // Puts the lite touch configuration into memory if it exists.
-declare const liteTouchConfig: any
-if (existsSync("/usr/share/magiccap_deployment_info.json")) {
-    // Stop TypeScript complaining about this.
-    eval(`global.liteTouchConfig = require("/usr/share/magiccap_deployment_info.json")`)
-
-    if (liteTouchConfig.config.save_path && liteTouchConfig.config.save_path.startsWith("$H")) {
-        liteTouchConfig.config.save_path = liteTouchConfig.config.save_path.replace("$H", homedir())
-    }
-} else {
-    // Stop TypeScript complaining about this.
-    eval("global.liteTouchConfig = undefined")
-
-    const { config, saveConfig } = require("./config")
-
+if (!liteTouchConfig) {
     // Handles the configuration (migration).
-    if (Object.keys(config).length === 0) {
+    if (Object.keys(config.o).length === 0) {
         if (existsSync(`${homedir()}/magiccap.json`)) {
             const oldConfig = require(`${homedir()}/magiccap.json`)
             unlinkSync(`${homedir()}/magiccap.json`)
             for (const i in oldConfig) {
-                config[i] = oldConfig[i]
+                config.o[i] = oldConfig[i]
             }
-            saveConfig()
+            config.save()
             newInstallId().then(installId => {
-                config.install_id = installId
-                saveConfig()
+                config.o.install_id = installId
+                config.save()
             });
 
             (new Notification({
                 title: "Welcome to MagicCap",
                 body: "Your old configuration has been migrated. We hope you enjoy this update!",
-                // @ts-ignore
-                sound: true,
             })).show()
         } else {
             getDefaultConfig().then(newConfig => {
                 for (const i in newConfig) {
                     // @ts-ignore
-                    config[i] = newConfig[i]
+                    config.o[i] = newConfig[i]
                 }
-                saveConfig()
+                config.save()
             })
         }
-    } else if (!config.install_id) {
+    } else if (!config.o.install_id) {
         newInstallId().then(installId => {
-            config.install_id = installId
-            saveConfig()
+            config.o.install_id = installId
+            config.save()
         })
     }
 }

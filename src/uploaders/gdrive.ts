@@ -7,9 +7,7 @@ import { google } from "googleapis"
 import * as streamifier from "streamifier"
 import * as mime from "mime-types"
 import { Request } from "express"
-
-declare const config: any
-declare const saveConfig: () => void
+import config from "../config"
 
 export default {
     name: "Google Drive",
@@ -31,12 +29,12 @@ export default {
             required: true,
         },
     },
-    getOAuthUrl: () => `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.gdrive_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&response_type=code`,
+    getOAuthUrl: () => `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.o.gdrive_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&response_type=code`,
     handleOAuthFlow: async(req: Request) => {
         if (!req.query.code) {
             return
         }
-        const urlEncode = `?client_id=${config.gdrive_client_id}&client_secret=${config.gdrive_client_secret}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&code=${req.query.code}&grant_type=authorization_code`
+        const urlEncode = `?client_id=${config.o.gdrive_client_id}&client_secret=${config.o.gdrive_client_secret}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&code=${req.query.code}&grant_type=authorization_code`
         let response
         try {
             response = await post(`https://www.googleapis.com/oauth2/v4/token${urlEncode}`).set("Content-Type", "application/x-www-form-urlencoded").toJSON()
@@ -52,18 +50,18 @@ export default {
     },
     upload: async(buffer: Buffer, filetype: string, filename: string) => {
         const dateNumber = (new Date() as unknown) as number
-        if (Math.floor(dateNumber / 1000) > config.gdrive_expires_at) {
+        if (Math.floor(dateNumber / 1000) > config.o.gdrive_expires_at) {
             // We need to renew the access token.
-            const urlEncode = `?client_id=${config.gdrive_client_id}&client_secret=${config.gdrive_client_secret}&refresh_token=${config.gdrive_refresh_token}&grant_type=refresh_token`
+            const urlEncode = `?client_id=${config.o.gdrive_client_id}&client_secret=${config.o.gdrive_client_secret}&refresh_token=${config.o.gdrive_refresh_token}&grant_type=refresh_token`
             const response = await post(`https://www.googleapis.com/oauth2/v4/token${urlEncode}`).set("Content-Type", "application/x-www-form-urlencoded").toJSON()
-            config.gdrive_token = response.body.access_token
-            config.gdrive_expires_at = Math.floor(dateNumber / 1000) + response.body.expires_in
-            saveConfig()
+            config.o.gdrive_token = response.body.access_token
+            config.o.gdrive_expires_at = Math.floor(dateNumber / 1000) + response.body.expires_in
+            config.save()
         }
 
         const oauth = new google.auth.OAuth2()
         oauth.setCredentials({
-            access_token: config.gdrive_token,
+            access_token: config.o.gdrive_token,
         })
         const drive = google.drive({
             version: "v3",

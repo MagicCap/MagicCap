@@ -13,8 +13,17 @@ import sftp from "./sftp"
 import dropbox from "./dropbox"
 import gdrive from "./gdrive"
 
-export default {
+export const uploaders = {
     custom, elixire, ftp, imgur, magiccap, novus, pomf,
     reupload, s3, sharex, ultrashare, sftp, dropbox,
     gdrive,
+}
+
+export const nameUploaderMap = {} as any
+export const importedUploaders = {} as any
+for (const uploaderName in uploaders) {
+    // @ts-ignore
+    const import_ = uploaders[uploaderName]
+    importedUploaders[import_.name] = import_
+    nameUploaderMap[uploaderName] = import_.name
 }

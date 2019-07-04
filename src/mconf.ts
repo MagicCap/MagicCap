@@ -3,6 +3,8 @@
 
 // Imports go here.
 import * as i18n from "./i18n"
+import config from "./config"
+import { importedUploaders } from "./uploaders"
 
 /**
  * Parses the *.mconf file.
@@ -41,10 +43,6 @@ function values(item: any) {
     return x
 }
 
-// Declares the config and imported uploaders.
-declare const importedUploaders: object
-declare const config: any
-
 /**
  * Handles making a new *.mconf's file contents.
  * @returns The parsed mconf file.
@@ -53,8 +51,8 @@ function new_() {
     const options: any = {}
     for (const uploader of values(importedUploaders)) {
         for (const option of values(uploader.config_options)) {
-            if (config[option.value] !== undefined) {
-                options[option.value] = config[option.value]
+            if (config.o[option.value] !== undefined) {
+                options[option.value] = config.o[option.value]
             }
         }
     }

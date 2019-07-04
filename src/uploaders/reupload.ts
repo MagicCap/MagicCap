@@ -4,8 +4,7 @@
 import { put } from "chainfetch"
 import * as i18n from "../i18n"
 import { app } from "electron"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "reUpload",
@@ -28,8 +27,8 @@ export default {
             case "bmp": {
                 const res = await put("https://api.reupload.gg/image")
                     .set("Content-Type", `image/${fileType}`)
-                    .set("Authorization", config.reupload_token)
-                    .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.install_id}`)
+                    .set("Authorization", config.o.reupload_token)
+                    .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.o.install_id}`)
                     .send(buffer)
                 return res.body.url
             }

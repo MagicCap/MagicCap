@@ -11,10 +11,7 @@ import * as asyncChildProcess from "async-child-process"
 import * as sudo from "sudo-prompt"
 import * as i18n from "./i18n"
 import * as WebSocket from "ws"
-
-// Declares the config stuff.
-declare const config: any
-declare const saveConfig: () => void
+import config from "./config"
 
 // Ignores this while the app is open.
 const tempIgnore: string[] = []
@@ -68,7 +65,7 @@ async function downloadBin() {
 async function checkForUpdates() {
     let res
     try {
-        res = await get(`https://api.magiccap.me/version/check/${app.getVersion()}?beta=${Boolean(config.beta_channel).toString()}`).toJSON()
+        res = await get(`https://api.magiccap.me/version/check/${app.getVersion()}?beta=${Boolean(config.o.beta_channel).toString()}`).toJSON()
     } catch (_) {
         return {
             upToDate: true,
@@ -118,8 +115,8 @@ async function handleUpdate(updateInfo: any) {
         return
     }
 
-    if (config.ignored_updates !== undefined) {
-        if (config.ignored_updates.indexOf(updateInfo.current) > -1) {
+    if (config.o.ignored_updates !== undefined) {
+        if (config.o.ignored_updates.indexOf(updateInfo.current) > -1) {
             return
         }
     }
@@ -139,12 +136,12 @@ async function handleUpdate(updateInfo: any) {
     }, async response => {
         switch (response) {
             case 2:
-                if (config.ignored_updates !== undefined) {
-                    config.ignored_updates.push(updateInfo.current)
+                if (config.o.ignored_updates !== undefined) {
+                    config.o.ignored_updates.push(updateInfo.current)
                 } else {
-                    config.ignored_updates = [updateInfo.current]
+                    config.o.ignored_updates = [updateInfo.current]
                 }
-                saveConfig()
+                config.save()
                 break
             case 1:
                 tempIgnore.push(updateInfo.current)
@@ -161,7 +158,7 @@ async function handleUpdate(updateInfo: any) {
  * Handles the initial HTTP update check.
  */
 async function runHttpUpdateCheck(ignoreConfig: boolean) {
-    if (updateRunning || (!ignoreConfig && config.autoupdate_on === false)) {
+    if (updateRunning || (!ignoreConfig && config.o.autoupdate_on === false)) {
         return
     }
     const updateInfo = await checkForUpdates()
@@ -238,10 +235,10 @@ async function handleWebSocketUpdates() {
                 return
             }
             data = data.info
-            if (updateRunning || config.autoupdate_on === false) {
+            if (updateRunning || config.o.autoupdate_on === false) {
                 return
             }
-            if (!config.beta_channel && data.beta) {
+            if (!config.o.beta_channel && data.beta) {
                 return
             }
             const payload = {
@@ -265,7 +262,7 @@ export default async function autoUpdateLoop() {
         return
     }
 
-    if (config.autoupdate_on === false) {
+    if (config.o.autoupdate_on === false) {
         // We want undefined to fall through here.
         return
     }
@@ -287,8 +284,8 @@ export default async function autoUpdateLoop() {
                 switch (response) {
                     case 2:
                         toCont = false
-                        config.autoupdate_on = false
-                        saveConfig()
+                        config.o.autoupdate_on = false
+                        config.save()
                         break
                     case 1:
                         toCont = false
@@ -305,7 +302,7 @@ export default async function autoUpdateLoop() {
         }
     }
 
-    if (config.autoupdate_on === false) {
+    if (config.o.autoupdate_on === false) {
         return
     }
 

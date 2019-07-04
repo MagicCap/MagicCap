@@ -4,8 +4,7 @@
 
 import { S3 } from "tiny-s3-uploader"
 import * as mime from "mime-types"
-
-declare const config: any
+import config from "../config"
 
 export default {
     name: "S3",
@@ -39,16 +38,16 @@ export default {
         },
     },
     upload: async(buffer: Buffer, ext: string, filename: string) => {
-        if (config.s3_endpoint.startsWith("http://")) {
-            config.s3_endpoint = config.s3_endpoint.trimStart("http://")
-        } else if (config.s3_endpoint.startsWith("https://")) {
-            config.s3_endpoint = config.s3_endpoint.trimStart("https://")
+        if (config.o.s3_endpoint.startsWith("http://")) {
+            config.o.s3_endpoint = config.o.s3_endpoint.trimStart("http://")
+        } else if (config.o.s3_endpoint.startsWith("https://")) {
+            config.o.s3_endpoint = config.o.s3_endpoint.trimStart("https://")
         }
-        const s3 = new S3(config.s3_endpoint, config.s3_access_key_id.trim(), config.s3_secret_access_key.trim(), config.s3_bucket_name)
+        const s3 = new S3(config.o.s3_endpoint, config.o.s3_access_key_id.trim(), config.o.s3_secret_access_key.trim(), config.o.s3_bucket_name)
         await s3.upload(
             filename, "public-read", mime.lookup(ext) || "application/octet-stream", buffer,
         )
-        let url = config.s3_bucket_url
+        let url = config.o.s3_bucket_url
         if (!url.endsWith("/")) {
             url += "/"
         }

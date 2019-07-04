@@ -14,6 +14,7 @@ import * as os from "os"
 import * as fs from "fs"
 // @ts-ignore
 import * as asyncChildProcess from "async-child-process"
+import config from "./config"
 
 /**
  * Downloads the FFMpeg binaries which are needed.
@@ -107,14 +108,10 @@ function downloadBin() {
     })
 }
 
-// Declares config and save config.
-declare const config: any
-declare const saveConfig: () => void
-
 // The main FFMpeg fetcher.
 export default async() => {
-    if (config.ffmpeg_path && fs.existsSync(config.ffmpeg_path)) {
-        return config.ffmpeg_path
+    if (config.o.ffmpeg_path && fs.existsSync(config.o.ffmpeg_path)) {
+        return config.o.ffmpeg_path
     }
     let toContinue = await new Promise(async res => {
         const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate")
@@ -136,8 +133,8 @@ export default async() => {
                 case 0:
                     binPath = await downloadBin()
                     if (binPath) {
-                        config.ffmpeg_path = binPath
-                        saveConfig()
+                        config.o.ffmpeg_path = binPath
+                        config.save()
                     } else {
                         toCont = false
                     }

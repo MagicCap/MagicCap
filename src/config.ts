@@ -1,7 +1,8 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-// Loads the config.
+// Loads the config stuff.
+import liteTouchConfig from "./lite_touch"
 import * as SQLite3 from "better-sqlite3"
 const db = SQLite3(`${require("os").homedir()}/magiccap.db`)
 
@@ -10,11 +11,9 @@ const configGetStmt = db.prepare("SELECT * FROM config;")
 const configInsertStmt = db.prepare("INSERT INTO config VALUES (?, ?);")
 
 // Places all of the items into the object.
-export let config = {} as any
-// @ts-ignore
-if (global.liteTouchConfig) {
-    // @ts-ignore
-    config = global.liteTouchConfig.config
+let config = {} as any
+if (liteTouchConfig) {
+    config = liteTouchConfig.config
 }
 for (const i of configGetStmt.iterate()) {
     config[i.key] = JSON.parse(i.value)
@@ -31,8 +30,21 @@ const configSaveTransaction = db.transaction((newConfig: any) => {
 })
 
 /**
- * Saves the config.
+ * Handles the config.
  */
-export const saveConfig = () => {
-    configSaveTransaction(config)
+class ConfigHandler {
+    get o() {
+        return config
+    }
+
+    set o(newConfig: any) {
+        config = newConfig
+    }
+
+    public save() {
+        configSaveTransaction(config)
+    }
 }
+
+// Exports the config handler.
+export default new ConfigHandler()

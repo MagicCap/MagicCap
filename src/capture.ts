@@ -13,13 +13,10 @@ import filename from "./filename"
 import * as SQLite3 from "better-sqlite3"
 import selector from "./selector"
 import editors from "./editors"
+import config from "./config"
+import { importedUploaders, nameUploaderMap } from "./uploaders"
 const captureDatabase = SQLite3(`${require("os").homedir()}/magiccap.db`)
 const { clipboard, nativeImage, Tray, dialog, shell, Notification } = electron
-
-// Declares needed stuff.
-declare const config: any
-declare const nameUploaderMap: any
-declare const importedUploaders: any
 
 // Defines if we are in a GIF.
 let inGif = false
@@ -83,8 +80,6 @@ export default class CaptureCore {
             const notification = new Notification({
                 title: "MagicCap",
                 body: result,
-                // @ts-ignore
-                sound: true,
             })
             const cls = this
             notification.on("click", () => shell.openExternal(cls._url || cls._fp!))
@@ -126,9 +121,9 @@ export default class CaptureCore {
         this.promiseQueue.push(async() => {
             try {
                 let url
-                if (uploader || config.upload_capture) {
+                if (uploader || config.o.upload_capture) {
                     if (!uploader) {
-                        const uploaderType = uploader || config.uploader_type
+                        const uploaderType = uploader || config.o.uploader_type
                         const uploaderName = nameUploaderMap[uploaderType]
                         if (uploaderName === undefined) {
                             const notFoundi18n = await i18n.getPoPhrase("Uploader not found.", "capture")
@@ -138,9 +133,9 @@ export default class CaptureCore {
                     }
 
                     for (const key in uploader.config_options) {
-                        if (config[uploader.config_options[key].value] === undefined) {
+                        if (config.o[uploader.config_options[key].value] === undefined) {
                             if (uploader.config_options[key].default) {
-                                config[uploader.config_options[key].value] = uploader.config_options[key].default
+                                config.o[uploader.config_options[key].value] = uploader.config_options[key].default
                             } else if (uploader.config_options[key].required) {
                                 const missingOptioni18n = await i18n.getPoPhrase("A required config option is missing.", "capture")
                                 throw new Error(missingOptioni18n)
@@ -150,12 +145,12 @@ export default class CaptureCore {
                     url = await uploader.upload(this.buffer, this.filetype, this._filename)
                     this._url = url
                 }
-                if (!this._fp && config.save_capture && config.save_path) {
+                if (!this._fp && config.o.save_capture && config.o.save_path) {
                     // We need to save this and tailor the return.
-                    this._fp = `${config.save_path}${this._filename}`
+                    this._fp = `${config.o.save_path}${this._filename}`
                     await fsnextra.writeFile(this._fp, this.buffer)
                 }
-                switch (config.clipboard_action) {
+                switch (config.o.clipboard_action) {
                     case 0: {
                         break
                     }
@@ -179,7 +174,7 @@ export default class CaptureCore {
                         )
                     }
                 }
-                if (url && config.upload_open) {
+                if (url && config.o.upload_open) {
                     shell.openExternal(url)
                 }
                 await this._logUpload(this._filename!, true, url, this._fp!)
