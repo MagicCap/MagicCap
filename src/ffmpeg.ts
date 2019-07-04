@@ -98,8 +98,7 @@ function downloadBin() {
                         await unlink(tempPath)
                     }
 
-                    // @ts-ignore
-                    await chmod(`${fp}/ffmpeg`, "0777")
+                    await chmod(`${fp}/ffmpeg`, 0o777)
                     done(`${fp}/ffmpeg`)
                     return
                 }

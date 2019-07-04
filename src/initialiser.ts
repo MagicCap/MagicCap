@@ -85,9 +85,8 @@ if (!liteTouchConfig) {
                 body: "Your old configuration has been migrated. We hope you enjoy this update!",
             })).show()
         } else {
-            getDefaultConfig().then(newConfig => {
+            getDefaultConfig().then((newConfig: any) => {
                 for (const i in newConfig) {
-                    // @ts-ignore
                     config.o[i] = newConfig[i]
                 }
                 config.save()

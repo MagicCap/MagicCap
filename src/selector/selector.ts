@@ -403,19 +403,16 @@ function invokeButton(buttonId: string, sendEvent = true) {
         if (a) newNodes.push(a)
     }
 
-    // @ts-ignore
-    const htmlElement = newNodes[buttonId]
+    const htmlElement = (newNodes as any)[buttonId]
     const button = payload.buttons[buttonId]
     switch (button.type) {
         case "selection": {
             htmlElement.parentElement!.classList.add("selected")
             for (const thisButtonId in payload.buttons) {
-                // @ts-ignore
                 if (buttonId != thisButtonId) {
                     const thisButton = payload.buttons[thisButtonId]
                     if (thisButton.type === "selection") {
-                        // @ts-ignore
-                        newNodes[thisButtonId].parentElement.classList.remove("selected")
+                        (newNodes as any)[thisButtonId].parentElement.classList.remove("selected")
                     }
                 }
             }
@@ -488,9 +485,8 @@ ipcRenderer.on("event-recv", (_: any, res: any) => {
         }
         case "colour-change": {
             primaryColour = res.args.primaryColour
-            doNotCallColourEdit = true
-            // @ts-ignore
-            document.getElementById("ColourSelectionEl")!.value = res.args.hex
+            doNotCallColourEdit = true;
+            (document.getElementById("ColourSelectionEl")! as HTMLInputElement).value = res.args.hex
             doNotCallColourEdit = false
         }
     }
@@ -503,8 +499,7 @@ const changeColour = () => {
     if (doNotCallColourEdit) {
         return
     }
-    // @ts-ignore
-    const hex = document.getElementById("ColourSelectionEl")!.value.substr(1)
+    const hex = (document.getElementById("ColourSelectionEl")! as HTMLInputElement).value.substr(1)
     /**
      * Fixes a small edgecase.
      */

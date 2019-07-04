@@ -8,7 +8,7 @@
 import config from "./config"
 import capture from "./capture"
 import liteTouchConfig from "./lite_touch"
-import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain } from "electron"
+import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain, NativeImage } from "electron"
 import { readFile } from "fs-nextra"
 import testUploader from "./test_uploader"
 import autoUpdateLoop from "./autoupdate"
@@ -171,8 +171,9 @@ async function openConfig() {
             nodeIntegration: true,
         },
     })
-    // @ts-ignore
-    if (process.platform !== "darwin") window.setIcon(`${__dirname}/icons/taskbar.png`)
+    if (process.platform !== "darwin") {
+        window.setIcon(NativeImage.createFromPath(`${__dirname}/icons/taskbar.png`))
+    }
     eval("global.platform = process.platform")
     window.setTitle("MagicCap")
     const pageContent = await i18n.poParseHtml((await readFile(`${__dirname}/gui/index.html`)).toString())
@@ -212,7 +213,7 @@ async function dropdownMenuUpload(uploader: any) {
     await dialog.showOpenDialog(BrowserWindow.getFocusedWindow()!, {
         title: selectFilei18n,
         // @ts-ignore
-        multiSelections: false,
+        multiSelections: true,
         openDirectory: false,
     }, async(filePaths: string[]) => {
         if (filePaths) {
@@ -321,8 +322,7 @@ ipcMain.on("config-edit", async(event: any, data: any) => {
 })
 
 // Tests a uploader.
-// @ts-ignore
-ipcMain.on("test-uploader", async(event: any, data: any) => event.sender.send("test-uploader-res", await testUploader(uploaders[data])))
+ipcMain.on("test-uploader", async(event: any, data: any) => event.sender.send("test-uploader-res", await testUploader((uploaders as any)[data])))
 
 // Handles the hotkey changing.
 ipcMain.on("hotkey-change", async() => {

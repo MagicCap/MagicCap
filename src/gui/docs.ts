@@ -46,10 +46,9 @@ const MD = markdownit({
  */
 function fileElement(item: any) {
     const li = document.createElement("li")
-    const a = document.createElement("a")
+    const a = (document.createElement("a")! as HTMLAnchorElement)
     a.href = `javascript:showDocs("${encodeURI(item.url)}")`
-    // @ts-ignore
-    a.setAttribute("data-link-wrapped", true)
+    a.setAttribute("data-link-wrapped", "true")
     a.textContent = nameFormat(item.name)
     li.appendChild(a)
     return li
@@ -191,14 +190,12 @@ function renderDoc(markdown: string, back: boolean, full: boolean, cls: boolean)
     const div = document.createElement("div")
     div.className = cls ? "markdown" : ""
     div.innerHTML = MD.render(markdown)
-    div.querySelectorAll("a:not([data-link-wrapped])").forEach(item => {
-        // @ts-ignore
+    // @ts-ignore
+    div.querySelectorAll("a:not([data-link-wrapped])").forEach((item: HTMLLinkElement) => {
         const link = String(item.href)
-        // @ts-ignore
         item.href = `javascript:openURL("${encodeURI(link)}")`
         item.classList.add("url")
-        // @ts-ignore
-        item.setAttribute("data-link-wrapped", true)
+        item.setAttribute("data-link-wrapped", "true")
     })
     HELP_BODY.appendChild(div)
 }

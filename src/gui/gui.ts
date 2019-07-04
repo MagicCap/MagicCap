@@ -31,8 +31,7 @@ function closeCurrentModal(custom = true) {
         if (custom) {
             // Support custom close methods (Use a button with a delete class and onclick event to support this)
             const del = div.querySelector("button.delete")
-            // @ts-ignore
-            if (del) del.click()
+            if (del) (del as HTMLButtonElement).click()
         }
 
         // Assume normal closing
@@ -250,14 +249,12 @@ function showBetaUpdates() {
 /**
  * Checks for updates.
  */
-async function checkForUpdates(elm: HTMLElement) {
+async function checkForUpdates(elm: HTMLButtonElement) {
     elm.textContent = await i18n.getPoPhrase("Checking...", "gui")
-    // @ts-ignore
     elm.disabled = true
     ipcRenderer.send("check-for-updates")
     ipcRenderer.once("check-for-updates-done", async() => {
         elm.textContent = await i18n.getPoPhrase("Check for Updates", "gui")
-        // @ts-ignore
         elm.disabled = false
     })
 }
@@ -330,13 +327,11 @@ liteTouch Config: ${liteTouchConfig}`
  * Copies the debug information to clipboard
  */
 async function copyDebug() {
-    const button = document.getElementById("debugCopy")
-    // @ts-ignore
+    const button = document.getElementById("debugCopy")! as HTMLButtonElement
     button!.disabled = true
     clipboard.writeText(document.getElementById("debugInfo")!.textContent!)
     button!.textContent = await i18n.getPoPhrase("Copied!", "gui")
     setTimeout(async() => {
-        // @ts-ignore
         button!.disabled = false
         button!.textContent = await i18n.getPoPhrase("Copy to clipboard", "gui")
     }, 3000)
@@ -408,12 +403,9 @@ new Vue({
  * Allows you to close the hotkey config.
  */
 async function hotkeyConfigClose() {
-    // @ts-ignore
-    const text = document.getElementById("screenshotHotkey")!.value
-    // @ts-ignore
-    const gifText = document.getElementById("gifHotkey")!.value
-    // @ts-ignore
-    const clipboardText = document.getElementById("clipboardHotkey")!.value
+    const text = (document.getElementById("screenshotHotkey")! as HTMLInputElement).value
+    const gifText = (document.getElementById("gifHotkey")! as HTMLInputElement).value
+    const clipboardText = (document.getElementById("clipboardHotkey")! as HTMLInputElement).value
     let changed = false
 
     if (config.o.hotkey !== text) {
@@ -472,19 +464,16 @@ new Vue({
     },
     methods: {
         saveSaveCapture: () => {
-            // @ts-ignore
-            config.o.save_capture = document.getElementById("fileConfigCheckbox")!.checked
+            config.o.save_capture = (document.getElementById("fileConfigCheckbox")! as HTMLInputElement).checked
             saveConfig()
         },
         saveNamingPattern: () => {
-            // @ts-ignore
-            config.o.file_naming_pattern = document.getElementById("fileNamingPattern")!.value
+            config.o.file_naming_pattern = (document.getElementById("fileNamingPattern")! as HTMLInputElement).value
             saveConfig()
             document.getElementById("fileNamingPreview")!.textContent = filename.newFilename()
         },
         saveFilePath: () => {
-            // @ts-ignore
-            let p = document.getElementById("fileSaveFolder")!.value
+            let p = (document.getElementById("fileSaveFolder")! as HTMLInputElement).value
             if (!p.endsWith(sep)) p += sep
             config.o.save_path = p
             saveConfig()
@@ -541,19 +530,16 @@ const activeUploaderConfig = new Vue({
             optionWebviewBodge(option)
         },
         changeOption: (option: any) => {
-            // @ts-ignore
-            let res: undefined | string = document.getElementById(option.value)!.value
+            let res: undefined | any = (document.getElementById(option.value)! as HTMLInputElement).value
             if (res === "") {
                 res = undefined
             }
             switch (option.type) {
                 case "integer":
-                    // @ts-ignore
-                    res = parseInt(res) || option.default || undefined
+                    res = parseInt(res!) || option.default || undefined
                     break
                 case "boolean":
-                    // @ts-ignore
-                    res = document.getElementById(option.value)!.checked
+                    res = (document.getElementById(option.value)! as HTMLInputElement).checked
                     break
             }
             config[option.value] = res
@@ -567,10 +553,8 @@ const activeUploaderConfig = new Vue({
         },
         addToTable: (option: any) => {
             activeUploaderConfig.exception = ""
-            // @ts-ignore
-            const key = document.getElementById(`Key${option.value}`)!.value || ""
-            // @ts-ignore
-            const value = document.getElementById(`Value${option.value}`)!.value || ""
+            const key = (document.getElementById(`Key${option.value}`)! as HTMLInputElement).value || ""
+            const value = (document.getElementById(`Value${option.value}`)! as HTMLInputElement).value || ""
             if (key === "") {
                 activeUploaderConfig.exception += "blankKey"
                 return
@@ -605,8 +589,7 @@ const activeUploaderConfig = new Vue({
                     if (option.default) {
                         config[option.value] = option.default
                         saveConfig()
-                    // @ts-ignore
-                    } else if (option.type === "integer" && !parseInt(document.getElementById(option.value)!.value)) {
+                    } else if (option.type === "integer" && !parseInt((document.getElementById(option.value)! as HTMLInputElement).value)) {
                         this.exception += "notAnInteger"
                         return false
                     } else {
@@ -674,8 +657,7 @@ const optionWebviewBodge = (option: any) => {
             x.addEventListener("did-navigate", async urlInfo => {
                 const url = ((urlInfo as unknown) as any).url as string
                 if (url.match(new RegExp(option.endUrlRegex))) {
-                    // @ts-ignore
-                    const webContents = document.getElementById(option.value)!.getWebContents() as electron.WebContents
+                    const webContents = (document.getElementById(option.value)! as electron.WebviewTag).getWebContents() as electron.WebContents
                     const data = JSON.parse(await webContents.executeJavaScript("document.documentElement.innerText")).token
                     if (data) {
                         config[option.value] = data
@@ -832,10 +814,7 @@ const exportMconf = async() => {
             file += ".mconf"
         }
         try {
-            // @ts-ignore
-            await writeJSON(file, exported, {
-                spaces: 4,
-            })
+            await writeJSON(file, exported)
         } catch (err) {
             console.log(err)
         }
@@ -899,15 +878,14 @@ const importMconf = async() => {
 }
 
 // Handles beta updates.
-new Vue({
+const betaUpdates = new Vue({
     el: "#betaUpdates",
     data: {
         action: Boolean(config.o.beta_channel),
     },
     methods: {
         changeAction: (actionBool: boolean) => {
-            // @ts-ignore
-            this.action = actionBool
+            betaUpdates.action = actionBool
             config.o.beta_channel = actionBool
             saveConfig()
         },

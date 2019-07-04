@@ -22,8 +22,7 @@ export const uploaders = {
 export const nameUploaderMap = {} as any
 export const importedUploaders = {} as any
 for (const uploaderName in uploaders) {
-    // @ts-ignore
-    const import_ = uploaders[uploaderName]
+    const import_ = (uploaders as any)[uploaderName]
     importedUploaders[import_.name] = import_
     nameUploaderMap[uploaderName] = import_.name
 }

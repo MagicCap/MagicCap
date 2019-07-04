@@ -287,8 +287,7 @@ export default class CaptureCore {
                     },
                 ]
                 for (const key in editors) {
-                    // @ts-ignore
-                    const editor = editors[key]
+                    const editor = (editors as any)[key]
                     selectorArgs.push({
                         name: key,
                         tooltip: editor.description,
