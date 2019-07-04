@@ -11,18 +11,6 @@ module.exports = {
 		node: true,
 		browser: true
 	},
-	globals: {
-		config: true,
-		captureDatabase: true,
-		importedUploaders: true,
-		nameUploaderMap: true,
-		tray: true,
-		Vue: true,
-		saveConfig: true,
-		payload: true,
-		runCapture: true,
-		runClipboardCapture: true,
-	},
 	rules: {
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/no-explicit-any": "off",
