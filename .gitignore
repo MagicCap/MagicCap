@@ -61,7 +61,6 @@ typings/
 .next
 
 \.vs/
-.vscode/
 .idea/
 
 build/

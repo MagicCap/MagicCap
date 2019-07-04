@@ -4,9 +4,6 @@
     <a href="https://circleci.com/gh/MagicCap/MagicCap/tree/master" title="CircleCI" target="_blank">
         <img src="https://img.shields.io/circleci/build/github/MagicCap/MagicCap.svg?logo=CircleCI&logoColor=fff" alt=""/>
     </a>
-    <a href="https://magiccap.readthedocs.io/en/latest/?badge=latest" title="Read the Docs Documentation" target="_blank">
-        <img src="https://img.shields.io/readthedocs/magiccap.svg?logo=Read-the-Docs&logoColor=fff" alt=""/>
-    </a>
     <a href="https://opensource.org/licenses/MPL-2.0" title="Licensed under MPL 2.0" target="_blank">
         <img src="https://img.shields.io/badge/license-MPL%202.0-brightgreen.svg?logo=Mozilla&logoColor=fff" alt=""/>
     </a>

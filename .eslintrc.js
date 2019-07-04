@@ -1,5 +1,8 @@
 module.exports = {
-	extends: "eslint:recommended",
+	extends: [
+		'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+	],
+	parser: '@typescript-eslint/parser',  // Specifies the ESLint parser
 	parserOptions: {
 		ecmaVersion: 2017,
 	},
@@ -21,9 +24,16 @@ module.exports = {
 		runClipboardCapture: true,
 	},
 	rules: {
-		"camelcase": ["error", {"properties": "never"}],
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/no-explicit-any": "off",
 		"no-compare-neg-zero": "error",
-		"no-extra-parens": ["warn", "all", { "nestedBinaryExpressions": false }],
+		"@typescript-eslint/camelcase": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/no-unused-vars": "off",
+		"@typescript-eslint/no-var-requires": "off",
+		"@typescript-eslint/explicit-member-accessibility": "off",
+		"@typescript-eslint/no-use-before-define": "off",
+		"no-extra-parens": "off",
 		"no-template-curly-in-string": "error",
 		"no-unsafe-negation": "error",
 		"accessor-pairs": "warn",
@@ -34,7 +44,7 @@ module.exports = {
 		"no-floating-decimal": "error",
 		"no-var": "error",
 		"no-implied-eval": "error",
-		"no-invalid-this": "error",
+		"no-invalid-this": "off",
 		"no-lone-blocks": "error",
 		"no-multi-spaces": "error",
 		"no-new-func": "error",
@@ -65,15 +75,6 @@ module.exports = {
 		"no-mixed-requires": "error",
 		"no-new-require": "error",
 		"no-path-concat": "error",
-		"require-jsdoc": ["error", {
-			"require": {
-				"FunctionDeclaration": true,
-				"MethodDefinition": true,
-				"ClassDeclaration": true,
-				"ArrowFunctionExpression": true,
-				"FunctionExpression": true
-			}
-		}],
 		"array-bracket-spacing": "error",
 		"block-spacing": "error",
 		"brace-style": ["error", "1tbs", { "allowSingleLine": true }],
