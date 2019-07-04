@@ -5,7 +5,7 @@
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
 import { app } from "electron"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Lunus",
@@ -17,7 +17,7 @@ export default {
             required: true,
         },
     },
-    upload: async(buffer: Buffer, fileType: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
         let res = await post("https://i.novuscommunity.co/api/upload")
             .set("Authorization", `Bearer ${config.o.novus_token}`)
             .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.o.install_id}`)

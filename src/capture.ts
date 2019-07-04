@@ -142,7 +142,7 @@ export default class CaptureCore {
                             }
                         }
                     }
-                    url = await uploader.upload(this.buffer, this.filetype, this._filename)
+                    url = await uploader.upload(config, this.buffer, this.filetype, this._filename)
                     this._url = url
                 }
                 if (!this._fp && config.o.save_capture && config.o.save_path) {

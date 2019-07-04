@@ -4,7 +4,7 @@
 
 import { S3 } from "tiny-s3-uploader"
 import * as mime from "mime-types"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "S3",
@@ -37,7 +37,7 @@ export default {
             required: true,
         },
     },
-    upload: async(buffer: Buffer, ext: string, filename: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, ext: string, filename: string) => {
         if (config.o.s3_endpoint.startsWith("http://")) {
             config.o.s3_endpoint = config.o.s3_endpoint.trimStart("http://")
         } else if (config.o.s3_endpoint.startsWith("https://")) {

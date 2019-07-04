@@ -352,8 +352,8 @@ ipcMain.on("run-affect", async(event: any, data: any) => {
 // Runs any OAuth2 flows for the uploaders.
 ipcMain.on("oauth-flow-uploader", async(event: any, uploaderName: string) => {
     const uploader = importedUploaders[uploaderName]
-    const oAuthResp = await OAuth2(uploader.getOAuthUrl())
-    const r = await uploader.handleOAuthFlow(oAuthResp)
+    const oAuthResp = await OAuth2(uploader.getOAuthUrl(config))
+    const r = await uploader.handleOAuthFlow(config, oAuthResp)
     event.sender.send("oauth-flow-uploader-response", r ? r : null)
 })
 

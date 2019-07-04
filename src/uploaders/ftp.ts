@@ -4,7 +4,7 @@
 
 import * as i18n from "../i18n"
 import * as promiseFtp from "promise-ftp"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Passive FTP",
@@ -43,7 +43,7 @@ export default {
             required: true,
         },
     },
-    upload: async(buffer: Buffer, _: string, filename: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, _: string, filename: string) => {
         const client = new promiseFtp()
 
         try {

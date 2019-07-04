@@ -3,13 +3,13 @@
 
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "i.magiccap",
     icon: "magiccap.png",
     config_options: {},
-    upload: async(buffer: Buffer, fileType: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
         let res = await post("https://i.magiccap.me/upload")
             .set("Authorization", `Bearer ${config.o.install_id}`)
             .attach("data", buffer, `x.${fileType}`)

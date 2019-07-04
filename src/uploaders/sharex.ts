@@ -6,7 +6,7 @@
 import { post } from "chainfetch"
 import { readFile } from "fs-nextra"
 import * as safeEval from "safe-eval"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 // Defines image extensions for parsing.
 const imageExtensions = [
@@ -200,7 +200,7 @@ export default {
             required: true,
         },
     },
-    upload: async(buffer: Buffer, fileType: string, filename: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, fileType: string, filename: string) => {
         const sxcuPath = config.o.sharex_sxcu_path
         let openedFile
         try {

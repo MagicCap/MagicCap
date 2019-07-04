@@ -4,7 +4,7 @@
 // This requires Chainfetch.
 import { post } from "chainfetch"
 import { Request } from "express"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Dropbox",
@@ -37,8 +37,8 @@ export default {
             required: true,
         },
     },
-    getOAuthUrl: () => `https://dropbox.com/oauth2/authorize?client_id=${config.o.dropbox_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&response_type=code`,
-    handleOAuthFlow: async(req: Request) => {
+    getOAuthUrl: (config: ConfigHandler) => `https://dropbox.com/oauth2/authorize?client_id=${config.o.dropbox_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&response_type=code`,
+    handleOAuthFlow: async(config: ConfigHandler, req: Request) => {
         if (!req.query.code) {
             return
         }
@@ -55,7 +55,7 @@ export default {
             dropbox_uid: response.body.uid,
         }
     },
-    upload: async(buffer: Buffer, _: string, filename: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, _: string, filename: string) => {
         const dropboxPath = `${config.o.dropbox_path}${filename}`
         await post("https://content.dropboxapi.com/2/files/upload")
             .set("Authorization", `Bearer ${config.o.dropbox_token}`)

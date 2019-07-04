@@ -3,7 +3,7 @@
 
 import * as i18n from "../i18n"
 import * as Client from "ssh2-sftp-client"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "SFTP",
@@ -41,7 +41,7 @@ export default {
             required: true,
         },
     },
-    upload: async(buffer: Buffer, _: string, filename: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, _: string, filename: string) => {
         const sftp = new Client()
 
         try {

@@ -3,7 +3,7 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 import { post } from "chainfetch"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Custom",
@@ -35,7 +35,7 @@ export default {
             required: false,
         },
     },
-    upload: async(buffer: Buffer, _: string, filename: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, _: string, filename: string) => {
         let res = await post(config.o.custom_url)
             .set(config.o.custom_headers)
             .attach(config.o.custom_body)

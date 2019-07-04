@@ -4,7 +4,7 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
 import { post } from "chainfetch"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "UltraShare",
@@ -26,7 +26,7 @@ export default {
             required: true,
         },
     },
-    upload: async(buffer: Buffer, fileType: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
         try {
             let res
             res = await post(config.o.ultra_https ? "https://" : `http://${config.o.ultra_domain}/api/upload`)

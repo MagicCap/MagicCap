@@ -7,7 +7,7 @@ import { google } from "googleapis"
 import * as streamifier from "streamifier"
 import * as mime from "mime-types"
 import { Request } from "express"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Google Drive",
@@ -29,8 +29,8 @@ export default {
             required: true,
         },
     },
-    getOAuthUrl: () => `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.o.gdrive_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&response_type=code`,
-    handleOAuthFlow: async(req: Request) => {
+    getOAuthUrl: (config: ConfigHandler) => `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.o.gdrive_client_id}&redirect_uri=http%3A%2F%2F127.0.0.1%3A61222&access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&response_type=code`,
+    handleOAuthFlow: async(config: ConfigHandler, req: Request) => {
         if (!req.query.code) {
             return
         }
@@ -48,7 +48,7 @@ export default {
             gdrive_refresh_token: response.body.refresh_token,
         }
     },
-    upload: async(buffer: Buffer, filetype: string, filename: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, filetype: string, filename: string) => {
         const dateNumber = (new Date() as unknown) as number
         if (Math.floor(dateNumber / 1000) > config.o.gdrive_expires_at) {
             // We need to renew the access token.

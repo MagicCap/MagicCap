@@ -32,7 +32,7 @@ const configSaveTransaction = db.transaction((newConfig: any) => {
 /**
  * Handles the config.
  */
-class ConfigHandler {
+export class ConfigHandler {
     get o() {
         return config
     }

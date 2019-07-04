@@ -4,7 +4,7 @@
 import { put } from "chainfetch"
 import * as i18n from "../i18n"
 import { app } from "electron"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "reUpload",
@@ -18,7 +18,7 @@ export default {
             endUrlRegex: "https:\\/\\/api.reupload.gg\\/authorize.+",
         },
     },
-    upload: async(buffer: Buffer, fileType: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
         switch (fileType) {
             case "png":
             case "jpg":

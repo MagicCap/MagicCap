@@ -4,7 +4,7 @@
 
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
-import config from "../config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Pomf",
@@ -21,7 +21,7 @@ export default {
             required: false,
         },
     },
-    upload: async(buffer: Buffer, fileType: string) => {
+    upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
         let res
         if (config.o.pomf_token) {
             res = await post(config.o.pomf_domain)
