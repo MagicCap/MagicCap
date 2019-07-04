@@ -179,8 +179,6 @@ async function openConfig() {
     window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
         baseURLForDataURL: `file://${__dirname}/gui/`,
     })
-    const captureDev = process.argv.includes("-captureDev")
-    if (captureDev) window.webContents.openDevTools()
     eval("global.window = window")
 
     window.on("closed", () => {
