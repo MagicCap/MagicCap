@@ -3,7 +3,9 @@
  */
 .button {
     border-radius: .2em;
+    border-width: 2px;
     padding: 1em 1.5em;
+    height: 2.4em;
     font-weight: 600;
     font-size: .9em;
     border-color: transparent;
@@ -16,6 +18,11 @@
     background: var(--gray);
     border-color: transparent;
     color: var(--text);
+}
+
+.button.is-small {
+    border-radius: 2px;
+    font-size: .75em;
 }
 
 .button.is-danger,
