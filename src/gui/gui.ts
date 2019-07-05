@@ -4,11 +4,10 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
-// Patches require.
+// Handles the patching of require.
+import * as assert from "assert"
 require("./gui/require_monkeypatch").patch(this)
-
-// Asserts the monkeypatch is working.
-require("assert")(require("monkeypatch_assert") === "Hi")
+assert(require("monkeypatch_assert") === "Hi")
 
 // Imports stuff that is needed.
 import * as electron from "electron"
@@ -24,6 +23,10 @@ import * as mconf from "../mconf"
 import { uploaders } from "../uploaders"
 import filename from "../filename"
 import { AUTOUPDATE_ON } from "../build_info"
+import { sep } from "path"
+import { homedir } from "os"
+import * as SQLite3 from "better-sqlite3"
+
 const { ipcRenderer, remote, shell } = electron
 const { dialog, clipboard } = remote
 
@@ -158,7 +161,7 @@ window.onload = () => {
 }
 
 // Defines the capture database.
-const db = require("better-sqlite3")(`${require("os").homedir()}/magiccap.db`)
+const db = SQLite3(`${homedir()}/magiccap.db`)
 
 // A list of the displayed captures.
 const displayedCaptures: any[] = []
@@ -454,9 +457,6 @@ async function hotkeyConfigClose() {
 function openAcceleratorDocs() {
     openURL("https://electronjs.org/docs/api/accelerator")
 }
-
-// Repoints path for later.
-const sep = require("path").sep
 
 // Handles the file config.
 new Vue({
