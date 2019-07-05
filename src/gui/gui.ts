@@ -309,7 +309,7 @@ function safeConfig() {
         if (key.toLowerCase().match(/(\b|_)secret(\b|_)/g)) val = "SECRET REDACTED"
         if (key.toLowerCase().match(/(\b|_)token(\b|_)/g)) val = "TOKEN REDACTED"
         if (key.toLowerCase().match(/(\b|_)key(\b|_)/g)) val = "KEY REDACTED"
-        newConfig.o[key] = val
+        newConfig[key] = val
     }
     return newConfig
 }
