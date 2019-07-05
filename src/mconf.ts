@@ -11,7 +11,7 @@ import { importedUploaders } from "./uploaders"
  * @param {Object} data - The JSON parsed data.
  * @returns - All the configuration items that are being changed.
  */
-async function parse(data: {
+export async function parse(data: {
     version: number;
     config_items: undefined | object;
 }) {
@@ -47,7 +47,7 @@ function values(item: any) {
  * Handles making a new *.mconf's file contents.
  * @returns The parsed mconf file.
  */
-function new_() {
+export function newConfig() {
     const options: any = {}
     for (const uploader of values(importedUploaders)) {
         for (const option of values(uploader.config_options)) {
@@ -60,10 +60,4 @@ function new_() {
         version: 1,
         config_items: options,
     }
-}
-
-// Things that are exported.
-export default {
-    new: new_,
-    parse: parse,
 }

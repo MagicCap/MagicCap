@@ -89,7 +89,7 @@
         "linuxcompile": "npm run build && electron-packager . MagicCap --ignore='(^\\/branding)|(^\\/src)|(\\/static_copy\\.js)' --platform linux --arch x64 --out ./build --overwrite --icon ./dist/icons/app.ico",
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
         "dev-run": "npm run build && electron .",
-        "build": "rm -rf dist/ && tsc && node ./monkeypatch_gui_dist.js && npm run copy",
+        "build": "rm -rf dist/ && tsc && npm run copy",
         "dev-run-capturedev": "npm run build && electron . -captureDev",
         "dev-colors": "electron ./src/gui/css/colors.js -dark && electron ./src/gui/css/colors.js -light"
     }

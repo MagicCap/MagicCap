@@ -4,6 +4,12 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
+// Patches require.
+require("./gui/require_monkeypatch").patch(this)
+
+// Asserts the monkeypatch is working.
+require("assert")(require("monkeypatch_assert") === "Hi")
+
 // Imports stuff that is needed.
 import * as electron from "electron"
 import { Scope } from "@sentry/hub"
@@ -11,6 +17,13 @@ import Vue from "vue"
 import { writeJSON, readJSON } from "fs-nextra"
 import * as Sentry from "@sentry/electron"
 import * as os from "os"
+import liteTouchConfig from "../lite_touch"
+import config from "../config"
+import * as i18n from "../i18n"
+import * as mconf from "../mconf"
+import { uploaders } from "../uploaders"
+import filename from "../filename"
+import { AUTOUPDATE_ON } from "../build_info"
 const { ipcRenderer, remote, shell } = electron
 const { dialog, clipboard } = remote
 
@@ -90,15 +103,6 @@ document.addEventListener("keydown", e => {
 window.onerror = function() {
     electron.remote.getCurrentWindow().webContents.openDevTools()
 }
-
-// Gets the config/stuff that needs it.
-const liteTouchConfig = require("./lite_touch").default
-const config = require("./config").default
-const i18n = require("./i18n")
-const mconf = require("./mconf")
-const uploaders = require("./uploaders").uploaders
-const { default: filename } = require("./filename")
-const { AUTOUPDATE_ON } = require("./build_info")
 
 // Initialises the Sentry SDK.
 Sentry.init({
@@ -298,13 +302,13 @@ function showAbout() {
 function safeConfig() {
     let newConfig = {} as any
     for (const key in config) {
-        let val = config[key]
+        let val = config.o[key]
         if (key.toLowerCase().match(/(\b|_)password(\b|_)/g)) val = "PASSWORD REDACTED"
         if (key.toLowerCase().match(/(\b|_)username(\b|_)/g)) val = "USERNAME REDACTED"
         if (key.toLowerCase().match(/(\b|_)secret(\b|_)/g)) val = "SECRET REDACTED"
         if (key.toLowerCase().match(/(\b|_)token(\b|_)/g)) val = "TOKEN REDACTED"
         if (key.toLowerCase().match(/(\b|_)key(\b|_)/g)) val = "KEY REDACTED"
-        newConfig[key] = val
+        newConfig.o[key] = val
     }
     return newConfig
 }
@@ -497,7 +501,7 @@ const activeUploaderConfig = new Vue({
         getDefaultValue: (option: any) => {
             switch (option.type) {
                 case "boolean": {
-                    const c = config[option.value]
+                    const c = config.o[option.value]
                     if (c === undefined) {
                         if (option.default !== undefined) {
                             return option.default
@@ -507,8 +511,8 @@ const activeUploaderConfig = new Vue({
                     return c
                 }
                 default: {
-                    if (config[option.value]) {
-                        return config[option.value]
+                    if (config.o[option.value]) {
+                        return config.o[option.value]
                     }
                     if (option.default !== undefined) {
                         return option.default
@@ -524,7 +528,7 @@ const activeUploaderConfig = new Vue({
          * Resets a config value.
          */
         resetValue(option: any) {
-            delete config[option.value]
+            delete config.o[option.value]
             saveConfig()
             this.$forceUpdate()
             optionWebviewBodge(option)
@@ -542,12 +546,12 @@ const activeUploaderConfig = new Vue({
                     res = (document.getElementById(option.value)! as HTMLInputElement).checked
                     break
             }
-            config[option.value] = res
+            config.o[option.value] = res
             saveConfig()
         },
         deleteRow: (key: string, option: any) => {
             delete option.items[key]
-            config[option.value] = option.items
+            config.o[option.value] = option.items
             activeUploaderConfig.$forceUpdate()
             saveConfig()
         },
@@ -564,7 +568,7 @@ const activeUploaderConfig = new Vue({
                 return
             }
             option.items[key] = value
-            config[option.value] = option.items
+            config.o[option.value] = option.items
             activeUploaderConfig.$forceUpdate()
             saveConfig()
         },
@@ -584,10 +588,10 @@ const activeUploaderConfig = new Vue({
             this.$set(this, "exceptionData", "")
             for (const optionKey in this.uploader.options) {
                 const option = this.uploader.options[optionKey]
-                const c = config[option.value]
+                const c = config.o[option.value]
                 if (c === undefined && option.required) {
                     if (option.default) {
-                        config[option.value] = option.default
+                        config.o[option.value] = option.default
                         saveConfig()
                     } else if (option.type === "integer" && !parseInt((document.getElementById(option.value)! as HTMLInputElement).value)) {
                         this.exception += "notAnInteger"
@@ -605,7 +609,7 @@ const activeUploaderConfig = new Vue({
          */
         getFilename() {
             for (const file in uploaders) {
-                const import_ = uploaders[file]
+                const import_ = (uploaders as any)[file]
                 if (import_.name === this.uploader.name) {
                     return file
                 }
@@ -660,7 +664,7 @@ const optionWebviewBodge = (option: any) => {
                     const webContents = (document.getElementById(option.value)! as electron.WebviewTag).getWebContents() as electron.WebContents
                     const data = JSON.parse(await webContents.executeJavaScript("document.documentElement.innerText")).token
                     if (data) {
-                        config[option.value] = data
+                        config.o[option.value] = data
                         saveConfig()
                         activeUploaderConfig.$set(activeUploaderConfig.uploader.options, option.value, data)
                         activeUploaderConfig.$forceUpdate()
@@ -714,7 +718,7 @@ new Vue({
                             translatedName: translatedOption,
                         })
                         if (option.type === "boolean") {
-                            config[option.value] = config[option.value] || false
+                            config.o[option.value] = config.o[option.value] || false
                             saveConfig()
                         }
 
@@ -732,7 +736,7 @@ new Vue({
                         break
                     }
                     case "object": {
-                        const i = config[option.value] || option.default || {}
+                        const i = config.o[option.value] || option.default || {}
                         options.push({
                             type: option.type,
                             value: option.value,
@@ -741,7 +745,7 @@ new Vue({
                             items: i,
                             translatedName: translatedOption,
                         })
-                        config[option.value] = i
+                        config.o[option.value] = i
                         saveConfig()
                         break
                     }
@@ -795,7 +799,7 @@ new Vue({
  * Handles exporting the config into a *.mconf file.
  */
 const exportMconf = async() => {
-    const exported = mconf.new()
+    const exported = mconf.newConfig()
     const saveFilei18n = await i18n.getPoPhrase("Save file...", "gui")
     dialog.showSaveDialog({
         title: saveFilei18n,
@@ -867,7 +871,7 @@ const importMconf = async() => {
                         dialog.showErrorBox("MagicCap", `${err.message}`)
                     }
                     for (const key in parse) {
-                        config[key] = parse[key]
+                        config.o[key] = parse[key]
                     }
                     await saveConfig()
                     break
@@ -915,7 +919,7 @@ async function oauthLogin() {
         return
     }
     for (const key of Object.keys(configDiff) as any) {
-        config[key] = configDiff[key]
+        config.o[key] = configDiff[key]
     }
     saveConfig()
     activeUploaderConfig.$forceUpdate()
