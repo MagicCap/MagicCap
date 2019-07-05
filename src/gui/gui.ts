@@ -24,7 +24,6 @@ import { uploaders } from "../uploaders"
 import filename from "../filename"
 import { AUTOUPDATE_ON } from "../build_info"
 import { sep } from "path"
-import { homedir } from "os"
 import * as SQLite3 from "better-sqlite3"
 const { ipcRenderer, remote, shell } = electron
 const { dialog, clipboard } = remote
@@ -160,7 +159,7 @@ window.onload = () => {
 }
 
 // Defines the capture database.
-const db = SQLite3(`${homedir()}/magiccap.db`)
+const db = SQLite3(`${os.homedir()}/magiccap.db`)
 
 // A list of the displayed captures.
 const displayedCaptures: any[] = []
