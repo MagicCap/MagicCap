@@ -85,3 +85,9 @@
 .markdown pre {
     padding: .05em .3em;
 }
+
+.markdown img {
+    box-shadow: 0 0 3px 0 var(--shadow);
+    margin: 8px 4px;
+    border-radius: 2px;
+}

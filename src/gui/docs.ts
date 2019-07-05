@@ -23,7 +23,7 @@ function nameFormat(name: string) {
             .join(".")
     }
 
-    return titleCase(name.replace(/[_-]/g, " "))
+    return titleCase(name.replace(/[_-]/g, " ").replace(/(\S)\/(\S)/g, "$1 / $2"))
 }
 
 const BASE_DIR = "docs"
@@ -32,7 +32,6 @@ const HELP_BODY = document.getElementById("helpModalBody")!
 const HELP_TITLE = document.getElementById("helpModalTitle")!
 const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
 const MD_ONLY = true
-// @ts-ignore
 const MD = markdownit({
     html: true,
     linkify: true,
@@ -62,18 +61,23 @@ function fileElement(item: any) {
  */
 function directoryElement(item: any, contents: any[]) {
     const li = document.createElement("li")
-    const text = document.createTextNode(nameFormat(item.name))
+
+    const text = document.createElement("span")
+    text.innerText = nameFormat(item.name)
+    li.appendChild(text)
+
     const br = document.createElement("br")
+    li.appendChild(br)
+
     const ul = document.createElement("ul")
     contents.forEach(child => {
         ul.appendChild(child.html)
     })
-    ul.style.marginLeft = ".1em"
+    ul.style.marginLeft = ".4em"
     ul.style.borderLeft = "1px solid var(--separator)"
     ul.style.paddingLeft = "1.4em"
-    li.appendChild(text)
-    li.appendChild(br)
     li.appendChild(ul)
+
     return li
 }
 
@@ -100,6 +104,7 @@ async function getStruct(url: string): Promise<any[]> {
 
     // Loop and process
     for (const index in json) {
+        if (!json.hasOwnProperty(index)) continue
         const item = json[index]
         if (item.type === "file") {
             if (MD_ONLY && !item.name.endsWith(".md")) continue
@@ -213,7 +218,7 @@ async function showDocs(url: string) {
 
     const path = json.path.startsWith(BASE_DIR) ? json.path.substr(BASE_DIR.length) : json.path
     HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${nameFormat(path.replace(/^\/+/g, ""))}`
-    const content = `${atob(json.content)}\n\n<hr/>\n\n> *This file is open source on our GitHub repository at [${json.html_url}](${json.html_url}).*`
+    const content = `${atob(json.content)}\n\n<hr class="oss-docs-divider"/>\n\n<blockquote class="oss-docs-link">This file is open source on our GitHub repository at <a href="${json.html_url}">${json.html_url}</a>.</blockquote>`
     renderDoc(content, true, true, true)
 }
 
@@ -227,7 +232,6 @@ declare const showModal: (name: string) => void
 async function showHelpModal() {
     HELP_TITLE.textContent = HELP_TITLE_DEFAULT
     renderDoc("## Loading menu...", false, false, true)
-    // eslint-disable-next-line no-undef
     showModal("helpModal")
 
     try {
