@@ -301,7 +301,8 @@ function showAbout() {
  */
 function safeConfig() {
     let newConfig = {} as any
-    for (const key in config) {
+    for (const key in config.o) {
+        if (!config.o.hasOwnProperty(key)) continue
         let val = config.o[key]
         if (key.toLowerCase().match(/(\b|_)password(\b|_)/g)) val = "PASSWORD REDACTED"
         if (key.toLowerCase().match(/(\b|_)username(\b|_)/g)) val = "USERNAME REDACTED"
