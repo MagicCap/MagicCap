@@ -8,7 +8,7 @@ export function patch(obj: any) {
         if (name === "monkeypatch_assert") {
             return "Hi"
         } else if (name === "vue") {
-            return {default: oldRequire("vue/dist/vue")}
+            return { default: oldRequire("vue/dist/vue") }
         } else if (name.startsWith(".")) {
             let patchedPath = path.join("./gui", name)
             if (!patchedPath.startsWith(".")) {
