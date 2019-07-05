@@ -26,7 +26,6 @@ import { AUTOUPDATE_ON } from "../build_info"
 import { sep } from "path"
 import { homedir } from "os"
 import * as SQLite3 from "better-sqlite3"
-
 const { ipcRenderer, remote, shell } = electron
 const { dialog, clipboard } = remote
 
