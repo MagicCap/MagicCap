@@ -25,7 +25,6 @@
         "googleapis": "github:MagicCap/google-api-nodejs-client-magiccap",
         "install": "^0.12.2",
         "jimp": "^0.6.4",
-        "magicimports": "1.0.0",
         "markdown-it": "^8.4.2",
         "mime-types": "^2.1.24",
         "moment": "^2.22.2",
