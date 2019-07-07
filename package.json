@@ -72,7 +72,8 @@
         "lodash": ">=4.17.11",
         "mkdirp": "0.5.1",
         "typescript": "3.5.1",
-        "walk": "2.3.14"
+        "walk": "2.3.14",
+        "terser": "4.1.0"
     },
     "scripts": {
         "copy": "node ./static_copy.js",
@@ -88,7 +89,7 @@
         "linuxcompile": "npm run build && electron-packager . MagicCap --ignore='(^\\/branding)|(^\\/src)|(\\/static_copy\\.js)' --platform linux --arch x64 --out ./build --overwrite --icon ./dist/icons/app.ico",
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
         "dev-run": "npm run build && electron .",
-        "build": "rm -rf dist/ && tsc && npm run copy",
+        "build": "rm -rf dist/ && tsc && node ./minify_dist.js && npm run copy",
         "dev-run-capturedev": "npm run build && electron . -captureDev",
         "dev-colors": "electron ./src/gui/css/colors.js -dark && electron ./src/gui/css/colors.js -light"
     }
