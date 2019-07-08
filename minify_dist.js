@@ -11,7 +11,7 @@ walker.on("file", (root, fileStats, next) => {
         const result = Terser.minify(data, {
             compress: true,
         })
-        fs.writeFileSync(fp, result.code)
+        fs.writeFileSync(fp, `\/\/ This code is a minified copy of the MagicCap source for this release. It is licensed under the MPL-2.0. If you want to edit this, grab a copy from GitHub!\n${result.code}`)
     }
     i++
     next()
