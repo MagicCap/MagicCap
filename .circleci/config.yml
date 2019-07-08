@@ -74,8 +74,11 @@ jobs:
           paths:
             - "node_modules"
       - run:
+          name: Copy certificate to build system
+          command: sh ./copy_certificate.sh
+      - run:
           name: Build MagicCap for macOS
-          command: npm run maccompile
+          command: npm run maccompilesigned
       - run:
           name: Rename the macOS dmg file
           command: mv ./build/MagicCap.dmg ./build/magiccap-mac.dmg
