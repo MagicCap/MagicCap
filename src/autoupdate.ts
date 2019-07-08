@@ -5,8 +5,7 @@ import { AUTOUPDATE_ON } from "./build_info"
 import { stat, writeFile } from "fs-nextra"
 import { app, dialog } from "electron"
 import { get } from "chainfetch"
-// @ts-ignore
-import * as asyncChildProcess from "async-child-process"
+import { exec } from "child_process"
 // @ts-ignore
 import * as sudo from "sudo-prompt"
 import * as i18n from "./i18n"
@@ -52,7 +51,13 @@ async function downloadBin() {
         if (asset.name == `magiccap-updater-${osPart}`) {
             const updaterBuffer = await get(asset.browser_download_url).toBuffer()
             await writeFile(`${require("os").homedir()}/magiccap-updater`, updaterBuffer.body)
-            await asyncChildProcess.execAsync(`chmod 777 "${require("os").homedir()}/magiccap-updater"`)
+            await new Promise((res, rej) => exec(`chmod 777 "${require("os").homedir()}/magiccap-updater"`, (err, stdout) => {
+                if (err) {
+                    rej(err)
+                    return
+                }
+                res(stdout)
+            }))
             break
         }
     }

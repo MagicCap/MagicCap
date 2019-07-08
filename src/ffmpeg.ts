@@ -12,9 +12,8 @@ import * as request from "request"
 import * as requestProgress from "request-progress"
 import * as os from "os"
 import * as fs from "fs"
-// @ts-ignore
-import * as asyncChildProcess from "async-child-process"
 import config from "./config"
+import { exec } from "child_process"
 
 /**
  * Downloads the FFMpeg binaries which are needed.
@@ -83,7 +82,13 @@ function downloadBin() {
 
                     if (os.platform() !== "darwin") {
                         try {
-                            await asyncChildProcess.execAsync(`tar -xf "${tempPath}" -C "${fp}/ffmpeg"`)
+                            await new Promise((res, rej) => exec(`tar -xf "${tempPath}" -C "${fp}/ffmpeg"`, (err, stdout) => {
+                                if (err) {
+                                    rej(err)
+                                    return
+                                }
+                                res(stdout)
+                            }))
                         } catch (_) {
                             // The extraction failed.
                             await dialog.showMessageBox({

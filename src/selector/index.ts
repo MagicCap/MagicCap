@@ -8,7 +8,6 @@ import { ipcMain, BrowserWindow, Display } from "electron"
 import * as uuidv4 from "uuid/v4"
 import * as os from "os"
 import * as path from "path"
-import * as asyncChildProcess from "async-child-process"
 import { spawn } from "child_process"
 import httpBufferPromise from "./http-buffer-promise"
 import * as express from "express"
@@ -230,7 +229,15 @@ export default async(buttons: any[]) => {
 
     activeWindows = []
     if (os.platform() === "darwin") {
-        const { stdout } = await asyncChildProcess.execAsync(`"${__dirname}${path.sep}bin${path.sep}get-visible-windows-darwin"`)
+        const stdout = await new Promise((res, rej) => {
+            const chunks: string[] = []
+            const out = spawn(`${__dirname}${path.sep}bin${path.sep}get-visible-windows-darwin`)
+            out.stdout.on("data", chunk => {
+                chunks.push(chunk.toString())
+            })
+            out.on("error", e => rej(e))
+            out.on("exit", () => res(chunks.join()))
+        }) as string
         const windowsSplit = stdout.trim().split("\n")
         for (const window of windowsSplit) {
             const intRectangleParts = []
