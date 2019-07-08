@@ -4,7 +4,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/node:10-stretch
+      - image: circleci/node:12-stretch
     working_directory: ~/repo
     steps:
       - checkout:
@@ -28,7 +28,7 @@ jobs:
 
   linuxbuild:
     docker:
-      - image: circleci/node:10-stretch
+      - image: circleci/node:12-stretch
     working_directory: ~/repo
     steps:
       - checkout:
@@ -58,7 +58,7 @@ jobs:
 
   macbuild:
     macos:
-      node: "10"
+      node: "12"
       xcode: "10.0.0"
     working_directory: ~/repo
     steps:
