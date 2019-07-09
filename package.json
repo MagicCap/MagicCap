@@ -16,7 +16,7 @@
         "asciiart-logo": "0.2.6",
         "async-lock": "^1.2.0",
         "better-sqlite3": "5.4.0",
-        "chainfetch": "1.2.2",
+        "chainfetch": "^1.2.2",
         "electron-progressbar": "github:whiteadi/electron-progressbar",
         "emojilib": "^2.4.0",
         "express": "^4.16.4",

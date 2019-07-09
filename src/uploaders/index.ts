@@ -12,11 +12,12 @@ import ultrashare from "./ultrashare"
 import sftp from "./sftp"
 import dropbox from "./dropbox"
 import gdrive from "./gdrive"
+import rlme from "./rlme"
 
 export const uploaders = {
     custom, elixire, ftp, imgur, magiccap, novus, pomf,
     reupload, s3, sharex, ultrashare, sftp, dropbox,
-    gdrive,
+    gdrive, rlme,
 }
 
 export const nameUploaderMap = {} as any
