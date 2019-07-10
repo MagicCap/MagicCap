@@ -38,16 +38,21 @@ func main() {
 		}
 		display_id, _ := strconv.Atoi(string(queryValues.Peek("display")))
 
-		img, err := screenshot.CaptureRect(all_displays[display_id])
-		if err != nil {
-			panic(err)
-		}
-	
-		buf := new(bytes.Buffer)
-		png.Encode(buf, img)
+		ok := make(chan bool)
+		go func() {
+			img, err := screenshot.CaptureRect(all_displays[display_id])
+			if err != nil {
+				panic(err)
+			}
+		
+			buf := new(bytes.Buffer)
+			png.Encode(buf, img)
 
-		ctx.SetBody(buf.Bytes())
-		ctx.SetContentType("image/png")
+			ctx.SetBody(buf.Bytes())
+			ctx.SetContentType("image/png")
+			ok <- true
+		}()
+		<- ok
 	}
 
 	fmt.Printf("%s", id)
