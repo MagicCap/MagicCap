@@ -20,6 +20,7 @@ import hotkeys from "./hotkeys"
 import { uploaders, importedUploaders, nameUploaderMap } from "./uploaders"
 import OAuth2 from "./oauth2"
 import editors from "./editors"
+import expressApp from "./web_server"
 
 /**
  * Creates the GUI menu on macOS.
@@ -294,6 +295,8 @@ let eReady = false
  * This is used to initialise the MagicCap application.
  */
 async function initialiseScript() {
+    expressApp.listen(61222)
+
     eReady = true
 
     Sentry.configureScope(scope => {

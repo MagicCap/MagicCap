@@ -3,6 +3,7 @@
 
 // Requires stuff.
 import { BrowserWindow } from "electron"
+import expressApp from "./web_server"
 import * as express from "express"
 
 // Defines the promise.
@@ -47,9 +48,6 @@ export default async(initUrl: string): Promise<any> => {
     return res
 }
 
-// Defines the express server.
-const expressApp = express()
-
 // Defines the auth route.
 expressApp.get("/", (req, res) => {
     if (!unresolvedPromise) {
@@ -61,6 +59,3 @@ expressApp.get("/", (req, res) => {
         browserWindow!.close()
     }
 })
-
-// Listens to the server.
-expressApp.listen(61222)

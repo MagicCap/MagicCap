@@ -14,6 +14,7 @@ import * as express from "express"
 import * as sharp from "sharp"
 import { readFile } from "fs-nextra"
 import config from "../config"
+import expressApp from "../web_server"
 
 // Defines all UUID's.
 let uuids: string[] = []
@@ -34,7 +35,7 @@ if (platform === "win32") {
     fullPlatform += ".exe"
 }
 
-// Defines the HTTP servers.
+// Defines the HTTP server for the Go.
 const LOWEST_PORT = 63000
 const HIGHEST_PORT = 63999
 const port = Math.floor(Math.random() * (+HIGHEST_PORT - +LOWEST_PORT)) + +LOWEST_PORT
@@ -45,9 +46,9 @@ screenshotServer.stdout.on("data", key => {
         screenshotServerKey = key.toString()
     }
 })
-const freezeServerPort = Math.floor(Math.random() * (+HIGHEST_PORT - +LOWEST_PORT)) + +LOWEST_PORT
-const freezeServer = express()
-freezeServer.get("/", (req, res) => {
+
+// Defines all of the routes needed for the actual screenshotting.
+expressApp.get("/screenshot", (req, res) => {
     const key = req.query.key
     if (key !== screenshotServerKey) {
         res.status(403)
@@ -59,14 +60,14 @@ freezeServer.get("/", (req, res) => {
     }
 })
 let selectorHtmlCache: string | null
-freezeServer.get("/selector/render", async(req, res) => {
+expressApp.get("/selector/render", async(req, res) => {
     const key = req.query.key
     if (key !== screenshotServerKey) {
         res.status(403)
         res.send("Invalid key.")
     } else {
         const display = Number(req.query.display)
-        const imageUrl = `http://127.0.0.1:${freezeServerPort}/?key=${screenshotServerKey}&display=${display}`
+        const imageUrl = `http://127.0.0.1:61222/screenshot?key=${screenshotServerKey}&display=${display}`
         const payload = JSON.stringify({
             display: display,
             uuid: req.query.uuid,
@@ -75,7 +76,7 @@ freezeServer.get("/selector/render", async(req, res) => {
             activeWindows: activeWindows,
             buttons: globalButtons,
             server: {
-                port: freezeServerPort,
+                port: 61222,
                 key: key,
             },
             imageUrl,
@@ -91,29 +92,29 @@ freezeServer.get("/selector/render", async(req, res) => {
             .replace("%ADD_TO_BODY_IF_LINUX%", process.platform === "linux" ? "background-size: 100%;" : ""))
     }
 })
-freezeServer.get("/selector/js", (_, res) => {
+expressApp.get("/selector/js", (_, res) => {
     res.sendFile(`${__dirname}/selector.js`)
 })
-freezeServer.get("/selector/font", (_, res) => {
+expressApp.get("/selector/font", (_, res) => {
     res.sendFile(`${__dirname}/Roboto-Light.ttf`)
 })
-freezeServer.get("/selector/icons/:icon", (req, res) => {
+expressApp.get("/selector/icons/:icon", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/icons/${path.basename(req.params.icon)}`)
 })
-freezeServer.get("/root/:file", (req, res) => {
+expressApp.get("/root/:file", (req, res) => {
     res.sendFile(`${__dirname}/${path.basename(req.params.file)}`)
 })
-freezeServer.get("/css/tooltips", (req, res) => {
+expressApp.get("/css/tooltips", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/gui/css/components/tooltip.css`)
 })
-freezeServer.get("/css/theme", (req, res) => {
+expressApp.get("/css/theme", (req, res) => {
     res.sendFile(`${path.join(__dirname, "..")}/gui/css/${config.o.light_theme ? "light" : "dark"}.css`)
 })
-freezeServer.get("/css/selector", (req, res) => {
+expressApp.get("/css/selector", (req, res) => {
     res.sendFile(`${__dirname}/selector.css`)
 })
 let xyImageMap = new Map()
-freezeServer.get("/selector/magnify", async(req, res) => {
+expressApp.get("/selector/magnify", async(req, res) => {
     const key = req.query.key
     if (key !== screenshotServerKey) {
         res.status(403)
@@ -146,7 +147,6 @@ freezeServer.get("/selector/magnify", async(req, res) => {
         res.end(region)
     }
 })
-freezeServer.listen(freezeServerPort, "127.0.0.1")
 
 /**
  * Spawns all the required windows.
@@ -176,7 +176,7 @@ const spawnWindows = (displays: Display[], primaryId: any) => {
             win.focus()
             if (captureDev) win.webContents.openDevTools()
         })
-        win.loadURL(`http://127.0.0.1:${freezeServerPort}/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
+        win.loadURL(`http://127.0.0.1:61222/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
         win.setVisibleOnAllWorkspaces(true)
         win.setPosition(i.bounds.x, i.bounds.y)
         win.setMovable(false)
