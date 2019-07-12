@@ -11,7 +11,6 @@ import { app, Notification } from "electron"
 import newInstallId from "./install_id"
 import { init } from "@sentry/electron"
 import liteTouchConfig from "./lite_touch"
-import config from "./config"
 
 // ASCII!!!!!1111111!
 new Promise(res => {
@@ -38,6 +37,9 @@ db.exec("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `succe
 
 // Makes sure that the config table exists.
 db.exec("CREATE TABLE IF NOT EXISTS `config` (`key` TEXT NOT NULL, `value` TEXT NOT NULL)")
+
+// Requires the config.
+import config from "./config"
 
 /**
  * Creates the default config.
