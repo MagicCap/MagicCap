@@ -13,11 +13,12 @@ import sftp from "./sftp"
 import dropbox from "./dropbox"
 import gdrive from "./gdrive"
 import rlme from "./rlme"
+import freethewumpus from "./freethewumpus"
 
 export const uploaders = {
     custom, elixire, ftp, imgur, magiccap, novus, pomf,
     reupload, s3, sharex, ultrashare, sftp, dropbox,
-    gdrive, rlme,
+    gdrive, rlme, freethewumpus,
 }
 
 export const nameUploaderMap = {} as any
