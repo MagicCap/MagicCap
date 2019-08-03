@@ -16,11 +16,11 @@
                         <span class="custom_input"></span>
                     </label>
                     <br/>
-                    <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploader, uploaderKey)" v-bind:key="uploaderKey" v-for="(uploader, uploaderKey) in uploaders">
+                    <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploaderKey)" v-bind:key="uploaderKey" v-for="(uploader, uploaderKey) in uploaders">
                         <span class="icon is-medium">
                             <img class="rounded-img" :src="'../icons/' + uploader.icon">
                         </span>
-                        <p>{{ uploaderKey }}</p>
+                        <p>{{ uploader.name }}</p>
                     </a>
                     <br/><br/>
                     <a class="button" @click="exportMconf">Export Uploader Configurations</a>
@@ -39,16 +39,17 @@
 
     declare global {
         interface Window {
-            uploaders: any[],
+            uploaders: any,
         }
     }
+    const uploaders = window.uploaders.uploaders
 
     export default Vue.extend({
         name: "UploaderConfig",
         data() {
             return {
                 uploaderName: "",
-                uploaders: window.uploaders,
+                uploaders: uploaders,
                 active: false,
             }
         },
