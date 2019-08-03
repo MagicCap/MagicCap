@@ -177,10 +177,7 @@ async function openConfig() {
     }
     eval("global.platform = process.platform")
     window.setTitle("MagicCap")
-    const pageContent = await i18n.poParseHtml((await readFile(`${__dirname}/gui/index.html`)).toString())
-    window.loadURL(`data:text/html;charset=UTF-8,${encodeURIComponent(pageContent)}`, {
-        baseURLForDataURL: `file://${__dirname}/gui/`,
-    })
+    window.loadFile(`${__dirname}/gui/index.html`)
     eval("global.window = window")
 
     window.on("closed", () => {

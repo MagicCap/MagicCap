@@ -42,8 +42,8 @@
         "temp-dir": "^2.0.0",
         "tiny-s3-uploader": "1.0.0",
         "uuid": "3.3.2",
-        "vue": "2.5.21",
-        "ws": "^7.0.0"
+        "ws": "^7.0.0",
+        "vue": "2.6.10"
     },
     "devDependencies": {
         "@types/async-lock": "^1.1.1",
@@ -61,6 +61,7 @@
         "@types/ws": "^6.0.1",
         "@typescript-eslint/eslint-plugin": "1.9.0",
         "@typescript-eslint/parser": "1.9.0",
+        "@vue/component-compiler-utils": "^3.0.0",
         "color": "^3.1.2",
         "electron": "5.0.6",
         "electron-builder": "20.26.1",
@@ -70,9 +71,10 @@
         "eslint": "5.3.0",
         "lodash": ">=4.17.11",
         "mkdirp": "0.5.1",
+        "parcel-bundler": "1.12.3",
         "typescript": "3.5.1",
-        "walk": "2.3.14",
-        "terser": "4.1.0"
+        "vue-template-compiler": "^2.6.10",
+        "walk": "2.3.14"
     },
     "scripts": {
         "copy": "node ./static_copy.js",
@@ -88,7 +90,8 @@
         "linuxcompile": "npm run build && electron-packager . MagicCap --ignore='(^\\/branding)|(^\\/src)|(\\/static_copy\\.js)' --platform linux --arch x64 --out ./build --overwrite --icon ./dist/icons/app.ico",
         "dev-update-electron": "sudo npm uninstall -g electron --unsafe-perm=true && sudo npm i -g electron --unsafe-perm=true",
         "dev-run": "npm run build && electron .",
-        "build": "rm -rf dist/ && tsc && node ./minify_dist.js && npm run copy",
+        "parcel": "cd ./src/gui && NODE_ENV=production parcel build ./index.html --target electron --public-url=./ --out-dir=../../dist/gui --detailed-report",
+        "build": "rm -rf dist/ && tsc && npm run parcel && npm run copy",
         "dev-run-capturedev": "npm run build && electron . -captureDev",
         "dev-colors": "electron ./src/gui/css/colors.js -dark && electron ./src/gui/css/colors.js -light"
     }
