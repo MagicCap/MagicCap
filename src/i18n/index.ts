@@ -58,7 +58,6 @@ const htmlParseRegex = /\$.+\$/g
  */
 export const poParseHtml = async(htmlData: string) => {
     let htmlDone = htmlData
-    const i18nThisDocumentation = await getPoPhrase("this documentation", "gui")
     for (;;) {
         const regexParse = htmlParseRegex.exec(htmlDone)
         if (regexParse === null) {
