@@ -6,7 +6,7 @@
                 <p class="modal-card-title">Hotkey Settings</p>
             </header>
             <section class="modal-card-body" id="hotkeyConfigBody">
-                <p>You can use {acceleratorDocs} in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when the save button is pressed.</p>
+                <p>You can use <a @click="openAcceleratorDocs" class="url">this documentation</a> in order to learn how to format your hotkey. Due to autosave causing possible issues when writing, it will be saved when the save button is pressed.</p>
                 <br>
                 <div class="field">
                     <label class="label" for="screenshotHotkey">Screenshot Hotkey:</label>
@@ -36,7 +36,7 @@
 <script lang="ts">
     import Vue from "vue"
     import saveConfig from "../save_config"
-    import { ipcRenderer } from "electron"
+    import { ipcRenderer, shell } from "electron"
 
     declare global {
         interface Window {
@@ -102,7 +102,10 @@
                     saveConfig()
                     ipcRenderer.send("hotkey-change")
                 }
-            }
+            },
+            openAcceleratorDocs() {
+                shell.openExternal("https://electronjs.org/docs/api/accelerator")
+            },
         },
     })
 </script>

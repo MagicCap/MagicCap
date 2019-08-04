@@ -8,7 +8,7 @@
             <section class="modal-card-body">
                 <h1 class="title">MagicCap v{{ version }}</h1>
                 <p>Copyright (C) Jake Gealer, Rhys O'Kane &amp; Matt Cowley 2018-2019.</p>
-                <p>This software is licensed under the {license} license.</p>
+                <p>This software is licensed under the <a @click="openMPL" class="url">MPL-2.0</a> license.</p>
                 <p v-if="liteTouch">Some settings are managed by your system administrator.</p>
                 <p>
                     <br/>
@@ -21,7 +21,7 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import { remote } from "electron"
+    import { remote, shell } from "electron"
 
     export default Vue.extend({
         name: "About",
@@ -37,7 +37,10 @@
             },
             showDebug() {
                 this.$emit("debug-show")
-            }
+            },
+            openMPL() {
+                shell.openExternal("https://www.mozilla.org/en-US/MPL/2.0")
+            },
         },
     })
 </script>
