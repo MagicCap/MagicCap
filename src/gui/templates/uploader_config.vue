@@ -435,6 +435,24 @@
                 this.$forceUpdate()
                 saveConfig()
             },
+            async oauthLogin() {
+                document.getElementById("oauthFlowInit")!.classList.add("is-loading")
+                await ipcRenderer.send("oauth-flow-uploader", this.$data.uploader.name)
+                const configDiff = await new Promise(res => {
+                    ipcRenderer.once("oauth-flow-uploader-response", (_: any, diff: any) => {
+                        res(diff)
+                    })
+                }) as any
+                document.getElementById("oauthFlowInit")!.classList.remove("is-loading")
+                if (!configDiff) {
+                    return
+                }
+                for (const key of Object.keys(configDiff) as any) {
+                    window.config.o[key] = configDiff[key]
+                }
+                saveConfig()
+                this.$forceUpdate()
+            },
         },
     })
 </script>
