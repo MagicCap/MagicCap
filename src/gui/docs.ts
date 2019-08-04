@@ -28,10 +28,10 @@ function nameFormat(name: string) {
 
 declare global {
     interface Window {
-        markdownit: (options: any) => any,
-        showDocs: any,
-        docsVueEl: any,
-        backToHelpModal: () => void,
+        markdownit: (options: any) => any;
+        showDocs: any;
+        docsVueEl: any;
+        backToHelpModal: () => void;
     }
 }
 
