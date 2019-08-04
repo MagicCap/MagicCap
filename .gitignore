@@ -67,3 +67,5 @@ build/
 dist/
 
 \.DS_Store
+
+.cache/

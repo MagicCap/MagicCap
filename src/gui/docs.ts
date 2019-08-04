@@ -1,7 +1,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
-import * as markdownit from "markdown-it"
+eval('window.markdownit = require("markdown-it")')
 
 /**
  * Converts a string to title case
@@ -26,13 +26,25 @@ function nameFormat(name: string) {
     return titleCase(name.replace(/[_-]/g, " ").replace(/(\S)\/(\S)/g, "$1 / $2"))
 }
 
+declare global {
+    interface Window {
+        markdownit: (options: any) => any,
+        showDocs: any,
+        docsVueEl: any,
+        backToHelpModal: () => void,
+    }
+}
+
+window.backToHelpModal = () => {
+    window.docsVueEl.toggle()
+    window.docsVueEl.toggle()
+}
+
 const BASE_DIR = "docs"
 const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
-const HELP_BODY = document.getElementById("helpModalBody")!
-const HELP_TITLE = document.getElementById("helpModalTitle")!
-const HELP_TITLE_DEFAULT = String(HELP_TITLE.textContent)
+const HELP_TITLE_DEFAULT = "Help (Docs)"
 const MD_ONLY = true
-const MD = markdownit({
+const MD = window.markdownit({
     html: true,
     linkify: true,
     typographer: true,
@@ -171,13 +183,15 @@ async function getStructure() {
  * @param {boolean} cls - Give the wrapper the .markdown class
  */
 function renderDoc(markdown: string, back: boolean, full: boolean, cls: boolean) {
+    const HELP_BODY = document.getElementById("helpModalBody")!
+
     /**
      * Generates a back button to return to the main help menu
      * @returns {HTMLAnchorElement}
      */
     const backButton = () => {
         const a = document.createElement("a")
-        a.href = "javascript:showHelpModal()"
+        a.href = "javascript:backToHelpModal()"
         a.className = "button is-primary is-small"
         a.innerText = "Back"
         return a
@@ -210,11 +224,13 @@ function renderDoc(markdown: string, back: boolean, full: boolean, cls: boolean)
  * @param {string} url - The GitHUB API file location to display
  * @returns {Promise<void>}
  */
-async function showDocs(url: string) {
+window.showDocs = async function showDocs(url: string) {
     renderDoc("## Loading file...", true, false, true)
 
     const response = await fetch(url)
     const json = await response.json()
+
+    const HELP_TITLE = document.getElementById("helpModalTitle")!
 
     const path = json.path.startsWith(BASE_DIR) ? json.path.substr(BASE_DIR.length) : json.path
     HELP_TITLE.textContent = `${HELP_TITLE_DEFAULT} - ${nameFormat(path.replace(/^\/+/g, ""))}`
@@ -222,17 +238,15 @@ async function showDocs(url: string) {
     renderDoc(content, true, true, true)
 }
 
-// Declares show modal.
-declare const showModal: (name: string) => void
-
 /**
  * Trigger the initial help (documentation) modal with the file menu
  * @returns {Promise<void>}
  */
-async function showHelpModal() {
-    HELP_TITLE.textContent = HELP_TITLE_DEFAULT
+export default async function showHelpModal() {
     renderDoc("## Loading menu...", false, false, true)
-    showModal("helpModal")
+
+    const HELP_TITLE = document.getElementById("helpModalTitle")!
+    HELP_TITLE.textContent = HELP_TITLE_DEFAULT
 
     try {
         const html = await getStructure()
