@@ -38,6 +38,15 @@
     import saveConfig from "../save_config"
     import { ipcRenderer } from "electron"
 
+    declare global {
+        interface Window {
+            config: {
+                saveConfig: () => void,
+                o: any,
+            },
+        }
+    }
+
     export default Vue.extend({
         name: "ClipboardAction",
         data() {

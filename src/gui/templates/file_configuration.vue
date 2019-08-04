@@ -39,6 +39,10 @@
     declare global {
         interface Window {
             filename: any,
+            config: {
+                saveConfig: () => void,
+                o: any,
+            },
         }
     }
 
