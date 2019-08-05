@@ -9,7 +9,6 @@ import { exec } from "child_process"
 // @ts-ignore
 import * as sudo from "sudo-prompt"
 import * as i18n from "./i18n"
-import * as WebSocket from "ws"
 import config from "./config"
 
 // Ignores this while the app is open.
@@ -81,7 +80,7 @@ async function checkForUpdates() {
             upToDate: true,
         }
     }
-    if (res.body.updated) {
+    if (!res.body.success || res.body.updated) {
         return {
             upToDate: true,
         }
@@ -163,6 +162,7 @@ async function handleUpdate(updateInfo: any) {
  * Handles the initial HTTP update check.
  */
 async function runHttpUpdateCheck(ignoreConfig: boolean) {
+    console.log("Running HTTP update check.")
     if (updateRunning || (!ignoreConfig && config.o.autoupdate_on === false)) {
         return
     }
@@ -173,90 +173,6 @@ async function runHttpUpdateCheck(ignoreConfig: boolean) {
         updateRunning = false
     }
     return updateInfo.upToDate
-}
-
-
-/**
- * Handles WebSocket updates.
- */
-async function handleWebSocketUpdates() {
-    let retry = 0
-    /**
-     * Spawns the WebSocket to do the updates with.
-     */
-    const spawnWs = () => {
-        const conn = new WebSocket("wss://api.magiccap.me/version/feed")
-        let deathByError = false
-
-        /**
-         * Runs on a connection error.
-         */
-        const err = () => {
-            deathByError = true
-            retry += 1
-            if (retry > 120) {
-                retry = 120
-            }
-            console.error(`Update WebSocket failed. Retrying in ${retry} second(s).`)
-            setTimeout(() => spawnWs(), retry * 1000)
-        }
-
-        /**
-         * Sends the error event.
-         */
-        conn.on("error", err)
-
-        let heartbeatRes: undefined | ((result: boolean) => void)
-        /**
-         * Handles the heartbeat.
-         */
-        const handleHeartbeat = async() => {
-            if (!deathByError) {
-                conn.send(JSON.stringify({ t: "heartbeat" }))
-                const heartbeatPromise = new Promise(res => {
-                    heartbeatRes = res
-                })
-                const timeoutPromise = new Promise(res => setTimeout(() => res(false), 3000))
-                const res = await Promise.race([heartbeatPromise, timeoutPromise])
-                if (!res) {
-                    err()
-                } else {
-                    setTimeout(handleHeartbeat, 1000)
-                }
-            }
-        }
-
-        conn.on("open", () => {
-            retry = 0
-            console.log("Update WebSocket open.")
-            conn.send(JSON.stringify({ t: "watch", beta: true }))
-            handleHeartbeat()
-        })
-
-        conn.on("message", async x => {
-            let data: any = JSON.parse(x as string)
-            if (data.t === "heartbeat_ack") {
-                heartbeatRes!(true)
-                return
-            }
-            data = data.info
-            if (updateRunning || config.o.autoupdate_on === false) {
-                return
-            }
-            if (!config.o.beta_channel && data.beta) {
-                return
-            }
-            const payload = {
-                current: data.version,
-                changelogs: data.changelogs,
-                upToDate: false,
-            }
-            updateRunning = true
-            await handleUpdate(payload)
-            updateRunning = false
-        })
-    }
-    spawnWs()
 }
 
 /**
@@ -312,7 +228,7 @@ export default async function autoUpdateLoop() {
     }
 
     runHttpUpdateCheck(false)
-    handleWebSocketUpdates()
+    setInterval(() => runHttpUpdateCheck(false), 600000)
 }
 
 /**
