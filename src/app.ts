@@ -8,7 +8,7 @@
 import config from "./config"
 import capture from "./capture"
 import liteTouchConfig from "./lite_touch"
-import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain, NativeImage } from "electron"
+import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain, nativeImage } from "electron"
 import { readFile } from "fs-nextra"
 import testUploader from "./test_uploader"
 import autoUpdateLoop from "./autoupdate"
@@ -173,7 +173,7 @@ async function openConfig() {
         },
     })
     if (process.platform !== "darwin") {
-        window.setIcon(NativeImage.createFromPath(`${__dirname}/icons/taskbar.png`))
+        window.setIcon(nativeImage.createFromPath(`${__dirname}/icons/taskbar.png`))
     }
     eval("global.platform = process.platform")
     window.setTitle("MagicCap")

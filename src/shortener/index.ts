@@ -2,7 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Imports the things.
-import { BrowserWindow, NativeImage } from "electron"
+import { BrowserWindow, nativeImage } from "electron"
 import * as path from "path"
 
 // Defines the window.
@@ -27,7 +27,7 @@ export default function showShortener() {
     })
     if (process.platform !== "darwin") {
         shortenerWindow.setIcon(
-            NativeImage.createFromPath(`${path.join(__dirname, "..")}/icons/taskbar.png`)
+            nativeImage.createFromPath(`${path.join(__dirname, "..")}/icons/taskbar.png`)
         )
     }
     shortenerWindow.setTitle("MagicCap Link Shortener")
