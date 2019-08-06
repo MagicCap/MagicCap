@@ -68,6 +68,13 @@ document.addEventListener("keydown", async event => {
             }
             break
         }
+        case "f": {
+            ipcRenderer.send(`${payload.uuid}-event-send`, {
+                type: "fullscreen-send",
+                args: {},
+            })
+            break
+        }
     }
 })
 
@@ -457,13 +464,35 @@ let doNotCallColourEdit = false
 
 // Called when a event is recieved from another screen.
 ipcRenderer.on("event-recv", (_: any, res: any) => {
-    if (res.display == payload.display) {
+    if (res.display == payload.display && res.type !== "fullscreen-send") {
         return
     }
     switch (res.type) {
         case "invalidate-selections": {
             element.style.width = "0px"
             element.style.height = "0px"
+            break
+        }
+        case "fullscreen-send": {
+            const cursor = electron.screen.getCursorScreenPoint()
+
+            if (electron.screen.getDisplayNearestPoint(cursor).bounds.x !== payload.bounds.x && electron.screen.getDisplayNearestPoint(cursor).bounds.y !== payload.bounds.y) return
+
+            ipcRenderer.send("screen-close", {
+                startX: payload.bounds.x,
+                startY: payload.bounds.y,
+                startPageX: 0,
+                startPageY: 0,
+                endX: payload.bounds.x + payload.bounds.width,
+                endY: payload.bounds.y + payload.bounds.height,
+                endPageX: payload.bounds.width,
+                endPageY: payload.bounds.height,
+                display: payload.display,
+                selections: selections,
+                width: payload.bounds.width,
+                height: payload.bounds.height,
+                displayEdits,
+            })
             break
         }
         case "selection-type-change": {
