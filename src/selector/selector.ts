@@ -75,6 +75,15 @@ document.addEventListener("keydown", async event => {
             })
             break
         }
+        case "z": {
+            if (!event.ctrlKey && !event.metaKey) return
+            if (displayEdits.length === 0) return
+            const len = displayEdits.length
+            const item = document.getElementById(len.toString())!
+            item.remove()
+            displayEdits.pop()
+            break
+        }
     }
 })
 
@@ -389,6 +398,7 @@ document.body.onmouseup = async e => {
             left, top, edit,
         })
         selectionBlackness.style.backgroundImage = `url(${URL.createObjectURL(new Blob([edit] as BlobPart[], { type: "image/png" }))})`
+        selectionBlackness.id = displayEdits.length.toString()
         document.body.appendChild(selectionBlackness)
         element.style.top = "-10px"
         element.style.left = "-10px"
