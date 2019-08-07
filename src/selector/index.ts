@@ -92,7 +92,7 @@ expressApp.get("/selector/render", async(req, res) => {
     }
 })
 expressApp.get("/selector/js", (_, res) => {
-    res.sendFile(`${__dirname}/selector.js`)
+    res.sendFile(`${__dirname}/selector.min.js`)
 })
 expressApp.get("/selector/font", (_, res) => {
     res.sendFile(`${__dirname}/Roboto-Light.ttf`)
