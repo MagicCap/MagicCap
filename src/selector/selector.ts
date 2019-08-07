@@ -3,7 +3,24 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Declares the payload.
-declare const payload: any
+declare const payload: {
+    display: number;
+    uuid: string;
+    bounds: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    mainDisplay: boolean;
+    activeWindows: any[];
+    buttons: {[key: string]: any};
+    server: {
+        port: number;
+        key: string;
+    };
+    imageUrl: string;
+}
 
 // Defines the primary colour.
 let primaryColour = [255, 0, 0]
