@@ -231,7 +231,7 @@ async function moveSelectorMagnifier() {
     positionElement.style.top = `${magnifyY + magnifyOffset + magnifyElement.getBoundingClientRect().height}px`
 
     // Get the new magnifier image
-    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${actualX}&y=${actualY}`)
+    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${actualX - payload.bounds.x}&y=${actualY - payload.bounds.y}`)
     const urlPart = URL.createObjectURL(await fetchReq.blob())
 
     // Determine brightness & threshold (max 255)
