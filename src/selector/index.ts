@@ -268,24 +268,21 @@ export default async(buttons: any[]) => {
 
     const screens = spawnWindows(displays, primaryId)
 
-    for (const screenNumber in screens) {
-        ipcMain.on(`${uuids[screenNumber]}-event-send`, (_: any, args: any) => {
-            for (const browser of screens) {
-                browser.webContents.send("event-recv", {
-                    type: args.type,
-                    display: screenNumber,
-                    args: args.args,
-                })
-            }
-        })
-    }
+    ipcMain.on("event-send", (_: any, args: any) => {
+        for (const browser of screens) {
+            browser.webContents.send("event-recv", {
+                type: args.type,
+                display: args.screenNumber,
+                args: args.args,
+            })
+        }
+    })
+
     selectorActive = true
     const r = await new Promise(res => {
         ipcMain.once("screen-close", async(_: any, args: any) => {
             xyImageMap = new Map()
-            for (const uuid of uuids) {
-                await ipcMain.removeAllListeners(`${uuid}-event-send`)
-            }
+            await ipcMain.removeAllListeners("event-send")
             await ipcMain.removeAllListeners("event-recv")
             selectorActive = false
             const these = screens

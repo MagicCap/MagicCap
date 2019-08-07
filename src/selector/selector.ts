@@ -69,9 +69,10 @@ document.addEventListener("keydown", async event => {
             break
         }
         case "f": {
-            ipcRenderer.send(`${payload.uuid}-event-send`, {
+            ipcRenderer.send("event-send", {
                 type: "fullscreen-send",
                 args: {},
+                screenNumber: payload.display,
             })
             break
         }
@@ -253,8 +254,9 @@ moveSelectorMagnifier()
 document.body.onmousemove = e => {
     moveSelectorMagnifier()
     const thisClick = electron.screen.getCursorScreenPoint()
-    ipcRenderer.send(`${payload.uuid}-event-send`, {
+    ipcRenderer.send("event-send", {
         type: "invalidate-selections",
+        screenNumber: payload.display,
     })
 
     if (firstClick) {
@@ -370,9 +372,10 @@ document.body.onmouseup = async e => {
             endPageX: end.pageX,
             endPageY: end.pageY,
         }
-        ipcRenderer.send(`${payload.uuid}-event-send`, {
+        ipcRenderer.send("event-send", {
             type: "selection-made",
             args: selection,
+            screenNumber: payload.display,
         })
         if (selections[selectionType]) {
             selections[selectionType].push(selection)
@@ -435,11 +438,12 @@ function invokeButton(buttonId: string, sendEvent = true) {
             }
             selectionType = button.name
             if (sendEvent) {
-                ipcRenderer.send(`${payload.uuid}-event-send`, {
+                ipcRenderer.send("event-send", {
                     type: "selection-type-change",
                     args: {
                         selectionType: selectionType,
                     },
+                    screenNumber: payload.display,
                 })
             }
             break
@@ -547,8 +551,9 @@ const changeColour = () => {
     const g = edgeCaseFix(parseInt(hex.substr(2, 4), 16))
     const b = edgeCaseFix(parseInt(hex.substr(4, 6), 16))
     primaryColour = [r, g, b]
-    ipcRenderer.send(`${payload.uuid}-event-send`, {
+    ipcRenderer.send("event-send", {
         type: "colour-change",
         args: { primaryColour, hex: `#${hex}` },
+        screenNumber: payload.display,
     })
 }
