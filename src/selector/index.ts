@@ -187,19 +187,17 @@ const spawnWindows = (displays: Display[], primaryId: any) => {
 /**
  * Gets all the displays in order.
  */
-const getOrderedDisplays = () => {
-    return screen.getAllDisplays().sort((a, b) => {
-        let sub = a.bounds.x - b.bounds.x
-        if (sub === 0) {
-            if (a.bounds.y > b.bounds.y) {
-                sub -= 1
-            } else {
-                sub += 1
-            }
+const getOrderedDisplays = () => screen.getAllDisplays().sort((a, b) => {
+    let sub = a.bounds.x - b.bounds.x
+    if (sub === 0) {
+        if (a.bounds.y > b.bounds.y) {
+            sub -= 1
+        } else {
+            sub += 1
         }
-        return sub
-    })
-}
+    }
+    return sub
+})
 
 // Defines if the selector is active.
 let selectorActive = false
@@ -283,10 +281,10 @@ export default async(buttons: any[]) => {
             await ipcMain.removeAllListeners("event-recv")
             selectorActive = false
             const these = screens
-            for (const screen of these) {
-                await screen.setAutoHideMenuBar(false)
-                await screen.setSize(0, 0)
-                screen.close()
+            for (const i of these) {
+                await i.setAutoHideMenuBar(false)
+                await i.setSize(0, 0)
+                i.close()
             }
             if (args === undefined) {
                 res(null)
