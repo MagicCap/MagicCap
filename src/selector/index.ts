@@ -4,7 +4,7 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the required imports.
-import { ipcMain, BrowserWindow, Display } from "electron"
+import { ipcMain, BrowserWindow, Display, screen } from "electron"
 import * as uuidv4 from "uuid/v4"
 import * as os from "os"
 import * as path from "path"
@@ -188,8 +188,7 @@ const spawnWindows = (displays: Display[], primaryId: any) => {
  * Gets all the displays in order.
  */
 const getOrderedDisplays = () => {
-    const electronScreen = require("electron").screen
-    return electronScreen.getAllDisplays().sort((a, b) => {
+    return screen.getAllDisplays().sort((a, b) => {
         let sub = a.bounds.x - b.bounds.x
         if (sub === 0) {
             if (a.bounds.y > b.bounds.y) {
@@ -213,12 +212,10 @@ export default async(buttons: any[]) => {
 
     globalButtons = buttons
 
-    const electronScreen = require("electron").screen
-
     const displays = getOrderedDisplays()
 
     let primaryId = 0
-    const x = electronScreen.getPrimaryDisplay().id
+    const x = screen.getPrimaryDisplay().id
     for (const display of displays) {
         if (display.id === x) {
             break
