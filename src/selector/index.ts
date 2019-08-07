@@ -202,6 +202,20 @@ const getOrderedDisplays = () => screen.getAllDisplays().sort((a, b) => {
 // Defines if the selector is active.
 let selectorActive = false
 
+// Defines all active screens.
+let screens: BrowserWindow[] = []
+
+// Handles the sending of events.
+ipcMain.on("event-send", (_: any, args: any) => {
+    for (const browser of screens) {
+        browser.webContents.send("event-recv", {
+            type: args.type,
+            display: args.screenNumber,
+            args: args.args,
+        })
+    }
+})
+
 // Opens the region selector.
 export default async(buttons: any[]) => {
     if (selectorActive) {
@@ -261,24 +275,12 @@ export default async(buttons: any[]) => {
 
     screenshots = await Promise.all(promises) as Buffer[]
 
-    const screens = spawnWindows(displays, primaryId)
-
-    ipcMain.on("event-send", (_: any, args: any) => {
-        for (const browser of screens) {
-            browser.webContents.send("event-recv", {
-                type: args.type,
-                display: args.screenNumber,
-                args: args.args,
-            })
-        }
-    })
+    screens = spawnWindows(displays, primaryId)
 
     selectorActive = true
     const r = await new Promise(res => {
         ipcMain.once("screen-close", async(_: any, args: any) => {
             xyImageMap = new Map()
-            await ipcMain.removeAllListeners("event-send")
-            await ipcMain.removeAllListeners("event-recv")
             selectorActive = false
             const these = screens
             for (const i of these) {
@@ -313,5 +315,6 @@ export default async(buttons: any[]) => {
             }
         })
     })
+    screens.length = 0
     return r
 }
