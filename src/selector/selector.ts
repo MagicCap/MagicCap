@@ -20,6 +20,7 @@ declare const payload: {
         key: string;
     };
     imageUrl: string;
+    magnifier: boolean;
 }
 
 // Defines the primary colour.
@@ -209,6 +210,8 @@ async function moveSelectorMagnifier() {
     const cursorY = document.getElementById("cursorY")!
     cursorY.style.top = `${y - (cursorY.getBoundingClientRect().height / 2)}px`
 
+    if (!payload.magnifier) return
+
     // Fuck you too Ubuntu.
     const actualMousePoint = electron.screen.getCursorScreenPoint()
     const theDisplay = electron.screen.getDisplayNearestPoint(actualMousePoint)
@@ -263,7 +266,7 @@ async function moveSelectorMagnifier() {
     // Apply new magnifier image & crosshair
     magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/${crosshair}"), url(${urlPart})`
 }
-moveSelectorMagnifier()
+setTimeout(moveSelectorMagnifier, 100)
 
 /**
  * Called when the mouse moves.

@@ -80,6 +80,7 @@ expressApp.get("/selector/render", async(req, res) => {
                 key: key,
             },
             imageUrl,
+            magnifier: config.o.magnifier === undefined ? true : config.o.magnifier,
         })
         if (!selectorHtmlCache) {
             selectorHtmlCache = (await readFile(`${__dirname}/selector.html`)).toString()
@@ -89,7 +90,8 @@ expressApp.get("/selector/render", async(req, res) => {
             .replace("%IMAGE_URL%", `url("${imageUrl}")`)
             .replace("%DARK_MODE%", (config.o.light_theme ? 0 : 1).toString())
             .replace("%PAYLOAD%", payload)
-            .replace("%ADD_TO_BODY_IF_LINUX%", process.platform === "linux" ? "background-size: 100%;" : ""))
+            .replace("%ADD_TO_BODY_IF_LINUX%", process.platform === "linux" ? "background-size: 100%;" : "")
+            .replace("%POSSIBLE_CURSOR_PROPERTY%", config.o.hide_cursor === undefined ? "cursor: none" : config.o.hide_cursor ? "cursor: none" : ""))
     }
 })
 expressApp.get("/selector/js", (_, res) => {

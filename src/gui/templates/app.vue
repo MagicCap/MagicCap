@@ -38,6 +38,13 @@
                             data-tooltip-position="right">
                             <i class="fas fa-upload"></i> Uploader Settings</a>
                     </li>
+                    <li>
+                        <a
+                            @click="toggleCoreModal('SelectorSettings')"
+                            data-tooltip="Allows you to configure how the region selector behaves"
+                            data-tooltip-position="right">
+                            <i class="fas fa-pencil-ruler"></i> Selector Settings</a>
+                    </li>
 
                     <li><hr/></li>
 
@@ -112,6 +119,7 @@
         <About ref="About" @debug-show="toggleCoreModal('Debug')"></About>
         <Updates ref="Updates"></Updates>
         <Docs ref="Docs"></Docs>
+        <SelectorSettings ref="SelectorSettings"></SelectorSettings>
     </div>
 </template>
 
@@ -128,6 +136,7 @@
     import Debug from "./debug"
     import Updates from "./updates"
     import Docs from "./docs"
+    import SelectorSettings from "./selector_settings"
 
     declare global {
         interface Window {
@@ -150,6 +159,7 @@
             Debug,
             Updates,
             Docs,
+            SelectorSettings,
         },
         data() {
             return {
