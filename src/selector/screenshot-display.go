@@ -4,39 +4,47 @@
 package main
 
 import (
-	"github.com/kbinani/screenshot"
-	"github.com/satori/go.uuid"
-	"github.com/valyala/fasthttp"
-	"image/png"
-	"image"
-	"strconv"
 	"bytes"
-	"sort"
 	"fmt"
+	"image"
+	"image/png"
+	"log"
+	"net/http"
 	"os"
+	"sort"
+	"strconv"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/kbinani/screenshot"
+	uuid "github.com/satori/go.uuid"
 )
 
 func main() {
 	n := screenshot.NumActiveDisplays()
 	all_displays := make([]image.Rectangle, 0)
 
-	for i := 0; i < n; i++ {
-		all_displays = append(all_displays, screenshot.GetDisplayBounds(i))
-	}
+	LoadDisplays := func() {
+		all_displays = make([]image.Rectangle, 0)
+		for i := 0; i < n; i++ {
+			all_displays = append(all_displays, screenshot.GetDisplayBounds(i))
+		}
 
-	sort.Slice(all_displays, func(a, b int) bool {
-		return all_displays[a].Min.X < all_displays[b].Min.X
-	})
+		sort.Slice(all_displays, func(a, b int) bool {
+			return all_displays[a].Min.X < all_displays[b].Min.X
+		})
+	}
+	LoadDisplays()
 
 	id := fmt.Sprintf("%s", uuid.Must(uuid.NewV4()))
 
-	handler := func(ctx *fasthttp.RequestCtx) {
-		queryValues := ctx.QueryArgs()
-		if string(queryValues.Peek("key")) != id {
-			ctx.Error("Invalid key.", 400)
+	CaptureHandler := func(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+		queryValues := r.URL.Query()
+		if string(queryValues.Get("key")) != id {
+			w.WriteHeader(400)
+			w.Write([]byte("Invalid key."))
 			return
 		}
-		display_id, _ := strconv.Atoi(string(queryValues.Peek("display")))
+		display_id, _ := strconv.Atoi(string(queryValues.Get("display")))
 
 		ok := make(chan bool)
 		go func() {
@@ -44,17 +52,26 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-		
+
 			buf := new(bytes.Buffer)
 			png.Encode(buf, img)
 
-			ctx.SetBody(buf.Bytes())
-			ctx.SetContentType("image/png")
+			w.Header().Set("Content-Type", "image/png")
+			w.Write(buf.Bytes())
 			ok <- true
 		}()
-		<- ok
+		<-ok
 	}
 
+	Reload := func(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
+		LoadDisplays()
+		w.Write([]byte("Reloaded."))
+	}
+
+	router := httprouter.New()
+	router.GET("/", CaptureHandler)
+	router.GET("/reload", Reload)
+
 	fmt.Printf("%s", id)
-	fasthttp.ListenAndServe(fmt.Sprintf("127.0.0.1:%s", os.Args[1]), handler)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("127.0.0.1:%s", os.Args[1]), router))
 }

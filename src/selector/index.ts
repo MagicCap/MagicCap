@@ -4,7 +4,7 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the required imports.
-import { ipcMain, BrowserWindow, Display, screen } from "electron"
+import { ipcMain, BrowserWindow, Display, screen, app } from "electron"
 import * as uuidv4 from "uuid/v4"
 import * as os from "os"
 import * as path from "path"
@@ -14,6 +14,7 @@ import * as sharp from "sharp"
 import { readFile } from "fs-nextra"
 import config from "../config"
 import expressApp from "../web_server"
+import fetch from "node-fetch"
 
 // Defines all UUID's.
 let uuids: string[] = []
@@ -197,6 +198,13 @@ const getOrderedDisplays = () => screen.getAllDisplays().sort((a, b) => {
         }
     }
     return sub
+})
+
+// Reload the displays in the Go code.
+const reloadGoDisplays = () => fetch(`http://127.0.0.1:${port}/reload`)
+app.on("ready", () => {
+    screen.on("display-added", reloadGoDisplays)
+    screen.on("display-removed", reloadGoDisplays)
 })
 
 // Defines if the selector is active.
