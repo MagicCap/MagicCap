@@ -196,11 +196,3 @@ input[type="color"]::-webkit-color-swatch {
     border-radius: 8px;
     font-family: "Roboto";
 }
-
-#magnify, #position, #cursorX, #cursorY, #UploaderProperties {
-    opacity: 0;
-}
-
-body:hover #magnify, body:hover #position, body:hover #cursorX, body:hover #cursorY, body:hover #UploaderProperties {
-    opacity: 1;
-}

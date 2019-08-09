@@ -30,6 +30,22 @@ let primaryColour = [255, 0, 0]
 import * as electron from "electron"
 const ipcRenderer = electron.ipcRenderer
 
+// Fixes a bug where the opacity is not handled properly.
+const c = electron.screen.getCursorScreenPoint()
+const d = electron.screen.getDisplayNearestPoint(c)
+let visible = d.bounds.x === payload.bounds.x && d.bounds.y === payload.bounds.y
+const doms = [
+    document.getElementById("magnify"),
+    document.getElementById("position"),
+    document.getElementById("cursorX"),
+    document.getElementById("cursorY"),
+    document.getElementById("UploaderProperties"),
+]
+for (const dom of doms) {
+    if (visible) dom!.style.opacity = "1"
+    else dom!.style.opacity = "0"
+}
+
 // Requires sharp.
 import * as sharp from "sharp"
 
@@ -272,6 +288,11 @@ setTimeout(moveSelectorMagnifier, 100)
  * Called when the mouse moves.
  */
 document.body.onmousemove = e => {
+    if (!visible) {
+        visible = true
+        for (const dom of doms) dom!.style.opacity = "1"
+    }
+
     moveSelectorMagnifier()
     const thisClick = electron.screen.getCursorScreenPoint()
     ipcRenderer.send("event-send", {
@@ -503,6 +524,8 @@ ipcRenderer.on("event-recv", (_: any, res: any) => {
     }
     switch (res.type) {
         case "invalidate-selections": {
+            for (const dom of doms) dom!.style.opacity = "0"
+            visible = false
             element.style.width = "0px"
             element.style.height = "0px"
             break
