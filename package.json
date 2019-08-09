@@ -29,7 +29,6 @@
         "moment": "^2.22.2",
         "node-fetch": "2.6.0",
         "node-machine-id": "1.1.10",
-        "npm": "^6.9.2",
         "pofile": "1.0.11",
         "promise-ftp": "^1.3.5",
         "request": "^2.88.0",
@@ -68,13 +67,13 @@
         "electron-osx-sign": "0.4.11",
         "electron-packager": "14.0.0",
         "eslint": "5.3.0",
-        "lodash": ">=4.17.11",
+        "lodash": "^4.17.15",
         "mkdirp": "0.5.1",
         "parcel-bundler": "1.12.3",
+        "terser": "4.1.3",
         "typescript": "3.5.1",
         "vue-template-compiler": "^2.6.10",
-        "walk": "2.3.14",
-        "terser": "4.1.3"
+        "walk": "2.3.14"
     },
     "scripts": {
         "copy": "node ./static_copy.js",
