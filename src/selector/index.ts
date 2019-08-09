@@ -132,17 +132,56 @@ expressApp.get("/selector/magnify", async(req, res) => {
         if (cache !== undefined) {
             region = cache
         } else {
-            const left = x - Math.round(width / 2)
-            const top = y - Math.round(height / 2)
-            try {
-                region = await sharp(screenshots[display])
-                    .extract({ left, top, width, height })
-                    .toBuffer()
-            } catch (_) {
-                region = await sharp(screenshots[display])
-                    .extract({ left: 0, top: 0, width, height })
-                    .toBuffer()
+            let left = x - Math.round(width / 2)
+            let top = y - Math.round(height / 2)
+
+            const metadata = await sharp(screenshots[display]).metadata()
+
+            let topBlackness = 0
+            let bottomBlackness = 0
+            let leftBlackness = 0
+            let rightBlackness = 0
+
+            let captureWidth = width
+            let captureHeight = height
+
+            if (0 > top) {
+                // Empty space needs to be added to the top.
+                topBlackness = top * -1
+                top = 0
+                captureHeight = captureHeight - topBlackness
+            } else if (height + top > metadata.height!) {
+                // Empty space needs to be added to the bottom.
+                bottomBlackness = height + top - metadata.height!
+                top = top - bottomBlackness
+                captureHeight = captureHeight - bottomBlackness
             }
+
+            if (0 > left) {
+                // Empty space needs to be added to the left.
+                leftBlackness = left * -1
+                left = 0
+                captureWidth = captureWidth - leftBlackness
+            } else if (left + width > metadata.width!) {
+                // Empty space needs to be added to the right.
+                rightBlackness = left + width - metadata.width!
+                left = left - rightBlackness
+                captureWidth = captureWidth - leftBlackness
+            }
+
+            if (0 > left) left = 0
+            if (0 > top) top = 0
+            if (0 > captureHeight) captureHeight = 1
+            if (0 > captureWidth) captureWidth = 1
+
+            let captureRegion = await sharp(screenshots[display])
+                .extract({ left, top, height: captureHeight, width: captureWidth, })
+                .toBuffer()
+
+            region = await sharp(captureRegion)
+                .extend({top: topBlackness, bottom: bottomBlackness, left: leftBlackness, right: rightBlackness})
+                .toBuffer()
+
             xyImageMap.set([height, width, x, y, display], region)
         }
         res.contentType("png")
