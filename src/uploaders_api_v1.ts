@@ -47,11 +47,11 @@ app.get("/uploaders_api/v1/auth/swap/:uploader", async(req, res) => {
 // Middleware to handle swap auth.
 const authMiddleware = (req: any, res: express.Response, next: () => void) => {
     const forbidden = () => {
+        res.status(403)
         res.json({
             success: false,
             message: "Forbidden.",
         })
-        res.status(403)
     }
 
     const authorization = req.headers.authorization
@@ -94,22 +94,22 @@ app.get("/uploaders_api/v1/uploaders/set", [authMiddleware], (req: any, res: exp
     const query = req.query
     for (const queryPart of Object.keys(query)) {
         if (!allowedKeys.includes(queryPart)) {
+            res.status(400)
             res.json({
                 success: false,
                 message: "Your uploader cannot touch this in the configuration.",
             })
-            res.status(400)
             return
         }
         let jsonParse
         try {
             jsonParse = JSON.parse(query[queryPart])
         } catch (_) {
+            res.status(400)
             res.json({
                 success: false,
                 message: "Failed to JSON parse a part of your configuration.",
             })
-            res.status(400)
             return
         }
 
