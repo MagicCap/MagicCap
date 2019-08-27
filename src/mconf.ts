@@ -3,7 +3,7 @@
 
 // Imports go here.
 import * as i18n from "./i18n"
-import config from "./config"
+import config from "./shared/config"
 import { importedUploaders } from "./uploaders"
 
 /**

@@ -7,7 +7,7 @@ import { google } from "googleapis"
 import * as streamifier from "streamifier"
 import * as mime from "mime-types"
 import { Request } from "express"
-import { ConfigHandler } from "../config"
+import { ConfigHandler } from "../shared/config"
 
 export default {
     name: "Google Drive",

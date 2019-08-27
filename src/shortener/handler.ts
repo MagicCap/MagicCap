@@ -1,5 +1,5 @@
 // Defines the config and API client.
-import config from "../config"
+import config from "../shared/config"
 import apiClient from "./api_client"
 
 // Defines Electron's shell function.

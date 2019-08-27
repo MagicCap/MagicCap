@@ -4,7 +4,7 @@
 // This requires Chainfetch.
 import { post } from "chainfetch"
 import { Request } from "express"
-import { ConfigHandler } from "../config"
+import { ConfigHandler } from "../shared/config"
 
 export default {
     name: "Dropbox",

@@ -12,7 +12,7 @@ import { spawn } from "child_process"
 import httpBufferPromise from "./http-buffer-promise"
 import * as sharp from "sharp"
 import { readFile } from "fs-nextra"
-import config from "../config"
+import config from "../shared/config"
 import expressApp from "../web_server"
 import fetch from "node-fetch"
 

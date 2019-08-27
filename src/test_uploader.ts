@@ -2,7 +2,7 @@
 import { readFile } from "fs-nextra"
 import * as uuidv4 from "uuid/v4"
 import { get } from "chainfetch"
-import config from "./config"
+import config from "./shared/config"
 
 // Used for testing a uploader.
 export default async(uploader: any): Promise<(string | boolean)[]> => {

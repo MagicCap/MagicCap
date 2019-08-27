@@ -3,7 +3,7 @@
 
 import * as i18n from "../i18n"
 import * as Client from "ssh2-sftp-client"
-import { ConfigHandler } from "../config"
+import { ConfigHandler } from "../shared/config"
 
 export default {
     name: "SFTP",
