@@ -3,13 +3,12 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 import { post } from "chainfetch"
-import * as i18n from "../i18n"
 
 export default {
     name: "imgur",
     icon: "imgur.png",
     config_options: {},
-    upload: async(buffer: Buffer, fileType: string) => {
+    upload: async(_: any, buffer: Buffer, fileType: string) => {
         let res = await post("https://api.imgur.com/3/image")
             .set("Authorization", "Client-ID 5a085a33c43d27c")
             .attach("image", buffer, `oof.${fileType}`)
@@ -25,8 +24,7 @@ export default {
                 if (res.status >= 500 && res.status <= 599) {
                     throw new Error("There are currently server issues.")
                 }
-                const i18nEdgecase = await i18n.getPoPhrase("Server returned the status {status}.", "uploaders/exceptions")
-                throw new Error(i18nEdgecase.replace("{status}", `${res.status}`))
+                throw new Error(`Server returned the status ${res.status}.`)
             }
         }
         return res.body.data.link

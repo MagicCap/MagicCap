@@ -5,6 +5,7 @@ import * as npm from "npm"
 import * as path from "path"
 import { spawn, exec } from "child_process"
 import * as SQLite3 from "better-sqlite3"
+import { handleUploaderRejigging, uploaders } from "./uploaders"
 
 // Defines the database.
 const db = SQLite3(`${homedir()}/magiccap.db`)
@@ -123,7 +124,7 @@ class PluginManager {
                 true, undefined, c
             )
         } catch (e) {
-            console.error(`Failed to load plugin ${pluginName}: ${e}`)
+            console.error(`Failed to load plugin ${pluginName}:\n${e.stack}`)
             this.pluginResults[pluginName] = new PluginWrapper(
                 false, String(e), undefined
             )
@@ -166,6 +167,18 @@ class PluginManager {
             delete this.pluginResults[k]
             await this.load(k)
         }
+    }
+
+    // Loads in a uploader.
+    public loadUploader(uploaderSlug: string, uploader: any) {
+        (uploaders as any)[uploaderSlug] = uploader
+        handleUploaderRejigging()
+    }
+
+    // Unloads the uploader.
+    public unloadUploader(uploaderSlug: string) {
+        delete (uploaders as any)[uploaderSlug]
+        handleUploaderRejigging()
     }
 }
 

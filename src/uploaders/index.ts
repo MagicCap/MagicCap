@@ -23,8 +23,13 @@ export const uploaders = {
 
 export const nameUploaderMap = {} as any
 export const importedUploaders = {} as any
-for (const uploaderName in uploaders) {
-    const import_ = (uploaders as any)[uploaderName]
-    importedUploaders[import_.name] = import_
-    nameUploaderMap[uploaderName] = import_.name
+export const handleUploaderRejigging = () => {
+    for (const key in nameUploaderMap) delete nameUploaderMap[key]
+    for (const key in importedUploaders) delete importedUploaders[key]
+    for (const uploaderName in uploaders) {
+        const import_ = (uploaders as any)[uploaderName]
+        importedUploaders[import_.name] = import_
+        nameUploaderMap[uploaderName] = import_.name
+    }
 }
+handleUploaderRejigging()

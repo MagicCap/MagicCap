@@ -134,7 +134,6 @@
 
     declare global {
         interface Window {
-            uploaders: any,
             config: {
                 saveConfig: () => void,
                 o: any,
@@ -145,7 +144,8 @@
             }
         }
     }
-    const uploaders = window.uploaders.uploaders
+
+    const uploaders = ipcRenderer.sendSync("get-uploaders")
 
     export default Vue.extend({
         name: "UploaderConfig",
