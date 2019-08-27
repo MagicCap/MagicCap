@@ -36,6 +36,9 @@ const db = require("better-sqlite3")(`${homedir()}/magiccap.db`)
 db.exec("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT);")
 db.exec("CREATE INDEX IF NOT EXISTS TimestampIndex ON captures(timestamp)")
 
+// Makes sure the plugins table exists.
+db.exec("CREATE TABLE IF NOT EXISTS plugins (importName TEXT NOT NULL)")
+
 // Makes sure that the config table exists.
 db.exec("CREATE TABLE IF NOT EXISTS `config` (`key` TEXT NOT NULL, `value` TEXT NOT NULL)")
 db.exec("CREATE TABLE IF NOT EXISTS tokens (token TEXT NOT NULL, expires INTEGER NOT NULL, uploader TEXT NOT NULL)")

@@ -5,6 +5,7 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the needed stuff.
+import "./plugin_manager"
 import "./uploaders_api_v1"
 import config from "./config"
 import capture from "./capture"
