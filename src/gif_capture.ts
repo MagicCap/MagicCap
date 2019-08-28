@@ -58,6 +58,7 @@ export async function start(fps: number, x: number, y: number, width: number, he
                 height: height,
             },
             screenId: displayInfo.id,
+            videoCodec: "hevc",
         }
         await aperture.startRecording(settings)
         recording = true
