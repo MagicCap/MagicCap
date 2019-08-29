@@ -41,7 +41,7 @@ window.backToHelpModal = () => {
 }
 
 const BASE_DIR = "docs"
-const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=develop`
+const BASE_URL = `https://api.github.com/repos/MagicCap/MagicCap/contents/${BASE_DIR}?ref=master`
 const HELP_TITLE_DEFAULT = "Help (Docs)"
 const MD_ONLY = true
 const MD = window.markdownit({
