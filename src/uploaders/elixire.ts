@@ -9,7 +9,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "elixi.re",
     icon: "elixire.png",
-    config_options: {
+    configOptions: {
         "API Token": {
             value: "elixire_token",
             type: "text",

@@ -7,7 +7,7 @@ import { post } from "chainfetch"
 export default {
     name: "imgur",
     icon: "imgur.png",
-    config_options: {},
+    configOptions: {},
     upload: async(_: any, buffer: Buffer, fileType: string) => {
         let res = await post("https://api.imgur.com/3/image")
             .set("Authorization", "Client-ID 5a085a33c43d27c")

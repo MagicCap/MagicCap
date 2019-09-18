@@ -12,7 +12,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "Google Drive",
     icon: "gdrive.png",
-    config_options: {
+    configOptions: {
         "Client ID": {
             value: "gdrive_client_id",
             type: "text",

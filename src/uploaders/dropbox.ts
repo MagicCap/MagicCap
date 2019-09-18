@@ -9,7 +9,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "Dropbox",
     icon: "dropbox.png",
-    config_options: {
+    configOptions: {
         "Client ID": {
             value: "dropbox_client_id",
             type: "text",

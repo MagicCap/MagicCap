@@ -96,8 +96,8 @@ function getConfiguredUploaders() {
             continue
         }
         let allOptions = true
-        for (const optionName in uploader.config_options) {
-            const option = uploader.config_options[optionName]
+        for (const optionName in uploader.configOptions) {
+            const option = uploader.configOptions[optionName]
             if (!(option.value in config) && option.required && !option.default) {
                 allOptions = false
                 break

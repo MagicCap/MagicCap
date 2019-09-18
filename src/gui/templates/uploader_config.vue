@@ -303,8 +303,8 @@
             renderUploader(key: string) {
                 const uploader = uploaders[key]
                 const options = []
-                for (const optionKey in uploader.config_options) {
-                    const option = uploader.config_options[optionKey]
+                for (const optionKey in uploader.configOptions) {
+                    const option = uploader.configOptions[optionKey]
                     switch (option.type) {
                         case "text":
                         case "integer":

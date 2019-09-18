@@ -9,7 +9,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "S3",
     icon: "s3.png",
-    config_options: {
+    configOptions: {
         "Access Key ID": {
             value: "s3_access_key_id",
             type: "text",

@@ -9,7 +9,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "Passive FTP",
     icon: "ftp.png",
-    config_options: {
+    configOptions: {
         Hostname: {
             value: "ftp_hostname",
             type: "text",

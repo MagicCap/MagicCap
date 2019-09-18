@@ -50,7 +50,7 @@ function values(item: any) {
 export function newConfig() {
     const options: any = {}
     for (const uploader of values(importedUploaders)) {
-        for (const option of values(uploader.config_options)) {
+        for (const option of values(uploader.configOptions)) {
             if (config.o[option.value] !== undefined) {
                 options[option.value] = config.o[option.value]
             }

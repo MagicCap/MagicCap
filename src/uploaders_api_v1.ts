@@ -89,7 +89,7 @@ app.get("/uploaders_api/v1/uploaders/set", [authMiddleware], (req: any, res: exp
 
     const uploader = (uploaders as any)[req.uploaderSlug]
     const allowedKeys = []
-    for (const uploaderConfig of Object.values(uploader.config_options)) allowedKeys.push((uploaderConfig as any).value)
+    for (const uploaderConfig of Object.values(uploader.configOptions)) allowedKeys.push((uploaderConfig as any).value)
 
     const query = req.query
     for (const queryPart of Object.keys(query)) {

@@ -9,7 +9,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "Pomf",
     icon: "pomf.png",
-    config_options: {
+    configOptions: {
         Domain: {
             value: "pomf_domain",
             type: "text",

@@ -7,7 +7,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "RATELIMITED.ME",
     icon: "rlme.png",
-    config_options: {
+    configOptions: {
         Token: {
             value: "rlme_token",
             type: "password",

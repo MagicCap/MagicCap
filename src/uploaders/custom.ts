@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "Custom",
     icon: "custom.png",
-    config_options: {
+    configOptions: {
         URL: {
             value: "custom_url",
             type: "text",

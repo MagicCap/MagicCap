@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 export default {
     name: "i.magiccap",
     icon: "magiccap.png",
-    config_options: {},
+    configOptions: {},
     upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
         let res = await post("https://i.magiccap.me/upload")
             .set("Authorization", `Bearer ${config.o.install_id}`)
