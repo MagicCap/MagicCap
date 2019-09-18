@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "UltraShare",
-    icon: "ultrashare.svg",
+    icon: `${__dirname}/../icons/ultrashare.svg`,
     configOptions: {
         Domain: {
             value: "ultra_domain",

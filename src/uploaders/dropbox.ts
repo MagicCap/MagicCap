@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "Dropbox",
-    icon: "dropbox.png",
+    icon: `${__dirname}/../icons/dropbox.png`,
     configOptions: {
         "Client ID": {
             value: "dropbox_client_id",

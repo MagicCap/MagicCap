@@ -6,7 +6,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "RATELIMITED.ME",
-    icon: "rlme.png",
+    icon: `${__dirname}/../icons/rlme.png`,
     configOptions: {
         Token: {
             value: "rlme_token",

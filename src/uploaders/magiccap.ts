@@ -7,7 +7,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "i.magiccap",
-    icon: "magiccap.png",
+    icon: `${__dirname}/../icons/magiccap.png`,
     configOptions: {},
     upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
         let res = await post("https://i.magiccap.me/upload")

@@ -18,7 +18,7 @@
                 <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploaderKey)"
                    v-bind:key="uploaderKey" v-for="(uploader, uploaderKey) in uploaders">
                         <span class="icon is-medium">
-                            <img class="rounded-img" :src="'../icons/' + uploader.icon">
+                            <img class="rounded-img" :src="uploader.icon">
                         </span>
                     <p>{{ uploader.name }}</p>
                 </a>

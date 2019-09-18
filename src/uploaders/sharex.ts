@@ -192,7 +192,7 @@ function parseShareXResult(parsedSxcu: any, body: string) {
 
 export default {
     name: "ShareX SXCU",
-    icon: "sharex.png",
+    icon: `${__dirname}/../icons/sharex.png`,
     configOptions: {
         "SXCU File Path": {
             value: "sharex_sxcu_path",

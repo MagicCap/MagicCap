@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "elixi.re",
-    icon: "elixire.png",
+    icon: `${__dirname}/../icons/elixire.png`,
     configOptions: {
         "API Token": {
             value: "elixire_token",

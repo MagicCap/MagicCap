@@ -9,7 +9,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "Lunus",
-    icon: "lunus.png",
+    icon: `${__dirname}/../icons/lunus.png`,
     configOptions: {
         "API Token": {
             value: "novus_token",

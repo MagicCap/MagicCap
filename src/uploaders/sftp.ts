@@ -7,7 +7,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "SFTP",
-    icon: "sftp.png",
+    icon: `${__dirname}/../icons/sftp.png`,
     configOptions: {
         Hostname: {
             value: "sftp_hostname",

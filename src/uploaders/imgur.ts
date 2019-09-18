@@ -6,7 +6,7 @@ import { post } from "chainfetch"
 
 export default {
     name: "imgur",
-    icon: "imgur.png",
+    icon: `${__dirname}/../icons/imgur.png`,
     configOptions: {},
     upload: async(_: any, buffer: Buffer, fileType: string) => {
         let res = await post("https://api.imgur.com/3/image")

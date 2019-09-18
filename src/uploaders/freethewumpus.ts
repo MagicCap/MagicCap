@@ -6,7 +6,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "freethewump.us",
-    icon: "ftw.png",
+    icon: `${__dirname}/../icons/ftw.png`,
     configOptions: {
         Token: {
             value: "ftw_token",

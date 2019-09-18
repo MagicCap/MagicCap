@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "Pomf",
-    icon: "pomf.png",
+    icon: `${__dirname}/../icons/pomf.png`,
     configOptions: {
         Domain: {
             value: "pomf_domain",

@@ -11,7 +11,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "Google Drive",
-    icon: "gdrive.png",
+    icon: `${__dirname}/../icons/gdrive.png`,
     configOptions: {
         "Client ID": {
             value: "gdrive_client_id",

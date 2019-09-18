@@ -7,7 +7,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "Custom",
-    icon: "custom.png",
+    icon: `${__dirname}/../icons/custom.png`,
     configOptions: {
         URL: {
             value: "custom_url",

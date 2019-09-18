@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "Passive FTP",
-    icon: "ftp.png",
+    icon: `${__dirname}/../icons/ftp.png`,
     configOptions: {
         Hostname: {
             value: "ftp_hostname",

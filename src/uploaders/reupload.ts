@@ -8,7 +8,7 @@ import { ConfigHandler } from "../config"
 
 export default {
     name: "reUpload",
-    icon: "reupload.png",
+    icon: `${__dirname}/../icons/reupload.png`,
     configOptions: {
         Token: {
             value: "reupload_token",
