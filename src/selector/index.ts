@@ -171,8 +171,8 @@ expressApp.get("/selector/magnify", async(req, res) => {
 
             if (left < 0) left = 0
             if (top < 0) top = 0
-            if (captureHeight < 0) captureHeight = 1
-            if (captureWidth < 0) captureWidth = 1
+            if (!captureHeight || captureHeight < 0) captureHeight = 1
+            if (!captureWidth || captureWidth < 0) captureWidth = 1
 
             let captureRegion = await sharp(screenshots[display])
                 .extract({ left, top, height: captureHeight, width: captureWidth })

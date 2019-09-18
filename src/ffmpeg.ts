@@ -20,7 +20,7 @@ import { exec } from "child_process"
  * @returns A promise to the file path to the FFMpeg binary.
  */
 function downloadBin() {
-    return new Promise(async done => {
+    return new Promise(done => {
         dialog.showOpenDialog({
             title: "Select the FFMpeg destination/FFMpeg binary...",
             properties: ["openDirectory", "openFile"],
@@ -55,9 +55,7 @@ function downloadBin() {
                                         maxValue: state.size.total,
                                     })
                                     progressBar
-                                } else {
-                                    progressBar.value += state.size.transferred
-                                }
+                                } else if (progressBar.isInProgress()) { progressBar.value += state.size.transferred }
                             })
                             .on("error", (err: Error) => {
                                 progressBar.close()
@@ -117,7 +115,7 @@ export default async() => {
     if (config.o.ffmpeg_path && fs.existsSync(config.o.ffmpeg_path)) {
         return config.o.ffmpeg_path
     }
-    let toContinue = await new Promise(async res => {
+    return new Promise(async res => {
         const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate")
         const noi18n = await i18n.getPoPhrase("No", "autoupdate")
         const messagei18n = await i18n.getPoPhrase("In order for GIF capture to work, MagicCap has to download FFMpeg. Shall I start the download process?", "ffmpeg")
@@ -144,10 +142,7 @@ export default async() => {
                     }
                     break
             }
-            res(toCont)
+            res(toCont ? binPath : false)
         })
     })
-    if (!toContinue) {
-        return null
-    }
 }

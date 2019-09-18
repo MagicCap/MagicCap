@@ -2,6 +2,10 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 eval('window.markdownit = require("markdown-it")')
+import { shell } from "electron"
+
+// Opens the URL specified.
+window.openURL = (url: string) => shell.openExternal(url)
 
 /**
  * Converts a string to title case
@@ -32,6 +36,7 @@ declare global {
         showDocs: any;
         docsVueEl: any;
         backToHelpModal: () => void;
+        openURL: (url: string) => void;
     }
 }
 

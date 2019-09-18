@@ -27,6 +27,7 @@
     display: block;
     margin-left: -1em;
     padding: 0 1.5em 0 1em;
+    transition: all 200ms ease;
 }
 
 .docs-menu a:hover {

@@ -322,7 +322,7 @@ export default class CaptureCore {
             if (gif) {
                 inGif = true
                 const success = await gifman.start(
-                    15, selection.start.pageX, selection.start.pageY,
+                    30, selection.start.pageX, selection.start.pageY,
                     selection.width, selection.height, thisDisplay
                 )
                 if (!success) {
