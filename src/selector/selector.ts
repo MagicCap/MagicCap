@@ -119,6 +119,35 @@ document.addEventListener("keydown", async event => {
             displayEdits.pop()
             break
         }
+        case " ":
+        case "s": {
+            invokeButton(buttonNameId("__cap__"))
+            break
+        }
+        case "b": {
+            invokeButton(buttonNameId("Blur"))
+            break
+        }
+        case "p": {
+            invokeButton(buttonNameId("Pixelate"))
+            break
+        }
+        case "r": {
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+                invokeButton(buttonNameId("HollowRectangle"))
+            } else {
+                invokeButton(buttonNameId("Rectangle"))
+            }
+            break
+        }
+        case "c": {
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+                invokeButton(buttonNameId("HollowCircle"))
+            } else {
+                invokeButton(buttonNameId("Circle"))
+            }
+            break
+        }
     }
 })
 
@@ -452,10 +481,23 @@ document.body.onmouseup = async e => {
     }
 }
 
+/**
+ * Fetch the ID of a button based on the editor name.
+ * @param {string} buttonName - The name of the button.
+ * @returns {string} The ID of the button if found.
+ */
+function buttonNameId(buttonName: string) {
+    for (const buttonId in payload.buttons) {
+        const button = payload.buttons[buttonId]
+        if (button.name == buttonName) return buttonId
+    }
+    return ""
+}
 
 /**
  * This is called when a button is invoked.
- * @param {int} buttonId - The ID of the button.
+ * @param {string} buttonId - The ID of the button.
+ * @param {boolean} sendEvent - Toggle sending the event to all displays.
  */
 function invokeButton(buttonId: string, sendEvent = true) {
     const newNodes = []
