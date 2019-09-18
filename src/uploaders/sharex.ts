@@ -6,7 +6,7 @@
 import { post } from "chainfetch"
 import { readFile } from "fs-nextra"
 import * as safeEval from "safe-eval"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 // Defines image extensions for parsing.
 const imageExtensions = [

@@ -3,7 +3,7 @@
 // Copyright (C) Rhys O'Kane <SunburntRock89@gmail.com> 2018.
 
 import { post } from "chainfetch"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Custom",

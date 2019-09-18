@@ -9,7 +9,7 @@ import { exec } from "child_process"
 // @ts-ignore
 import * as sudo from "sudo-prompt"
 import * as i18n from "./i18n"
-import config from "./shared/config"
+import config from "./config"
 
 // Ignores this while the app is open.
 const tempIgnore: string[] = []

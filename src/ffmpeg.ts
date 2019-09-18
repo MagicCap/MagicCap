@@ -12,7 +12,7 @@ import * as request from "request"
 import * as requestProgress from "request-progress"
 import * as os from "os"
 import * as fs from "fs"
-import config from "./shared/config"
+import config from "./config"
 import { exec } from "child_process"
 
 /**

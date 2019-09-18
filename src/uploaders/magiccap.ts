@@ -3,7 +3,7 @@
 
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "i.magiccap",

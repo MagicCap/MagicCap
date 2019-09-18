@@ -2,7 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 import { post } from "chainfetch"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "freethewump.us",

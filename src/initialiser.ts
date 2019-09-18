@@ -44,7 +44,7 @@ db.exec("CREATE TABLE IF NOT EXISTS `config` (`key` TEXT NOT NULL, `value` TEXT 
 db.exec("CREATE TABLE IF NOT EXISTS tokens (token TEXT NOT NULL, expires INTEGER NOT NULL, uploader TEXT NOT NULL)")
 
 // Requires the config.
-import config from "./shared/config"
+import config from "./config"
 
 /**
  * Creates the default config.

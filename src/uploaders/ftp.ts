@@ -4,7 +4,7 @@
 
 import * as i18n from "../i18n"
 import * as promiseFtp from "promise-ftp"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Passive FTP",

@@ -5,7 +5,7 @@
 import { post } from "chainfetch"
 import * as i18n from "../i18n"
 import { app } from "electron"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "Lunus",

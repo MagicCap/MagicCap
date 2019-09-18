@@ -36,7 +36,6 @@ class PluginManager {
         if (!existsSync(this.path)) mkdirSync(this.path)
         const amp = require("app-module-path")
         amp.addPath(this.path)
-        amp.addPath(`${__dirname}/shared`)
         npm.load({})
         this.installedPlugins = []
         this._lsDb()

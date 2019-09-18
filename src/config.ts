@@ -2,7 +2,7 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Loads the config stuff.
-import liteTouchConfig from "../lite_touch"
+import liteTouchConfig from "./lite_touch"
 import * as SQLite3 from "better-sqlite3"
 const db = SQLite3(`${require("os").homedir()}/magiccap.db`)
 

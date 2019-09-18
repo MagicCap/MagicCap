@@ -5,7 +5,7 @@
 import { readFile } from "fs-nextra"
 import { readdirSync, statSync } from "fs"
 import { join } from "path"
-import config from "../shared/config"
+import config from "../config"
 import * as PO from "pofile"
 const nativeLangNames = require("./native_lang_names.json")
 

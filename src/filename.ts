@@ -3,7 +3,7 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 import * as moment from "moment"
-import config from "./shared/config"
+import config from "./config"
 const emojis = Object.values(require("emojilib").lib).map((x: any) => x.char as string)
 
 export default class Filename {

@@ -4,7 +4,7 @@
 // Copyright (C) Leo Nesfield <leo@thelmgn.com> 2019.
 
 import { post } from "chainfetch"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "UltraShare",

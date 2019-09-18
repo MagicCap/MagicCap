@@ -7,7 +7,7 @@ import fetch from "node-fetch"
 import * as SQLite3 from "better-sqlite3"
 import { homedir } from "os"
 import * as express from "express"
-import config from "./shared/config"
+import config from "./config"
 import { dialog } from "electron"
 
 const db = SQLite3(`${homedir()}/magiccap.db`)

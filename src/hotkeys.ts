@@ -4,7 +4,7 @@
 // Requires stuff.
 import { globalShortcut, dialog } from "electron"
 import * as i18n from "./i18n"
-import config from "./shared/config"
+import config from "./config"
 
 // Declares the capture launchers.
 declare const runCapture: (gif: boolean) => Promise<void>

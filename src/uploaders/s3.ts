@@ -4,7 +4,7 @@
 
 import { S3 } from "tiny-s3-uploader"
 import * as mime from "mime-types"
-import { ConfigHandler } from "../shared/config"
+import { ConfigHandler } from "../config"
 
 export default {
     name: "S3",

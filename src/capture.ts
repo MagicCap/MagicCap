@@ -13,7 +13,7 @@ import filename from "./filename"
 import * as SQLite3 from "better-sqlite3"
 import selector from "./selector"
 import editors from "./editors"
-import config from "./shared/config"
+import config from "./config"
 import { importedUploaders, nameUploaderMap } from "./uploaders"
 const captureDatabase = SQLite3(`${require("os").homedir()}/magiccap.db`)
 const { clipboard, nativeImage, Tray, dialog, shell, Notification } = electron

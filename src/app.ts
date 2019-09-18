@@ -7,7 +7,7 @@
 // Defines the needed stuff.
 import "./plugin_manager"
 import "./uploaders_api_v1"
-import config from "./shared/config"
+import config from "./config"
 import capture from "./capture"
 import liteTouchConfig from "./lite_touch"
 import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain, nativeImage } from "electron"
