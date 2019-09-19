@@ -18,7 +18,7 @@ export default {
         },
     },
     upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
-        let res = await post("https://i.novuscommunity.co/api/upload")
+        let res = await post("https://lunus.xyz/api/upload")
             .set("Authorization", `Bearer ${config.o.novus_token}`)
             .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.o.install_id}`)
             .attach("file", buffer, `oof.${fileType}`)
