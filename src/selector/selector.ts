@@ -37,8 +37,11 @@ let visible = d.bounds.x === payload.bounds.x && d.bounds.y === payload.bounds.y
 const doms = [
     document.getElementById("magnify"),
     document.getElementById("position"),
-    document.getElementById("cursorX"),
-    document.getElementById("cursorY"),
+    document.getElementById("cursor"),
+    document.getElementById("cursorX1"),
+    document.getElementById("cursorX2"),
+    document.getElementById("cursorY1"),
+    document.getElementById("cursorY2"),
     document.getElementById("UploaderProperties"),
 ]
 for (const dom of doms) {
@@ -77,6 +80,9 @@ const runAffect = (affect: string, part: Buffer) => new Promise(async(res, rej) 
 // Defines the selection type.
 let selectionType = "__cap__"
 
+// Defines the magnifier state
+let magnifierState = payload.magnifier
+
 // Defines all of the selections made across all of the windows.
 const selections = {} as any
 
@@ -111,12 +117,24 @@ document.addEventListener("keydown", async event => {
             break
         }
         case "z": {
-            if (!event.ctrlKey && !event.metaKey) return
-            if (displayEdits.length === 0) return
-            const len = displayEdits.length
-            const item = document.getElementById(len.toString())!
-            item.remove()
-            displayEdits.pop()
+            if (event.ctrlKey || event.metaKey) {
+                if (displayEdits.length !== 0) {
+                    const len = displayEdits.length
+                    const item = document.getElementById(len.toString())!
+                    item.remove()
+                    displayEdits.pop()
+                    break
+                }
+            }
+            magnifierState = !magnifierState
+            ipcRenderer.send("event-send", {
+                type: "magnifier-state",
+                args: {
+                    state: magnifierState,
+                },
+                screenNumber: payload.display,
+            })
+            await moveSelectorCrosshairs()
             break
         }
         case " ":
@@ -242,23 +260,49 @@ async function getImageBrightness(url: string) {
 }
 
 /**
- * Moves the selector magnifier.
+ * Sets the size of the crosshair elements
+ * @param {number} guides - The size of the guide lines
+ * @param {number} center - The size of the center crosshair
+ */
+function setCrossHairSize(guides: number, center: number) {
+    const cursorX1 = document.getElementById("cursorX1")!
+    const cursorX2 = document.getElementById("cursorX2")!
+    cursorX1.style.width = `${guides}px`
+    cursorX2.style.width = `${guides}px`
+    const cursorY1 = document.getElementById("cursorY1")!
+    const cursorY2 = document.getElementById("cursorY2")!
+    cursorY1.style.height = `${guides}px`
+    cursorY2.style.height = `${guides}px`
+    const cursor = document.getElementById("cursor")!
+    cursor.style.width = `${center}px`
+    cursor.style.height = `${center}px`
+}
+
+/**
+ * Moves the selector magnifier
  */
 async function moveSelectorMagnifier() {
-    const thisCursor = electron.screen.getCursorScreenPoint()
-    let x = thisCursor.x - payload.bounds.x
-    let y = thisCursor.y - payload.bounds.y
+    const magnifyElement = document.getElementById("magnify")!
+    const positionElement = document.getElementById("position")!
 
-    // Set the cursor crosshair
-    const cursorX = document.getElementById("cursorX")!
-    cursorX.style.left = `${x - (cursorX.getBoundingClientRect().width / 2)}px`
-    const cursorY = document.getElementById("cursorY")!
-    cursorY.style.top = `${y - (cursorY.getBoundingClientRect().height / 2)}px`
+    if (!magnifierState) {
+        magnifyElement.style.top = `${-magnifyElement.getBoundingClientRect().height}px`
+        magnifyElement.style.left = `${-magnifyElement.getBoundingClientRect().width}px`
+        positionElement.style.top = `${-positionElement.getBoundingClientRect().height}px`
+        positionElement.style.left = `${-positionElement.getBoundingClientRect().width}px`
+        setCrossHairSize(1, 3)
+        return
+    }
 
-    if (!payload.magnifier) return
+    // Set the crosshair size
+    setCrossHairSize(3, 5)
+
+    // Get position
+    const actualMousePoint = electron.screen.getCursorScreenPoint()
+    const x = actualMousePoint.x - payload.bounds.x
+    const y = actualMousePoint.y - payload.bounds.y
 
     // Fuck you too Ubuntu.
-    const actualMousePoint = electron.screen.getCursorScreenPoint()
     const theDisplay = electron.screen.getDisplayNearestPoint(actualMousePoint)
     const scaleFactor = process.platform === "linux" ? theDisplay.scaleFactor : 1
     const actualX = Math.floor(actualMousePoint.x * scaleFactor)
@@ -267,12 +311,10 @@ async function moveSelectorMagnifier() {
     // Update the with new coordinates
     document.getElementById("positions")!.textContent = `X: ${actualX} | Y: ${actualY}`
 
-    // Set the magifier positions
+    // Set the magnifier positions
     let magnifyX = x
     let magnifyY = y
     const magnifyOffset = 8
-    const magnifyElement = document.getElementById("magnify")!
-    const positionElement = document.getElementById("position")!
 
     // Check if we're overflowing on the y for the magnifier
     if ((magnifyY + magnifyOffset + magnifyElement.getBoundingClientRect().height + positionElement.getBoundingClientRect().height) > window.innerHeight) {
@@ -306,12 +348,47 @@ async function moveSelectorMagnifier() {
 
     // Decide which crosshair to use
     let crosshair = "crosshair.png"
-    if (brightness as number < brightnessThreshold) crosshair = "crosshair_white.png"
+    if ((brightness as number) < brightnessThreshold) crosshair = "crosshair_white.png"
 
     // Apply new magnifier image & crosshair
     magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/${crosshair}"), url(${urlPart})`
 }
-setTimeout(moveSelectorMagnifier, 100)
+
+/**
+ * Moves the selector crosshairs (& magnifier).
+ */
+async function moveSelectorCrosshairs() {
+    await moveSelectorMagnifier()
+
+    const thisCursor = electron.screen.getCursorScreenPoint()
+    const x = thisCursor.x - payload.bounds.x
+    const y = thisCursor.y - payload.bounds.y
+
+    // Set the cursor crosshair
+    const cursor = document.getElementById("cursor")!
+    const offset = cursor.getBoundingClientRect().width / 2
+    cursor.style.left = `${x - offset}px`
+    cursor.style.top = `${y - offset}px`
+
+    const cursorX1 = document.getElementById("cursorX1")!
+    const cursorX2 = document.getElementById("cursorX2")!
+    cursorX1.style.left = `${x - (cursorX1.getBoundingClientRect().width / 2)}px`
+    cursorX1.style.top = "0px"
+    cursorX1.style.bottom = `${window.innerHeight - (y - offset)}px`
+    cursorX2.style.left = `${x - (cursorX2.getBoundingClientRect().width / 2)}px`
+    cursorX2.style.top = `${y + offset}px`
+    cursorX2.style.bottom = "0px"
+
+    const cursorY1 = document.getElementById("cursorY1")!
+    const cursorY2 = document.getElementById("cursorY2")!
+    cursorY1.style.top = `${y - (cursorY1.getBoundingClientRect().height / 2)}px`
+    cursorY1.style.left = "0px"
+    cursorY1.style.right = `${window.innerWidth - (x - offset)}px`
+    cursorY2.style.top = `${y - (cursorY2.getBoundingClientRect().height / 2)}px`
+    cursorY2.style.left = `${x + offset}px`
+    cursorY2.style.right = "0px"
+}
+setTimeout(moveSelectorCrosshairs, 100)
 
 /**
  * Called when the mouse moves.
@@ -322,7 +399,7 @@ document.body.onmousemove = e => {
         for (const dom of doms) dom!.style.opacity = "1"
     }
 
-    moveSelectorMagnifier()
+    moveSelectorCrosshairs()
     const thisClick = electron.screen.getCursorScreenPoint()
     ipcRenderer.send("event-send", {
         type: "invalidate-selections",
@@ -616,6 +693,12 @@ ipcRenderer.on("event-recv", (_: any, res: any) => {
             doNotCallColourEdit = true;
             (document.getElementById("ColourSelectionEl")! as HTMLInputElement).value = res.args.hex
             doNotCallColourEdit = false
+            break
+        }
+        case "magnifier-state": {
+            magnifierState = res.args.state
+            moveSelectorCrosshairs()
+            break
         }
     }
 })
