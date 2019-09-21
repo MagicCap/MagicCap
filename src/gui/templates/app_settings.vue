@@ -178,6 +178,7 @@
 
                         // Parse raw
                         let action: Function
+                        let warning: string
                         const raw = String(readFileSync(file[0]))
                         let data: any
                         try {
@@ -190,6 +191,7 @@
                         // Parse type
                         switch (raw.split("\n")[0]) {
                             case "==BEGIN MAGICCAP CONFIG==": {
+                                warning = "This WILL overwrite ALL values in your MagicCap config to match the configuration file. Do you want to continue?"
                                 action = async () => {
                                     for (const key in data) {
                                         window.config.o[key] = data[key]
@@ -199,16 +201,18 @@
                                 break
                             }
                             case "==BEGIN MAGICCAP UPLOADERS==": {
+                                warning = "This WILL overwrite ALL uploader settings MagicCap to match the configuration file. Do you want to continue?"
                                 action = async () => {
                                     const parse = await window.mconf.parse(data)
-                                    for (const key in data) {
-                                        window.config.o[key] = data[key]
+                                    for (const key in parse) {
+                                        window.config.o[key] = parse[key]
                                     }
                                     saveConfig()
                                 }
                                 break
                             }
                             case "==BEGIN MAGICCAP HISTORY==": {
+                                warning = "This will RESET the ENTIRE MagicCap capture history to match the data file. Do you want to continue?"
                                 action = async () => {
                                     db.transaction(() => {
                                         db.prepare("DELETE FROM captures WHERE 1").run()
@@ -232,7 +236,7 @@
                             type: "warning",
                             buttons: ["Yes", "No"],
                             title: "MagicCap",
-                            message: "This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?",
+                            message: warning,
                         }, async response => {
                             switch (response) {
                                 case 0: {
