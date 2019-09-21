@@ -23,8 +23,7 @@
                     <p>{{ uploader.name }}</p>
                 </a>
                 <br/><br/>
-                <a class="button" @click="exportMconf">Export Uploader Configurations</a>
-                <a class="button" @click="importMconf" style="padding-left: 10px">Import Uploader Configurations</a>
+                <a class="button" @click="exportImport">Export or Import Uploader Configurations</a>
             </section>
         </div>
         <div v-else class="modal-card">
@@ -149,8 +148,7 @@
 <script lang="ts">
     import Vue from "vue"
     import saveConfig from "../save_config"
-    import { ipcRenderer, remote } from "electron"
-    import { readJSON, writeJSON } from "fs-nextra"
+    import { ipcRenderer } from "electron"
 
     declare global {
         interface Window {
@@ -197,82 +195,8 @@
                 this.$data.uploaderName = ""
                 this.$data.exception = ""
             },
-            exportMconf() {
-                const exported = window.mconf.newConfig()
-                remote.dialog.showSaveDialog({
-                    title: "Save file...",
-                    filters: [
-                        {
-                            extensions: ["mconf"],
-                            name: "MagicCap Configuration File",
-                        },
-                    ],
-                    showsTagField: false,
-                }, (file: string | undefined) => {
-                    (async () => {
-                        if (file === undefined) {
-                            return
-                        }
-                        if (!file.endsWith(".mconf")) {
-                            file += ".mconf"
-                        }
-                        try {
-                            await writeJSON(file, exported)
-                        } catch (err) {
-                            console.log(err)
-                        }
-                    })()
-                })
-            },
-            importMconf() {
-                remote.dialog.showOpenDialog({
-                    title: "Open file...",
-                    filters: [
-                        {
-                            extensions: ["mconf"],
-                            name: "MagicCap Configuration File",
-                        },
-                    ],
-                    // @ts-ignore
-                    multiSelections: false,
-                    openDirectory: false,
-                    showsTagField: false,
-                }, (file: any[]) => {
-                    (async () => {
-                        if (file === undefined) {
-                            return
-                        }
-                        let data: any
-                        try {
-                            data = await readJSON(file[0])
-                        } catch (err) {
-                            console.log(err)
-                            return
-                        }
-                        await remote.dialog.showMessageBox({
-                            type: "warning",
-                            buttons: ["Yes", "No"],
-                            title: "MagicCap",
-                            message: "This WILL overwrite any values in your MagicCap config which are also in this configuration file. Do you want to continue?",
-                        }, async response => {
-                            switch (response) {
-                                case 0: {
-                                    let parse: any
-                                    try {
-                                        parse = await window.mconf.parse(data)
-                                    } catch (err) {
-                                        remote.dialog.showErrorBox("MagicCap", `${err.message}`)
-                                    }
-                                    for (const key in parse) {
-                                        window.config.o[key] = parse[key]
-                                    }
-                                    saveConfig()
-                                    break
-                                }
-                            }
-                        })
-                    })()
-                })
+            exportImport() {
+                this.$emit("appsettings-show")
             },
             getDefaultValue: (option: any) => {
                 switch (option.type) {

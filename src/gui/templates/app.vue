@@ -114,7 +114,7 @@
         <ClipboardAction ref="ClipboardAction"></ClipboardAction>
         <FileConfig ref="FileConfig"></FileConfig>
         <HotkeySettings ref="HotkeySettings"></HotkeySettings>
-        <UploaderConfig ref="UploaderConfig"></UploaderConfig>
+        <UploaderConfig ref="UploaderConfig" @appsettings-show="toggleCoreModal('AppSettings')"></UploaderConfig>
         <Debug ref="Debug"></Debug>
         <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')"></AppSettings>
         <Updates ref="Updates"></Updates>
