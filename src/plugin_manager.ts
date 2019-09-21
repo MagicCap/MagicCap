@@ -26,9 +26,9 @@ class PluginWrapper {
 // The main class handling plugin management.
 class PluginManager {
     // Any attributes go here.
-    public path: string
-    public installedPlugins: string[]
-    public pluginResults: {[key: string]: PluginWrapper}
+    private path: string
+    private installedPlugins: string[]
+    private pluginResults: {[key: string]: PluginWrapper}
 
     // Constructs the plugin manager.
     constructor() {
@@ -44,7 +44,7 @@ class PluginManager {
     }
 
     // Runs the npm command.
-    async runNpmCmd(args: string[]) {
+    private async runNpmCmd(args: string[]) {
         const npmBin = path.join(npm.bin, "npm")
         let data = ""
         let err = ""
