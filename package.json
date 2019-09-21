@@ -1,6 +1,6 @@
 {
     "name": "magiccap",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "A cross platform image capturing suite.",
     "main": "./dist/initialiser.js",
     "author": "MagicCap Development Team",
