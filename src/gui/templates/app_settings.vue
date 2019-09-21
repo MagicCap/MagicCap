@@ -6,21 +6,27 @@
                 <p class="modal-card-title">App Settings and Information</p>
             </header>
             <section class="modal-card-body">
+                <h1 class="modal-card-title">MagicCap Application Settings</h1>
+
                 <label class="input_container">Open MagicCap at login.
                     <input type="checkbox" id="OpenAtLogin" v-on:click="saveOpenAtLogin()" :checked="OpenAtLoginI">
                     <span class="custom_input"></span>
                 </label>
 
-                <br/>
+                <hr/>
+
+                <h1 class="modal-card-title">Export MagicCap Data</h1>
 
                 <a class="button is-info" @click="exportConfig">Export All Settings</a>
                 <a class="button is-info" @click="exportUploaders">Export Uploader Settings</a>
-
-                <a class="button is-primary" @click="importMconf" style="margin-left: 2em">Import MagicCap Configuration File (.mconf)</a>
+                <a class="button is-info" @click="exportHistory">Export Capture History</a>
+                <br/><br/>
+                <a class="button is-primary" @click="importMconf">Import MagicCap Data File (.mconf)</a>
 
                 <hr/>
 
                 <h1 class="modal-card-title">About: <small class="muted">MagicCap v{{ version }}</small></h1>
+
                 <p>Copyright (C) Jake Gealer, Rhys O'Kane &amp; Matt Cowley 2018-2019.</p>
                 <p>This software is licensed under the <a @click="openMPL" class="url">MPL-2.0</a> license.</p>
                 <p v-if="liteTouch">Some settings are managed by your system administrator.</p>
@@ -28,6 +34,12 @@
                     <br/>
                     <small><a class="button is-small" @click="showDebug">Debug Information</a></small>
                 </p>
+
+                <hr/>
+
+                <h1 class="modal-card-title">Danger Zone!</h1>
+
+                <a class="button is-danger" @click="resetHistory">RESET Capture History</a>
             </section>
         </div>
     </div>
@@ -38,6 +50,10 @@
     import { remote, shell } from "electron"
     import saveConfig from "../save_config"
     import { writeFileSync, readFileSync } from "fs"
+    import SQLite3 from "better-sqlite3"
+    import * as os from "os"
+
+    const db = SQLite3(`${os.homedir()}/magiccap.db`)
 
     declare global {
         interface Window {
@@ -97,6 +113,12 @@
                     })()
                 })
             },
+            encode(type: String, data: any) {
+                return `==BEGIN MAGICCAP ${type}==\n${btoa(btoa(encodeURIComponent(JSON.stringify(data))))}`
+            },
+            decode(raw: String) {
+                return JSON.parse(decodeURIComponent(atob(atob(raw.split("\n").slice(1).join("\n")))))
+            },
             exportConfig() {
                 const config = window.config.o
 
@@ -106,7 +128,7 @@
 
                 // Convert to save format
                 // Double base64 encode to help keep plain-text logins & tokens safer
-                const data = `==BEGIN MAGICCAP CONFIG==\n${btoa(btoa(JSON.stringify(window.config.o)))}`
+                const data = this.encode("CONFIG", window.config.o)
 
                 // Save
                 this.saveConfig(data)
@@ -116,7 +138,21 @@
 
                 // Convert to save format
                 // Double base64 encode to help keep plain-text logins & tokens safer
-                const data = `==BEGIN MAGICCAP UPLOADERS==\n${btoa(btoa(JSON.stringify(exported)))}`
+                const data = this.encode("UPLOADERS", exported)
+
+                // Save
+                this.saveConfig(data)
+            },
+            exportHistory() {
+                const captures: any[] = []
+                const stmt = db.prepare("SELECT * FROM captures")
+                for (const i of stmt.iterate()) {
+                    captures.push(i)
+                }
+
+                // Convert to save format
+                // Double base64 encode to help keep plain-text logins & tokens safer
+                const data = this.encode("HISTORY", captures)
 
                 // Save
                 this.saveConfig(data)
@@ -127,7 +163,7 @@
                     filters: [
                         {
                             extensions: ["mconf"],
-                            name: "MagicCap Configuration File",
+                            name: "MagicCap Data File",
                         },
                     ],
                     // @ts-ignore
@@ -140,28 +176,48 @@
                             return
                         }
 
+                        // Parse raw
                         let action: Function
                         const raw = String(readFileSync(file[0]))
-                        const data = JSON.parse(atob(atob(raw.split("\n").slice(1).join("\n"))))
+                        let data: any
+                        try {
+                            data = this.decode(raw)
+                        } catch (_) {
+                            remote.dialog.showErrorBox("MagicCap", "Unable to parse mconf file")
+                            return
+                        }
+
+                        // Parse type
                         switch (raw.split("\n")[0]) {
                             case "==BEGIN MAGICCAP CONFIG==": {
                                 action = async () => {
-                                    console.log(data)
-                                    // for (const key in data) {
-                                    //     window.config.o[key] = data[key]
-                                    // }
-                                    // saveConfig()
+                                    for (const key in data) {
+                                        window.config.o[key] = data[key]
+                                    }
+                                    saveConfig()
                                 }
                                 break
                             }
                             case "==BEGIN MAGICCAP UPLOADERS==": {
                                 action = async () => {
                                     const parse = await window.mconf.parse(data)
-                                    console.log(parse)
-                                    // for (const key in data) {
-                                    //     window.config.o[key] = data[key]
-                                    // }
-                                    // saveConfig()
+                                    for (const key in data) {
+                                        window.config.o[key] = data[key]
+                                    }
+                                    saveConfig()
+                                }
+                                break
+                            }
+                            case "==BEGIN MAGICCAP HISTORY==": {
+                                action = async () => {
+                                    db.transaction(() => {
+                                        db.prepare("DELETE FROM captures WHERE 1").run()
+                                        for (const item of data) {
+                                            const keys = Object.keys(item)
+                                            const stmt = `INSERT INTO captures (${keys.join(", ")}) VALUES (${keys.map(x => `@${x}`).join(", ")})`
+                                            db.prepare(stmt).run(item)
+                                        }
+                                    })()
                                 }
                                 break
                             }
@@ -171,6 +227,7 @@
                             }
                         }
 
+                        // Confirm action
                         await remote.dialog.showMessageBox({
                             type: "warning",
                             buttons: ["Yes", "No"],
@@ -189,6 +246,25 @@
                             }
                         })
                     })()
+                })
+            },
+            resetHistory() {
+                remote.dialog.showMessageBox({
+                    type: "warning",
+                    buttons: ["Yes", "No"],
+                    title: "MagicCap",
+                    message: "This WILL remove ALL capture history from MagicCap. Do you want to continue?",
+                }, response => {
+                    switch (response) {
+                        case 0: {
+                            try {
+                                db.prepare("DELETE FROM captures WHERE 1").run()
+                            } catch (err) {
+                                remote.dialog.showErrorBox("MagicCap", `${err.message}`)
+                            }
+                            break
+                        }
+                    }
                 })
             },
             showDebug() {
