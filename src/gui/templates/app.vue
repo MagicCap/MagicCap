@@ -45,22 +45,22 @@
                             data-tooltip-position="right">
                             <i class="fas fa-pencil-ruler"></i> Selector Settings</a>
                     </li>
+                    <li>
+                        <a
+                            @click="toggleCoreModal('AppSettings')"
+                            data-tooltip="Change application settings and view information"
+                            data-tooltip-position="right">
+                            <i class="fas fa-cogs"></i> App Settings</a>
+                    </li>
 
                     <li><hr/></li>
 
                     <li>
                         <a
-                            @click="toggleCoreModal('About')"
-                            data-tooltip="View the version and authors"
-                            data-tooltip-position="right">
-                            <i class="fas fa-info"></i> About</a>
-                    </li>
-                    <li>
-                        <a
                             @click="toggleCoreModal('Updates')"
                             data-tooltip="Check for updates and toggle receiving beta updates"
                             data-tooltip-position="right">
-                            <i class="fas fa-cogs"></i> Updates</a>
+                            <i class="fas fa-cloud-download-alt"></i> Updates</a>
                     </li>
                     <li>
                         <a
@@ -116,7 +116,7 @@
         <HotkeySettings ref="HotkeySettings"></HotkeySettings>
         <UploaderConfig ref="UploaderConfig"></UploaderConfig>
         <Debug ref="Debug"></Debug>
-        <About ref="About" @debug-show="toggleCoreModal('Debug')"></About>
+        <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')"></AppSettings>
         <Updates ref="Updates"></Updates>
         <Docs ref="Docs"></Docs>
         <SelectorSettings ref="SelectorSettings"></SelectorSettings>
@@ -132,7 +132,7 @@
     import FileConfig from "./file_configuration"
     import HotkeySettings from "./hotkey_settings"
     import UploaderConfig from "./uploader_config"
-    import About from "./about"
+    import AppSettings from "./app_settings"
     import Debug from "./debug"
     import Updates from "./updates"
     import Docs from "./docs"
@@ -155,7 +155,7 @@
             FileConfig,
             HotkeySettings,
             UploaderConfig,
-            About,
+            AppSettings,
             Debug,
             Updates,
             Docs,

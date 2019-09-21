@@ -6,11 +6,14 @@
                 <p class="modal-card-title">Updates</p>
             </header>
             <section class="modal-card-body">
+                <h1 class="modal-card-title"><small class="muted">You are currently using</small> MagicCap v{{ version }}</h1>
                 <p>Although MagicCap will automatically check for updates, you can always manually check for updates to ensure you are on the latest update.</p>
                 <br/>
                 <p><a class="button" href="#" @click="checkForUpdates">{{ check }}</a></p>
+
                 <hr/>
-                <p class="modal-card-title">Beta Updates</p>
+
+                <h1 class="modal-card-title">Beta Updates</h1>
                 <p>Beta updates provide newer features and improved functionality, but before stable release some aspects may not be functional or may prove to be unstable.</p>
                 <br/>
                 <label class="input_container">Only get stable updates.
@@ -42,10 +45,11 @@
     }
 
     export default Vue.extend({
-        name: "About",
+        name: "Updates",
         data() {
             return {
                 active: false,
+                version: remote.app.getVersion(),
                 action: Boolean(window.config.o.beta_channel),
                 check: "Check for Updates",
             }
