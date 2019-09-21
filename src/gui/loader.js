@@ -1,3 +1,7 @@
+// This code is a part of MagicCap which is a MPL-2.0 licensed project.
+// Copyright (C) Jake Gealer <jake@gealer.email> 2019.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+
 import { ipcRenderer, remote } from "electron"
 
 window.onload = () => {
@@ -15,6 +19,10 @@ document.addEventListener("keydown", e => {
     // and also, ctrl (for Linux) or Cmd (meta, macOS) is held down
     if (e.code == "KeyI" && e.altKey && (e.ctrlKey || e.metaKey)) {
         remote.getCurrentWindow().webContents.toggleDevTools()
+    }
+    // Allow Cmd+W to close the GUI on macOS
+    if (e.code == "KeyW" && e.metaKey) {
+        window.close()
     }
 })
 
