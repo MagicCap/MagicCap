@@ -3,11 +3,9 @@
 
 // Requirements for initialisation.
 import { existsSync, renameSync, unlinkSync } from "fs"
-import { ensureDir } from "fs-nextra"
-import darkThemeInformation from "./system_dark_theme"
-import { sep, join } from "path"
+import { join } from "path"
 import { homedir } from "os"
-import { app, Notification } from "electron"
+import { Notification } from "electron"
 import newInstallId from "./install_id"
 import { init } from "@sentry/electron"
 import liteTouchConfig from "./lite_touch"
@@ -43,30 +41,8 @@ db.exec("CREATE TABLE IF NOT EXISTS tokens (token TEXT NOT NULL, expires INTEGER
 // Requires the config.
 import config from "./config"
 
-/**
- * Creates the default config.
- * @returns The default config object.
- */
-async function getDefaultConfig() {
-    let picsDir = app.getPath("pictures")
-    picsDir += `${sep}MagicCap${sep}`
-    let defaultConfig = {
-        hotkey: null,
-        upload_capture: true,
-        uploader_type: "magiccap",
-        clipboard_action: 2,
-        save_capture: true,
-        save_path: picsDir,
-        light_theme: !await darkThemeInformation(),
-        install_id: await newInstallId(),
-    }
-    await ensureDir(defaultConfig.save_path).catch(async error => {
-        if (!(error.errno === -4075 || error.errno === -17)) {
-            delete defaultConfig.save_path
-        }
-    })
-    return defaultConfig
-}
+// Requires the default config.
+import getDefaultConfig from "./default_config"
 
 // Puts the lite touch configuration into memory if it exists.
 if (!liteTouchConfig) {

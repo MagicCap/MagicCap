@@ -40,6 +40,7 @@
                 <h1 class="modal-card-title">Danger Zone!</h1>
 
                 <a class="button is-danger" @click="resetHistory">RESET Capture History</a>
+                <a class="button is-danger" @click="resetConfig">RESET All MagicCap Settings</a>
             </section>
         </div>
     </div>
@@ -52,6 +53,7 @@
     import { writeFileSync, readFileSync } from "fs"
     import SQLite3 from "better-sqlite3"
     import * as os from "os"
+    import { ipcRenderer } from "electron"
 
     const db = SQLite3(`${os.homedir()}/magiccap.db`)
 
@@ -195,10 +197,16 @@
                             case "==BEGIN MAGICCAP CONFIG==": {
                                 warning = "This WILL overwrite ALL values in your MagicCap config to match the configuration file. Do you want to continue?"
                                 action = async () => {
+                                    // Clean install specific items
+                                    if("ffmpeg_path" in data) delete data.ffmpeg_path
+                                    if("install_id" in data) delete data.install_id
+
+                                    // Apply
                                     for (const key in data) {
                                         window.config.o[key] = data[key]
                                     }
                                     saveConfig()
+                                    ipcRenderer.send("restartWindow")
                                 }
                                 break
                             }
@@ -210,6 +218,7 @@
                                         window.config.o[key] = parse[key]
                                     }
                                     saveConfig()
+                                    ipcRenderer.send("restartWindow")
                                 }
                                 break
                             }
@@ -224,6 +233,7 @@
                                             db.prepare(stmt).run(item)
                                         }
                                     })()
+                                    ipcRenderer.send("restartWindow")
                                 }
                                 break
                             }
@@ -265,6 +275,34 @@
                         case 0: {
                             try {
                                 db.prepare("DELETE FROM captures WHERE 1").run()
+                            } catch (err) {
+                                remote.dialog.showErrorBox("MagicCap", `${err.message}`)
+                            }
+                            break
+                        }
+                    }
+                })
+            },
+            resetConfig() {
+                remote.dialog.showMessageBox({
+                    type: "warning",
+                    buttons: ["Yes", "No"],
+                    title: "MagicCap",
+                    message: "This WILL reset ALL your settings in MagicCap to their defaults. Do you want to continue?",
+                }, response => {
+                    switch (response) {
+                        case 0: {
+                            try {
+                                ipcRenderer.send("get-default-config")
+                                ipcRenderer.once("get-default-config-res", (_: any, res: any) => {
+                                    const oldConfig = {...window.config.o}
+                                    const newConfig = res
+                                    newConfig.install_id = oldConfig.install_id
+                                    newConfig.ffmpeg_path = oldConfig.ffmpeg_path
+                                    window.config.o = newConfig
+                                    saveConfig()
+                                    ipcRenderer.send("restartWindow")
+                                })
                             } catch (err) {
                                 remote.dialog.showErrorBox("MagicCap", `${err.message}`)
                             }
