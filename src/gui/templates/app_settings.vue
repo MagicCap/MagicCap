@@ -86,7 +86,7 @@
                 remote.app.setLoginItemSettings({openAtLogin: window.config.o.open_login})
                 saveConfig()
             },
-            saveConfig(data: String) {
+            saveConfig(data: string) {
                 // Save config
                 remote.dialog.showSaveDialog({
                     title: "Save file...",
@@ -113,11 +113,16 @@
                     })()
                 })
             },
-            encode(type: String, data: any) {
-                return `==BEGIN MAGICCAP ${type}==\n${btoa(btoa(encodeURIComponent(JSON.stringify(data))))}`
+            encode(type: string, data: any) {
+                const json = encodeURIComponent(JSON.stringify(data))
+                // Double base64 encode to help keep plain-text logins & tokens safer
+                const encoded = btoa(btoa(json))
+                return `==BEGIN MAGICCAP ${type}==\n${encoded}`
             },
-            decode(raw: String) {
-                return JSON.parse(decodeURIComponent(atob(atob(raw.split("\n").slice(1).join("\n")))))
+            decode(raw: string) {
+                const data = raw.split("\n").slice(1).join("\n")
+                const decoded = atob(atob(data))
+                return JSON.parse(decodeURIComponent(decoded))
             },
             exportConfig() {
                 const config = window.config.o
@@ -127,7 +132,6 @@
                 if("install_id" in config) delete config.install_id
 
                 // Convert to save format
-                // Double base64 encode to help keep plain-text logins & tokens safer
                 const data = this.encode("CONFIG", window.config.o)
 
                 // Save
@@ -137,21 +141,19 @@
                 const exported = window.mconf.newConfig()
 
                 // Convert to save format
-                // Double base64 encode to help keep plain-text logins & tokens safer
                 const data = this.encode("UPLOADERS", exported)
 
                 // Save
                 this.saveConfig(data)
             },
             exportHistory() {
-                const captures: any[] = []
+                const captures: Object[] = []
                 const stmt = db.prepare("SELECT * FROM captures")
                 for (const i of stmt.iterate()) {
                     captures.push(i)
                 }
 
                 // Convert to save format
-                // Double base64 encode to help keep plain-text logins & tokens safer
                 const data = this.encode("HISTORY", captures)
 
                 // Save
