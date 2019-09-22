@@ -1,0 +1,19 @@
+name: Build
+on:
+  project_column:
+    types: [published]
+
+jobs:
+  linux_build:
+    name: Build on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run Dockerfile to build project
+        run: ./docker_build.sh
+      - name: Upload to DigitalOcean Spaces (pretty much from https://github.com/do-community/dns-tool/blob/master/.github/workflows/main.yml#L36:L41)
+        run: mv ./magiccap-linux.zip ./build/magiccap-linux.zip && aws s3 sync ./build s3://${{ secrets.SPACES_BUCKET }}/${{ github.ref }} --endpoint=https://${{ secrets.SPACES_REGION }}.digitaloceanspaces.com --acl public-read --content-encoding utf8
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.SPACES_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SPACES_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.SPACES_REGION }}
