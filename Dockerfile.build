@@ -1,0 +1,6 @@
+FROM jakemakesstuff/magiccap-linux-base
+WORKDIR /var/magiccap
+COPY . .
+RUN npm i
+RUN apk add zip
+ENTRYPOINT npm run linuxcompile && cd ./build/MagicCap-linux-x64 && zip -9 -r ./magiccap-linux.zip . && cp ./magiccap-linux.zip /out/magiccap-linux.zip

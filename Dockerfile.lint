@@ -1,0 +1,5 @@
+FROM jakemakesstuff/magiccap-linux-base
+WORKDIR /var/magiccap
+COPY . .
+RUN npm i
+RUN npm run lint
