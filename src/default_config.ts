@@ -1,3 +1,7 @@
+// This code is a part of MagicCap which is a MPL-2.0 licensed project.
+// Copyright (C) Jake Gealer <jake@gealer.email> 2019.
+// Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+
 import { app } from "electron"
 import { sep } from "path"
 import darkThemeInformation from "./system_dark_theme"
