@@ -54,6 +54,11 @@ a, button, .button, .delete {
     cursor: default;
 }
 
+small.muted {
+    opacity: .75;
+    font-size: .75em;
+}
+
 .url {
     cursor: pointer;
 }

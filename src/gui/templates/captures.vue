@@ -73,6 +73,7 @@
                 await shell.openItem(filePath)
             },
             toggle() {
+                getCaptures()
                 this.$data.active = !this.$data.active
             },
         },
