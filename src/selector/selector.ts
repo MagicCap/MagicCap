@@ -21,6 +21,7 @@ declare const payload: {
     };
     imageUrl: string;
     magnifier: boolean;
+    scaleFactor: number;
 }
 
 // Defines the primary colour.
@@ -179,7 +180,7 @@ document.body.onmousedown = async e => {
     firstClick = electron.screen.getCursorScreenPoint()
 
     // Yeah fuck you Ubuntu.
-    const scaleFactor = process.platform === "linux" ? electron.screen.getDisplayNearestPoint(firstClick).scaleFactor : 1
+    const scaleFactor = process.platform === "linux" ? payload.scaleFactor : 1
 
     firstClick.nonScaleAwarePageX = e.pageX
     firstClick.nonScaleAwarePageY = e.pageY
@@ -302,9 +303,7 @@ async function moveSelectorMagnifier() {
     const x = actualMousePoint.x - payload.bounds.x
     const y = actualMousePoint.y - payload.bounds.y
 
-    // Fuck you too Ubuntu.
-    const theDisplay = electron.screen.getDisplayNearestPoint(actualMousePoint)
-    const scaleFactor = process.platform === "linux" ? theDisplay.scaleFactor : 1
+    const scaleFactor = payload.scaleFactor
     const actualX = Math.floor(actualMousePoint.x * scaleFactor)
     const actualY = Math.floor(actualMousePoint.y * scaleFactor)
 
@@ -455,10 +454,7 @@ function xssProtect(data: string) {
 document.body.onmouseup = async e => {
     if (uploaderProperties.contains(e.target as Node)) return
 
-    // Fuck you too Ubuntu.
-    const actualMousePoint = electron.screen.getCursorScreenPoint()
-    const theDisplay = electron.screen.getDisplayNearestPoint(actualMousePoint)
-    const scaleFactor = process.platform === "linux" ? theDisplay.scaleFactor : 1
+    const scaleFactor = payload.scaleFactor
 
     const thisClick = electron.screen.getCursorScreenPoint()
 
@@ -548,6 +544,7 @@ document.body.onmouseup = async e => {
             left, top, edit,
         })
         selectionBlackness.style.backgroundImage = `url(${URL.createObjectURL(new Blob([edit] as BlobPart[], { type: "image/png" }))})`
+        selectionBlackness.style.backgroundSize = "cover"
         selectionBlackness.id = displayEdits.length.toString()
         document.body.appendChild(selectionBlackness)
         element.style.top = "-10px"

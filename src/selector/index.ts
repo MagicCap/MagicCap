@@ -53,6 +53,7 @@ expressApp.get("/selector/render", async(req, res) => {
         const display = Number(req.query.display)
         const imageUrl = `http://127.0.0.1:61222/screenshot?key=${screenshotServerKey}&display=${display}`
         const payload = JSON.stringify({
+            scaleFactor: req.query.scaleFactor,
             display: display,
             uuid: req.query.uuid,
             bounds: JSON.parse(req.query.bounds),
@@ -201,7 +202,7 @@ const spawnWindows = (displays: Display[], primaryId: any) => {
             win.focus()
             if (captureDev) win.webContents.openDevTools()
         })
-        win.loadURL(`http://127.0.0.1:61222/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
+        win.loadURL(`http://127.0.0.1:61222/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}&scaleFactor=${i.scaleFactor}`)
         win.setVisibleOnAllWorkspaces(true)
         win.setPosition(i.bounds.x, i.bounds.y)
         win.setMovable(false)
