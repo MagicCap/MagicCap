@@ -8,6 +8,18 @@
             <section class="modal-card-body">
                 <h1 class="modal-card-title">MagicCap Application Settings</h1>
 
+                <h1 class="modal-card-title">About: <small class="muted">MagicCap v{{ version }}</small></h1>
+
+                <p>Copyright (C) Jake Gealer, Rhys O'Kane &amp; Matt Cowley 2018-2019.</p>
+                <p>This software is licensed under the <a @click="openMPL" class="url">MPL-2.0</a> license.</p>
+                <p v-if="liteTouch">Some settings are managed by your system administrator.</p>
+                <p>
+                    <br/>
+                    <small><a class="button is-small" @click="showDebug">Debug Information</a></small>
+                </p>
+
+                <hr/>
+
                 <label class="input_container">Open MagicCap at login.
                     <input type="checkbox" id="OpenAtLogin" v-on:click="saveOpenAtLogin()" :checked="OpenAtLoginI">
                     <span class="custom_input"></span>
@@ -22,18 +34,6 @@
                 <a class="button is-info" @click="exportHistory">Export Capture History</a>
                 <br/><br/>
                 <a class="button is-primary" @click="importMconf">Import MagicCap Data File (.mconf)</a>
-
-                <hr/>
-
-                <h1 class="modal-card-title">About: <small class="muted">MagicCap v{{ version }}</small></h1>
-
-                <p>Copyright (C) Jake Gealer, Rhys O'Kane &amp; Matt Cowley 2018-2019.</p>
-                <p>This software is licensed under the <a @click="openMPL" class="url">MPL-2.0</a> license.</p>
-                <p v-if="liteTouch">Some settings are managed by your system administrator.</p>
-                <p>
-                    <br/>
-                    <small><a class="button is-small" @click="showDebug">Debug Information</a></small>
-                </p>
 
                 <hr/>
 

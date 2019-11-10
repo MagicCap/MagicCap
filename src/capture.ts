@@ -147,6 +147,7 @@ export default class CaptureCore {
                 }
                 if (!this._fp && config.o.save_capture && config.o.save_path) {
                     // We need to save this and tailor the return.
+                    await fsnextra.ensureDir(config.o.save_path)
                     this._fp = `${config.o.save_path}${this._filename}`
                     await fsnextra.writeFile(this._fp, this.buffer)
                 }
