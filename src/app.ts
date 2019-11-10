@@ -173,6 +173,7 @@ async function openConfig() {
         webPreferences: {
             nodeIntegration: true,
         },
+        autoHideMenuBar: true,
     })
     if (process.platform !== "darwin") {
         window.setIcon(nativeImage.createFromPath(`${__dirname}/icons/taskbar.png`))
