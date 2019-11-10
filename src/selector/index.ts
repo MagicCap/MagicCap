@@ -227,6 +227,22 @@ ipcMain.on("event-send", (_: any, args: any) => {
     }
 })
 
+
+/**
+ * Gets all the displays in order.
+ */
+const getOrderedDisplays = () => screen.getAllDisplays().sort((a, b) => {
+    let sub = a.bounds.x - b.bounds.x
+    if (sub === 0) {
+        if (a.bounds.y > b.bounds.y) {
+            sub -= 1
+        } else {
+            sub += 1
+        }
+    }
+    return sub
+})
+
 // Opens the region selector.
 export default async(buttons: any[]) => {
     if (selectorActive) {
@@ -302,6 +318,15 @@ export default async(buttons: any[]) => {
             if (args === undefined) {
                 res(null)
             } else {
+                const displayInfo = displays[args.display]
+                const ordered = getOrderedDisplays()
+                let actualDisplayIndex = 0
+                for (const d in ordered) {
+                    if (ordered[d].id === displayInfo.id) {
+                        actualDisplayIndex = Number(d)
+                        break
+                    }
+                }
                 res({
                     start: {
                         x: args.startX,
@@ -315,7 +340,7 @@ export default async(buttons: any[]) => {
                         pageX: args.endPageX,
                         pageY: args.endPageY,
                     },
-                    display: args.display,
+                    display: actualDisplayIndex,
                     screenshots: screenshots,
                     activeWindows: activeWindows,
                     selections: args.selections,
