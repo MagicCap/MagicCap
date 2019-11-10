@@ -295,7 +295,7 @@ export default async(buttons: any[]) => {
     const promises = [];
     (() => {
         for (const d in displays) {
-            const promise = screenshotter({ screen: Number(d) })
+            const promise = screenshotter({ format: "png", screen: Number(d) })
             promise
             promises.push(promise)
             uuids.push(uuidv4())
