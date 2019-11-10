@@ -283,11 +283,11 @@ function setCrossHairSize(guides: number, center: number) {
 const magnifyElement = document.getElementById("magnify")!
 
 // Handle motion.
-let motion: boolean = false
+let motion = false
 let motionX = 0
 let motionY = 0
 let active = false
-const motionEvent = async () => {
+const motionEvent = async() => {
     // Sets as active.
     active = true
 
