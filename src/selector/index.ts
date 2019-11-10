@@ -4,17 +4,17 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the required imports.
-import { ipcMain, BrowserWindow, Display, screen, app } from "electron"
+import { ipcMain, BrowserWindow, Display, screen } from "electron"
 import * as uuidv4 from "uuid/v4"
 import * as os from "os"
 import * as path from "path"
 import { spawn } from "child_process"
-import httpBufferPromise from "./http-buffer-promise"
 import * as sharp from "sharp"
 import { readFile } from "fs-nextra"
 import config from "../config"
 import expressApp from "../web_server"
-import fetch from "node-fetch"
+// @ts-ignore
+import * as screenshotter from "screenshot-desktop"
 
 // Defines all UUID's.
 let uuids: string[] = []
@@ -28,24 +28,8 @@ let screenshots: Buffer[] = []
 // Defines all of the buttons.
 let globalButtons: any[] = []
 
-// Defines the platform.
-const platform = os.platform()
-let fullPlatform = platform
-if (platform === "win32") {
-    fullPlatform += ".exe"
-}
-
-// Defines the HTTP server for the Go.
-const LOWEST_PORT = 63000
-const HIGHEST_PORT = 63999
-const port = Math.floor(Math.random() * (+HIGHEST_PORT - +LOWEST_PORT)) + +LOWEST_PORT
-const screenshotServer = spawn(`${__dirname}${path.sep}bin${path.sep}screenshot-display-${fullPlatform}`, [`${port}`])
-let screenshotServerKey: string
-screenshotServer.stdout.on("data", key => {
-    if (!screenshotServerKey) {
-        screenshotServerKey = key.toString()
-    }
-})
+// Defines the internal key.
+const screenshotServerKey = uuidv4()
 
 // Defines all of the routes needed for the actual screenshotting.
 expressApp.get("/screenshot", (req, res) => {
@@ -226,28 +210,6 @@ const spawnWindows = (displays: Display[], primaryId: any) => {
     return windows
 }
 
-/**
- * Gets all the displays in order.
- */
-const getOrderedDisplays = () => screen.getAllDisplays().sort((a, b) => {
-    let sub = a.bounds.x - b.bounds.x
-    if (sub === 0) {
-        if (a.bounds.y > b.bounds.y) {
-            sub -= 1
-        } else {
-            sub += 1
-        }
-    }
-    return sub
-})
-
-// Reload the displays in the Go code.
-const reloadGoDisplays = () => fetch(`http://127.0.0.1:${port}/reload`)
-app.on("ready", () => {
-    screen.on("display-added", reloadGoDisplays)
-    screen.on("display-removed", reloadGoDisplays)
-})
-
 // Defines if the selector is active.
 let selectorActive = false
 
@@ -273,7 +235,7 @@ export default async(buttons: any[]) => {
 
     globalButtons = buttons
 
-    const displays = getOrderedDisplays()
+    const displays = screen.getAllDisplays()
 
     let primaryId = 0
     const x = screen.getPrimaryDisplay().id
@@ -314,8 +276,8 @@ export default async(buttons: any[]) => {
     uuids = []
     const promises = [];
     (() => {
-        for (const displayId in displays) {
-            const promise = httpBufferPromise(`http://127.0.0.1:${port}/?key=${screenshotServerKey}&display=${displayId}`)
+        for (const d in displays) {
+            const promise = screenshotter({ screen: Number(d) })
             promise
             promises.push(promise)
             uuids.push(uuidv4())

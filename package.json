@@ -35,6 +35,7 @@
         "request": "^2.88.0",
         "request-progress": "^3.0.0",
         "safe-eval": "0.4.1",
+        "screenshot-desktop": "^1.10.0",
         "sharp": "0.22.1",
         "ssh2-sftp-client": "^2.5.0",
         "streamifier": "^0.1.1",
