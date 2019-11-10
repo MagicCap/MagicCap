@@ -692,8 +692,8 @@ ipcRenderer.on("event-recv", (_: any, res: any) => {
                 endPageY: payload.bounds.height,
                 display: payload.display,
                 selections: selections,
-                width: payload.bounds.width,
-                height: payload.bounds.height,
+                width: payload.bounds.width * payload.scaleFactor,
+                height: payload.bounds.height * payload.scaleFactor,
                 displayEdits,
             })
             break
