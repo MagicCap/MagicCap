@@ -17,6 +17,7 @@
         "async-lock": "^1.2.0",
         "better-sqlite3": "5.4.0",
         "chainfetch": "^1.2.2",
+        "cors": "^2.8.5",
         "electron-progressbar": "github:whiteadi/electron-progressbar",
         "emojilib": "^2.4.0",
         "express": "^4.16.4",
