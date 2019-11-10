@@ -327,6 +327,12 @@ export default async(buttons: any[]) => {
                         break
                     }
                 }
+                const orderedScreenshots: Buffer[] = []
+                for (const d of ordered) {
+                    for (const index in displays) {
+                        if (displays[index].id === d.id) orderedScreenshots.push(screenshots[index])
+                    }
+                }
                 res({
                     start: {
                         x: args.startX,
@@ -341,12 +347,13 @@ export default async(buttons: any[]) => {
                         pageY: args.endPageY,
                     },
                     display: actualDisplayIndex,
-                    screenshots: screenshots,
+                    screenshots: orderedScreenshots,
                     activeWindows: activeWindows,
                     selections: args.selections,
                     width: args.width,
                     height: args.height,
                     displayEdits: args.displayEdits,
+                    scaleFactor: displayInfo.scaleFactor,
                 })
             }
         })

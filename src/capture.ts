@@ -354,10 +354,10 @@ export default class CaptureCore {
                 }
 
                 const cropped = await sharpDesktop.extract({
-                    top: Math.floor(selection.start.pageY),
-                    left: Math.floor(selection.start.pageX),
-                    width: Math.floor(selection.width),
-                    height: Math.floor(selection.height),
+                    top: Math.floor(selection.start.pageY * selection.scaleFactor),
+                    left: Math.floor(selection.start.pageX * selection.scaleFactor),
+                    width: Math.floor(selection.width * selection.scaleFactor),
+                    height: Math.floor(selection.height * selection.scaleFactor),
                 }).toBuffer()
 
                 cls.buffer = cropped
