@@ -279,11 +279,51 @@ function setCrossHairSize(guides: number, center: number) {
     cursor.style.height = `${center}px`
 }
 
+// Defines the magnify element.
+const magnifyElement = document.getElementById("magnify")!
+
+// Handle motion.
+let motion: boolean = false
+let motionX = 0
+let motionY = 0
+let active = false
+const motionEvent = async () => {
+    // Sets as active.
+    active = true
+
+    // Gets the URL.
+    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${motionX}&y=${motionY}`)
+    const urlPart = URL.createObjectURL(await fetchReq.blob())
+
+    // Determine brightness & threshold (max 255)
+    const brightness = await getImageBrightness(urlPart)
+    const brightnessThreshold = 100
+
+    // Decide which crosshair to use
+    let crosshair = "crosshair.png"
+    if ((brightness as number) < brightnessThreshold) crosshair = "crosshair_white.png"
+
+    // Apply new magnifier image & crosshair
+    magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/${crosshair}"), url(${urlPart})`
+
+    // Sets as inactive.
+    active = false
+}
+setInterval(() => {
+    if (active) {
+        return
+    }
+
+    if (motion) {
+        motion = false
+        motionEvent()
+    }
+}, 15)
+
 /**
  * Moves the selector magnifier
  */
 async function moveSelectorMagnifier() {
-    const magnifyElement = document.getElementById("magnify")!
     const positionElement = document.getElementById("position")!
 
     if (!magnifierState) {
@@ -337,20 +377,10 @@ async function moveSelectorMagnifier() {
     positionElement.style.left = `${magnifyX + magnifyOffset}px`
     positionElement.style.top = `${magnifyY + magnifyOffset + magnifyElement.getBoundingClientRect().height}px`
 
-    // Get the new magnifier image
-    const fetchReq = await fetch(`http://127.0.0.1:${payload.server.port}/selector/magnify?key=${payload.server.key}&display=${payload.display}&height=25&width=25&x=${actualX - payload.bounds.x}&y=${actualY - payload.bounds.y}`)
-    const urlPart = URL.createObjectURL(await fetchReq.blob())
-
-    // Determine brightness & threshold (max 255)
-    const brightness = await getImageBrightness(urlPart)
-    const brightnessThreshold = 100
-
-    // Decide which crosshair to use
-    let crosshair = "crosshair.png"
-    if ((brightness as number) < brightnessThreshold) crosshair = "crosshair_white.png"
-
-    // Apply new magnifier image & crosshair
-    magnifyElement.style.backgroundImage = `url("http://127.0.0.1:${payload.server.port}/root/${crosshair}"), url(${urlPart})`
+    // Sets the mouse in motion.
+    motion = true
+    motionX = actualX - payload.bounds.x
+    motionY = actualY - payload.bounds.y
 }
 
 /**

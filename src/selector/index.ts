@@ -117,10 +117,12 @@ expressApp.get("/selector/magnify", async(req, res) => {
         if (cache !== undefined) {
             region = cache
         } else {
+            const load = sharp(screenshots[display])
+
             let left = x - Math.round(width / 2)
             let top = y - Math.round(height / 2)
 
-            const metadata = await sharp(screenshots[display]).metadata()
+            const metadata = await load.metadata()
 
             let topBlackness = 0
             let bottomBlackness = 0
@@ -159,7 +161,7 @@ expressApp.get("/selector/magnify", async(req, res) => {
             if (!captureHeight || captureHeight < 0) captureHeight = 1
             if (!captureWidth || captureWidth < 0) captureWidth = 1
 
-            let captureRegion = await sharp(screenshots[display])
+            let captureRegion = await load
                 .extract({ left, top, height: captureHeight, width: captureWidth })
                 .toBuffer()
 
@@ -227,7 +229,6 @@ ipcMain.on("event-send", (_: any, args: any) => {
         })
     }
 })
-
 
 /**
  * Gets all the displays in order.
