@@ -147,6 +147,7 @@ export default class CaptureCore {
                 }
                 if (!this._fp && config.o.save_capture && config.o.save_path) {
                     // We need to save this and tailor the return.
+                    await fsnextra.ensureDir(config.o.save_path)
                     this._fp = `${config.o.save_path}${this._filename}`
                     await fsnextra.writeFile(this._fp, this.buffer)
                 }
@@ -322,8 +323,8 @@ export default class CaptureCore {
             if (gif) {
                 inGif = true
                 const success = await gifman.start(
-                    30, selection.start.pageX, selection.start.pageY,
-                    selection.width, selection.height, thisDisplay
+                    30, Math.floor(selection.start.pageX / thisDisplay.scaleFactor), Math.floor(selection.start.pageY / thisDisplay.scaleFactor),
+                    Math.floor(selection.width / thisDisplay.scaleFactor), Math.floor(selection.height / thisDisplay.scaleFactor), thisDisplay
                 )
                 if (!success) {
                     throw new Error("Screenshot cancelled.")

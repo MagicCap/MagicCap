@@ -4,17 +4,17 @@
 // Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
 
 // Defines the required imports.
-import { ipcMain, BrowserWindow, Display, screen, app } from "electron"
+import { ipcMain, BrowserWindow, Display, screen } from "electron"
 import * as uuidv4 from "uuid/v4"
 import * as os from "os"
 import * as path from "path"
 import { spawn } from "child_process"
-import httpBufferPromise from "./http-buffer-promise"
 import * as sharp from "sharp"
 import { readFile } from "fs-nextra"
 import config from "../config"
 import expressApp from "../web_server"
-import fetch from "node-fetch"
+// @ts-ignore
+import * as screenshotter from "screenshot-desktop"
 
 // Defines all UUID's.
 let uuids: string[] = []
@@ -28,24 +28,8 @@ let screenshots: Buffer[] = []
 // Defines all of the buttons.
 let globalButtons: any[] = []
 
-// Defines the platform.
-const platform = os.platform()
-let fullPlatform = platform
-if (platform === "win32") {
-    fullPlatform += ".exe"
-}
-
-// Defines the HTTP server for the Go.
-const LOWEST_PORT = 63000
-const HIGHEST_PORT = 63999
-const port = Math.floor(Math.random() * (+HIGHEST_PORT - +LOWEST_PORT)) + +LOWEST_PORT
-const screenshotServer = spawn(`${__dirname}${path.sep}bin${path.sep}screenshot-display-${fullPlatform}`, [`${port}`])
-let screenshotServerKey: string
-screenshotServer.stdout.on("data", key => {
-    if (!screenshotServerKey) {
-        screenshotServerKey = key.toString()
-    }
-})
+// Defines the internal key.
+const screenshotServerKey = uuidv4()
 
 // Defines all of the routes needed for the actual screenshotting.
 expressApp.get("/screenshot", (req, res) => {
@@ -69,6 +53,7 @@ expressApp.get("/selector/render", async(req, res) => {
         const display = Number(req.query.display)
         const imageUrl = `http://127.0.0.1:61222/screenshot?key=${screenshotServerKey}&display=${display}`
         const payload = JSON.stringify({
+            scaleFactor: req.query.scaleFactor,
             display: display,
             uuid: req.query.uuid,
             bounds: JSON.parse(req.query.bounds),
@@ -132,10 +117,12 @@ expressApp.get("/selector/magnify", async(req, res) => {
         if (cache !== undefined) {
             region = cache
         } else {
+            const load = sharp(screenshots[display])
+
             let left = x - Math.round(width / 2)
             let top = y - Math.round(height / 2)
 
-            const metadata = await sharp(screenshots[display]).metadata()
+            const metadata = await load.metadata()
 
             let topBlackness = 0
             let bottomBlackness = 0
@@ -174,7 +161,7 @@ expressApp.get("/selector/magnify", async(req, res) => {
             if (!captureHeight || captureHeight < 0) captureHeight = 1
             if (!captureWidth || captureWidth < 0) captureWidth = 1
 
-            let captureRegion = await sharp(screenshots[display])
+            let captureRegion = await load
                 .extract({ left, top, height: captureHeight, width: captureWidth })
                 .toBuffer()
 
@@ -217,7 +204,7 @@ const spawnWindows = (displays: Display[], primaryId: any) => {
             win.focus()
             if (captureDev) win.webContents.openDevTools()
         })
-        win.loadURL(`http://127.0.0.1:61222/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}`)
+        win.loadURL(`http://127.0.0.1:61222/selector/render?uuid=${uuid}&primary=${primary ? "1" : "0"}&display=${index}&bounds=${encodeURIComponent(JSON.stringify(bounds))}&key=${screenshotServerKey}&scaleFactor=${i.scaleFactor}`)
         win.setVisibleOnAllWorkspaces(true)
         win.setPosition(i.bounds.x, i.bounds.y)
         win.setMovable(false)
@@ -225,28 +212,6 @@ const spawnWindows = (displays: Display[], primaryId: any) => {
     }
     return windows
 }
-
-/**
- * Gets all the displays in order.
- */
-const getOrderedDisplays = () => screen.getAllDisplays().sort((a, b) => {
-    let sub = a.bounds.x - b.bounds.x
-    if (sub === 0) {
-        if (a.bounds.y > b.bounds.y) {
-            sub -= 1
-        } else {
-            sub += 1
-        }
-    }
-    return sub
-})
-
-// Reload the displays in the Go code.
-const reloadGoDisplays = () => fetch(`http://127.0.0.1:${port}/reload`)
-app.on("ready", () => {
-    screen.on("display-added", reloadGoDisplays)
-    screen.on("display-removed", reloadGoDisplays)
-})
 
 // Defines if the selector is active.
 let selectorActive = false
@@ -265,6 +230,21 @@ ipcMain.on("event-send", (_: any, args: any) => {
     }
 })
 
+/**
+ * Gets all the displays in order.
+ */
+const getOrderedDisplays = () => screen.getAllDisplays().sort((a, b) => {
+    let sub = a.bounds.x - b.bounds.x
+    if (sub === 0) {
+        if (a.bounds.y > b.bounds.y) {
+            sub -= 1
+        } else {
+            sub += 1
+        }
+    }
+    return sub
+})
+
 // Opens the region selector.
 export default async(buttons: any[]) => {
     if (selectorActive) {
@@ -273,7 +253,7 @@ export default async(buttons: any[]) => {
 
     globalButtons = buttons
 
-    const displays = getOrderedDisplays()
+    const displays = screen.getAllDisplays()
 
     let primaryId = 0
     const x = screen.getPrimaryDisplay().id
@@ -314,8 +294,8 @@ export default async(buttons: any[]) => {
     uuids = []
     const promises = [];
     (() => {
-        for (const displayId in displays) {
-            const promise = httpBufferPromise(`http://127.0.0.1:${port}/?key=${screenshotServerKey}&display=${displayId}`)
+        for (const d in displays) {
+            const promise = screenshotter({ format: "png", screen: Number(d) })
             promise
             promises.push(promise)
             uuids.push(uuidv4())
@@ -340,6 +320,21 @@ export default async(buttons: any[]) => {
             if (args === undefined) {
                 res(null)
             } else {
+                const displayInfo = displays[args.display]
+                const ordered = getOrderedDisplays()
+                let actualDisplayIndex = 0
+                for (const d in ordered) {
+                    if (ordered[d].id === displayInfo.id) {
+                        actualDisplayIndex = Number(d)
+                        break
+                    }
+                }
+                const orderedScreenshots: Buffer[] = []
+                for (const d of ordered) {
+                    for (const index in displays) {
+                        if (displays[index].id === d.id) orderedScreenshots.push(screenshots[index])
+                    }
+                }
                 res({
                     start: {
                         x: args.startX,
@@ -353,13 +348,14 @@ export default async(buttons: any[]) => {
                         pageX: args.endPageX,
                         pageY: args.endPageY,
                     },
-                    display: args.display,
-                    screenshots: screenshots,
+                    display: actualDisplayIndex,
+                    screenshots: orderedScreenshots,
                     activeWindows: activeWindows,
                     selections: args.selections,
                     width: args.width,
                     height: args.height,
                     displayEdits: args.displayEdits,
+                    scaleFactor: displayInfo.scaleFactor,
                 })
             }
         })

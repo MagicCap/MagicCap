@@ -22,6 +22,7 @@ import { uploaders, importedUploaders, nameUploaderMap } from "./uploaders"
 import OAuth2 from "./oauth2"
 import editors from "./editors"
 import expressApp from "./web_server"
+import getDefaultConfig from "./default_config"
 
 /**
  * Creates the GUI menu on macOS.
@@ -172,6 +173,7 @@ async function openConfig() {
         webPreferences: {
             nodeIntegration: true,
         },
+        autoHideMenuBar: true,
     })
     if (process.platform !== "darwin") {
         window.setIcon(nativeImage.createFromPath(`${__dirname}/icons/taskbar.png`))
@@ -356,6 +358,11 @@ ipcMain.on("oauth-flow-uploader", async(event: any, uploaderName: string) => {
     const oAuthResp = await OAuth2(uploader.getOAuthUrl(config))
     const r = await uploader.handleOAuthFlow(config, oAuthResp)
     event.sender.send("oauth-flow-uploader-response", r ? r : null)
+})
+
+// Get a new default config in the GUI
+ipcMain.on("get-default-config", async(event: any) => {
+    event.sender.send("get-default-config-res", await getDefaultConfig())
 })
 
 // The app is ready to rock!

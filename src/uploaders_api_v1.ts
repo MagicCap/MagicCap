@@ -9,6 +9,8 @@ import { homedir } from "os"
 import * as express from "express"
 import config from "./config"
 import { dialog } from "electron"
+// @ts-ignore
+import * as cors from "cors"
 
 const db = SQLite3(`${homedir()}/magiccap.db`)
 
@@ -19,11 +21,10 @@ const tokenDelete = db.prepare("DELETE FROM tokens WHERE token = ?")
 
 // Handles swap tokens on the client side.
 app.get("/uploaders_api/v1/auth/swap/:uploader", async(req, res) => {
-    res.header("Access-Control-Allow-Origin", "*")
-
     const uploader = req.params.uploader
     if (!Object.keys(uploaders).includes(uploader)) {
         res.status(400)
+        res.header("Access-Control-Allow-Origin", "*")
         res.json({
             success: false,
             message: "This version of MagicCap does not support the uploader specified.",
@@ -35,12 +36,14 @@ app.get("/uploaders_api/v1/auth/swap/:uploader", async(req, res) => {
     const json = await fetchRes.json()
     if (!fetchRes.ok) {
         res.status(fetchRes.status)
+        res.header("Access-Control-Allow-Origin", "*")
         res.json(json)
         return
     }
 
     tokenInsert.run(json.client_token, json.expires, uploader)
     delete json.client_token
+    res.header("Access-Control-Allow-Origin", "*")
     res.json(json)
 })
 
@@ -48,6 +51,7 @@ app.get("/uploaders_api/v1/auth/swap/:uploader", async(req, res) => {
 const authMiddleware = (req: any, res: express.Response, next: () => void) => {
     const forbidden = () => {
         res.status(403)
+        res.header("Access-Control-Allow-Origin", "*")
         res.json({
             success: false,
             message: "Forbidden.",
@@ -75,9 +79,9 @@ const authMiddleware = (req: any, res: express.Response, next: () => void) => {
 
 // Handles token revokes.
 app.get("/uploaders_api/v1/auth/revoke", [authMiddleware], (req: any, res: express.Response) => {
-    res.header("Access-Control-Allow-Origin", "*")
     const token = req.token
     tokenDelete.run(token)
+    res.header("Access-Control-Allow-Origin", "*")
     res.json({
         success: true,
     })
@@ -85,8 +89,6 @@ app.get("/uploaders_api/v1/auth/revoke", [authMiddleware], (req: any, res: expre
 
 // Allows for the write-only editing of uploaders.
 app.get("/uploaders_api/v1/uploaders/set", [authMiddleware], (req: any, res: express.Response) => {
-    res.header("Access-Control-Allow-Origin", "*")
-
     const uploader = (uploaders as any)[req.uploaderSlug]
     const allowedKeys = []
     for (const uploaderConfig of Object.values(uploader.config_options)) allowedKeys.push((uploaderConfig as any).value)
@@ -95,6 +97,7 @@ app.get("/uploaders_api/v1/uploaders/set", [authMiddleware], (req: any, res: exp
     for (const queryPart of Object.keys(query)) {
         if (!allowedKeys.includes(queryPart)) {
             res.status(400)
+            res.header("Access-Control-Allow-Origin", "*")
             res.json({
                 success: false,
                 message: "Your uploader cannot touch this in the configuration.",
@@ -106,6 +109,7 @@ app.get("/uploaders_api/v1/uploaders/set", [authMiddleware], (req: any, res: exp
             jsonParse = JSON.parse(query[queryPart])
         } catch (_) {
             res.status(400)
+            res.header("Access-Control-Allow-Origin", "*")
             res.json({
                 success: false,
                 message: "Failed to JSON parse a part of your configuration.",
@@ -117,6 +121,7 @@ app.get("/uploaders_api/v1/uploaders/set", [authMiddleware], (req: any, res: exp
     }
 
     config.save()
+    res.header("Access-Control-Allow-Origin", "*")
     res.json({
         success: true,
     })
@@ -157,3 +162,6 @@ app.get("/uploaders_api/v1/uploaders/default_prompt", [authMiddleware], (req: an
 
     uploaderPrompt(req.uploaderSlug)
 })
+
+// Handle OPTIONS.
+app.options("*", cors())
