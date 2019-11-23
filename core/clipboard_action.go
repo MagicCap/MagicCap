@@ -14,11 +14,11 @@ func ClipboardAction(Data []byte, Extension string, URL *string) {
 		return
 	case 1:
 		// Copy the file to the clipboard.
-		PlatformSpecific.BytesToClipboard(Data, Extension)
+		platformspecific.BytesToClipboard(Data, Extension)
 	case 2:
 		// Copy the URL to the clipboard.
 		if URL != nil {
-			PlatformSpecific.StringToClipboard(*URL)
+			platformspecific.StringToClipboard(*URL)
 		}
 	}
 }

@@ -1,6 +1,6 @@
 // +build darwin
 
-package PlatformSpecific
+package platformspecific
 
 /*
 #cgo CFLAGS: -x objective-c

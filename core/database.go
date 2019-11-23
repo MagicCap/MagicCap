@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	// Needed for SQLite3 support.
 	_ "github.com/mattn/go-sqlite3"
 )
 

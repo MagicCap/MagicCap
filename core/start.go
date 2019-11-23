@@ -1,10 +1,11 @@
 package core
 
 import (
-	"github.com/getlantern/systray"
-	"github.com/gobuffalo/packr"
 	"os"
 	"path"
+
+	"github.com/getlantern/systray"
+	"github.com/gobuffalo/packr"
 )
 
 var (
@@ -14,7 +15,7 @@ var (
 	// ConfigPath defines the MagicCap folder path.
 	ConfigPath = path.Join(HomeDir, ".magiccap")
 
-	// Gets the assets.
+	// Assets contains all of the data from "assets" when compiled.
 	Assets = packr.NewBox("../assets")
 )
 
@@ -37,6 +38,7 @@ func OnExit() {
 	// TODO: Cleaning stuff here.
 }
 
+// Start is the main entrypoint for the application.
 func Start() {
 	// Ensures that ConfigPath exists.
 	_ = os.MkdirAll(ConfigPath, 0777)
