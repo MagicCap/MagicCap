@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -162,6 +163,15 @@ func GetConfiguredUploaders() []ConfiguredUploader {
 	return SupportedUploaders
 }
 
+// FileExtExpander expands filenames to make sure they are compliant with the macOS clipboard.
+func FileExtExpander(ext string) string {
+	l := strings.ToLower(ext)
+	if l == "jpg" {
+		return "jpeg"
+	}
+	return l
+}
+
 // Upload handles all of the MagicCap side stuff.
 func Upload(Data []byte, Filename string, Uploader *MagicCapKernelStandards.Uploader) {
 	IsolatedConfig := map[string]interface{}{}
@@ -175,5 +185,8 @@ func Upload(Data []byte, Filename string, Uploader *MagicCapKernelStandards.Uplo
 		return
 	}
 	LogUpload(Filename, &url)
-	ClipboardAction(Data, &url)
+	exts := strings.Split(Filename, ".")
+	popped := exts[len(exts) - 1]
+	FullExt := FileExtExpander(popped)
+	ClipboardAction(Data, FullExt, &url)
 }

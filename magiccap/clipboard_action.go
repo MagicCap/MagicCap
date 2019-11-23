@@ -1,7 +1,9 @@
 package magiccap
 
+import "MagicCap3/magiccap/platform_specific"
+
 // ClipboardAction handles the clipboard action.
-func ClipboardAction(Data []byte, URL *string) {
+func ClipboardAction(Data []byte, Extension string, URL *string) {
 	Action := 1
 	//Action, ok := ConfigItems["clipboard_action"].(float64)
 	//if !ok {
@@ -13,11 +15,11 @@ func ClipboardAction(Data []byte, URL *string) {
 		return
 	case 1:
 		// Copy the file to the clipboard.
-		BytesToClipboard(Data)
+		PlatformSpecific.BytesToClipboard(Data, Extension)
 	case 2:
 		// Copy the URL to the clipboard.
 		if URL != nil {
-			StringToClipboard(*URL)
+			PlatformSpecific.StringToClipboard(*URL)
 		}
 	}
 }
