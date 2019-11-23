@@ -4,11 +4,10 @@ import "MagicCap3/magiccap/platform_specific"
 
 // ClipboardAction handles the clipboard action.
 func ClipboardAction(Data []byte, Extension string, URL *string) {
-	Action := 1
-	//Action, ok := ConfigItems["clipboard_action"].(float64)
-	//if !ok {
-	//	Action = 1
-	//}
+	Action, ok := ConfigItems["clipboard_action"].(float64)
+	if !ok {
+		Action = 1
+	}
 	switch Action {
 	case 0:
 		// Do nothing.
