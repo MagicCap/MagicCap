@@ -2,6 +2,7 @@ package core
 
 import (
 	"github.com/getlantern/systray"
+	"github.com/gobuffalo/packr"
 	"os"
 	"path"
 )
@@ -12,6 +13,9 @@ var (
 
 	// ConfigPath defines the MagicCap folder path.
 	ConfigPath = path.Join(HomeDir, ".magiccap")
+
+	// Gets the assets.
+	Assets = packr.NewBox("../assets")
 )
 
 // OnReady defines the ready of the application when the tray is initialised.

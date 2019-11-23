@@ -1,7 +1,6 @@
 package core
 
 import (
-	"github.com/gen2brain/beeep"
 	"github.com/getlantern/systray"
 	"github.com/sqweek/dialog"
 	"io/ioutil"
@@ -22,14 +21,14 @@ func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
 		return
 	}
 	Upload(b, filepath.Base(fp), &fp, Uploader)
-	_ = beeep.Alert("MagicCap", "File uploaded successfully.", "./assets/taskbar@2x.png")
+	// TODO: Implement native notifications.
 }
 
 // InitTray Initialises the tray.
 func InitTray() {
 	// TODO: Dynamically update.
 	// Sets the tray icon.
-	b, err := ioutil.ReadFile("./assets/taskbar@2x.png")
+	b, err := Assets.Find("taskbar@2x.png")
 	if err != nil {
 		panic(err)
 	}
