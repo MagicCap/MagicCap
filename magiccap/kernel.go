@@ -173,7 +173,7 @@ func FileExtExpander(ext string) string {
 }
 
 // Upload handles all of the MagicCap side stuff.
-func Upload(Data []byte, Filename string, Uploader *MagicCapKernelStandards.Uploader) {
+func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKernelStandards.Uploader) {
 	IsolatedConfig := map[string]interface{}{}
 	for _, v := range Uploader.ConfigOptions {
 		IsolatedConfig[v.Value] = ConfigItems[v.Value]
@@ -181,10 +181,10 @@ func Upload(Data []byte, Filename string, Uploader *MagicCapKernelStandards.Uplo
 	url, err := Uploader.Upload(IsolatedConfig, Data, Filename)
 	if err != nil {
 		dialog.Message("%s", err.Error()).Error()
-		LogUpload(Filename, nil)
+		LogUpload(Filename, nil, FilePath, false)
 		return
 	}
-	LogUpload(Filename, &url)
+	LogUpload(Filename, &url, FilePath, true)
 	exts := strings.Split(Filename, ".")
 	popped := exts[len(exts) - 1]
 	FullExt := FileExtExpander(popped)

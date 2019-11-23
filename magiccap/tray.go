@@ -21,7 +21,7 @@ func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
 		dialog.Message("%s", err.Error()).Error()
 		return
 	}
-	Upload(b, filepath.Base(fp), Uploader)
+	Upload(b, filepath.Base(fp), &fp, Uploader)
 	_ = beeep.Alert("MagicCap", "File uploaded successfully.", "./assets/taskbar@2x.png")
 }
 
