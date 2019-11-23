@@ -13,7 +13,7 @@ func MigrateFrom2() {
 			// This was not a MagicCap 2.X install.
 			return
 		}
-		err = os.Rename(path.Join(ConfigPath, "magiccap.db"), path.Join(HomeDir, "magiccap.db"))
+		err = os.Rename(path.Join(HomeDir, "magiccap.db"), path.Join(ConfigPath, "magiccap.db"))
 		if err != nil {
 			panic(err)
 		}
