@@ -18,7 +18,7 @@ func MigrateFrom2() {
 			panic(err)
 		}
 	} else {
-		// This user either is using 3.X already. Return here.
+		// This user is using 3.X already. Return here.
 		return
 	}
 }
