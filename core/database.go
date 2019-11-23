@@ -1,4 +1,4 @@
-package magiccap
+package core
 
 import (
 	"database/sql"

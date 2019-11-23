@@ -1,4 +1,4 @@
-package magiccap
+package core
 
 import (
 	"github.com/getlantern/systray"
@@ -34,6 +34,12 @@ func OnExit() {
 }
 
 func Start() {
+	// Ensures that ConfigPath exists.
+	_ = os.MkdirAll(ConfigPath, 0777)
+
+	// Does any migrations which are needed.
+	MigrateFrom2()
+
 	// Boot message.
 	println("MagicCap 3.0 - Copyright (C) MagicCap Development Team 2018-2019.")
 

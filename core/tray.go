@@ -1,4 +1,4 @@
-package magiccap
+package core
 
 import (
 	"github.com/gen2brain/beeep"

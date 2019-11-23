@@ -1,7 +1,7 @@
 package main
 
-import "MagicCap3/magiccap"
+import "MagicCap3/core"
 
 func main() {
-	magiccap.Start()
+	core.Start()
 }

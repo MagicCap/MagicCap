@@ -1,4 +1,4 @@
-package magiccap
+package core
 
 import (
 	"encoding/json"
@@ -46,9 +46,6 @@ func LoadUploadersKernel()  {
 
 	// Gets the uploader kernel.
 	if _, err := os.Stat(path.Join(ConfigPath, "kernel.json")); os.IsNotExist(err) {
-		// Ensures that ConfigPath exists.
-		_ = os.MkdirAll(ConfigPath, 0777)
-
 		// Pull the kernel.
 		b := PullUploadersKernel()
 
