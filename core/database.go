@@ -104,6 +104,7 @@ func UpdateConfig() {
 	}
 	ConfigItemsLock.RUnlock()
 	DatabaseLock.Unlock()
+	RestartTrayProcess()
 }
 
 // LogUpload logs the upload to the config.
