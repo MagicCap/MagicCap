@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"time"
@@ -20,7 +21,7 @@ var (
 )
 
 // Start is the main entrypoint for the application.
-func Start() {
+func Start(StartTime time.Time) {
 	// Ensures that ConfigPath exists.
 	_ = os.MkdirAll(ConfigPath, 0777)
 
@@ -38,6 +39,10 @@ func Start() {
 
 	// Starts the tray.
 	RestartTrayProcess()
+
+	// Defines how long it took.
+	elapsed := time.Since(StartTime)
+	fmt.Printf("Initialisation took %s.", elapsed)
 
 	// Keep the app alive.
 	for {
