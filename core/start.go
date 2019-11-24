@@ -3,8 +3,8 @@ package core
 import (
 	"os"
 	"path"
+	"time"
 
-	"github.com/getlantern/systray"
 	"github.com/gobuffalo/packr"
 )
 
@@ -19,25 +19,6 @@ var (
 	Assets = packr.NewBox("../assets")
 )
 
-// OnReady defines the ready of the application when the tray is initialised.
-func OnReady() {
-	// Loads up the uploader kernel.
-	LoadUploadersKernel()
-
-	// Loads the SQLite3 DB.
-	LoadDatabase()
-
-	// TODO: Make a install ID.
-
-	// Initialises the tray in another thread.
-	go InitTray()
-}
-
-// OnExit defines the exit of the tray.
-func OnExit() {
-	// TODO: Cleaning stuff here.
-}
-
 // Start is the main entrypoint for the application.
 func Start() {
 	// Ensures that ConfigPath exists.
@@ -49,6 +30,18 @@ func Start() {
 	// Boot message.
 	println("MagicCap 3.0 - Copyright (C) MagicCap Development Team 2018-2019.")
 
-	// Runs the systray.
-	systray.Run(OnReady, OnExit)
+	// Loads up the uploader kernel.
+	LoadUploadersKernel()
+
+	// Loads the SQLite3 DB.
+	LoadDatabase()
+
+	// Starts the tray.
+	RestartTrayProcess()
+
+	// Keep the app alive.
+	for {
+		time.Sleep(time.Second)
+	}
+	// TODO: Make a install ID.
 }

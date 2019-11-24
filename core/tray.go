@@ -1,12 +1,13 @@
 package core
 
 import (
-	"github.com/getlantern/systray"
-	"github.com/sqweek/dialog"
 	"io/ioutil"
 	MagicCapKernelStandards "magiccap-uploaders-kernel/standards"
 	"os"
 	"path/filepath"
+
+	"github.com/getlantern/systray"
+	"github.com/sqweek/dialog"
 )
 
 // OpenFileUploader opens a file uploader.
@@ -26,6 +27,10 @@ func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
 
 // InitTray Initialises the tray.
 func InitTray() {
+	// Load the uploaders kernel and get config options.
+	LoadUploadersKernel()
+	GetConfigItems()
+
 	// TODO: Dynamically update.
 	// Sets the tray icon.
 	b, err := Assets.Find("taskbar@2x.png")
@@ -38,7 +43,7 @@ func InitTray() {
 	systray.AddSeparator()
 	for _, v := range GetConfiguredUploaders() {
 		ItemCpy := v.Uploader
-		Item := systray.AddMenuItem("Upload file to " + v.Name, "Uploads a file to the uploader specified.")
+		Item := systray.AddMenuItem("Upload file to "+v.Name, "Uploads a file to the uploader specified.")
 		go func() {
 			for {
 				<-Item.ClickedCh
@@ -58,9 +63,9 @@ func InitTray() {
 	for {
 		select {
 		case <-Quit.ClickedCh:
-			os.Exit(0)
+			_, _ = os.Stdout.Write([]byte("exit\n"))
 		case <-Preferences.ClickedCh:
-			go OpenPreferences()
+			_, _ = os.Stdout.Write([]byte("pref\n"))
 		}
 	}
 }

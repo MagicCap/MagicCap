@@ -25,6 +25,30 @@ var (
 	ConfigItemsLock = sync.RWMutex{}
 )
 
+// GetConfigItems gets all of the config items.
+func GetConfigItems() {
+	rows, err := Database.Query("SELECT * FROM config")
+	if err != nil {
+		panic(err)
+	}
+	ConfigItemsLock.Lock()
+	for rows.Next() {
+		var Key string
+		var Value string
+		err = rows.Scan(&Key, &Value)
+		if err != nil {
+			panic(err)
+		}
+		var GenericInterface interface{}
+		err = json.Unmarshal([]byte(Value), &GenericInterface)
+		if err != nil {
+			panic(err)
+		}
+		ConfigItems[Key] = GenericInterface
+	}
+	ConfigItemsLock.Unlock()
+}
+
 // LoadDatabase loads in the database schemas.
 func LoadDatabase() {
 	// Creates the config table.
@@ -49,27 +73,8 @@ func LoadDatabase() {
 		panic(err)
 	}
 
-	// Gets all the config items.
-	rows, err := Database.Query("SELECT * FROM config")
-	if err != nil {
-		panic(err)
-	}
-	ConfigItemsLock.Lock()
-	for rows.Next() {
-		var Key string
-		var Value string
-		err = rows.Scan(&Key, &Value)
-		if err != nil {
-			panic(err)
-		}
-		var GenericInterface interface{}
-		err = json.Unmarshal([]byte(Value), &GenericInterface)
-		if err != nil {
-			panic(err)
-		}
-		ConfigItems[Key] = GenericInterface
-	}
-	ConfigItemsLock.Unlock()
+	// Gets all of the config items.
+	GetConfigItems()
 
 	// Log that the database is initialised.
 	println("Database initialised.")

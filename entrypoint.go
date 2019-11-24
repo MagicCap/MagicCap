@@ -1,7 +1,17 @@
 package main
 
-import "MagicCap3/core"
+import (
+	"MagicCap3/core"
+	"github.com/getlantern/systray"
+	"os"
+	"runtime"
+)
 
 func main() {
-	core.Start()
+	if len(os.Args) > 1 && os.Args[1] == "SYSTRAY_MODE" {
+		runtime.LockOSThread()
+		systray.Run(core.InitTray, nil)
+	} else {
+		core.Start()
+	}
 }

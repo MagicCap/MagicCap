@@ -59,7 +59,6 @@ func LoadUploadersKernel()  {
 		if err != nil {
 			panic(err)
 		}
-		println("Kernel reloaded!")
 	} else {
 		// Loads the kernel.
 		b, err := ioutil.ReadFile(path.Join(ConfigPath, "kernel.json"))
@@ -75,7 +74,6 @@ func LoadUploadersKernel()  {
 		if err != nil {
 			panic(err)
 		}
-		println("Kernel reloaded!")
 	}
 
 	// Start a thread to wait 10 mins and pull.
@@ -100,7 +98,6 @@ func LoadUploadersKernel()  {
 			if err != nil {
 				panic(err)
 			}
-			println("Kernel reloaded!")
 		}
 	}()
 }
