@@ -21,7 +21,10 @@ var (
 )
 
 // Start is the main entrypoint for the application.
-func Start(StartTime time.Time) {
+func Start() {
+	// Gets the start time.
+	StartTime := time.Now()
+
 	// Ensures that ConfigPath exists.
 	_ = os.MkdirAll(ConfigPath, 0777)
 

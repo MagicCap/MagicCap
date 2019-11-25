@@ -20,7 +20,7 @@ func HandleTrayOut(line string) {
 	if line == "exit" {
 		Exit()
 	} else if line == "pref" {
-		OpenPreferences()
+		go OpenPreferences()
 	}
 }
 
