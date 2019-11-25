@@ -31,7 +31,6 @@ func InitTray() {
 	LoadUploadersKernel()
 	GetConfigItems()
 
-	// TODO: Dynamically update.
 	// Sets the tray icon.
 	b, err := Assets.Find("taskbar@2x.png")
 	if err != nil {
