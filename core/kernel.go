@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"github.com/sqweek/dialog"
 	"io/ioutil"
 	MagicCapKernel "magiccap-uploaders-kernel"
 	MagicCapKernelStandards "magiccap-uploaders-kernel/standards"
@@ -11,6 +10,8 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	"github.com/sqweek/dialog"
 )
 
 var (
@@ -24,13 +25,12 @@ var (
 )
 
 // LoadUploadersKernel loads up the kernel.
-func LoadUploadersKernel()  {
+func LoadUploadersKernel() {
 	// Pulls the uploaders kernel.
 	PullUploadersKernel := func() *[]byte {
-		println("Pulling the uploaders kernel!")
 		response, err := http.Get(UploadersURL)
 		if err != nil {
-			println("Failed to pull the uploaders kernel!")
+			os.Stderr.Write([]byte("Failed to pull the uploaders kernel!\n"))
 			return nil
 		}
 		b, err := ioutil.ReadAll(response.Body)
@@ -104,7 +104,7 @@ func LoadUploadersKernel()  {
 
 // ConfiguredUploader defines a configured uploader.
 type ConfiguredUploader struct {
-	Name string
+	Name     string
 	Uploader *MagicCapKernelStandards.Uploader
 }
 
@@ -149,7 +149,6 @@ func GetConfiguredUploaders() []ConfiguredUploader {
 		}
 	}
 
-
 	// Read unlock the config items.
 	ConfigItemsLock.RUnlock()
 
@@ -180,7 +179,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 	}
 	LogUpload(Filename, &url, FilePath, true)
 	exts := strings.Split(Filename, ".")
-	popped := exts[len(exts) - 1]
+	popped := exts[len(exts)-1]
 	FullExt := FileExtExpander(popped)
 	ClipboardAction(Data, FullExt, &url)
 }
