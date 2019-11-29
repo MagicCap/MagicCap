@@ -20,6 +20,7 @@ func HandleTrayOut(line string) {
 	if line == "exit" {
 		Exit()
 	} else if line == "pref" {
+		// TODO: Spawn a new process?
 		go OpenPreferences()
 	}
 }
@@ -31,7 +32,8 @@ func RestartTrayProcess() {
 	if TrayProcess != nil {
 		_ = TrayProcess.Process.Kill()
 	}
-	TrayProcess = exec.Command(app, "SYSTRAY_MODE")
+	TrayProcess = exec.Command(app)
+	TrayProcess.Env = append(os.Environ(), "SYSTRAY_MODE=true")
 
 	// Handles stderr.
 	TrayProcess.Stderr = os.Stderr

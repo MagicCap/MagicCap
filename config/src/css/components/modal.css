@@ -1,0 +1,76 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+.modal-background,
+.modal-card-foot,
+.modal-card-head,
+.modal-card-body {
+    background: var(--window-background);
+}
+
+.modal-card-title {
+    color: var(--text);
+}
+
+.modal {
+    margin: 0 0 0 15%;
+    z-index: 0; /* Allow tooltips in sidebar to work */
+}
+
+.modal .modal-card {
+    max-height: 100vh;
+    min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 10px;
+    /*box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.4);*/
+    box-shadow: none;
+}
+
+.modal .modal-card-head {
+    justify-self: flex-start;
+    align-self: flex-start;
+    width: 100%;
+}
+
+.modal .modal-card-body {
+    align-self: center;
+    flex-grow: 0;
+    margin: auto 10vw;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.modal .modal-card-body hr {
+    margin: 1rem 0;
+}
+
+.modal .modal-card-body .modal-card-title {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.modal .delete {
+    width: 28px;
+    max-width: 28px;
+    min-width: 28px;
+    height: 28px;
+    max-height: 28px;
+    min-height: 28px;
+    background: var(--control);
+    border: 1px solid var(--separator);
+}
+
+.modal .delete:hover {
+    background: var(--control);
+    border: 1px solid var(--separator);
+}
+
+.modal .delete::before,
+.modal .delete::after {
+    background: var(--control-text);
+}

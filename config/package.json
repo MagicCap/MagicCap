@@ -1,0 +1,33 @@
+{
+  "name": "config",
+  "version": "1.0.0",
+  "description": "The config for MagicCap.",
+  "main": "index.js",
+  "scripts": {
+    "build": "parcel build ./src/index.html --no-content-hash && parcel build ./src/mount.js --no-content-hash"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MagicCap/MagicCap.git"
+  },
+  "keywords": [
+    "frontend"
+  ],
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^3.0.2",
+    "parcel-bundler": "1.12.4",
+    "typescript": "3.5.1",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "author": "MagicCap Development Team",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/MagicCap/MagicCap/issues"
+  },
+  "homepage": "https://github.com/MagicCap/MagicCap#readme",
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "markdown-it": "^10.0.0",
+    "vue": "^2.6.10"
+  }
+}

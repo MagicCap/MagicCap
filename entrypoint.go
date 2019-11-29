@@ -2,18 +2,33 @@ package main
 
 import (
 	"MagicCap3/core"
+	"bufio"
+	"encoding/json"
+	"github.com/getlantern/systray"
+	"github.com/zserge/webview"
 	"os"
 	"runtime"
-
-	"github.com/faiface/mainthread"
-	"github.com/getlantern/systray"
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "SYSTRAY_MODE" {
+	if os.Getenv("SYSTRAY_MODE") == "true" {
 		runtime.LockOSThread()
 		systray.Run(core.InitTray, nil)
+	} else if os.Getenv("WEBVIEW_MODE") == "true" {
+		runtime.LockOSThread()
+		var settings webview.Settings
+		buf := bufio.NewReader(os.Stdin)
+		data, err := buf.ReadBytes('\n')
+		if err != nil {
+			panic(err)
+		}
+		err = json.Unmarshal(data, &settings)
+		if err != nil {
+			panic(err)
+		}
+		v := webview.New(settings)
+		v.Run()
 	} else {
-		mainthread.Run(core.Start)
+		core.Start()
 	}
 }

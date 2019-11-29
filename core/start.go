@@ -18,6 +18,9 @@ var (
 
 	// Assets contains all of the data from "assets" when compiled.
 	Assets = packr.NewBox("../assets")
+
+	// Version defines the version.
+	Version = "3.0.0"
 )
 
 // Start is the main entrypoint for the application.
@@ -32,7 +35,7 @@ func Start() {
 	MigrateFrom2()
 
 	// Boot message.
-	println("MagicCap 3.0 - Copyright (C) MagicCap Development Team 2018-2019.")
+	println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2019.")
 
 	// Loads up the uploader kernel.
 	LoadUploadersKernel()

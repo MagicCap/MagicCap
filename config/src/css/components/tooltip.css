@@ -1,0 +1,102 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+[data-tooltip] {
+    position: relative;
+}
+
+[data-tooltip]:hover::before {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 8px;
+    z-index: 100;
+    display: none;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: var(--text-background);
+    box-shadow: 0 0 0 1px var(--separator), 0 0 3px 0 var(--shadow);
+    text-align: center;
+    color: var(--text);
+    padding: 6px 4px;
+    font-size: 14px;
+    line-height: 1;
+    vertical-align: middle;
+    width: max-content;
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 100;
+    display: none;
+}
+
+[data-tooltip][data-tooltip-position="right"]:hover::after {
+    display: block;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+[data-tooltip][data-tooltip-position="right"]:hover::before {
+    display: block;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left-width: 0;
+    border-right-width: 6px;
+    border-right-color: var(--text-background);
+}
+
+[data-tooltip][data-tooltip-position="left"]:hover::after {
+    display: block;
+    right: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+[data-tooltip][data-tooltip-position="left"]:hover::before {
+    display: block;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-right-width: 0;
+    border-left-width: 6px;
+    border-left-color: var(--text-background);
+}
+
+[data-tooltip][data-tooltip-position="top"]:hover::after {
+    display: block;
+    left: 50%;
+    bottom: calc(100% + 6px);
+    transform: translateX(-50%);
+}
+
+[data-tooltip][data-tooltip-position="top"]:hover::before {
+    display: block;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    border-bottom-width: 0;
+    border-top-width: 6px;
+    border-top-color: var(--text-background);
+}
+
+[data-tooltip][data-tooltip-position="bottom"]:hover::after {
+    display: block;
+    left: 50%;
+    top: calc(100% + 6px);
+    transform: translateX(-50%);
+}
+
+[data-tooltip][data-tooltip-position="bottom"]:hover::before {
+    display: block;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    border-top-width: 0;
+    border-bottom-width: 6px;
+    border-bottom-color: var(--text-background);
+}

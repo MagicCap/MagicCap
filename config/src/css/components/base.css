@@ -1,0 +1,78 @@
+/* This code is a part of MagicCap which is a MPL-2.0 licensed project.
+ * Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
+ * Copyright (C) Matt Cowley (MattIPv4) <me@mattcowley.co.uk> 2019.
+ */
+* {
+    -webkit-user-drag: none;
+}
+
+html,
+body {
+    min-height: 0;
+    min-width: 0;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--window-background);
+}
+
+hr {
+    background: var(--separator);
+}
+
+a,
+a:hover,
+a:active {
+    -webkit-user-drag: none;
+    color: var(--link);
+    text-decoration: none;
+}
+
+.divider {
+    width: 5px;
+    height: auto;
+    display: inline-block;
+}
+
+.rounded-img {
+    border-radius: 50%;
+}
+
+.columns {
+    margin: 0 !important;
+}
+
+.columns > .column {
+    min-height: 100vh;
+    background: var(--window-background);
+}
+
+.column.aside + .column {
+    margin: 0 0 0 15%;
+}
+
+a, button, .button, .delete {
+    cursor: default;
+}
+
+small.muted {
+    opacity: .75;
+    font-size: .75em;
+}
+
+.url {
+    cursor: pointer;
+}
+
+.url::after {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 0.7em;
+    padding-left: 0.4em;
+    opacity: 0.6;
+    content: "\f35d";
+}
+
+.url:hover,
+.url:active {
+    text-decoration: underline;
+}
