@@ -1,7 +1,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-import { put, post } from "chainfetch"
+import { post } from "chainfetch"
 import * as i18n from "../i18n"
 import { app } from "electron"
 import { ConfigHandler } from "../config"
