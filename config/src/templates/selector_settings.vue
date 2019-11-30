@@ -21,31 +21,25 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import saveConfig from "../save_config"
-
-    declare global {
-        interface Window {
-            config: any,
-        }
-    }
+    import config from "../config"
 
     export default Vue.extend({
         name: "SelectorSettings",
         data() {
             return {
                 active: false,
-                magnifier: window.config.magnifier === undefined ? true : window.config.magnifier,
-                hideCursor: window.config.hide_cursor === undefined ? true : window.config.hide_cursor,
+                magnifier: config.o.magnifier === undefined ? true : config.o.magnifier,
+                hideCursor: config.o.hide_cursor === undefined ? true : config.o.hide_cursor,
             }
         },
         watch: {
             magnifier() {
-                window.config.magnifier = this.$data.magnifier;
-                saveConfig()
+                config.o.magnifier = this.$data.magnifier;
+                config.save()
             },
             hideCursor() {
-                window.config.hide_cursor = this.$data.hideCursor;
-                saveConfig()
+                config.o.hide_cursor = this.$data.hideCursor;
+                config.save()
             },
         },
         methods: {

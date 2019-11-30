@@ -119,7 +119,7 @@
         <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')"></AppSettings>
         <Updates ref="Updates"></Updates> -->
         <Docs ref="Docs"></Docs>
-        <!-- <SelectorSettings ref="SelectorSettings"></SelectorSettings> -->
+        <SelectorSettings ref="SelectorSettings"></SelectorSettings>
     </div>
 </template>
 
@@ -134,8 +134,7 @@
     // import Debug from "./debug"
     // import Updates from "./updates"
     import Docs from "./docs"
-    // import SelectorSettings from "./selector_settings"
-    // TODO: electron stuff.
+    import SelectorSettings from "./selector_settings"
 
     export default {
         name: "App",
@@ -149,7 +148,7 @@
             // Debug,
             // Updates,
             Docs,
-            // SelectorSettings,
+            SelectorSettings,
         },
         data() {
             return {
