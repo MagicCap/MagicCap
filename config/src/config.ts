@@ -2,8 +2,8 @@
 class ConfigInterface {
     public o: any
 
-    public constructor(o: any) {
-        this.o = o
+    public constructor() {
+        this.o = {}
     }
 
     public async save() {
@@ -15,7 +15,7 @@ class ConfigInterface {
 }
 
 // Defines the config interface.
-let c: ConfigInterface
+let c: ConfigInterface = new ConfigInterface()
 export default c
 
 // Gets the config.
@@ -26,5 +26,5 @@ export async function getConfig() {
     if (!res.ok) {
         throw res
     }
-    c = new ConfigInterface(await res.json())
+    c.o = await res.json()
 }

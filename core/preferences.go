@@ -20,6 +20,13 @@ var (
 
 	// Changes defines if there has been any changes since the capture UI opened.
 	Changes = false
+
+	// CSSBase defines the base for all CSS.
+	CSSBase = CSS.String("components/base.css") + "\n" + CSS.String("components/button.css") + "\n" + CSS.String(
+		"components/docs.css") + "\n" + CSS.String("components/inputs.css") + "\n" + CSS.String(
+			"components/markdown.css") + "\n" + CSS.String("components/menu.css") + "\n" + CSS.String(
+				"components/modal.css") + CSS.String("components/scroll.css") + "\n" + CSS.String(
+					"components/table.css") + "\n" + CSS.String("components/tooltip.css")
 )
 
 // GetCSS is used to bundle all of the CSS.
@@ -35,8 +42,8 @@ func GetCSS() string {
 		BulmaswatchString = "darkly"
 	}
 	res := CSS.String("bulmaswatch/" + BulmaswatchString + "/bulmaswatch.min.css")
+	res += "\n" + CSSBase
 	res += "\n" + CSS.String("fontawesome-free/css/all.min.css")
-	res += "\n" + CSS.String("main.css")
 	res += "\n" + CSS.String(ThemeString+".css")
 	return res
 }
@@ -170,7 +177,7 @@ func OpenPreferences() {
 	h := SpawnWindowHandler(webview.Settings{
 		Title:     "MagicCap",
 		URL:       URL,
-		Width:     1050,
+		Width:     1200,
 		Height:    600,
 		Resizable: false,
 	})

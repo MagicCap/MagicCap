@@ -111,8 +111,8 @@
             </aside>
         </aside>
         <Captures ref="Captures"></Captures>
-        <!-- <ClipboardAction ref="ClipboardAction"></ClipboardAction>
-        <FileConfig ref="FileConfig"></FileConfig>
+        <ClipboardAction ref="ClipboardAction"></ClipboardAction>
+        <!-- <FileConfig ref="FileConfig"></FileConfig>
         <HotkeySettings ref="HotkeySettings"></HotkeySettings>
         <UploaderConfig ref="UploaderConfig" @appsettings-show="toggleCoreModal('AppSettings')"></UploaderConfig>
         <Debug ref="Debug"></Debug>
@@ -124,10 +124,9 @@
 </template>
 
 <script>
-    import Vue from "vue"
-    import { saveConfig } from "../config"
+    import config from "../config"
     import Captures from "./captures"
-    // import ClipboardAction from "./clipboard_action"
+    import ClipboardAction from "./clipboard_action"
     // import FileConfig from "./file_configuration"
     // import HotkeySettings from "./hotkey_settings"
     // import UploaderConfig from "./uploader_config"
@@ -142,7 +141,7 @@
         name: "App",
         components: {
             Captures,
-            // ClipboardAction,
+            ClipboardAction,
             // FileConfig,
             // HotkeySettings,
             // UploaderConfig,
@@ -168,8 +167,8 @@
             },
             // TODO: Handle native stuff here!
             toggleTheme() {
-                window.config.light_theme = !window.config.light_theme
-                saveConfig()
+                config.o.light_theme = !config.o.light_theme
+                config.save()
                 ipcRenderer.send("restartWindow")
             },
             runRemoteAction(action) {

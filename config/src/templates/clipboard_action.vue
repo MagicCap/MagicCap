@@ -25,27 +25,21 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import saveConfig from "../save_config"
-
-    declare global {
-        interface Window {
-            config: any,
-        }
-    }
+    import config from "../config"
 
     export default Vue.extend({
         name: "ClipboardAction",
         data() {
             return {
                 active: false,
-                action: window.config.clipboard_action,
+                action: config.o.clipboard_action,
             }
         },
         methods: {
             changeAction(action: Number) {
-                window.config.clipboard_action = action
+                config.o.clipboard_action = action
                 this.$data.action = action
-                saveConfig()
+                config.save()
             },
             toggle() {
                 this.$data.active = !this.$data.active
