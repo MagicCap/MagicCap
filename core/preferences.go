@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"github.com/pkg/browser"
 	"net"
 	"strconv"
 
@@ -124,6 +125,14 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		GetCapturesRoute(ctx)
 	case "/changefeed":
 		ChangefeedRoute(ctx)
+
+	// Handles ports of Electron functions.
+	case "/open/url":
+		_ = browser.OpenURL(string(ctx.Request.Body()))
+		ctx.Response.SetStatusCode(204)
+	case "/open/item":
+		_ = browser.OpenFile(string(ctx.Request.Body()))
+		ctx.Response.SetStatusCode(204)
 
 	// Handles UI methods.
 	case "/captures/delete":

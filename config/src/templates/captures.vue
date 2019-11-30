@@ -17,12 +17,12 @@
                         <a v-on:click="openScreenshotURL(capture.url)" class="url">{{ capture.url }}</a>
                     </td>
                     <td v-else></td>
-                    <td v-if="capture.success === 0"></td>
+                    <td v-if="!capture.success"></td>
                     <td v-else>
-                        <a class="button is-primary" v-on:click="capture.file_path ? openScreenshotFile(capture.file_path) : openScreenshotURL(capture.url)">View</a>
+                        <a class="button is-primary" @click="capture.file_path ? openScreenshotFile(capture.file_path) : openScreenshotURL(capture.url)">View</a>
                     </td>
                     <td>
-                        <a class="button is-danger" v-on:click="rmCapture(capture.timestamp)">Remove</a>
+                        <a class="button is-danger" @click="rmCapture(capture.timestamp)">Remove</a>
                     </td>
                 </tr>
             </tbody>
@@ -32,6 +32,7 @@
 
 <script lang="ts">
     import Vue from "vue"
+    import * as shell from "../electron_functionality_ports/shell"
 
     // A list of the displayed captures.
     const displayedCaptures: any[] = []
@@ -48,7 +49,7 @@
     }
     getCaptures().then(() => setInterval(async() => {
         const res = await fetch("/changefeed")
-        if (await res.json()) getCaptures()
+        if (await res.json()) await getCaptures()
     }, 100))
 
     export default Vue.extend({
@@ -68,10 +69,10 @@
                 await getCaptures()
             },
             openScreenshotURL: async(url: string) => {
-                //await shell.openExternal(url)
+                await shell.openExternal(url)
             },
             openScreenshotFile: async(filePath: string) => {
-                //await shell.openItem(filePath)
+                await shell.openItem(filePath)
             },
             toggle() {
                 getCaptures()
