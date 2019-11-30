@@ -114,6 +114,8 @@ func UpdateConfig() {
 	ConfigItemsLock.RUnlock()
 	DatabaseLock.Unlock()
 	RestartTrayProcess()
+	// TODO: Handle hotkeys!
+	// TODO Refresh updates!
 }
 
 // LogUpload logs the upload to the config.
