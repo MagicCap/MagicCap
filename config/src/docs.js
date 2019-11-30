@@ -3,9 +3,8 @@
 
 // Imports markdownit.
 window.markdownit = require("markdown-it")
-
-// Opens the URL specified.
-window.openURL = url => viewInterface.OpenURL(url)
+const shell = require("./electron_functionality_ports/shell")
+window.openURL = url => shell.openExternal(url)
 
 /**
  * Converts a string to title case

@@ -117,9 +117,9 @@
         <UploaderConfig ref="UploaderConfig" @appsettings-show="toggleCoreModal('AppSettings')"></UploaderConfig>
         <Debug ref="Debug"></Debug>
         <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')"></AppSettings>
-        <Updates ref="Updates"></Updates>
+        <Updates ref="Updates"></Updates> -->
         <Docs ref="Docs"></Docs>
-        <SelectorSettings ref="SelectorSettings"></SelectorSettings> -->
+        <!-- <SelectorSettings ref="SelectorSettings"></SelectorSettings> -->
     </div>
 </template>
 
@@ -133,7 +133,7 @@
     // import AppSettings from "./app_settings"
     // import Debug from "./debug"
     // import Updates from "./updates"
-    // import Docs from "./docs"
+    import Docs from "./docs"
     // import SelectorSettings from "./selector_settings"
     // TODO: electron stuff.
 
@@ -148,7 +148,7 @@
             // AppSettings,
             // Debug,
             // Updates,
-            // Docs,
+            Docs,
             // SelectorSettings,
         },
         data() {
