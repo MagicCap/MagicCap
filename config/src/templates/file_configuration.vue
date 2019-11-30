@@ -33,8 +33,8 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import config from "../config"
-    import filename from "../filename"
+    import config from "../interfaces/config"
+    import filename from "../interfaces/filename"
 
     export default Vue.extend({
         name: "ClipboardAction",

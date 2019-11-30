@@ -25,7 +25,7 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import config from "../config"
+    import config from "../interfaces/config"
 
     export default Vue.extend({
         name: "ClipboardAction",

@@ -1,15 +1,21 @@
 package core
 
 import (
+	platformspecific "MagicCap3/core/platform_specific"
 	"encoding/json"
 	"github.com/pkg/browser"
 	"net"
+	"runtime"
 	"strconv"
+	"strings"
 
 	"github.com/gobuffalo/packr"
+	"github.com/matishsiao/goInfo"
 	"github.com/valyala/fasthttp"
 	"github.com/zserge/webview"
 )
+
+// TODO: Single instance only!
 
 var (
 	// CSS defines the box containing CSS.
@@ -107,6 +113,30 @@ func ChangefeedRoute(ctx *fasthttp.RequestCtx) {
 	ctx.Response.SetBody(j)
 }
 
+// GetApplicationInfo is used to get application info for the frontend.
+func GetApplicationInfo(ctx *fasthttp.RequestCtx) {
+	info := goInfo.GetInfo()
+	OS := info.OS
+	if OS == "Darwin" {
+		OS = "macOS"
+	}
+	Information := map[string]interface{}{
+		"version": Version,
+		"os": map[string]string{
+			"type": OS,
+			"release": info.Core,
+		},
+		"platform": strings.ToUpper(runtime.GOOS[:1]) + runtime.GOOS[1:],
+	}
+	j, err := json.Marshal(&Information)
+	if err != nil {
+		panic(err)
+	}
+	ctx.Response.SetStatusCode(200)
+	ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	ctx.Response.SetBody(j)
+}
+
 // ConfigHTTPHandler handles the configs HTTP requests.
 func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	Path := string(ctx.Path())
@@ -133,8 +163,14 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		GetCapturesRoute(ctx)
 	case "/changefeed":
 		ChangefeedRoute(ctx)
+	case "/application_info":
+		GetApplicationInfo(ctx)
+
 
 	// Handles ports of Electron functions.
+	case "/clipboard":
+		platformspecific.StringToClipboard(string(ctx.Request.Body()))
+		ctx.Response.SetStatusCode(204)
 	case "/open/url":
 		_ = browser.OpenURL(string(ctx.Request.Body()))
 		ctx.Response.SetStatusCode(204)

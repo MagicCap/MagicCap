@@ -17,12 +17,15 @@
 
 <script lang="ts">
     import Vue from "vue"
+    import config from "../interfaces/config"
+    import clipboard from "../electron_functionality_ports/clipboard"
+    import applicationInfo from "../interfaces/application_info"
 
     function safeConfig() {
         let newConfig = {} as any
-        for (const key in window.config) {
-            if (!window.config.hasOwnProperty(key)) continue
-            let val = window.config[key]
+        for (const key in config.o) {
+            if (!config.o.hasOwnProperty(key)) continue
+            let val = config.o[key]
             if (key.toLowerCase().match(/(\b|_)password(\b|_)/g)) val = "PASSWORD REDACTED"
             if (key.toLowerCase().match(/(\b|_)username(\b|_)/g)) val = "USERNAME REDACTED"
             if (key.toLowerCase().match(/(\b|_)secret(\b|_)/g)) val = "SECRET REDACTED"
@@ -38,9 +41,9 @@
         data() {
             return {
                 active: false,
-                debugInfo: `MagicCap Version: ${remote.app.getVersion()}
-System OS: ${os.type()} ${os.release()} / Platform: ${process.platform}
-Installation ID: ${window.config.install_id}
+                debugInfo: `MagicCap Version: ${applicationInfo.version}
+System OS: ${applicationInfo.os.type} ${applicationInfo.os.release} / Platform: ${applicationInfo.platform}
+Installation ID: ${config.o.install_id}
 Config: ${JSON.stringify(safeConfig())}`,
                 copy: "Copy to clipboard",
             }
@@ -51,7 +54,7 @@ Config: ${JSON.stringify(safeConfig())}`,
             },
             copyDebug() {
                 this.$data.copy = "Copied!"
-                remote.clipboard.writeText(this.$data.debugInfo)
+                clipboard(this.$data.debugInfo)
             },
         },
     })

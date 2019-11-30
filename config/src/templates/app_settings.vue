@@ -10,7 +10,7 @@
 
                 <h1 class="modal-card-title">About: <small class="muted">MagicCap v{{ version }}</small></h1>
 
-                <p>Copyright (C) Jake Gealer, Rhys O'Kane &amp; Matt Cowley 2018-2019.</p>
+                <p>Copyright (C) MagicCap Development Team 2018-2019.</p>
                 <p>This software is licensed under the <a @click="openMPL" class="url">MPL-2.0</a> license.</p>
                 <p v-if="liteTouch">Some settings are managed by your system administrator.</p>
                 <p>
@@ -48,27 +48,28 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import saveConfig from "../save_config"
-
-    const db = SQLite3(`${os.homedir()}/magiccap.db`)
+    import config from "../interfaces/config"
+    import * as shell from "../electron_functionality_ports/shell"
+    import applicationInfo from "../interfaces/application_info"
 
     export default Vue.extend({
         name: "AppSettings",
         data() {
             return {
                 active: false,
-                OpenAtLoginI: window.config.open_login || false,
-                version: remote.app.getVersion(),
+                OpenAtLoginI: config.o.open_login || false,
+                version: applicationInfo.version,
             }
         },
         methods: {
             toggle() {
                 this.$data.active = !this.$data.active
             },
-            saveOpenAtLogin() {
-                window.config.open_login = (document.getElementById("OpenAtLogin")! as HTMLInputElement).checked
-                remote.app.setLoginItemSettings({openAtLogin: window.config.open_login})
-                saveConfig()
+ /*         saveOpenAtLogin() {
+                config.o.open_login = (document.getElementById("OpenAtLogin")! as HTMLInputElement).checked
+                // TODO: Handle open at login. I don't quite know how this'll work in Go.
+                // remote.app.setLoginItemSettings({openAtLogin: window.config.open_login})
+                config.save()
             },
             saveConfig(data: string) {
                 // Save config
@@ -292,7 +293,7 @@
                         }
                     }
                 })
-            },
+            },*/
             showDebug() {
                 this.$emit("debug-show")
             },
