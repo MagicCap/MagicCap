@@ -3,13 +3,13 @@
         <table class="table is-responsive is-fullwidth is-fullheight">
             <tbody>
                 <tr v-for="capture in captures" :key="capture.timestamp">
-                    <td v-if="capture.success === 0">
-                        <span data-tooltip="Capture failed" data-tooltip-position="right">
-                            <i class="fas fa-times"></i></span>
-                    </td>
-                    <td v-else>
+                    <td v-if="capture.success">
                         <span data-tooltip="Capture successful" data-tooltip-position="right">
                             <i class="fas fa-check"></i></span>
+                    </td>
+                    <td v-else>
+                        <span data-tooltip="Capture failed" data-tooltip-position="right">
+                            <i class="fas fa-times"></i></span>
                     </td>
                     <td>{{ capture.filename }}</td>
                     <td>{{ new Date(capture.timestamp).toLocaleString() }}</td>
@@ -34,13 +34,22 @@
     import Vue from "vue"
 
     // A list of the displayed captures.
-    let displayedCaptures: any[] = []
+    const displayedCaptures: any[] = []
 
     // Gets the captures.
-    // @ts-ignore
-    displayedCaptures = viewInterface.GetCaptures()
-
-    //ipcRenderer.on("screenshot-upload", () => getCaptures())
+    async function getCaptures() {
+        const res = await fetch("/captures")
+        if (!res.ok) {
+            throw res
+        }
+        const newCaptures = await res.json()
+        displayedCaptures.length = 0
+        for (const c of newCaptures) displayedCaptures.push(c)
+    }
+    getCaptures().then(() => setInterval(async() => {
+        const res = await fetch("/changefeed")
+        if (await res.json()) getCaptures()
+    }, 100))
 
     export default Vue.extend({
         name: "Captures",

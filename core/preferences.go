@@ -2,17 +2,18 @@ package core
 
 import (
 	"encoding/json"
+	"net"
+
 	"github.com/gobuffalo/packr"
 	"github.com/valyala/fasthttp"
 	"github.com/zserge/webview"
-	"net"
 )
 
 var (
 	// CSS defines the box containing CSS.
 	CSS = packr.NewBox("../config/src/css")
 
-	// dist defines the folder containing the build.
+	// Dist defines the folder containing the build.
 	Dist = packr.NewBox("../config/dist")
 
 	// Changes defines if there has been any changes since the capture UI opened.
@@ -32,8 +33,9 @@ func GetCSS() string {
 		BulmaswatchString = "darkly"
 	}
 	res := CSS.String("bulmaswatch/" + BulmaswatchString + "/bulmaswatch.min.css")
+	res += "\n" + CSS.String("fontawesome-free/css/all.min.css")
 	res += "\n" + CSS.String("main.css")
-	res += "\n" + CSS.String(ThemeString + ".css")
+	res += "\n" + CSS.String(ThemeString+".css")
 	return res
 }
 
@@ -71,6 +73,7 @@ func GetCapturesRoute(ctx *fasthttp.RequestCtx) {
 	ctx.Response.SetStatusCode(200)
 	ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	ctx.Response.SetBody(j)
+	Changes = false
 }
 
 // ChangefeedRoute is a route used to check for changes.
@@ -86,7 +89,9 @@ func ChangefeedRoute(ctx *fasthttp.RequestCtx) {
 
 // ConfigHTTPHandler handles the configs HTTP requests.
 func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
-	switch string(ctx.Path()) {
+	Path := string(ctx.Path())
+
+	switch Path {
 	// Handle (semi-)static content. Due to the size of this block, it doesn't need it's own function for each route.
 	case "/":
 		ctx.Response.SetStatusCode(200)
@@ -108,6 +113,14 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		GetCapturesRoute(ctx)
 	case "/changefeed":
 		ChangefeedRoute(ctx)
+
+	// Handles /webfonts
+	default:
+		if Path[:9] == "/webfonts" {
+			Item := Path[9:]
+			ctx.Response.SetStatusCode(200)
+			ctx.Response.SetBody(CSS.Bytes("fontawesome-free/webfonts" + Item))
+		}
 	}
 }
 
@@ -129,12 +142,13 @@ func OpenPreferences() {
 
 	// Spawn the config and wait for it to die.
 	URL := "http://" + ln.Addr().String()
+	println("Config opened at " + URL)
 	h := SpawnWindowHandler(webview.Settings{
-		Title:                  "MagicCap",
-		URL:                    URL,
-		Width:                  800,
-		Height:                 600,
-		Resizable:              true,
+		Title:     "MagicCap",
+		URL:       URL,
+		Width:     1050,
+		Height:    600,
+		Resizable: false,
 	})
 	h.Wait()
 

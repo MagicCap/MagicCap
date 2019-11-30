@@ -111,7 +111,7 @@
             </aside>
         </aside>
         <Captures ref="Captures"></Captures>
-        <ClipboardAction ref="ClipboardAction"></ClipboardAction>
+        <!-- <ClipboardAction ref="ClipboardAction"></ClipboardAction>
         <FileConfig ref="FileConfig"></FileConfig>
         <HotkeySettings ref="HotkeySettings"></HotkeySettings>
         <UploaderConfig ref="UploaderConfig" @appsettings-show="toggleCoreModal('AppSettings')"></UploaderConfig>
@@ -119,38 +119,38 @@
         <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')"></AppSettings>
         <Updates ref="Updates"></Updates>
         <Docs ref="Docs"></Docs>
-        <SelectorSettings ref="SelectorSettings"></SelectorSettings>
+        <SelectorSettings ref="SelectorSettings"></SelectorSettings> -->
     </div>
 </template>
 
 <script>
     import Vue from "vue"
-    import saveConfig from "../save_config"
+    import { saveConfig } from "../config"
     import Captures from "./captures"
-    import ClipboardAction from "./clipboard_action"
-    import FileConfig from "./file_configuration"
-    import HotkeySettings from "./hotkey_settings"
-    import UploaderConfig from "./uploader_config"
-    import AppSettings from "./app_settings"
-    import Debug from "./debug"
-    import Updates from "./updates"
-    import Docs from "./docs"
-    import SelectorSettings from "./selector_settings"
+    // import ClipboardAction from "./clipboard_action"
+    // import FileConfig from "./file_configuration"
+    // import HotkeySettings from "./hotkey_settings"
+    // import UploaderConfig from "./uploader_config"
+    // import AppSettings from "./app_settings"
+    // import Debug from "./debug"
+    // import Updates from "./updates"
+    // import Docs from "./docs"
+    // import SelectorSettings from "./selector_settings"
     // TODO: electron stuff.
 
     export default {
         name: "App",
         components: {
             Captures,
-            ClipboardAction,
-            FileConfig,
-            HotkeySettings,
-            UploaderConfig,
-            AppSettings,
-            Debug,
-            Updates,
-            Docs,
-            SelectorSettings,
+            // ClipboardAction,
+            // FileConfig,
+            // HotkeySettings,
+            // UploaderConfig,
+            // AppSettings,
+            // Debug,
+            // Updates,
+            // Docs,
+            // SelectorSettings,
         },
         data() {
             return {
