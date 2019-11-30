@@ -61,8 +61,9 @@ func HandleConfigRequest(ctx *fasthttp.RequestCtx) {
 		ctx.Response.SetBody(j)
 	} else {
 		// Sets the config.
+		ConfigBody := ctx.Request.Body()
 		NewConfig := make(map[string]interface{})
-		err := json.Unmarshal(ctx.Request.Body(), &NewConfig)
+		err := json.Unmarshal(ConfigBody, &NewConfig)
 		if err != nil {
 			panic(err)
 		}

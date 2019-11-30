@@ -9,7 +9,7 @@ class ConfigInterface {
     public async save() {
         await fetch("/config", {
             method: "POST",
-            body: this.o,
+            body: JSON.stringify(this.o),
         })
     }
 }
