@@ -4,7 +4,7 @@
   "description": "The config for MagicCap.",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build ./src/index.html --no-content-hash && parcel build ./src/mount.js --no-content-hash"
+    "build": "parcel build ./src/mount.js --no-content-hash"
   },
   "repository": {
     "type": "git",

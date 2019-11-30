@@ -1,29 +1,9 @@
 package core
 
 import (
-	"io/ioutil"
-	MagicCapKernelStandards "magiccap-uploaders-kernel/standards"
-	"os"
-	"path/filepath"
-
 	"github.com/getlantern/systray"
-	"github.com/sqweek/dialog"
+	"os"
 )
-
-// OpenFileUploader opens a file uploader.
-func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
-	fp, err := dialog.File().Title("Select the file to upload.").Load()
-	if err != nil {
-		return
-	}
-	b, err := ioutil.ReadFile(fp)
-	if err != nil {
-		dialog.Message("%s", err.Error()).Error()
-		return
-	}
-	Upload(b, filepath.Base(fp), &fp, Uploader)
-	// TODO: Implement native notifications.
-}
 
 // InitTray Initialises the tray.
 func InitTray() {
@@ -46,7 +26,7 @@ func InitTray() {
 		go func() {
 			for {
 				<-Item.ClickedCh
-				go OpenFileUploader(ItemCpy)
+				_, _ = os.Stdout.Write([]byte("upload" + ItemCpy.Name + "\n"))
 			}
 		}()
 	}

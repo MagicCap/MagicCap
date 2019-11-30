@@ -172,6 +172,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 		IsolatedConfig[v.Value] = ConfigItems[v.Value]
 	}
 	url, err := Uploader.Upload(IsolatedConfig, Data, Filename)
+	Changes = true
 	if err != nil {
 		dialog.Message("%s", err.Error()).Error()
 		LogUpload(Filename, nil, FilePath, false)

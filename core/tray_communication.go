@@ -20,8 +20,14 @@ func HandleTrayOut(line string) {
 	if line == "exit" {
 		Exit()
 	} else if line == "pref" {
-		// TODO: Spawn a new process?
 		go OpenPreferences()
+	} else if line[:6] == "upload" {
+		UploaderName := line[6:]
+		for _, v := range GetConfiguredUploaders() {
+			if v.Uploader.Name == UploaderName {
+				go OpenFileUploader(v.Uploader)
+			}
+		}
 	}
 }
 

@@ -25,6 +25,15 @@ var (
 	ConfigItemsLock = sync.RWMutex{}
 )
 
+// Capture defines a capture taken by MagicCap.
+type Capture struct {
+	Success bool `json:"success"`
+	Timestamp int `json:"timestamp"`
+	Filename string `json:"filename"`
+	URL *string `json:"url"`
+	FilePath *string `json:"file_path"`
+}
+
 // GetConfigItems gets all of the config items.
 func GetConfigItems() {
 	rows, err := Database.Query("SELECT * FROM config")
@@ -123,4 +132,38 @@ func LogUpload(Filename string, URL *string, FilePath *string, Success bool) {
 		panic(err)
 	}
 	DatabaseLock.Unlock()
+}
+
+// GetCaptures gets all of the captures from the config.
+func GetCaptures() []*Capture {
+	arr := make([]*Capture, 0)
+	DatabaseLock.Lock()
+	Statement, err := Database.Prepare("SELECT * FROM captures ORDER BY timestamp DESC")
+	if err != nil {
+		panic(err)
+	}
+	rows, err := Statement.Query()
+	if err != nil {
+		panic(err)
+	}
+	for rows.Next() {
+		var Filename string
+		var SuccessInt int
+		var Timestamp int
+		var URL *string
+		var FilePath *string
+		err = rows.Scan(&Filename, &SuccessInt, &Timestamp, &URL, &FilePath)
+		if err != nil {
+			panic(err)
+		}
+		arr = append(arr, &Capture{
+			Success: SuccessInt == 1,
+			Timestamp: Timestamp,
+			Filename: Filename,
+			URL: URL,
+			FilePath: FilePath,
+		})
+	}
+	DatabaseLock.Unlock()
+	return arr
 }
