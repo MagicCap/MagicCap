@@ -149,18 +149,6 @@
     import Vue from "vue"
     import saveConfig from "../save_config"
 
-    declare global {
-        interface Window {
-            uploaders: any,
-            config: any,
-            mconf: {
-                newConfig: () => any,
-                parse: (data: any) => any,
-            }
-        }
-    }
-    const uploaders = window.uploaders.uploaders
-
     export default Vue.extend({
         name: "UploaderConfig",
         data() {

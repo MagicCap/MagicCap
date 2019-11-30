@@ -37,12 +37,6 @@
     import Vue from "vue"
     import saveConfig from "../save_config"
 
-    declare global {
-        interface Window {
-            config: any,
-        }
-    }
-
     export default Vue.extend({
         name: "ClipboardAction",
         data() {

@@ -145,6 +145,14 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	// Handles UI methods.
 	case "/captures/delete":
 		DeleteCapturesRoute(ctx)
+	case "/filename":
+		j, err := json.Marshal(GenerateFilename())
+		if err != nil {
+			panic(err)
+		}
+		ctx.Response.SetStatusCode(200)
+		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
+		ctx.Response.SetBody(j)
 
 	// Handles /webfonts
 	default:

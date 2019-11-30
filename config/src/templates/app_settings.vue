@@ -52,16 +52,6 @@
 
     const db = SQLite3(`${os.homedir()}/magiccap.db`)
 
-    declare global {
-        interface Window {
-            config: any,
-            mconf: {
-                newConfig: () => any,
-                parse: (data: any) => any,
-            }
-        }
-    }
-
     export default Vue.extend({
         name: "AppSettings",
         data() {

@@ -33,52 +33,47 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import saveConfig from "../save_config"
-
-    declare global {
-        interface Window {
-            filename: any,
-            config: any,
-        }
-    }
+    import config from "../config"
+    import filename from "../filename"
 
     export default Vue.extend({
         name: "ClipboardAction",
         data() {
-            return {
-                active: false,
-                action: window.config.clipboard_action,
-                fileConfigCheckboxI: window.config.save_capture || false,
-                fileNamingPatternI: window.config.file_naming_pattern || "screenshot_%date%_%time%",
-                fileSaveFolderI: window.config.save_path,
-                fileNamingPreview: window.filename.newFilename(),
+            const vm = this
+            try {
+                return {
+                    active: false,
+                    action: config.o.clipboard_action,
+                    fileConfigCheckboxI: config.o.save_capture || false,
+                    fileNamingPatternI: config.o.file_naming_pattern || "screenshot_%date%_%time%",
+                    fileSaveFolderI: config.o.save_path,
+                    fileNamingPreview: "",
+                }
+            } finally {
+                filename().then(p => vm.$data.fileNamingPreview = p)
             }
-        },
-        watch: {
-            fileNamingPatternI() {
-                this.$data.fileNamingPreview = window.filename.newFilename()
-            },
         },
         methods: {
             toggle() {
                 this.$data.active = !this.$data.active
             },
             saveSaveCapture() {
-                window.config.save_capture = (document.getElementById("fileConfigCheckbox")! as HTMLInputElement).checked
-                saveConfig()
+                config.o.save_capture = (document.getElementById("fileConfigCheckbox")! as HTMLInputElement).checked
+                config.save()
             },
             saveNamingPattern() {
                 const val = (document.getElementById("fileNamingPattern")! as HTMLInputElement).value
                 this.$data.fileNamingPatternI = val
-                window.config.file_naming_pattern = val
-                saveConfig()
+                config.o.file_naming_pattern = val
+                const vm = this
+                config.save().then(() => filename().then(p => vm.$data.fileNamingPreview = p))
             },
             saveFilePath() {
                 let val = (document.getElementById("fileSaveFolder")! as HTMLInputElement).value
-                if (!val.endsWith(path.sep)) val += path.sep
+                if (!val.endsWith("/")) val += "/"
                 this.$data.fileSaveFolderI = val
-                window.config.save_path = val
-                saveConfig()
+                config.o.save_path = val
+                config.save()
             },
         },
     })

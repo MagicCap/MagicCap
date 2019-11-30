@@ -15,12 +15,6 @@
     import Vue from "vue"
     import showHelpModal from "../docs"
 
-    declare global {
-        interface Window {
-            docsVueEl: any,
-        }
-    }
-
     export default Vue.extend({
         name: "Docs",
         data() {

@@ -33,13 +33,6 @@
     import Vue from "vue"
     import saveConfig from "../save_config"
 
-    declare global {
-        interface Window {
-            filename: any,
-            config: any,
-        }
-    }
-
     export default Vue.extend({
         name: "Updates",
         data() {

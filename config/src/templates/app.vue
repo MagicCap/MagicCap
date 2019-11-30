@@ -112,8 +112,8 @@
         </aside>
         <Captures ref="Captures"></Captures>
         <ClipboardAction ref="ClipboardAction"></ClipboardAction>
-        <!-- <FileConfig ref="FileConfig"></FileConfig>
-        <HotkeySettings ref="HotkeySettings"></HotkeySettings>
+        <FileConfig ref="FileConfig"></FileConfig>
+        <!-- <HotkeySettings ref="HotkeySettings"></HotkeySettings>
         <UploaderConfig ref="UploaderConfig" @appsettings-show="toggleCoreModal('AppSettings')"></UploaderConfig>
         <Debug ref="Debug"></Debug>
         <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')"></AppSettings>
@@ -127,7 +127,7 @@
     import config from "../config"
     import Captures from "./captures"
     import ClipboardAction from "./clipboard_action"
-    // import FileConfig from "./file_configuration"
+    import FileConfig from "./file_configuration"
     // import HotkeySettings from "./hotkey_settings"
     // import UploaderConfig from "./uploader_config"
     // import AppSettings from "./app_settings"
@@ -141,7 +141,7 @@
         components: {
             Captures,
             ClipboardAction,
-            // FileConfig,
+            FileConfig,
             // HotkeySettings,
             // UploaderConfig,
             // AppSettings,

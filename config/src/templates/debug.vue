@@ -18,12 +18,6 @@
 <script lang="ts">
     import Vue from "vue"
 
-    declare global {
-        interface Window {
-            config: any,
-        }
-    }
-
     function safeConfig() {
         let newConfig = {} as any
         for (const key in window.config) {

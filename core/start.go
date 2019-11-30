@@ -2,6 +2,8 @@ package core
 
 import (
 	"fmt"
+	"github.com/hackebrot/turtle"
+	"math/rand"
 	"os"
 	"path"
 	"time"
@@ -21,10 +23,21 @@ var (
 
 	// Version defines the version.
 	Version = "3.0.0"
+
+	// Emojis are all usable emojis.
+	Emojis = make([]string, 0)
 )
 
 // Start is the main entrypoint for the application.
 func Start() {
+	// Handle the random seed.
+	rand.Seed(time.Now().UnixNano())
+
+	// Load in all of the emojis.
+	for  _, value := range turtle.Emojis {
+		Emojis = append(Emojis, value.String())
+	}
+
 	// Gets the start time.
 	StartTime := time.Now()
 
