@@ -1,21 +1,19 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-import { put } from "chainfetch"
+import { put, post } from "chainfetch"
 import * as i18n from "../i18n"
 import { app } from "electron"
 import { ConfigHandler } from "../config"
 
 export default {
-    name: "reUpload",
+    name: "ReUpload.gg",
     icon: "reupload.png",
     config_options: {
         Token: {
             value: "reupload_token",
-            type: "token_from_json",
-            required: true,
-            startUrl: "https://api.reupload.gg/login",
-            endUrlRegex: "https:\\/\\/api.reupload.gg\\/authorize.+",
+            type: "text",
+            required: false,
         },
     },
     upload: async(config: ConfigHandler, buffer: Buffer, fileType: string) => {
@@ -25,11 +23,10 @@ export default {
             case "jpeg":
             case "gif":
             case "bmp": {
-                const res = await put("https://api.reupload.gg/image")
-                    .set("Content-Type", `image/${fileType}`)
-                    .set("Authorization", config.o.reupload_token)
+                const res = await post("https://reupload.gg/v1/upload/image")
+                    .set("Authorization", `Bearer ${config.o.reupload_token}`)
                     .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.o.install_id}`)
-                    .send(buffer)
+                    .attach("file", buffer, `oof.${fileType}`)
                 return res.body.url
             }
             default: {
