@@ -166,6 +166,7 @@
                 this.$refs[name].toggle();
                 this.$data.default = name
             },
+            // TODO: Handle native stuff here!
             toggleTheme() {
                 window.config.light_theme = !window.config.light_theme
                 saveConfig()

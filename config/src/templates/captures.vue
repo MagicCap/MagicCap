@@ -61,8 +61,11 @@
         },
         methods: {
             rmCapture: async(timestamp: number) => {
-                //db.prepare("DELETE FROM captures WHERE timestamp = ?").run(timestamp)
-                //await getCaptures()
+                await fetch("/captures/delete", {
+                    method: "POST",
+                    body: String(timestamp),
+                })
+                await getCaptures()
             },
             openScreenshotURL: async(url: string) => {
                 //await shell.openExternal(url)
@@ -71,7 +74,7 @@
                 //await shell.openItem(filePath)
             },
             toggle() {
-                //getCaptures()
+                getCaptures()
                 this.$data.active = !this.$data.active
             },
         },

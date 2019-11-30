@@ -27,11 +27,11 @@ var (
 
 // Capture defines a capture taken by MagicCap.
 type Capture struct {
-	Success bool `json:"success"`
-	Timestamp int `json:"timestamp"`
-	Filename string `json:"filename"`
-	URL *string `json:"url"`
-	FilePath *string `json:"file_path"`
+	Success   bool    `json:"success"`
+	Timestamp int     `json:"timestamp"`
+	Filename  string  `json:"filename"`
+	URL       *string `json:"url"`
+	FilePath  *string `json:"file_path"`
 }
 
 // GetConfigItems gets all of the config items.
@@ -134,6 +134,20 @@ func LogUpload(Filename string, URL *string, FilePath *string, Success bool) {
 	DatabaseLock.Unlock()
 }
 
+// DeleteCapture deletes a capture from the database.
+func DeleteCapture(Timestamp int) {
+	DatabaseLock.Lock()
+	Statement, err := Database.Prepare("DELETE FROM captures WHERE timestamp = ?")
+	if err != nil {
+		panic(err)
+	}
+	_, err = Statement.Exec(Timestamp)
+	if err != nil {
+		panic(err)
+	}
+	DatabaseLock.Unlock()
+}
+
 // GetCaptures gets all of the captures from the config.
 func GetCaptures() []*Capture {
 	arr := make([]*Capture, 0)
@@ -157,11 +171,11 @@ func GetCaptures() []*Capture {
 			panic(err)
 		}
 		arr = append(arr, &Capture{
-			Success: SuccessInt == 1,
+			Success:   SuccessInt == 1,
 			Timestamp: Timestamp,
-			Filename: Filename,
-			URL: URL,
-			FilePath: FilePath,
+			Filename:  Filename,
+			URL:       URL,
+			FilePath:  FilePath,
 		})
 	}
 	DatabaseLock.Unlock()

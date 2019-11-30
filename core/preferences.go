@@ -3,6 +3,7 @@ package core
 import (
 	"encoding/json"
 	"net"
+	"strconv"
 
 	"github.com/gobuffalo/packr"
 	"github.com/valyala/fasthttp"
@@ -76,6 +77,16 @@ func GetCapturesRoute(ctx *fasthttp.RequestCtx) {
 	Changes = false
 }
 
+// DeleteCapturesRoute is a route used to delete a capture.
+func DeleteCapturesRoute(ctx *fasthttp.RequestCtx) {
+	num, err := strconv.Atoi(string(ctx.Request.Body()))
+	if err != nil {
+		panic(err)
+	}
+	DeleteCapture(num)
+	ctx.Response.SetStatusCode(204)
+}
+
 // ChangefeedRoute is a route used to check for changes.
 func ChangefeedRoute(ctx *fasthttp.RequestCtx) {
 	j, err := json.Marshal(&Changes)
@@ -113,6 +124,10 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		GetCapturesRoute(ctx)
 	case "/changefeed":
 		ChangefeedRoute(ctx)
+
+	// Handles UI methods.
+	case "/captures/delete":
+		DeleteCapturesRoute(ctx)
 
 	// Handles /webfonts
 	default:
