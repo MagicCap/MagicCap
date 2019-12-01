@@ -52,6 +52,7 @@
     import * as shell from "../electron_functionality_ports/shell"
     import applicationInfo from "../interfaces/application_info"
     import saveFile from "../electron_functionality_ports/save_file"
+    import captures from "../interfaces/captures"
 
     export default Vue.extend({
         name: "AppSettings",
@@ -111,20 +112,14 @@
 
                 // Save
                 this.saveConfig(data)
-            },
+            },*/
             exportHistory() {
-                const captures: Object[] = []
-                const stmt = db.prepare("SELECT * FROM captures")
-                for (const i of stmt.iterate()) {
-                    captures.push(i)
-                }
-
                 // Convert to save format
                 const data = this.encode("HISTORY", captures)
 
                 // Save
                 this.saveConfig(data)
-            },
+            },/*
             importMconf() {
                 remote.dialog.showOpenDialog({
                     title: "Open file...",
