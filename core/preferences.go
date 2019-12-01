@@ -166,7 +166,6 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	case "/application_info":
 		GetApplicationInfo(ctx)
 
-
 	// Handles ports of Electron functions.
 	case "/clipboard":
 		platformspecific.StringToClipboard(string(ctx.Request.Body()))

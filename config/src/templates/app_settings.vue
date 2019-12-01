@@ -97,7 +97,7 @@
                         }
                     })()
                 })
-            },
+            },*/
             encode(type: string, data: any) {
                 const json = encodeURIComponent(JSON.stringify(data))
                 // Double base64 encode to help keep plain-text logins & tokens safer
@@ -108,7 +108,7 @@
                 const data = raw.split("\n").slice(1).join("\n")
                 const decoded = atob(atob(data))
                 return JSON.parse(decodeURIComponent(decoded))
-            },
+            },/*
             exportConfig() {
                 const config = window.config
 
