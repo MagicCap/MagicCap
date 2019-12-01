@@ -93,7 +93,8 @@
                 return JSON.parse(decodeURIComponent(decoded))
             },
             exportConfig() {
-                const c = config.o
+                const c = {} as any
+                for (const x in config.o) c[x] = config.o[x]
 
                 // Clean install specific items
                 if("ffmpeg_path" in c) delete c.ffmpeg_path
