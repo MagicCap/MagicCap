@@ -1,9 +1,9 @@
 package core
 
 import (
+	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
 	"github.com/sqweek/dialog"
 	"io/ioutil"
-	MagicCapKernelStandards "magiccap-uploaders-kernel/standards"
 	"path/filepath"
 )
 

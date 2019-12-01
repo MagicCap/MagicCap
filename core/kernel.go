@@ -2,9 +2,9 @@ package core
 
 import (
 	"encoding/json"
+	MagicCapKernel "github.com/magiccap/magiccap-uploaders-kernel"
+	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
 	"io/ioutil"
-	MagicCapKernel "magiccap-uploaders-kernel"
-	MagicCapKernelStandards "magiccap-uploaders-kernel/standards"
 	"net/http"
 	"os"
 	"path"
