@@ -335,8 +335,14 @@ func OpenPreferences() {
 	// Spawn the config and wait for it to die.
 	URL := "http://" + ln.Addr().String()
 	println("Config opened at " + URL)
+	VersionBit := ""
+	if strings.Contains(Version, "a") {
+		VersionBit = " Alpha"
+	} else if strings.Contains(Version, "b") {
+		VersionBit = " Beta"
+	}
 	ConfigWindow = SpawnWindowHandler(webview.Settings{
-		Title:     "MagicCap",
+		Title:     "MagicCap" + VersionBit,
 		URL:       URL,
 		Width:     1200,
 		Height:    600,

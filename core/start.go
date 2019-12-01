@@ -22,7 +22,7 @@ var (
 	Assets = packr.NewBox("../assets")
 
 	// Version defines the version.
-	Version = "3.0.0"
+	Version = "3.0.0a1"
 
 	// Emojis are all usable emojis.
 	Emojis = make([]string, 0)
