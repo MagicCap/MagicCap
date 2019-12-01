@@ -18,7 +18,7 @@
                 <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploaderKey)"
                    v-bind:key="uploaderKey" v-for="(uploader, uploaderKey) in uploaders" v-if="uploader.icon">
                         <span class="icon is-medium">
-                            <img class="rounded-img" :src="`data:image/xyz;base64,${uploader.icon}`">
+                            <img class="rounded-img" :src="uploader.icon.startsWith('PD94bW') ? `data:image/svg+xml;base64,${uploader.icon}` : `data:image/xyz;base64,${uploader.icon}`">
                         </span>
                     <p>{{ uploader.name }}</p>
                 </a>
