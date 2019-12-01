@@ -18,7 +18,7 @@
                 <a class="button" style="margin-bottom:5px; margin-right:5px" v-on:click="renderUploader(uploaderKey)"
                    v-bind:key="uploaderKey" v-for="(uploader, uploaderKey) in uploaders">
                         <span class="icon is-medium">
-                            <img class="rounded-img" :src="'../icons/' + uploader.icon">
+                            <img class="rounded-img" :src="`data:image/xyz;base64,${uploader.icon}`">
                         </span>
                     <p>{{ uploader.name }}</p>
                 </a>
@@ -65,18 +65,6 @@
                                 <div class="control">
                                     <input class="input" type="text" :id="option.value" :placeholder="option.name"
                                            :value="getDefaultValue(option)" v-on:change="changeOption(option)">
-                                </div>
-                            </div>
-                        </div>
-                        <div v-else-if="option.type === 'oauth2'">
-                            <div class="field">
-                                <label class="label" :for="option.value">{{ option.name }}:</label>
-                                <div v-if="getDefaultValue(option) === undefined">
-                                    <a class="button" id="oauthFlowInit" v-on:click="oauthLogin()">Authenticate</a>
-                                </div>
-                                <div v-else>
-                                    <p>Already set. Do you want to <a v-on:click="resetValue(option)">reset this
-                                        value?</a></p>
                                 </div>
                             </div>
                         </div>
@@ -147,7 +135,14 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import saveConfig from "../save_config"
+    import config from "../interfaces/config"
+    import uploadersPromise from "../interfaces/uploaders"
+
+    const uploaders = {} as any
+    uploadersPromise.then(u => {
+        uploaders.length = 0
+        for (const x in u) uploaders[x] = u[x]
+    })
 
     export default Vue.extend({
         name: "UploaderConfig",
@@ -159,18 +154,18 @@
                 uploaders: uploaders,
                 uploader: {} as any,
                 active: false,
-                checkUploaderUpload: Boolean(window.config.upload_capture),
-                checkUploaderOpen: Boolean(window.config.upload_open),
+                checkUploaderUpload: Boolean(config.o.upload_capture),
+                checkUploaderOpen: Boolean(config.o.upload_open),
             }
         },
         watch: {
             checkUploaderOpen() {
-                window.config.upload_open = this.$data.checkUploaderOpen
-                saveConfig()
+                config.o.upload_open = this.$data.checkUploaderOpen
+                config.save()
             },
             checkUploaderUpload() {
-                window.config.upload_capture = this.$data.checkUploaderUpload
-                saveConfig()
+                config.o.upload_capture = this.$data.checkUploaderUpload
+                config.save()
             }
         },
         methods: {
@@ -185,7 +180,7 @@
             getDefaultValue: (option: any) => {
                 switch (option.type) {
                     case "boolean": {
-                        const c = window.config[option.value]
+                        const c = config.o[option.value]
                         if (c === undefined) {
                             if (option.default !== undefined) {
                                 return option.default
@@ -195,13 +190,13 @@
                         return c
                     }
                     default: {
-                        if (window.config[option.value]) {
-                            return window.config[option.value]
+                        if (config.o[option.value]) {
+                            return config.o[option.value]
                         }
                         if (option.default !== undefined) {
                             return option.default
                         }
-                        if (option.type === "token_from_json" || option.type === "oauth2") {
+                        if (option.type === "token_from_json") {
                             return undefined
                         }
                         return ""
@@ -211,8 +206,8 @@
             renderUploader(key: string) {
                 const uploader = uploaders[key]
                 const options = []
-                for (const optionKey in uploader.config_options) {
-                    const option = uploader.config_options[optionKey]
+                for (const optionKey in uploader.configOptions) {
+                    const option = uploader.configOptions[optionKey]
                     switch (option.type) {
                         case "text":
                         case "integer":
@@ -228,23 +223,13 @@
                                 name: optionKey,
                             })
                             if (option.type === "boolean") {
-                                window.config[option.value] = window.config[option.value] || false
-                                saveConfig()
+                                config.o[option.value] = config.o[option.value] || false
+                                config.save()
                             }
                             break
                         }
-                        case "oauth2": {
-                            options.push({
-                                type: option.type,
-                                default: option.default,
-                                value: option.value,
-                                required: option.required,
-                                name: optionKey,
-                            })
-                            break
-                        }
                         case "object": {
-                            const i = window.config[option.value] || option.default || {}
+                            const i = config.o[option.value] || option.default || {}
                             options.push({
                                 type: option.type,
                                 value: option.value,
@@ -253,8 +238,8 @@
                                 items: i,
                                 name: optionKey,
                             })
-                            window.config[option.value] = i
-                            saveConfig()
+                            config.o[option.value] = i
+                            config.save()
                             break
                         }
                     }
@@ -266,8 +251,8 @@
                 this.$data.uploaderName = key
             },
             resetValue(option: any) {
-                delete window.config[option.value]
-                saveConfig()
+                delete config.o[option.value]
+                config.save()
             },
             changeOption: (option: any) => {
                 let res: undefined | any = (document.getElementById(option.value)! as HTMLInputElement).value
@@ -282,19 +267,19 @@
                         res = (document.getElementById(option.value)! as HTMLInputElement).checked
                         break
                 }
-                window.config[option.value] = res
-                saveConfig()
+                config.o[option.value] = res
+                config.save()
             },
             validateConfig() {
                 this.$set(this, "exception", "")
                 this.$set(this, "exceptionData", "")
                 for (const optionKey in this.uploader.options) {
                     const option = this.uploader.options[optionKey]
-                    const c = window.config[option.value]
+                    const c = config.o[option.value]
                     if (c === undefined && option.required) {
                         if (option.default) {
-                            window.config[option.value] = option.default
-                            saveConfig()
+                            config.o[option.value] = option.default
+                            config.save()
                         } else if (option.type === "integer" && !parseInt((document.getElementById(option.value)! as HTMLInputElement).value)) {
                             this.exception += "notAnInteger"
                             return false
@@ -320,8 +305,8 @@
                 }
 
                 const file = this.getFilename()
-                window.config.uploader_type = file
-                saveConfig()
+                config.o.uploader_type = file
+                config.save()
                 this.exception += "ayyyyDefaultSaved"
             },
             testUploader() {
@@ -329,7 +314,7 @@
                     return
                 }
                 document.getElementById("testButton")!.classList.add("is-loading")
-                ipcRenderer.send("test-uploader", this.getFilename())
+/*                ipcRenderer.send("test-uploader", this.getFilename())
                 ipcRenderer.once("test-uploader-res", (_: any, res: any) => {
                     document.getElementById("testButton")!.classList.remove("is-loading")
                     if (res[0]) {
@@ -338,13 +323,13 @@
                         this.$data.exception += "testFailed"
                         this.$data.exceptionData += res[1]
                     }
-                })
+                })*/
             },
             deleteRow(key: string, option: any) {
                 delete option.items[key]
-                window.config[option.value] = option.items
+                config.o[option.value] = option.items
                 this.$forceUpdate()
-                saveConfig()
+                config.save()
             },
             addToTable(option: any) {
                 this.$data.exception = ""
@@ -359,27 +344,9 @@
                     return
                 }
                 option.items[key] = value
-                window.config[option.value] = option.items
+                config.o[option.value] = option.items
                 this.$forceUpdate()
-                saveConfig()
-            },
-            async oauthLogin() {
-                document.getElementById("oauthFlowInit")!.classList.add("is-loading")
-                await ipcRenderer.send("oauth-flow-uploader", this.$data.uploader.name)
-                const configDiff = await new Promise(res => {
-                    ipcRenderer.once("oauth-flow-uploader-response", (_: any, diff: any) => {
-                        res(diff)
-                    })
-                }) as any
-                document.getElementById("oauthFlowInit")!.classList.remove("is-loading")
-                if (!configDiff) {
-                    return
-                }
-                for (const key of Object.keys(configDiff) as any) {
-                    window.config[key] = configDiff[key]
-                }
-                saveConfig()
-                this.$forceUpdate()
+                config.save()
             },
         },
     })
