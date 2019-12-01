@@ -119,7 +119,7 @@
             <UploaderConfig ref="UploaderConfig" @appsettings-show="toggleCoreModal('AppSettings')"></UploaderConfig>
             <Debug ref="Debug"></Debug>
             <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')" @open-dialog="openDialog"></AppSettings>
-            <!-- <Updates ref="Updates"></Updates> -->
+            <Updates ref="Updates"></Updates>
             <Docs ref="Docs"></Docs>
             <SelectorSettings ref="SelectorSettings"></SelectorSettings>
         </div>
@@ -135,7 +135,7 @@ s
     import UploaderConfig from "./uploader_config"
     import AppSettings from "./app_settings"
     import Debug from "./debug"
-    // import Updates from "./updates"
+    import Updates from "./updates"
     import Docs from "./docs"
     import SelectorSettings from "./selector_settings"
     import Dialog from "./dialog"
@@ -151,7 +151,7 @@ s
             UploaderConfig,
             AppSettings,
             Debug,
-            // Updates,
+            Updates,
             Docs,
             SelectorSettings,
             Dialog,

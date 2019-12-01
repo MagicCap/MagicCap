@@ -7,9 +7,6 @@
             </header>
             <section class="modal-card-body">
                 <h1 class="modal-card-title"><small class="muted">You are currently using</small> MagicCap v{{ version }}</h1>
-                <p>Although MagicCap will automatically check for updates, you can always manually check for updates to ensure you are on the latest update.</p>
-                <br/>
-                <p><a class="button" href="#" @click="checkForUpdates">{{ check }}</a></p>
 
                 <hr/>
 
@@ -31,16 +28,16 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import saveConfig from "../save_config"
+    import config from "../interfaces/config"
+    import applicationInfo from "../interfaces/application_info"
 
     export default Vue.extend({
         name: "Updates",
         data() {
             return {
                 active: false,
-                // @ts-ignore
-                version: viewInterface.getVersion(),
-                action: Boolean(window.config.beta_channel),
+                version: applicationInfo.version,
+                action: Boolean(config.o.beta_channel),
                 check: "Check for Updates",
             }
         },
@@ -50,16 +47,8 @@
             },
             changeAction(actionBool: boolean) {
                 this.$data.action = actionBool
-                window.config.beta_channel = actionBool
-                saveConfig()
-            },
-            checkForUpdates() {
-                this.$data.check = "Checking..."
-                const vm = this
-                ipcRenderer.send("check-for-updates")
-                ipcRenderer.once("check-for-updates-done", () => {
-                    vm.$data.check = "Check for Updates"
-                })
+                config.o.beta_channel = actionBool
+                config.save()
             },
         },
     })
