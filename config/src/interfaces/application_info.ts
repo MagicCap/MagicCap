@@ -13,6 +13,6 @@ export default applicationInfo
 export async function getApplicationInfo() {
     const res = await fetch("/application_info")
     if (!res.ok) throw res
-    const j = await res.json()
+    const j = await res.json() as Record<string, any>
     for (const key in j) applicationInfo[key] = j[key]
 }
