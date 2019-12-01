@@ -183,6 +183,14 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ChangefeedRoute(ctx)
 	case "/application_info":
 		GetApplicationInfo(ctx)
+	case "/uploaders":
+		j, err := json.Marshal(&Kernel.Uploaders)
+		if err != nil {
+			panic(err)
+		}
+		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
+		ctx.Response.SetStatusCode(200)
+		ctx.Response.SetBody(j)
 
 	// Handles ports of Electron functions.
 	case "/clipboard":

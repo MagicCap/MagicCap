@@ -53,6 +53,7 @@
     import applicationInfo from "../interfaces/application_info"
     import saveFile from "../electron_functionality_ports/save_file"
     import captures from "../interfaces/captures"
+    import uploadersPromise from "../interfaces/uploaders"
 
     export default Vue.extend({
         name: "AppSettings",
@@ -103,16 +104,35 @@
 
                 // Save
                 this.saveConfig(data)
-            },/*
-            exportUploaders() {
-                const exported = window.mconf.newConfig()
+            },
+            async exportUploaders() {
+                const values = (item: any) => {
+                    const x: any[] = []
+                    for (const i in item) {
+                        const y = item[i] as any
+                        x.push(y)
+                    }
+                    return x
+                }
+                const options: any = {}
+                for (const uploader of values(await uploadersPromise)) {
+                    for (const option of values(uploader.configOptions)) {
+                        if (config.o[option.value] !== undefined) {
+                            options[option.value] = config.o[option.value]
+                        }
+                    }
+                }
+                const exported = {
+                    version: 1,
+                    config_items: options,
+                }
 
                 // Convert to save format
                 const data = this.encode("UPLOADERS", exported)
 
                 // Save
                 this.saveConfig(data)
-            },*/
+            },
             exportHistory() {
                 // Convert to save format
                 const data = this.encode("HISTORY", captures)
