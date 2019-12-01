@@ -35,16 +35,17 @@
 
 <script lang="ts">
     import Vue from "vue"
-    import saveConfig from "../save_config"
+    import config from "../interfaces/config"
+    import * as shell from "../electron_functionality_ports/shell"
 
     export default Vue.extend({
         name: "ClipboardAction",
         data() {
             return {
                 active: false,
-                gifHotkey: window.config.gif_hotkey || "",
-                screenshotHotkey: window.config.hotkey || "",
-                clipboardHotkey: window.config.clipboard_hotkey || "",
+                gifHotkey: config.o.gif_hotkey || "",
+                screenshotHotkey: config.o.hotkey || "",
+                clipboardHotkey: config.o.clipboard_hotkey || "",
             }
         },
         methods: {
@@ -61,37 +62,34 @@
 
                 let changed = false
 
-                if (window.config.hotkey !== text) {
+                if (config.o.hotkey !== text) {
                     changed = true
                     if (text === "") {
-                        window.config.hotkey = null
+                        config.o.hotkey = null
                     } else {
-                        window.config.hotkey = text
+                        config.o.hotkey = text
                     }
                 }
 
-                if (window.config.gif_hotkey !== gifText) {
+                if (config.o.gif_hotkey !== gifText) {
                     changed = true
                     if (gifText === "") {
-                        window.config.gif_hotkey = null
+                        config.o.gif_hotkey = null
                     } else {
-                        window.config.gif_hotkey = gifText
+                        config.o.gif_hotkey = gifText
                     }
                 }
 
-                if (window.config.clipboard_hotkey !== clipboardText) {
+                if (config.o.clipboard_hotkey !== clipboardText) {
                     changed = true
                     if (clipboardText === "") {
-                        window.config.clipboard_hotkey = null
+                        config.o.clipboard_hotkey = null
                     } else {
-                        window.config.clipboard_hotkey = clipboardText
+                        config.o.clipboard_hotkey = clipboardText
                     }
                 }
 
-                if (changed) {
-                    saveConfig()
-                    ipcRenderer.send("hotkey-change")
-                }
+                if (changed) config.save()
             },
             openAcceleratorDocs() {
                 shell.openExternal("https://electronjs.org/docs/api/accelerator")
