@@ -28,7 +28,7 @@
                 <hr/>
 
                 <h1 class="modal-card-title">Export MagicCap Data</h1>
-
+                <input type="file" style="display: none" id="fileInput" />
                 <a class="button is-info" @click="exportConfig">Export All Settings</a>
                 <a class="button is-info" @click="exportUploaders">Export Uploader Settings</a>
                 <a class="button is-info" @click="exportHistory">Export Capture History</a>
@@ -140,111 +140,99 @@
 
                 // Save
                 this.saveConfig(data)
-            },/*
-            importMconf() {
-                remote.dialog.showOpenDialog({
-                    title: "Open file...",
-                    filters: [
-                        {
-                            extensions: ["mconf"],
-                            name: "MagicCap Data File",
-                        },
-                    ],
-                    // @ts-ignore
-                    multiSelections: false,
-                    openDirectory: false,
-                    showsTagField: false,
-                }, (file: any[]) => {
-                    (async () => {
-                        if (file === undefined) {
-                            return
-                        }
-
-                        // Parse raw
-                        let action: Function
-                        let warning: string
-                        const raw = String(readFileSync(file[0]))
-                        let data: any
-                        try {
-                            data = this.decode(raw)
-                        } catch (_) {
-                            remote.dialog.showErrorBox("MagicCap", "Unable to parse mconf file")
-                            return
-                        }
-
-                        // Parse type
-                        switch (raw.split("\n")[0]) {
-                            case "==BEGIN MAGICCAP CONFIG==": {
-                                warning = "This WILL overwrite ALL values in your MagicCap config to match the configuration file. Do you want to continue?"
-                                action = async () => {
-                                    // Clean install specific items
-                                    if("ffmpeg_path" in data) delete data.ffmpeg_path
-                                    if("install_id" in data) delete data.install_id
-
-                                    // Apply
-                                    for (const key in data) {
-                                        window.config[key] = data[key]
-                                    }
-                                    saveConfig()
-                                    ipcRenderer.send("restartWindow")
-                                }
-                                break
-                            }
-                            case "==BEGIN MAGICCAP UPLOADERS==": {
-                                warning = "This WILL overwrite ALL uploader settings MagicCap to match the configuration file. Do you want to continue?"
-                                action = async () => {
-                                    const parse = await window.mconf.parse(data)
-                                    for (const key in parse) {
-                                        window.config[key] = parse[key]
-                                    }
-                                    saveConfig()
-                                    ipcRenderer.send("restartWindow")
-                                }
-                                break
-                            }
-                            case "==BEGIN MAGICCAP HISTORY==": {
-                                warning = "This will RESET the ENTIRE MagicCap capture history to match the data file. Do you want to continue?"
-                                action = async () => {
-                                    db.transaction(() => {
-                                        db.prepare("DELETE FROM captures WHERE 1").run()
-                                        for (const item of data) {
-                                            const keys = Object.keys(item)
-                                            const stmt = `INSERT INTO captures (${keys.join(", ")}) VALUES (${keys.map(x => `@${x}`).join(", ")})`
-                                            db.prepare(stmt).run(item)
-                                        }
-                                    })()
-                                    ipcRenderer.send("restartWindow")
-                                }
-                                break
-                            }
-                            default: {
-                                remote.dialog.showErrorBox("MagicCap", "Unable to parse mconf file")
-                                return
-                            }
-                        }
-
-                        // Confirm action
-                        await remote.dialog.showMessageBox({
-                            type: "warning",
-                            buttons: ["Yes", "No"],
-                            title: "MagicCap",
-                            message: warning,
-                        }, async response => {
-                            switch (response) {
-                                case 0: {
-                                    try {
-                                        await action();
-                                    } catch (err) {
-                                        remote.dialog.showErrorBox("MagicCap", `${err.message}`)
-                                    }
-                                    break
-                                }
-                            }
-                        })
-                    })()
-                })
             },
-            */
+            parseMconf(data: any) {
+                const version = data.version as number
+                if (version !== 1) throw new Error("This version of MagicCap cannot read the config file given.")
+                if (data.config_items === undefined || typeof data.config_items !== "object") throw new Error("MagicCap couldn't parse the config file.")
+                return data.config_items
+            },
+            importMconf() {
+                const fileInput = document.getElementById("fileInput")!
+                fileInput.click()
+                fileInput.onchange = async e => {
+                    const loadedFile = (e as any).target.files[0]
+                    const raw = await new Promise(res => {
+                        const reader = new FileReader()
+                        reader.readAsText(loadedFile, "UTF-8")
+
+                        reader.onload = readerEvent => res((readerEvent.target as any).result)
+                    }) as string
+
+                    // Parse raw.
+                    let data: any
+                    try {
+                        data = this.decode(raw)
+                    } catch (_) {
+                        this.showDialog("MagicCap", "Unable to parse mconf file", ["OK"])
+                        return
+                    }
+
+                    // Parse type
+                    let action: Function
+                    let warning: string
+                    switch (raw.split("\n")[0]) {
+                        case "==BEGIN MAGICCAP CONFIG==": {
+                            warning = "This WILL overwrite ALL values in your MagicCap config to match the configuration file. Do you want to continue?"
+                            action = async () => {
+                                // Clean install specific items
+                                if("ffmpeg_path" in data) delete data.ffmpeg_path
+                                if("install_id" in data) delete data.install_id
+
+                                // Apply
+                                for (const key in data) config.o[key] = data[key]
+                                await config.save()
+                                // TODO: Reboot the window here?
+                                //ipcRenderer.send("restartWindow")
+                            }
+                            break
+                        }
+                        case "==BEGIN MAGICCAP UPLOADERS==": {
+                            warning = "This WILL overwrite ALL uploader settings MagicCap to match the configuration file. Do you want to continue?"
+                            action = async () => {
+                                const parse = this.parseMconf(data)
+                                for (const key in parse) config.o[key] = parse[key]
+                                await config.save()
+                                // TODO: Reboot the window here?
+                                //ipcRenderer.send("restartWindow")
+                            }
+                            break
+                        }
+                        case "==BEGIN MAGICCAP HISTORY==": {
+                            warning = "This will RESET the ENTIRE MagicCap capture history to match the data file. Do you want to continue?"
+                            action = async () => {
+                                const parse = this.parseMconf(data)
+                                const res = await fetch("/captures/replace", {
+                                    method: "POST",
+                                    body: JSON.stringify(parse),
+                                })
+                                if (!res.ok) throw res
+                                // TODO: Reboot the window here?
+                                //ipcRenderer.send("restartWindow")
+                            }
+                            break
+                        }
+                        default: {
+                            this.showDialog("MagicCap", "Unable to parse mconf file", ["OK"])
+                            return
+                        }
+                    }
+
+                    // Handle applying the config.
+                    this.showDialog("MagicCap", warning, ["Yes", "No"]).then(async response => {
+                        switch (response) {
+                            case 0: {
+                                try {
+                                    await action();
+                                } catch (err) {
+                                    this.showDialog("MagicCap", `${err.message}`, ["OK"])
+                                }
+                                break
+                            }
+                        }
+                    })
+                }
+            },
             resetHistory() {
                 this.showDialog(
                     "MagicCap", "This WILL remove ALL capture history from MagicCap. Do you want to continue?",

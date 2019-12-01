@@ -155,6 +155,18 @@ func OpenSaveDialog(Body map[string]string) {
 	_ = ioutil.WriteFile(fp, []byte(Data), 0600)
 }
 
+// ReplaceCapturesRoute is used to replace all of the captures with new values.
+func ReplaceCapturesRoute(ctx *fasthttp.RequestCtx) {
+	var Data []map[string]interface{}
+	err := json.Unmarshal(ctx.Request.Body(), &Data)
+	if err != nil {
+		panic(err)
+	}
+	PurgeCaptures()
+	InsertUpload(Data)
+	ctx.Response.SetStatusCode(204)
+}
+
 // ConfigHTTPHandler handles the configs HTTP requests.
 func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	Path := string(ctx.Path())
@@ -165,24 +177,31 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "text/html; charset=UTF-8")
 		ctx.Response.SetBody(Dist.Bytes("index.html"))
+		break
 	case "/js":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/javascript; charset=UTF-8")
 		ctx.Response.SetBody(Dist.Bytes("mount.js"))
+		break
 	case "/css":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "text/css; charset=UTF-8")
 		ctx.Response.SetBody([]byte(GetCSS()))
+		break
 
 	// Handles dynamic content.
 	case "/config":
 		HandleConfigRequest(ctx)
+		break
 	case "/captures":
 		GetCapturesRoute(ctx)
+		break
 	case "/changefeed":
 		ChangefeedRoute(ctx)
+		break
 	case "/application_info":
 		GetApplicationInfo(ctx)
+		break
 	case "/uploaders":
 		j, err := json.Marshal(&Kernel.Uploaders)
 		if err != nil {
@@ -191,17 +210,21 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.SetBody(j)
+		break
 
 	// Handles ports of Electron functions.
 	case "/clipboard":
 		platformspecific.StringToClipboard(string(ctx.Request.Body()))
 		ctx.Response.SetStatusCode(204)
+		break
 	case "/open/url":
 		_ = browser.OpenURL(string(ctx.Request.Body()))
 		ctx.Response.SetStatusCode(204)
+		break
 	case "/open/item":
 		_ = browser.OpenFile(string(ctx.Request.Body()))
 		ctx.Response.SetStatusCode(204)
+		break
 	case "/save":
 		var Body map[string]string
 		err := json.Unmarshal(ctx.Request.Body(), &Body)
@@ -210,13 +233,19 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		}
 		mainthread.CallNonBlock(func() { OpenSaveDialog(Body) })
 		ctx.Response.SetStatusCode(204)
+		break
 
 	// Handles UI methods.
 	case "/captures/purge":
 		PurgeCaptures()
 		ctx.Response.SetStatusCode(204)
+		break
 	case "/captures/delete":
 		DeleteCapturesRoute(ctx)
+		break
+	case "/captures/replace":
+		ReplaceCapturesRoute(ctx)
+		break
 	case "/filename":
 		j, err := json.Marshal(GenerateFilename())
 		if err != nil {
@@ -225,13 +254,17 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
 		ctx.Response.SetBody(j)
+		break
 
-	// Handles /webfonts
+	// Handles /webfonts and not found.
 	default:
 		if Path[:9] == "/webfonts" {
 			Item := Path[9:]
 			ctx.Response.SetStatusCode(200)
 			ctx.Response.SetBody(CSS.Bytes("fontawesome-free/webfonts" + Item))
+		} else {
+			ctx.Response.SetStatusCode(404)
+			ctx.Response.SetBody([]byte("Not found."))
 		}
 	}
 }

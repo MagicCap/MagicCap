@@ -136,6 +136,28 @@ func LogUpload(Filename string, URL *string, FilePath *string, Success bool) {
 	DatabaseLock.Unlock()
 }
 
+// InsertUploads are used to insert uploads.
+func InsertUpload(Uploads []map[string]interface{}) {
+	DatabaseLock.Lock()
+	Statement, err := Database.Prepare("INSERT INTO captures VALUES(?, ?, ?, ?, ?)")
+	if err != nil {
+		panic(err)
+	}
+	for _, v := range Uploads {
+		SuccessInt := 0
+		if v["success"] == true {
+			SuccessInt++
+		}
+		_, err = Statement.Exec(v["filename"], SuccessInt, v["timestamp"], v["url"], v["file_path"])
+		if err != nil {
+			panic(err)
+		}
+	}
+	DatabaseLock.Unlock()
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+	Changes = &timestamp
+}
+
 // DeleteCapture deletes a capture from the database.
 func DeleteCapture(Timestamp int) {
 	DatabaseLock.Lock()
