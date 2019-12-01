@@ -18,9 +18,10 @@ import (
 	"github.com/zserge/webview"
 )
 
-// TODO: Single instance only!
-
 var (
+	// ConfigWindow defines the config window.
+	ConfigWindow *WindowHandler
+
 	// CSS defines the box containing CSS.
 	CSS = packr.NewBox("../config/src/css")
 
@@ -255,6 +256,10 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
 		ctx.Response.SetBody(j)
 		break
+	case "/restart":
+		ConfigWindow.Exit()
+		ConfigWindow = nil
+		OpenPreferences()
 
 	// Handles /webfonts and not found.
 	default:
@@ -271,6 +276,11 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 
 // OpenPreferences opens the preferences.
 func OpenPreferences() {
+	// Only allow a single instance of the config.
+	if ConfigWindow != nil {
+		return
+	}
+
 	// Create a socket.
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
@@ -288,14 +298,17 @@ func OpenPreferences() {
 	// Spawn the config and wait for it to die.
 	URL := "http://" + ln.Addr().String()
 	println("Config opened at " + URL)
-	h := SpawnWindowHandler(webview.Settings{
+	ConfigWindow = SpawnWindowHandler(webview.Settings{
 		Title:     "MagicCap",
 		URL:       URL,
 		Width:     1200,
 		Height:    600,
 		Resizable: false,
 	})
-	h.Wait()
+	ConfigWindow.Wait()
+
+	// Null-ify the config window.
+	ConfigWindow = nil
 
 	// Kill the socket.
 	err = ln.Close()

@@ -56,8 +56,5 @@ func (p *WindowHandler) Exit() {
 
 // Wait is used to wait for the process to die.
 func (p *WindowHandler) Wait() {
-	err := p.Cmd.Wait()
-	if err != nil {
-		panic(err)
-	}
+	_ = p.Cmd.Wait()
 }

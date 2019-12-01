@@ -191,12 +191,12 @@
                     return r
                 })
             },
-            // TODO: Handle native stuff here!
             toggleTheme() {
                 config.o.light_theme = !config.o.light_theme
                 config.save()
-                ipcRenderer.send("restartWindow")
+                fetch("/restart", {method: "GET"})
             },
+            // TODO: Handle native stuff here!
             runRemoteAction(action) {
                 if (action === 0) {
                     ipcRenderer.send("show-short")

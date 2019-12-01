@@ -182,8 +182,7 @@
                                 // Apply
                                 for (const key in data) config.o[key] = data[key]
                                 await config.save()
-                                // TODO: Reboot the window here?
-                                //ipcRenderer.send("restartWindow")
+                                await fetch("/restart", {method: "GET"})
                             }
                             break
                         }
@@ -193,8 +192,7 @@
                                 const parse = this.parseMconf(data)
                                 for (const key in parse) config.o[key] = parse[key]
                                 await config.save()
-                                // TODO: Reboot the window here?
-                                //ipcRenderer.send("restartWindow")
+                                await fetch("/restart", {method: "GET"})
                             }
                             break
                         }
@@ -207,8 +205,7 @@
                                     body: JSON.stringify(parse),
                                 })
                                 if (!res.ok) throw res
-                                // TODO: Reboot the window here?
-                                //ipcRenderer.send("restartWindow")
+                                await fetch("/restart", {method: "GET"})
                             }
                             break
                         }
