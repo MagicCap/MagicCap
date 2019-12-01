@@ -21,7 +21,7 @@ var (
 	}
 
 	// UploadersURL defines the URL where the uploaders are at.
-	UploadersURL = "https://s3.magiccap.me/kernel/v1.json"
+	UploadersURL = "https://magiccap-s3.sfo2.digitaloceanspaces.com/kernel/v1.json"
 )
 
 // LoadUploadersKernel loads up the kernel.
