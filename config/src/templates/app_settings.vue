@@ -266,35 +266,23 @@
                     }
                 })
             },
-            /*
             resetConfig() {
-                remote.dialog.showMessageBox({
-                    type: "warning",
-                    buttons: ["Yes", "No"],
-                    title: "MagicCap",
-                    message: "This WILL reset ALL your settings in MagicCap to their defaults. Do you want to continue?",
-                }, response => {
+                this.showDialog(
+                    "MagicCap", "This WILL reset ALL your settings in MagicCap to their defaults. Do you want to continue?",
+                    ["Yes", "No"],
+                ).then(async response => {
                     switch (response) {
                         case 0: {
-                            try {
-                                ipcRenderer.send("get-default-config")
-                                ipcRenderer.once("get-default-config-res", (_: any, res: any) => {
-                                    const oldConfig = {...window.config}
-                                    const newConfig = res
-                                    newConfig.install_id = oldConfig.install_id
-                                    newConfig.ffmpeg_path = oldConfig.ffmpeg_path
-                                    window.config = newConfig
-                                    saveConfig()
-                                    ipcRenderer.send("restartWindow")
-                                })
-                            } catch (err) {
-                                remote.dialog.showErrorBox("MagicCap", `${err.message}`)
+                            config.o = {
+                                install_id: config.o.install_id,
+                                ffmpeg_path: config.o.ffmpeg_path,
                             }
+                            await config.save()
                             break
                         }
                     }
                 })
-            },*/
+            },
             showDebug() {
                 this.$emit("debug-show")
             },
