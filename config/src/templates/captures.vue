@@ -33,30 +33,13 @@
 <script lang="ts">
     import Vue from "vue"
     import * as shell from "../electron_functionality_ports/shell"
-
-    // A list of the displayed captures.
-    const displayedCaptures: any[] = []
-
-    // Gets the captures.
-    async function getCaptures() {
-        const res = await fetch("/captures")
-        if (!res.ok) {
-            throw res
-        }
-        const newCaptures = await res.json()
-        displayedCaptures.length = 0
-        for (const c of newCaptures) displayedCaptures.push(c)
-    }
-    getCaptures().then(() => setInterval(async() => {
-        const res = await fetch("/changefeed")
-        if (await res.json()) await getCaptures()
-    }, 100))
+    import captures, { getCaptures } from "../interfaces/captures"
 
     export default Vue.extend({
         name: "Captures",
         data() {
             return {
-                captures: displayedCaptures,
+                captures,
                 active: true,
             }
         },
@@ -75,7 +58,6 @@
                 await shell.openItem(filePath)
             },
             toggle() {
-                getCaptures()
                 this.$data.active = !this.$data.active
             },
         },

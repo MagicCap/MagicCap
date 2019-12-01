@@ -25,7 +25,7 @@ var (
 	Dist = packr.NewBox("../config/dist")
 
 	// Changes defines if there has been any changes since the capture UI opened.
-	Changes = false
+	Changes *int64
 
 	// CSSBase defines the base for all CSS.
 	CSSBase = CSS.String("components/base.css") + "\n" + CSS.String("components/button.css") + "\n" + CSS.String(
@@ -89,7 +89,6 @@ func GetCapturesRoute(ctx *fasthttp.RequestCtx) {
 	ctx.Response.SetStatusCode(200)
 	ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	ctx.Response.SetBody(j)
-	Changes = false
 }
 
 // DeleteCapturesRoute is a route used to delete a capture.
@@ -178,6 +177,9 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.SetStatusCode(204)
 
 	// Handles UI methods.
+	case "/captures/purge":
+		PurgeCaptures()
+		ctx.Response.SetStatusCode(204)
 	case "/captures/delete":
 		DeleteCapturesRoute(ctx)
 	case "/filename":

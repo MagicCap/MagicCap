@@ -65,6 +65,10 @@
             toggle() {
                 this.$data.active = !this.$data.active
             },
+            showDialog(title: string, description: string, buttons: string[]) {
+                const vm = this
+                return new Promise(res => vm.$emit("open-dialog", title, description, buttons, res)) as Promise<number>
+            },
  /*         saveOpenAtLogin() {
                 config.o.open_login = (document.getElementById("OpenAtLogin")! as HTMLInputElement).checked
                 // TODO: Handle open at login. I don't quite know how this'll work in Go.
@@ -247,25 +251,22 @@
                     })()
                 })
             },
+            */
             resetHistory() {
-                remote.dialog.showMessageBox({
-                    type: "warning",
-                    buttons: ["Yes", "No"],
-                    title: "MagicCap",
-                    message: "This WILL remove ALL capture history from MagicCap. Do you want to continue?",
-                }, response => {
+                this.showDialog(
+                    "MagicCap", "This WILL remove ALL capture history from MagicCap. Do you want to continue?",
+                    ["Yes", "No"],
+                ).then(async response => {
                     switch (response) {
                         case 0: {
-                            try {
-                                db.prepare("DELETE FROM captures WHERE 1").run()
-                            } catch (err) {
-                                remote.dialog.showErrorBox("MagicCap", `${err.message}`)
-                            }
+                            const res = await fetch("/captures/purge", {method: "GET"})
+                            if (!res.ok) throw res
                             break
                         }
                     }
                 })
             },
+            /*
             resetConfig() {
                 remote.dialog.showMessageBox({
                     type: "warning",

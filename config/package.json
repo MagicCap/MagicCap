@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "The config for MagicCap.",
   "scripts": {
-    "build": "parcel build ./src/mount.js --no-content-hash"
+    "build": "parcel build ./src/mount.js --no-content-hash",
+    "copy-2-database": "rm -rf ~/.magiccap && mkdir ~/.magiccap && cp ~/magiccap.db ~/.magiccap/magiccap.db"
   },
   "repository": {
     "type": "git",

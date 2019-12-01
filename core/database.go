@@ -150,6 +150,22 @@ func DeleteCapture(Timestamp int) {
 	DatabaseLock.Unlock()
 }
 
+// PurgeCaptures is used to purge all captures from the database.
+func PurgeCaptures() {
+	DatabaseLock.Lock()
+	Statement, err := Database.Prepare("DELETE FROM captures")
+	if err != nil {
+		panic(err)
+	}
+	_, err = Statement.Exec()
+	if err != nil {
+		panic(err)
+	}
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+	Changes = &timestamp
+	DatabaseLock.Unlock()
+}
+
 // GetCaptures gets all of the captures from the config.
 func GetCaptures() []*Capture {
 	arr := make([]*Capture, 0)
