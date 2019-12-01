@@ -314,16 +314,16 @@
                     return
                 }
                 document.getElementById("testButton")!.classList.add("is-loading")
-/*                ipcRenderer.send("test-uploader", this.getFilename())
-                ipcRenderer.once("test-uploader-res", (_: any, res: any) => {
-                    document.getElementById("testButton")!.classList.remove("is-loading")
-                    if (res[0]) {
+                const vm = this
+                fetch("/uploader/test", {method: "POST", body: this.getFilename()}).then(async res => {
+                    if (res.ok) {
                         this.$data.exception += "ayyyyTestWorked"
                     } else {
-                        this.$data.exception += "testFailed"
-                        this.$data.exceptionData += res[1]
+                        vm.$data.exception += "testFailed"
+                        vm.$data.exceptionData += await res.json()
                     }
-                })*/
+                    document.getElementById("testButton")!.classList.remove("is-loading")
+                })
             },
             deleteRow(key: string, option: any) {
                 delete option.items[key]

@@ -168,6 +168,24 @@ func ReplaceCapturesRoute(ctx *fasthttp.RequestCtx) {
 	ctx.Response.SetStatusCode(204)
 }
 
+// HandleUploaderTest is used to handle the uploader testing route.
+func HandleUploaderTest(ctx *fasthttp.RequestCtx) {
+	Uploader := string(ctx.Request.Body())
+	err := TestUploader(Uploader)
+	if err == nil {
+		ctx.Response.SetStatusCode(204)
+	} else {
+		ctx.Response.SetStatusCode(400)
+		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
+		errString := err.Error()
+		j, err := json.Marshal(&errString)
+		if err != nil {
+			panic(err)
+		}
+		ctx.Response.SetBody(j)
+	}
+}
+
 // ConfigHTTPHandler handles the configs HTTP requests.
 func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	Path := string(ctx.Path())
@@ -237,6 +255,9 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		break
 
 	// Handles UI methods.
+	case "/uploader/test":
+		HandleUploaderTest(ctx)
+		break
 	case "/captures/purge":
 		PurgeCaptures()
 		ctx.Response.SetStatusCode(204)
