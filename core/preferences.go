@@ -255,6 +255,22 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		break
 
 	// Handles UI methods.
+	case "/call/ShowShort":
+		go ShowShort()
+		ctx.Response.SetStatusCode(204)
+		break
+	case "/call/RunScreenCapture":
+		go RunScreenCapture()
+		ctx.Response.SetStatusCode(204)
+		break
+	case "/call/RunGIFCapture":
+		go RunGIFCapture()
+		ctx.Response.SetStatusCode(204)
+		break
+	case "/call/RunClipboardCapture":
+		go RunClipboardCapture()
+		ctx.Response.SetStatusCode(204)
+		break
 	case "/uploader/test":
 		HandleUploaderTest(ctx)
 		break

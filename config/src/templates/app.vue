@@ -196,16 +196,15 @@ s
                 config.save()
                 fetch("/restart", {method: "GET"})
             },
-            // TODO: Handle native stuff here!
             runRemoteAction(action) {
                 if (action === 0) {
-                    ipcRenderer.send("show-short")
+                    fetch("/call/ShowShort", {method: "GET"})
                 } else if (action === 1) {
-                    remote.getGlobal("runCapture")()
+                    fetch("/call/RunScreenCapture", {method: "GET"})
                 } else if (action === 2) {
-                    remote.getGlobal("runCapture")(true)
+                    fetch("/call/RunGIFCapture", {method: "GET"})
                 } else if (action === 3) {
-                    remote.getGlobal("runClipboardCapture")()
+                    fetch("/call/RunClipboardCapture", {method: "GET"})
                 }
             },
         },
