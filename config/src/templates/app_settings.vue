@@ -51,6 +51,7 @@
     import config from "../interfaces/config"
     import * as shell from "../electron_functionality_ports/shell"
     import applicationInfo from "../interfaces/application_info"
+    import saveFile from "../electron_functionality_ports/save_file"
 
     export default Vue.extend({
         name: "AppSettings",
@@ -74,34 +75,10 @@
                 // TODO: Handle open at login. I don't quite know how this'll work in Go.
                 // remote.app.setLoginItemSettings({openAtLogin: window.config.open_login})
                 config.save()
-            },
-            saveConfig(data: string) {
-                // Save config
-                remote.dialog.showSaveDialog({
-                    title: "Save file...",
-                    filters: [
-                        {
-                            extensions: ["mconf"],
-                            name: "MagicCap Configuration File",
-                        },
-                    ],
-                    showsTagField: false,
-                }, (file: string | undefined) => {
-                    (async () => {
-                        if (file === undefined) {
-                            return
-                        }
-                        if (!file.endsWith(".mconf")) {
-                            file += ".mconf"
-                        }
-                        try {
-                            writeFileSync(file, data)
-                        } catch (err) {
-                            console.log(err)
-                        }
-                    })()
-                })
             },*/
+            saveConfig(data: string) {
+                saveFile("Save file...", "mconf", "MagicCap Configuration File", data)
+            },
             encode(type: string, data: any) {
                 const json = encodeURIComponent(JSON.stringify(data))
                 // Double base64 encode to help keep plain-text logins & tokens safer
@@ -112,20 +89,20 @@
                 const data = raw.split("\n").slice(1).join("\n")
                 const decoded = atob(atob(data))
                 return JSON.parse(decodeURIComponent(decoded))
-            },/*
+            },
             exportConfig() {
-                const config = window.config
+                const c = config.o
 
                 // Clean install specific items
-                if("ffmpeg_path" in config) delete config.ffmpeg_path
-                if("install_id" in config) delete config.install_id
+                if("ffmpeg_path" in c) delete c.ffmpeg_path
+                if("install_id" in c) delete c.install_id
 
                 // Convert to save format
-                const data = this.encode("CONFIG", window.config)
+                const data = this.encode("CONFIG", c)
 
                 // Save
                 this.saveConfig(data)
-            },
+            },/*
             exportUploaders() {
                 const exported = window.mconf.newConfig()
 

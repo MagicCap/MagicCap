@@ -3,7 +3,10 @@ package core
 import (
 	platformspecific "MagicCap3/core/platform_specific"
 	"encoding/json"
+	"github.com/faiface/mainthread"
 	"github.com/pkg/browser"
+	"github.com/sqweek/dialog"
+	"io/ioutil"
 	"net"
 	"runtime"
 	"strconv"
@@ -136,6 +139,22 @@ func GetApplicationInfo(ctx *fasthttp.RequestCtx) {
 	ctx.Response.SetBody(j)
 }
 
+// OpenSaveDialog is used to open up a save dialog and save the file specified.
+func OpenSaveDialog(Body map[string]string) {
+	// Gets the needed parts.
+	Title := Body["title"]
+	Extension := Body["extension"]
+	ExtensionDescription := Body["extensionDescription"]
+	Data := Body["data"]
+
+	fp, err := dialog.File().Filter(ExtensionDescription, Extension).Title(Title).Save()
+	if err != nil {
+		// Ignore this and return.
+		return
+	}
+	_ = ioutil.WriteFile(fp, []byte(Data), 0600)
+}
+
 // ConfigHTTPHandler handles the configs HTTP requests.
 func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	Path := string(ctx.Path())
@@ -174,6 +193,14 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.SetStatusCode(204)
 	case "/open/item":
 		_ = browser.OpenFile(string(ctx.Request.Body()))
+		ctx.Response.SetStatusCode(204)
+	case "/save":
+		var Body map[string]string
+		err := json.Unmarshal(ctx.Request.Body(), &Body)
+		if err != nil {
+			panic(err)
+		}
+		mainthread.CallNonBlock(func() { OpenSaveDialog(Body) })
 		ctx.Response.SetStatusCode(204)
 
 	// Handles UI methods.

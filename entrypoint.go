@@ -4,6 +4,7 @@ import (
 	"MagicCap3/core"
 	"bufio"
 	"encoding/json"
+	"github.com/faiface/mainthread"
 	"github.com/getlantern/systray"
 	"github.com/zserge/webview"
 	"os"
@@ -29,6 +30,7 @@ func main() {
 		v := webview.New(settings)
 		v.Run()
 	} else {
-		core.Start()
+		runtime.LockOSThread()
+		mainthread.Run(core.Start)
 	}
 }
