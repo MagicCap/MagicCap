@@ -28,6 +28,22 @@ func HandleTrayOut(line string) {
 				go OpenFileUploader(v.Uploader)
 			}
 		}
+	} else if line[:4] == "call" {
+		Call := line[4:]
+		switch Call {
+		case "ShowShort":
+			ShowShort()
+			break
+		case "RunScreenCapture":
+			RunScreenCapture()
+			break
+		case "RunGIFCapture":
+			RunGIFCapture()
+			break
+		case "RunClipboardCapture":
+			RunClipboardCapture()
+			break
+		}
 	}
 }
 

@@ -98,6 +98,7 @@ func LoadUploadersKernel() {
 			if err != nil {
 				panic(err)
 			}
+			RestartTrayProcess()
 		}
 	}()
 }
