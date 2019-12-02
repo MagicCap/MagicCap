@@ -116,6 +116,7 @@ func UpdateConfig() {
 	RestartTrayProcess()
 	// TODO: Handle hotkeys!
 	// TODO Refresh updates!
+	// TODO: Handle start on login.
 }
 
 // LogUpload logs the upload to the config.
@@ -136,8 +137,8 @@ func LogUpload(Filename string, URL *string, FilePath *string, Success bool) {
 	DatabaseLock.Unlock()
 }
 
-// InsertUploads are used to insert uploads.
-func InsertUpload(Uploads []map[string]interface{}) {
+// InsertUploads is used to insert uploads.
+func InsertUploads(Uploads []map[string]interface{}) {
 	DatabaseLock.Lock()
 	Statement, err := Database.Prepare("INSERT INTO captures VALUES(?, ?, ?, ?, ?)")
 	if err != nil {

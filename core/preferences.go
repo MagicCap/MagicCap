@@ -164,7 +164,7 @@ func ReplaceCapturesRoute(ctx *fasthttp.RequestCtx) {
 		panic(err)
 	}
 	PurgeCaptures()
-	InsertUpload(Data)
+	InsertUploads(Data)
 	ctx.Response.SetStatusCode(204)
 }
 

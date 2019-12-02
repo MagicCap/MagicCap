@@ -72,12 +72,10 @@
                 const vm = this
                 return new Promise(res => vm.$emit("open-dialog", title, description, buttons, res)) as Promise<number>
             },
- /*         saveOpenAtLogin() {
+            saveOpenAtLogin() {
                 config.o.open_login = (document.getElementById("OpenAtLogin")! as HTMLInputElement).checked
-                // TODO: Handle open at login. I don't quite know how this'll work in Go.
-                // remote.app.setLoginItemSettings({openAtLogin: window.config.open_login})
                 config.save()
-            },*/
+            },
             saveConfig(data: string) {
                 saveFile("Save file...", "mconf", "MagicCap Configuration File", data)
             },
