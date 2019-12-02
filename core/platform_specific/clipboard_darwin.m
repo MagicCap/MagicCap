@@ -27,7 +27,7 @@ void ClipboardHandlerText(char* data) {
     	declareTypes:[NSArray arrayWithObject:NSStringPboardType]
     	owner:nil
 	];
-    [
+	[
     	[NSPasteboard generalPasteboard]
     	setString:[NSString stringWithCString:data encoding:NSUTF8StringEncoding]
     	forType:NSStringPboardType
