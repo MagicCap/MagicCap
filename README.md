@@ -1,0 +1,1 @@
+MagicCap 3.0's current state. Repo will be deleted when complete since this will be in MagicCap/MagicCap. **THIS IS NOT DONE! RUNNING IT WILL MORE THAN LIKELY CORRUPT YOUR MAGICCAP INSTALL!**
