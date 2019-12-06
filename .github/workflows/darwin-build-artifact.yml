@@ -22,8 +22,11 @@ jobs:
     - name: Build application
       run: mkdir -p ~/go/src/github.com/MagicCap/MagicCap && cp -r * ~/go/src/github.com/MagicCap/MagicCap && cd ~/go/src/github.com/MagicCap/MagicCap && ./mac_build.sh
 
+    - name: Copy the artifact
+      run: cp ~/go/src/github.com/MagicCap/MagicCap/magiccap-darwin ./magiccap-darwin
+
     - name: Upload artifact
       uses: actions/upload-artifact@v1
       with:
         name: magiccap-darwin
-        path: ~/go/src/github.com/MagicCap/MagicCap/magiccap-darwin
+        path: magiccap-darwin
