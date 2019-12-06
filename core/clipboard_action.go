@@ -1,6 +1,6 @@
 package core
 
-import "MagicCap3/core/platform_specific"
+import "github.com/MagicCap/MagicCap/core/platform_specific"
 
 // ClipboardAction handles the clipboard action.
 func ClipboardAction(Data []byte, Extension string, URL *string) {

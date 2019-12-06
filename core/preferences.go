@@ -1,7 +1,7 @@
 package core
 
 import (
-	platformspecific "MagicCap3/core/platform_specific"
+	platformspecific "github.com/MagicCap/MagicCap/core/platform_specific"
 	"encoding/json"
 	"github.com/faiface/mainthread"
 	"github.com/pkg/browser"

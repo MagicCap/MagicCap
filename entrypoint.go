@@ -1,7 +1,7 @@
 package main
 
 import (
-	"MagicCap3/core"
+	"github.com/MagicCap/MagicCap/core"
 	"bufio"
 	"encoding/json"
 	"github.com/faiface/mainthread"
