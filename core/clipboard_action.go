@@ -16,8 +16,10 @@ func ClipboardAction(Data []byte, Extension string, URL *string) {
 		// Copy the file to the clipboard.
 		platformspecific.BytesToClipboard(Data, Extension)
 	case 2:
-		// Copy the URL to the clipboard.
-		if URL != nil {
+		// Copy the URL to the clipboard. If there is no URL, dump the bytes.
+		if URL == nil {
+			platformspecific.BytesToClipboard(Data, Extension)
+		} else {
 			platformspecific.StringToClipboard(*URL)
 		}
 	}
