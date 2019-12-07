@@ -12,6 +12,9 @@ var TrayProcess *exec.Cmd
 // Exit properly exits the app.
 func Exit() {
 	_ = TrayProcess.Process.Kill()
+	if ConfigWindow != nil {
+		ConfigWindow.Exit()
+	}
 	os.Exit(0)
 }
 
