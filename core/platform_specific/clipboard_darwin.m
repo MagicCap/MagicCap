@@ -44,7 +44,9 @@ struct ClipboardGet {
 struct ClipboardGet* ClipboardHandlerGet() {
     for (NSPasteboardItem *item in [[NSPasteboard generalPasteboard] pasteboardItems]) {
         bool IsText = NO;
+        NSString* ActiveType;
         for (NSString *type in [item types]) {
+            ActiveType = type;
             if ([type containsString:@"text"]) {
                 IsText = YES;
                 break;
@@ -55,10 +57,10 @@ struct ClipboardGet* ClipboardHandlerGet() {
             result->IsText = IsText;
             result->data = NULL;
             result->length = NULL;
-            NSString* data = [[NSPasteboard generalPasteboard]  stringForType:NSPasteboardTypeString];
+            NSString* data = [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString];
             result->text = [data UTF8String];
         } else {
-            NSData* data = [item data];
+            NSData* data = [[NSPasteboard generalPasteboard] dataForType:ActiveType];
             result->IsText = IsText;
             result->data = [data bytes];
             unsigned long len = [data length];

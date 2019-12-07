@@ -1,5 +1,7 @@
 package core
 
+import "github.com/MagicCap/MagicCap/core/platform_specific"
+
 // ShowShort shows the shortener screen.
 func ShowShort() {
 	// TODO: Implement this!
@@ -21,5 +23,6 @@ func RunGIFCapture() {
 // RunClipboardCapture runs a clipboard capture.
 func RunClipboardCapture() {
 	// TODO: Implement this!
+	println(platformspecific.GetClipboard())
 	println("RunClipboardCapture")
 }
