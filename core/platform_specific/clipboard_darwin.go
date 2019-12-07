@@ -24,3 +24,35 @@ func StringToClipboard(Data string) {
 	C.ClipboardHandlerText(ptr)
 	C.free(unsafe.Pointer(ptr))
 }
+
+// clipboardGetC is the C struct.
+type clipboardGetC struct {
+	text *C.char
+	IsText bool
+	data unsafe.Pointer
+	length *C.int
+}
+
+// GetClipboard is a function used to get what is inside the clipboard.
+func GetClipboard() *ClipboardResult {
+	// Calls the C function.
+	res := (*clipboardGetC)(unsafe.Pointer(C.ClipboardHandlerGet()))
+
+	// Ensures the struct is freed.
+	defer func() {
+		if res != nil {
+			C.free(unsafe.Pointer(res))
+		}
+	}()
+
+	// Returns the result.
+	if res == nil {
+		return nil
+	} else if (*res).IsText {
+		str := C.GoString((*res).text)
+		return &ClipboardResult{Text: &str}
+	} else {
+		data := C.GoBytes((*res).data, *(*res).length)
+		return &ClipboardResult{Data: &data}
+	}
+}
