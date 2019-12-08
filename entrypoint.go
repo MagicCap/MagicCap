@@ -13,13 +13,19 @@ import (
 	"strings"
 )
 
+// CoreWindowConfig defines the core window configuration.
+type CoreWindowConfig struct {
+	WebviewConfig webview.Settings
+	RGBA core.RGBAConfig
+}
+
 func main() {
 	if os.Getenv("SYSTRAY_MODE") == "true" {
 		runtime.LockOSThread()
 		systray.Run(core.InitTray, nil)
 	} else if os.Getenv("WEBVIEW_MODE") == "true" {
 		runtime.LockOSThread()
-		var settings webview.Settings
+		var settings CoreWindowConfig
 		buf := bufio.NewReader(os.Stdin)
 		data, err := buf.ReadBytes('\n')
 		if err != nil {
@@ -29,13 +35,13 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		if settings.URL == "__SHORTENER__" {
+		if settings.WebviewConfig.URL == "__SHORTENER__" {
 			HTML := strings.Replace(core.Assets.String("shortener.html"), "inline_styling", core.CSS.String(
 				"bulmaswatch/darkly/bulmaswatch.min.css"), 1)
-			settings.URL = `data:text/html,` + url.PathEscape(HTML)
+			settings.WebviewConfig.URL = `data:text/html,` + url.PathEscape(HTML)
 		}
-		v := webview.New(settings)
-		v.SetColor(0,0, 0,255)
+		v := webview.New(settings.WebviewConfig)
+		v.SetColor(settings.RGBA.R, settings.RGBA.G, settings.RGBA.B, settings.RGBA.A)
 		v.Run()
 	} else {
 		runtime.LockOSThread()

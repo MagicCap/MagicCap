@@ -16,16 +16,27 @@ type WindowHandler struct {
 	Cmd *exec.Cmd
 }
 
+// RGBAConfig is the configuration of window colours.
+type RGBAConfig struct {
+	R uint8
+	G uint8
+	B uint8
+	A uint8
+}
+
 // SpawnWindowHandler spawns a process which can open a window.
-func SpawnWindowHandler(settings webview.Settings) *WindowHandler {
+func SpawnWindowHandler(settings webview.Settings, rgba RGBAConfig) *WindowHandler {
 	// Gets the window handler ready.
 	j, err := json.Marshal(&map[string]interface{}{
-		"Width": settings.Width,
-		"Height": settings.Height,
-		"Resizable": settings.Resizable,
-		"URL": settings.URL,
-		"Debug": settings.Debug,
-		"Title": settings.Title,
+		"WebviewConfig": map[string]interface{}{
+			"Width": settings.Width,
+			"Height": settings.Height,
+			"Resizable": settings.Resizable,
+			"URL": settings.URL,
+			"Debug": settings.Debug,
+			"Title": settings.Title,
+		},
+		"RGBA": &rgba,
 	})
 	if err != nil {
 		panic(err)

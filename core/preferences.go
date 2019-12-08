@@ -344,12 +344,25 @@ func OpenPreferences() {
 	} else if strings.Contains(Version, "b") {
 		VersionBit = " Beta"
 	}
+	ZeroOr255 := uint8(0)
+	Theme, ok := ConfigItems["light_theme"].(bool)
+	if !ok {
+		Theme = false
+	}
+	if Theme {
+		ZeroOr255 = 255
+	}
 	ConfigWindow = SpawnWindowHandler(webview.Settings{
 		Title:     "MagicCap" + VersionBit,
 		URL:       URL,
 		Width:     1200,
 		Height:    600,
 		Resizable: false,
+	}, RGBAConfig{
+		R: ZeroOr255,
+		G: ZeroOr255,
+		B: ZeroOr255,
+		A: 255,
 	})
 	ConfigWindow.Wait()
 

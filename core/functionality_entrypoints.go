@@ -32,6 +32,11 @@ func ShowShort() {
 		Width:                  500,
 		Height:                 200,
 		Resizable:              false,
+	}, RGBAConfig{
+		R: 0,
+		G: 0,
+		B: 0,
+		A: 255,
 	})
 	ShortenerWindowsLock.Lock()
 	ShortenerWindows = append(ShortenerWindows, s)
