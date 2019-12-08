@@ -62,5 +62,5 @@ func RunClipboardCapture() {
 	} else {
 		Data = []byte(*c.Text)
 	}
-	Upload(Data, "public." + FileType, nil, GetConfiguredUploaders()[0].Uploader)
+	Upload(Data, GenerateFilename() + "." + FileType, nil, GetConfiguredUploaders()[0].Uploader)
 }
