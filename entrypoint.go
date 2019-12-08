@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"runtime"
+	"strings"
 )
 
 func main() {
@@ -29,7 +30,9 @@ func main() {
 			panic(err)
 		}
 		if settings.URL == "__SHORTENER__" {
-			settings.URL = `data:text/html,` + url.PathEscape(core.Assets.String("shortener.html"))
+			HTML := strings.Replace(core.Assets.String("shortener.html"), "inline_styling", core.CSS.String(
+				"bulmaswatch/darkly/bulmaswatch.min.css"), 1)
+			settings.URL = `data:text/html,` + url.PathEscape(HTML)
 		}
 		v := webview.New(settings)
 		v.SetColor(0,0, 0,255)
