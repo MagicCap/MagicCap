@@ -28,6 +28,7 @@ func main() {
 			panic(err)
 		}
 		v := webview.New(settings)
+		v.SetColor(0,0, 0,255)
 		v.Run()
 	} else {
 		runtime.LockOSThread()
