@@ -30,6 +30,7 @@ func SpawnWindowHandler(settings webview.Settings) *WindowHandler {
 	if err != nil {
 		panic(err)
 	}
+
 	app := os.Args[0]
 	Process := exec.Command(app)
 	Process.Stdin = &bytes.Buffer{}

@@ -8,14 +8,45 @@ import (
 	"github.com/MagicCap/MagicCap/core/platform_specific"
 	"github.com/h2non/filetype"
 	"github.com/sqweek/dialog"
+	"github.com/zserge/webview"
 	"golang.org/x/image/tiff"
 	"image/png"
+	"sync"
+)
+
+var (
+	// ShortenerWindows defines all of the shorteners open.
+	ShortenerWindows = make([]*WindowHandler, 0)
+
+	// ShortenerWindowsLock is the R/W lock used.
+	ShortenerWindowsLock = sync.RWMutex{}
 )
 
 // ShowShort shows the shortener screen.
 func ShowShort() {
-	// TODO: Implement this!
-	println("ShowShort")
+	s := SpawnWindowHandler(webview.Settings{
+		Title:                  "MagicCap Link Shortener",
+		URL:                    "__SHORTENER__",
+		Width:                  500,
+		Height:                 200,
+		Resizable:              false,
+	})
+	ShortenerWindowsLock.Lock()
+	ShortenerWindows = append(ShortenerWindows, s)
+	ShortenerWindowsLock.Unlock()
+	go func() {
+		s.Wait()
+		var LastIndex int
+		ShortenerWindowsLock.Lock()
+		for i, k := range ShortenerWindows {
+			if k == s {
+				LastIndex = i
+			}
+		}
+		ShortenerWindows[LastIndex] = ShortenerWindows[len(ShortenerWindows)-1]
+		ShortenerWindows = ShortenerWindows[:len(ShortenerWindows)-1]
+		ShortenerWindowsLock.Unlock()
+	}()
 }
 
 // RunScreenCapture runs a screen capture.

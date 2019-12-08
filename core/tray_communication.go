@@ -18,6 +18,11 @@ func Exit() {
 	if ConfigWindow != nil {
 		ConfigWindow.Exit()
 	}
+	ShortenerWindowsLock.RLock()
+	for _, v := range ShortenerWindows {
+		v.Exit()
+	}
+	ShortenerWindowsLock.RUnlock()
 	os.Exit(0)
 }
 
