@@ -14,6 +14,8 @@ import (
 	"sync"
 )
 
+// TODO: A bug is somewhere in this codebase where open windows are not focused. It isn't here, but it needs patching!
+
 var (
 	// ShortenerWindows defines all of the shorteners open.
 	ShortenerWindows = make([]*WindowHandler, 0)
