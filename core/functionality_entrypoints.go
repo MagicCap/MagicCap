@@ -48,8 +48,8 @@ func RunClipboardCapture() {
 				dialog.Message("%s", err.Error()).Error()
 				return
 			}
-			w := bytes.Buffer{}
-			err = png.Encode(&w, img)
+			w := new(bytes.Buffer)
+			err = png.Encode(w, img)
 			if err != nil {
 				dialog.Message("%s", err.Error()).Error()
 				return
@@ -62,5 +62,12 @@ func RunClipboardCapture() {
 	} else {
 		Data = []byte(*c.Text)
 	}
-	Upload(Data, GenerateFilename() + "." + FileType, nil, GetConfiguredUploaders()[0].Uploader)
+	Default := GetConfiguredUploaders()[0].Uploader
+	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture {
+		Default = nil
+	}
+	Filename := GenerateFilename() + "." + FileType
+	Upload(Data, Filename, nil, Default)
+	// TODO: Implement native notifications!
 }

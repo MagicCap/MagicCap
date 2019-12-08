@@ -168,21 +168,50 @@ func FileExtExpander(ext string) string {
 
 // Upload handles all of the MagicCap side stuff.
 func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKernelStandards.Uploader) {
-	IsolatedConfig := map[string]interface{}{}
-	for _, v := range Uploader.ConfigOptions {
-		IsolatedConfig[v.Value] = ConfigItems[v.Value]
+	var url *string
+	if Uploader != nil {
+		// Handle uploading the file.
+		IsolatedConfig := map[string]interface{}{}
+		for _, v := range Uploader.ConfigOptions {
+			IsolatedConfig[v.Value] = ConfigItems[v.Value]
+		}
+		urlRes, err := Uploader.Upload(IsolatedConfig, Data, Filename)
+		timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+		Changes = &timestamp
+		if err != nil {
+			dialog.Message("%s", err.Error()).Error()
+			LogUpload(Filename, nil, FilePath, false)
+			return
+		}
+		url = &urlRes
 	}
-	url, err := Uploader.Upload(IsolatedConfig, Data, Filename)
-	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
-	Changes = &timestamp
-	if err != nil {
-		dialog.Message("%s", err.Error()).Error()
-		LogUpload(Filename, nil, FilePath, false)
-		return
+	if FilePath == nil {
+		// Handle saving the file if required.
+		SaveCapture, _ := ConfigItems["save_capture"].(bool)
+		if SaveCapture {
+			SavePath, ok := ConfigItems["save_path"].(string)
+			if !ok {
+				// Make ~/Pictures/MagicCap
+				SavePath = path.Join(HomeDir, "Pictures", "MagicCap")
+				err := os.MkdirAll(SavePath, 0600)
+				if err != nil {
+					panic(err)
+				}
+				ConfigItems["save_path"] = SavePath
+				UpdateConfig()
+			}
+			Joined := path.Join(SavePath, Filename)
+			err := ioutil.WriteFile(Joined, Data, 0600)
+			if err != nil {
+				dialog.Message("%s", err.Error()).Error()
+				LogUpload(Filename, nil, nil, false)
+				return
+			}
+		}
 	}
-	LogUpload(Filename, &url, FilePath, true)
+	LogUpload(Filename, url, FilePath, true)
 	exts := strings.Split(Filename, ".")
 	popped := exts[len(exts)-1]
 	FullExt := FileExtExpander(popped)
-	ClipboardAction(Data, FullExt, &url)
+	ClipboardAction(Data, FullExt, url)
 }
