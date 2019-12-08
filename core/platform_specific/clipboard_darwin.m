@@ -50,13 +50,15 @@ struct ClipboardGet* ClipboardHandlerGet() {
             if ([type containsString:@"text"]) {
                 IsText = YES;
                 break;
+            } else if ([type containsString:@"tiff"]) {
+                break;
             }
         }
         struct ClipboardGet* result = (struct ClipboardGet*)malloc(sizeof(struct ClipboardGet));
         if (IsText == YES) {
             result->IsText = IsText;
             result->data = NULL;
-            result->length = NULL;
+            result->length = 0;
             NSString* data = [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString];
             result->text = [data UTF8String];
         } else {
@@ -64,7 +66,7 @@ struct ClipboardGet* ClipboardHandlerGet() {
             result->IsText = IsText;
             result->data = [data bytes];
             unsigned long len = [data length];
-            result->length = &len;
+            result->length = (int)len;
             result->text = NULL;
         }
         return result;

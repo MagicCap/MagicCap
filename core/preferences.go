@@ -1,8 +1,8 @@
 package core
 
 import (
-	platformspecific "github.com/MagicCap/MagicCap/core/platform_specific"
 	"encoding/json"
+	"github.com/MagicCap/MagicCap/core/platform_specific"
 	"github.com/faiface/mainthread"
 	"github.com/pkg/browser"
 	"github.com/sqweek/dialog"

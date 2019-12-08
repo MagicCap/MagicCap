@@ -30,7 +30,7 @@ type clipboardGetC struct {
 	text *C.char
 	IsText bool
 	data unsafe.Pointer
-	length *C.int
+	length C.int
 }
 
 // GetClipboard is a function used to get what is inside the clipboard.
@@ -52,7 +52,7 @@ func GetClipboard() *ClipboardResult {
 		str := C.GoString((*res).text)
 		return &ClipboardResult{Text: &str}
 	} else {
-		data := C.GoBytes((*res).data, *(*res).length)
+		data := C.GoBytes((*res).data, (*res).length)
 		return &ClipboardResult{Data: &data}
 	}
 }
