@@ -17,6 +17,7 @@ import (
 type CoreWindowConfig struct {
 	WebviewConfig webview.Settings
 	RGBA core.RGBAConfig
+	Fullscreen bool
 }
 
 func main() {
@@ -42,6 +43,7 @@ func main() {
 		}
 		v := webview.New(settings.WebviewConfig)
 		v.SetColor(settings.RGBA.R, settings.RGBA.G, settings.RGBA.B, settings.RGBA.A)
+		v.SetFullscreen(settings.Fullscreen)
 		v.Run()
 	} else {
 		runtime.LockOSThread()

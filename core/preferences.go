@@ -363,7 +363,7 @@ func OpenPreferences() {
 		G: ZeroOr255,
 		B: ZeroOr255,
 		A: 255,
-	})
+	}, false)
 	ConfigWindow.Wait()
 
 	// Null-ify the config window.

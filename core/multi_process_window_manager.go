@@ -25,7 +25,7 @@ type RGBAConfig struct {
 }
 
 // SpawnWindowHandler spawns a process which can open a window.
-func SpawnWindowHandler(settings webview.Settings, rgba RGBAConfig) *WindowHandler {
+func SpawnWindowHandler(settings webview.Settings, rgba RGBAConfig, Fullscreen bool) *WindowHandler {
 	// Gets the window handler ready.
 	j, err := json.Marshal(&map[string]interface{}{
 		"WebviewConfig": map[string]interface{}{
@@ -37,6 +37,7 @@ func SpawnWindowHandler(settings webview.Settings, rgba RGBAConfig) *WindowHandl
 			"Title": settings.Title,
 		},
 		"RGBA": &rgba,
+		"Fullscreen": Fullscreen,
 	})
 	if err != nil {
 		panic(err)

@@ -37,7 +37,7 @@ func ShowShort() {
 		G: 0,
 		B: 0,
 		A: 255,
-	})
+	}, false)
 	ShortenerWindowsLock.Lock()
 	ShortenerWindows = append(ShortenerWindows, s)
 	ShortenerWindowsLock.Unlock()
