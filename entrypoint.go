@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/MagicCap/MagicCap/core"
 	"bufio"
 	"encoding/json"
+	"github.com/MagicCap/MagicCap/core"
 	"github.com/faiface/mainthread"
 	"github.com/getlantern/systray"
 	"github.com/zserge/webview"

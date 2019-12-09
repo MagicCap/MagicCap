@@ -5,12 +5,15 @@ package core
 
 import (
 	"fmt"
+	"github.com/faiface/mainthread"
 	"github.com/hackebrot/turtle"
 	"math/rand"
 	"os"
 	"path"
 	"time"
 
+	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/gobuffalo/packr"
 )
 
@@ -35,6 +38,16 @@ var (
 func Start() {
 	// Handle the random seed.
 	rand.Seed(time.Now().UnixNano())
+
+	// Initialises glfw/gl.
+	err := mainthread.CallErr(glfw.Init)
+	if err != nil {
+		panic(err)
+	}
+	err = mainthread.CallErr(gl.Init)
+	if err != nil {
+		panic(err)
+	}
 
 	// Load in all of the emojis.
 	for  _, value := range turtle.Emojis {
