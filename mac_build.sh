@@ -2,9 +2,6 @@
 cd config/
 npm i
 npm run build
-cd ../selector
-npm i
-npm run build
 cd ..
 go get .
 go get github.com/gobuffalo/packr/packr
