@@ -3,70 +3,86 @@ package core
 import (
 	"errors"
 	"github.com/disintegration/imaging"
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/faiface/glhf"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/kbinani/screenshot"
 	"image"
 	"sync"
-	"unsafe"
 )
 
-// Texture is the struct used to contain a texture to be rendered.
-type Texture struct {
-	handle uint32
-	target uint32
-	texUnit uint32
+// VertexShader is the vertex shader which is used by this render.
+var VertexShader = `
+#version 330 core
+
+in vec2 position;
+in vec2 texture;
+
+out vec2 Texture;
+
+void main() {
+	gl_Position = vec4(position, 0.0, 1.0);
+	Texture = texture;
 }
+`
 
-// Bind is used to bind a OpenGL texture.
-func (tex *Texture) Bind(texUnit uint32) {
-	gl.ActiveTexture(texUnit)
-	gl.BindTexture(tex.target, tex.handle)
-	tex.texUnit = texUnit
-}
+// FragmentShader is the fragment shader which is used by this render.
+var FragmentShader = `
+#version 330 core
 
-// UnBind is used to unbind a OpenGL texture.
-func (tex *Texture) UnBind() {
-	tex.texUnit = 0
-	gl.BindTexture(tex.target, 0)
-}
+in vec2 Texture;
 
-// RenderBackground is used to render the background.
-func RenderBackground(nrgba *image.NRGBA) (*Texture, error) {
-	gl.Enable(gl.TEXTURE_2D)
-	var handle uint32
-	gl.GenTextures(1, &handle)
+out vec4 color;
 
-	target      := uint32(gl.TEXTURE_2D)
-	internalFmt := int32(gl.SRGB_ALPHA)
-	format      := uint32(gl.RGBA)
-	width       := int32(nrgba.Rect.Size().X)
-	height      := int32(nrgba.Rect.Size().Y)
-	pixType     := uint32(gl.UNSIGNED_BYTE)
-	dataPtr     := gl.Ptr(nrgba.Pix)
+uniform sampler2D tex;
 
-	texture := Texture{
-		handle:handle,
-		target:target,
+void main() {
+	color = texture(tex, Texture);
+}`
+
+// HandleWindow is used to handle a window.
+func HandleWindow(image *image.NRGBA) {
+	// Creates the shader.
+	shader, err := glhf.NewShader(glhf.AttrFormat{
+		{Name: "position", Type: glhf.Vec2},
+		{Name: "texture", Type: glhf.Vec2},
+	}, glhf.AttrFormat{}, VertexShader, FragmentShader)
+	if err != nil {
+		panic(err)
 	}
-	defer func() {
-		texture.texUnit = 0
-		gl.BindTexture(texture.target, 0)
-	}()
 
-	texture.Bind(gl.TEXTURE0)
-	defer texture.UnBind()
+	// Creates the texture.
+	texture := glhf.NewTexture(
+		image.Bounds().Dx(),
+		image.Bounds().Dy(),
+		true,
+		image.Pix,
+	)
 
-	gl.TexParameteri(texture.target, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE)
-	gl.TexParameteri(texture.target, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-	gl.TexParameteri(texture.target, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(texture.target, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	// Create the vertex slice.
+	slice := glhf.MakeVertexSlice(shader, 6, 6)
+	slice.Begin()
+	slice.SetVertexData([]float32{
+		-1, -1, 0, 1,
+		+1, -1, 1, 1,
+		+1, +1, 1, 0,
 
-	gl.TexImage2D(target, 0, internalFmt, width, height, 0, format, pixType, dataPtr)
+		-1, -1, 0, 1,
+		+1, +1, 1, 0,
+		-1, +1, 0, 0,
+	})
+	slice.End()
 
-	gl.GenerateMipmap(texture.handle)
+	// Clear the window.
+	glhf.Clear(1, 1, 1, 1)
 
-	return &texture, nil
+	// Render everything.
+	shader.Begin()
+	texture.Begin()
+	slice.Begin()
+	slice.Draw()
+	slice.End()
+	texture.End()
+	shader.End()
 }
 
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
@@ -139,8 +155,11 @@ func OpenRegionSelector() {
 	for i, v := range Displays {
 		var Window *glfw.Window
 		var err error
-		glfw.WindowHint(glfw.ContextVersionMajor, 2)
-		glfw.WindowHint(glfw.ContextVersionMinor, 1)
+		glfw.WindowHint(glfw.ContextVersionMajor, 3)
+		glfw.WindowHint(glfw.ContextVersionMinor, 3)
+		glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+		glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+		glfw.WindowHint(glfw.Resizable, glfw.False)
 		Window, err = glfw.CreateWindow(v.Max.X - v.Min.X, v.Max.Y - v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], nil)
 		if err != nil {
 			panic(err)
@@ -152,70 +171,15 @@ func OpenRegionSelector() {
 	for {
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
+			// Makes the window the current context.
 			if Window.ShouldClose() {
 				ShouldBreakOuter = true
 				break
 			}
 			Window.MakeContextCurrent()
-			texture, err := RenderBackground(DarkerScreenshots[i])
-			if err != nil {
-				panic(err)
-			}
 
-			// Gets verticies and indicies.
-			Verticies := []float32{
-				-1, 1, 0.0,
-				1.0, 0.0, 0.0,
-				1.0, 0.0,
-
-				1, 1, 0.0,
-				0.0, 1.0, 0.0,
-				0.0, 0.0,
-
-				1, -1.0, 0.0,
-				0.0, 0.0, 1.0,
-				0.0, 1.0,
-
-				-1.0, -1.0, 0.0,
-				1.0, 1.0, 1.0,
-				1.0, 1.0,
-			}
-			Indicies := []uint32{
-				0, 1, 2,
-				0, 2, 3,
-			}
-
-			// Gets the VAO.
-			var VAO uint32
-			gl.GenVertexArrays(1, &VAO)
-			var VBO uint32
-			gl.GenBuffers(1, &VBO)
-			var EBO uint32
-			gl.GenBuffers(1, &EBO)
-			gl.BindVertexArray(VAO)
-			gl.BindBuffer(gl.ARRAY_BUFFER, VBO)
-			gl.BufferData(gl.ARRAY_BUFFER, len(Verticies)*4, gl.Ptr(Verticies), gl.STATIC_DRAW)
-			gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, EBO)
-			gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(Indicies)*4, gl.Ptr(Indicies), gl.STATIC_DRAW)
-			stride := int32(3*4 + 3*4 + 2*4)
-			offset := 0
-			gl.VertexAttribPointer(0, 3, gl.FLOAT, false, stride, gl.PtrOffset(offset))
-			gl.EnableVertexAttribArray(0)
-			offset += 3*4
-			gl.VertexAttribPointer(1, 3, gl.FLOAT, false, stride, gl.PtrOffset(offset))
-			gl.EnableVertexAttribArray(1)
-			offset += 3*4
-			gl.VertexAttribPointer(2, 2, gl.FLOAT, false, stride, gl.PtrOffset(offset))
-			gl.EnableVertexAttribArray(2)
-			offset += 2*4
-			gl.BindVertexArray(0)
-
-			// Handles drawing the background texture.
-			texture.Bind(gl.TEXTURE0)
-			gl.BindVertexArray(VAO)
-			gl.DrawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, unsafe.Pointer(nil))
-			gl.BindVertexArray(0)
-			texture.UnBind()
+			// Handles the window.
+			HandleWindow(DarkerScreenshots[i])
 
 			// Draws the buffer.
 			Window.SwapBuffers()
