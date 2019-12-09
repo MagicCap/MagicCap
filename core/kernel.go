@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	MagicCapKernel "github.com/magiccap/magiccap-uploaders-kernel"
 	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
+	"github.com/pkg/browser"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -187,6 +188,10 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 			return
 		}
 		url = &urlRes
+		UploadOpen, _ := ConfigItems["upload_open"].(bool)
+		if UploadOpen {
+			_ = browser.OpenURL(urlRes)
+		}
 	}
 	if FilePath == nil {
 		// Handle saving the file if required.
