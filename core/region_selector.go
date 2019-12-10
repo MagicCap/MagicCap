@@ -5,6 +5,7 @@ import (
 	"github.com/disintegration/imaging"
 	"github.com/faiface/glhf"
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
 	"image"
 	"sync"
@@ -41,7 +42,7 @@ void main() {
 }`
 
 // HandleWindow is used to handle a window.
-func HandleWindow(image *image.NRGBA) {
+func HandleWindow(image *image.NRGBA, DisplayPoint *image.Point) {
 	// Creates the shader.
 	shader, err := glhf.NewShader(glhf.AttrFormat{
 		{Name: "position", Type: glhf.Vec2},
@@ -58,6 +59,11 @@ func HandleWindow(image *image.NRGBA) {
 		true,
 		image.Pix,
 	)
+
+	// Creates the lines.
+	if DisplayPoint != nil {
+		// TODO: Implement display points.
+	}
 
 	// Create the vertex slice.
 	slice := glhf.MakeVertexSlice(shader, 6, 6)
@@ -170,6 +176,9 @@ func OpenRegionSelector() {
 
 	// Ensures the windows stay open.
 	for {
+		// Gets the mouse position.
+		x, y := robotgo.GetMousePos()
+
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
 			// Makes the window the current context.
@@ -179,8 +188,19 @@ func OpenRegionSelector() {
 			}
 			Window.MakeContextCurrent()
 
+			// Gets the point relative to the display.
+			// If DisplayPoint is nil, the point is not on this display.
+			Rect := Displays[i]
+			var DisplayPoint *image.Point
+			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
+				DisplayPoint = &image.Point{
+					X: x - Rect.Min.X,
+					Y: y - Rect.Min.Y,
+				}
+			}
+
 			// Handles the window.
-			HandleWindow(DarkerScreenshots[i])
+			HandleWindow(DarkerScreenshots[i], DisplayPoint)
 
 			// Draws the buffer.
 			Window.SwapBuffers()
