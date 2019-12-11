@@ -7,7 +7,9 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
-	"image"
+	img "image"
+	"image/color"
+	"image/draw"
 	"sync"
 	"time"
 )
@@ -42,7 +44,7 @@ void main() {
 }`
 
 // HandleWindow is used to handle a window.
-func HandleWindow(image *image.NRGBA, DisplayPoint *image.Point) {
+func HandleWindow(image *img.NRGBA, DisplayPoint *img.Point) {
 	// Creates the shader.
 	shader, err := glhf.NewShader(glhf.AttrFormat{
 		{Name: "position", Type: glhf.Vec2},
@@ -52,18 +54,63 @@ func HandleWindow(image *image.NRGBA, DisplayPoint *image.Point) {
 		panic(err)
 	}
 
+	ImageEdit := image
+	if DisplayPoint != nil {
+		// Copy the image.
+		b := ImageEdit.Bounds()
+		ImageCpy := img.NewNRGBA(b)
+		draw.Draw(ImageCpy, ImageCpy.Bounds(), ImageEdit, b.Min, draw.Src)
+		ImageEdit = ImageCpy
+
+		// Manipulate the image to add the crosshair.
+		Height := b.Dy()
+		Width := b.Dx()
+		XCords := []int{DisplayPoint.X}
+		if DisplayPoint.X - 1 >= 0 {
+			XCords = append(XCords, DisplayPoint.X - 1)
+		}
+		if b.Max.X >= DisplayPoint.X + 1 {
+			XCords = append(XCords, DisplayPoint.X + 1)
+		}
+		YCords := []int{DisplayPoint.Y}
+		if DisplayPoint.Y - 1 >= 0 {
+			YCords = append(YCords, DisplayPoint.Y - 1)
+		}
+		if b.Max.Y >= DisplayPoint.Y + 1 {
+			YCords = append(YCords, DisplayPoint.Y + 1)
+		}
+		wg := sync.WaitGroup{}
+		wg.Add((Height * len(XCords)) + (Width * len(YCords)))
+		for _, x := range XCords {
+			HeightComplete := 0
+			for HeightComplete != Height {
+				go func() {
+					defer wg.Done()
+					ImageEdit.Set(x, HeightComplete, color.White)
+				}()
+				HeightComplete++
+			}
+		}
+		for _, y := range YCords {
+			WidthComplete := 0
+			for WidthComplete != Width {
+				go func() {
+					defer wg.Done()
+					ImageEdit.Set(WidthComplete, y, color.White)
+				}()
+				WidthComplete++
+			}
+		}
+		wg.Wait()
+	}
+
 	// Creates the texture.
 	texture := glhf.NewTexture(
 		image.Bounds().Dx(),
 		image.Bounds().Dy(),
 		true,
-		image.Pix,
+		ImageEdit.Pix,
 	)
-
-	// Creates the lines.
-	if DisplayPoint != nil {
-		// TODO: Implement display points.
-	}
 
 	// Create the vertex slice.
 	slice := glhf.MakeVertexSlice(shader, 6, 6)
@@ -100,11 +147,11 @@ func OpenRegionSelector() {
 	// Multi-thread getting all of the displays and making all of the images darker.
 	Done := make(chan bool)
 	ScreenshotLen := 0
-	Screenshots := make([]*image.RGBA, len(Displays))
-	DarkerScreenshots := make([]*image.NRGBA, len(Displays))
+	Screenshots := make([]*img.RGBA, len(Displays))
+	DarkerScreenshots := make([]*img.NRGBA, len(Displays))
 	ScreenshotsLock := sync.Mutex{}
 	for i, v := range Displays {
-		go func(index int, rect image.Rectangle) {
+		go func(index int, rect img.Rectangle) {
 			// Takes the screenshot.
 			Screenshot, err := screenshot.CaptureRect(rect)
 			if err != nil {
@@ -191,9 +238,9 @@ func OpenRegionSelector() {
 			// Gets the point relative to the display.
 			// If DisplayPoint is nil, the point is not on this display.
 			Rect := Displays[i]
-			var DisplayPoint *image.Point
+			var DisplayPoint *img.Point
 			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
-				DisplayPoint = &image.Point{
+				DisplayPoint = &img.Point{
 					X: x - Rect.Min.X,
 					Y: y - Rect.Min.Y,
 				}
