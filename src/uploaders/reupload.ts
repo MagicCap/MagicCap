@@ -23,7 +23,7 @@ export default {
             case "jpeg":
             case "gif":
             case "bmp": {
-                const res = await post("https://reupload.gg/v1/upload/image")
+                const res = await post("https://api.reupload.gg/v1/upload/image")
                     .set("Authorization", `Bearer ${config.o.reupload_token}`)
                     .set("User-Agent", `MagicCap ${app.getVersion()}; ${config.o.install_id}`)
                     .attach("file", buffer, `oof.${fileType}`)
