@@ -10,7 +10,6 @@ import (
 	img "image"
 	"image/color"
 	"sync"
-	"time"
 )
 
 // VertexShader is the vertex shader which is used by this render.
@@ -266,8 +265,5 @@ func OpenRegionSelector() {
 			break
 		}
 		glfw.PollEvents()
-
-		// Sleep for 1/60th of a second (therefore locking this to 60fps).
-		time.Sleep(time.Second / 60)
 	}
 }
