@@ -263,7 +263,7 @@ func OpenRegionSelector() {
 			HandleWindow(Images[i])
 
 			// Draws the buffer.
-			Window.SwapBuffers()
+			go Window.SwapBuffers()
 		}
 
 		// Handles the outer for loop and polls for events.
