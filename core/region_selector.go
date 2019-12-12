@@ -9,7 +9,6 @@ import (
 	"github.com/kbinani/screenshot"
 	img "image"
 	"image/color"
-	"image/draw"
 	"sync"
 	"time"
 )
@@ -59,10 +58,12 @@ func HandleWindow(image *img.NRGBA, DisplayPoint *img.Point) {
 		// Copy the image.
 		b := ImageEdit.Bounds()
 		ImageCpy := img.NewNRGBA(b)
-		draw.Draw(ImageCpy, ImageCpy.Bounds(), ImageEdit, b.Min, draw.Src)
+		for i, v := range ImageEdit.Pix {
+			ImageCpy.Pix[i] = v
+		}
 		ImageEdit = ImageCpy
 
-		// Manipulate the image to add the crosshair.
+		// Plots the co-ordinates.
 		Height := b.Dy()
 		Width := b.Dx()
 		XCords := []int{DisplayPoint.X}
@@ -79,29 +80,36 @@ func HandleWindow(image *img.NRGBA, DisplayPoint *img.Point) {
 		if b.Max.Y >= DisplayPoint.Y + 1 {
 			YCords = append(YCords, DisplayPoint.Y + 1)
 		}
-		wg := sync.WaitGroup{}
-		wg.Add((Height * len(XCords)) + (Width * len(YCords)))
+		Points := make([]*img.Point, (len(XCords) * Height) + (len(YCords) * Width))
+		i := 0
 		for _, x := range XCords {
 			HeightComplete := 0
 			for HeightComplete != Height {
-				go func() {
-					defer wg.Done()
-					ImageEdit.Set(x, HeightComplete, color.White)
-				}()
+				Points[i] = &img.Point{
+					X: x,
+					Y: HeightComplete,
+				}
+				i++
 				HeightComplete++
 			}
 		}
 		for _, y := range YCords {
 			WidthComplete := 0
 			for WidthComplete != Width {
-				go func() {
-					defer wg.Done()
-					ImageEdit.Set(WidthComplete, y, color.White)
-				}()
+				Points[i] = &img.Point{
+					X: WidthComplete,
+					Y: y,
+				}
+				i++
 				WidthComplete++
 			}
 		}
-		wg.Wait()
+
+		// Manipulate the image to add the crosshair.
+		// This is not thread safe sadly.
+		for _, v := range Points {
+			ImageEdit.Set(v.X, v.Y, color.White)
+		}
 	}
 
 	// Creates the texture.
