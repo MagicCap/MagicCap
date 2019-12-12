@@ -40,17 +40,8 @@ void main() {
 	color = texture(tex, Texture);
 }`
 
-// HandleWindow is used to handle a window.
-func HandleWindow(image *img.NRGBA, DisplayPoint *img.Point) {
-	// Creates the shader.
-	shader, err := glhf.NewShader(glhf.AttrFormat{
-		{Name: "position", Type: glhf.Vec2},
-		{Name: "texture", Type: glhf.Vec2},
-	}, glhf.AttrFormat{}, VertexShader, FragmentShader)
-	if err != nil {
-		panic(err)
-	}
-
+// GetDisplayImage is used to get the image to show up on the display.
+func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
 	ImageEdit := image
 	if DisplayPoint != nil {
 		// Copy the image.
@@ -61,49 +52,55 @@ func HandleWindow(image *img.NRGBA, DisplayPoint *img.Point) {
 		}
 		ImageEdit = ImageCpy
 
-		// Plots the co-ordinates.
+		// Handles the drawing of the crosshair on the screen.
 		Height := b.Dy()
 		Width := b.Dx()
-		XCords := []int{DisplayPoint.X}
-		if DisplayPoint.X - 1 >= 0 {
-			XCords = append(XCords, DisplayPoint.X - 1)
+		HeightComplete := 0
+		PixelOffset := ImageEdit.PixOffset(DisplayPoint.X, 0)
+		wg := sync.WaitGroup{}
+		wg.Add(Height + Width)
+		for HeightComplete != Height {
+			go func(offset int) {
+				defer wg.Done()
+				ImageEdit.Pix[offset] = 255   // N
+				ImageEdit.Pix[offset+1] = 255 // R
+				ImageEdit.Pix[offset+2] = 255 // G
+				ImageEdit.Pix[offset+3] = 255 // B
+				ImageEdit.Pix[offset+4] = 255 // A
+			}(PixelOffset)
+			PixelOffset = ImageEdit.PixOffset(DisplayPoint.X, HeightComplete)
+			HeightComplete++
 		}
-		if b.Max.X >= DisplayPoint.X + 1 {
-			XCords = append(XCords, DisplayPoint.X + 1)
+		WidthComplete := 0
+		PixelOffset = ImageEdit.PixOffset(0, DisplayPoint.Y)
+		for WidthComplete != Width {
+			go func(offset int) {
+				defer wg.Done()
+				ImageEdit.Pix[offset] = 255   // N
+				ImageEdit.Pix[offset+1] = 255 // R
+				ImageEdit.Pix[offset+2] = 255 // G
+				ImageEdit.Pix[offset+3] = 255 // B
+				ImageEdit.Pix[offset+4] = 255 // A
+			}(PixelOffset)
+			PixelOffset = ImageEdit.PixOffset(WidthComplete, DisplayPoint.Y)
+			WidthComplete++
 		}
-		YCords := []int{DisplayPoint.Y}
-		if DisplayPoint.Y - 1 >= 0 {
-			YCords = append(YCords, DisplayPoint.Y - 1)
-		}
-		if b.Max.Y >= DisplayPoint.Y + 1 {
-			YCords = append(YCords, DisplayPoint.Y + 1)
-		}
-		for _, x := range XCords {
-			HeightComplete := 0
-			PixelOffset := ImageEdit.PixOffset(x, 0)
-			for HeightComplete != Height {
-				ImageEdit.Pix[PixelOffset] = 255 // N
-				ImageEdit.Pix[PixelOffset + 1] = 255 // R
-				ImageEdit.Pix[PixelOffset + 2] = 255 // G
-				ImageEdit.Pix[PixelOffset + 3] = 255 // B
-				ImageEdit.Pix[PixelOffset + 4] = 255 // A
-				PixelOffset = ImageEdit.PixOffset(x, HeightComplete)
-				HeightComplete++
-			}
-		}
-		for _, y := range YCords {
-			WidthComplete := 0
-			PixelOffset := ImageEdit.PixOffset(0, y)
-			for WidthComplete != Width {
-				ImageEdit.Pix[PixelOffset] = 255 // N
-				ImageEdit.Pix[PixelOffset + 1] = 255 // R
-				ImageEdit.Pix[PixelOffset + 2] = 255 // G
-				ImageEdit.Pix[PixelOffset + 3] = 255 // B
-				ImageEdit.Pix[PixelOffset + 4] = 255 // A
-				PixelOffset = ImageEdit.PixOffset(WidthComplete, y)
-				WidthComplete++
-			}
-		}
+		wg.Wait()
+	}
+
+	// Returns the image.
+	return ImageEdit
+}
+
+// HandleWindow is used to handle a window.
+func HandleWindow(image *img.NRGBA) {
+	// Creates the shader.
+	shader, err := glhf.NewShader(glhf.AttrFormat{
+		{Name: "position", Type: glhf.Vec2},
+		{Name: "texture", Type: glhf.Vec2},
+	}, glhf.AttrFormat{}, VertexShader, FragmentShader)
+	if err != nil {
+		panic(err)
 	}
 
 	// Creates the texture.
@@ -111,7 +108,7 @@ func HandleWindow(image *img.NRGBA, DisplayPoint *img.Point) {
 		image.Bounds().Dx(),
 		image.Bounds().Dy(),
 		true,
-		ImageEdit.Pix,
+		image.Pix,
 	)
 
 	// Create the vertex slice.
@@ -228,6 +225,33 @@ func OpenRegionSelector() {
 		// Gets the mouse position.
 		x, y := robotgo.GetMousePos()
 
+		// Handles getting the image in a thread.
+		wg := sync.WaitGroup{}
+		wg.Add(len(Windows))
+		Images := make([]*img.NRGBA, len(Windows))
+		ImageLock := sync.Mutex{}
+		for i, Rect := range Displays {
+			// Gets the point relative to the display.
+			// If DisplayPoint is nil, the point is not on this display.
+			var DisplayPoint *img.Point
+			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
+				DisplayPoint = &img.Point{
+					X: x - Rect.Min.X,
+					Y: y - Rect.Min.Y,
+				}
+			}
+
+			// Gets the image for the display.
+			go func(index int, image *img.NRGBA) {
+				defer wg.Done()
+				d := GetDisplayImage(DisplayPoint, image)
+				ImageLock.Lock()
+				Images[index] = d
+				ImageLock.Unlock()
+			}(i, DarkerScreenshots[i])
+		}
+		wg.Wait()
+
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
 			// Makes the window the current context.
@@ -237,19 +261,8 @@ func OpenRegionSelector() {
 			}
 			Window.MakeContextCurrent()
 
-			// Gets the point relative to the display.
-			// If DisplayPoint is nil, the point is not on this display.
-			Rect := Displays[i]
-			var DisplayPoint *img.Point
-			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
-				DisplayPoint = &img.Point{
-					X: x - Rect.Min.X,
-					Y: y - Rect.Min.Y,
-				}
-			}
-
 			// Handles the window.
-			HandleWindow(DarkerScreenshots[i], DisplayPoint)
+			HandleWindow(Images[i])
 
 			// Draws the buffer.
 			Window.SwapBuffers()
