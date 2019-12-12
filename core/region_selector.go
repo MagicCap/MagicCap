@@ -8,7 +8,6 @@ import (
 	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
 	img "image"
-	"image/color"
 	"sync"
 )
 
@@ -79,35 +78,31 @@ func HandleWindow(image *img.NRGBA, DisplayPoint *img.Point) {
 		if b.Max.Y >= DisplayPoint.Y + 1 {
 			YCords = append(YCords, DisplayPoint.Y + 1)
 		}
-		Points := make([]*img.Point, (len(XCords) * Height) + (len(YCords) * Width))
-		i := 0
 		for _, x := range XCords {
 			HeightComplete := 0
+			PixelOffset := ImageEdit.PixOffset(x, 0)
 			for HeightComplete != Height {
-				Points[i] = &img.Point{
-					X: x,
-					Y: HeightComplete,
-				}
-				i++
+				ImageEdit.Pix[PixelOffset] = 255 // N
+				ImageEdit.Pix[PixelOffset + 1] = 255 // R
+				ImageEdit.Pix[PixelOffset + 2] = 255 // G
+				ImageEdit.Pix[PixelOffset + 3] = 255 // B
+				ImageEdit.Pix[PixelOffset + 4] = 255 // A
+				PixelOffset = ImageEdit.PixOffset(x, HeightComplete)
 				HeightComplete++
 			}
 		}
 		for _, y := range YCords {
 			WidthComplete := 0
+			PixelOffset := ImageEdit.PixOffset(0, y)
 			for WidthComplete != Width {
-				Points[i] = &img.Point{
-					X: WidthComplete,
-					Y: y,
-				}
-				i++
+				ImageEdit.Pix[PixelOffset] = 255 // N
+				ImageEdit.Pix[PixelOffset + 1] = 255 // R
+				ImageEdit.Pix[PixelOffset + 2] = 255 // G
+				ImageEdit.Pix[PixelOffset + 3] = 255 // B
+				ImageEdit.Pix[PixelOffset + 4] = 255 // A
+				PixelOffset = ImageEdit.PixOffset(WidthComplete, y)
 				WidthComplete++
 			}
-		}
-
-		// Manipulate the image to add the crosshair.
-		// This is not thread safe sadly.
-		for _, v := range Points {
-			ImageEdit.Set(v.X, v.Y, color.White)
 		}
 	}
 
