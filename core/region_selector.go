@@ -227,9 +227,9 @@ func OpenRegionSelector() {
 
 		// Handles getting the image in a thread.
 		wg := sync.WaitGroup{}
-		wg.Add(len(Windows))
-		Images := make([]*img.NRGBA, len(Windows))
-		ImageLock := sync.Mutex{}
+		WindowsLen := len(Windows)
+		wg.Add(WindowsLen)
+		Images := make([]*img.NRGBA, WindowsLen)
 		for i, Rect := range Displays {
 			// Gets the point relative to the display.
 			// If DisplayPoint is nil, the point is not on this display.
@@ -245,9 +245,7 @@ func OpenRegionSelector() {
 			go func(index int, image *img.NRGBA) {
 				defer wg.Done()
 				d := GetDisplayImage(DisplayPoint, image)
-				ImageLock.Lock()
 				Images[index] = d
-				ImageLock.Unlock()
 			}(i, DarkerScreenshots[i])
 		}
 		wg.Wait()
