@@ -8,7 +8,6 @@ import (
 	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
 	img "image"
-	"runtime"
 	"sync"
 )
 
@@ -41,27 +40,10 @@ void main() {
 	color = texture(tex, Texture);
 }`
 
-// DisplayCache is the cache for displays.
-var DisplayCache = map[int]*map[*img.Point]*[]byte{}
-
-// DisplayCacheLock is the thread lock for displays.
-var DisplayCacheLock = map[int]*sync.RWMutex{}
-
 // GetDisplayImage is used to get the image to show up on the display.
-func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA, cache *map[*img.Point]*[]byte, CacheLock *sync.RWMutex) *img.NRGBA {
+func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
 	ImageEdit := image
 	if DisplayPoint != nil {
-		// If this is cached, return it.
-		CacheLock.RLock()
-		r := (*cache)[DisplayPoint]
-		if r != nil {
-			b := ImageEdit.Bounds()
-			i := img.NewNRGBA(b)
-			i.Pix = *r
-			return i
-		}
-		CacheLock.RUnlock()
-
 		// Copy the image.
 		b := ImageEdit.Bounds()
 		ImageCpy := img.NewNRGBA(b)
@@ -104,17 +86,6 @@ func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA, cache *map[*img.
 			WidthComplete++
 		}
 		wg.Wait()
-
-		// Cache the image.
-		CacheLock.Lock()
-		if len(*cache) >= 3 {
-			for i := range *cache {
-				delete(*cache, i)
-			}
-			runtime.GC()
-		}
-		(*cache)[DisplayPoint] = &ImageCpy.Pix
-		CacheLock.Unlock()
 	}
 
 	// Returns the image.
@@ -247,10 +218,6 @@ func OpenRegionSelector() {
 			panic(err)
 		}
 		Windows[i] = Window
-
-		// Make the display cache.
-		DisplayCache[i] = &map[*img.Point]*[]byte{}
-		DisplayCacheLock[i] = &sync.RWMutex{}
 	}
 
 	// Ensures the windows stay open.
@@ -277,7 +244,7 @@ func OpenRegionSelector() {
 			// Gets the image for the display.
 			go func(index int, image *img.NRGBA) {
 				defer wg.Done()
-				d := GetDisplayImage(DisplayPoint, image, DisplayCache[index], DisplayCacheLock[index])
+				d := GetDisplayImage(DisplayPoint, image)
 				Images[index] = d
 			}(i, DarkerScreenshots[i])
 		}
