@@ -16,5 +16,5 @@ type Editor struct {
 	Name string
 	Description string
 	Icon []byte
-	Apply func(Region *image.RGBA, RGB []uint8) *image.RGBA
+	Apply func(Region *image.RGBA, RGB [3]uint8) *image.RGBA
 }
