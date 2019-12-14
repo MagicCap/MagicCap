@@ -6,7 +6,7 @@ import (
 )
 
 // EditorAssets contains all of the data from editor assets when compiled.
-var EditorAssets = packr.NewBox("../assets/editor")
+var EditorAssets = packr.NewBox("../../assets/editor")
 
 // Editors defines all of the editors.
 var Editors = map[string]*Editor{}
