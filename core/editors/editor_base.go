@@ -18,9 +18,3 @@ type Editor struct {
 	Icon []byte
 	Apply func(Region *image.RGBA, RGB []uint8) *image.RGBA
 }
-
-// NewEditor is used to add a new editor.
-func NewEditor(Name string, editor *Editor) *Editor {
-	Editors[Name] = editor
-	return editor
-}
