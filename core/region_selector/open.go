@@ -103,12 +103,11 @@ func OpenRegionSelector() {
 		Window.MakeContextCurrent()
 
 		// Sets the key handler.
-		index := i
 		KeysDown := make([]*glfw.Key, 0)
 		KeysDownLock := sync.RWMutex{}
 		KeysReleased := 0
 		KeysReleasedLock := sync.Mutex{}
-		Window.SetKeyCallback(func(_ *glfw.Window, key glfw.Key, _ int, action glfw.Action, _ glfw.ModifierKey) {
+		Window.SetKeyCallback(func(w *glfw.Window, key glfw.Key, _ int, action glfw.Action, _ glfw.ModifierKey) {
 			if action != glfw.Release {
 				// Log this key as down and return.
 				KeysDownLock.RLock()
@@ -132,7 +131,7 @@ func OpenRegionSelector() {
 						KeysDownLock.RUnlock()
 						ReleasedCount = 0
 						KeysDownLock.Lock()
-						KeyUpHandler(index, KeysDown)
+						KeyUpHandler(w, KeysDown)
 						KeysDown = make([]*glfw.Key, 0)
 						KeysDownLock.Unlock()
 					} else {
@@ -167,7 +166,7 @@ func OpenRegionSelector() {
 		)
 	}
 
-	// Ensures the windows stay open.
+	// Handles events in the window.
 	LastPoint := img.Point{
 		X: -9999999999,
 		Y: -9999999999,
@@ -231,12 +230,19 @@ func OpenRegionSelector() {
 		}
 
 		// Handles the outer for loop and polls for events.
+		glfw.PollEvents()
 		if ShouldBreakOuter {
 			break
 		}
-		glfw.PollEvents()
 
 		// Lock the framerate to 120fps.
 		time.Sleep(time.Second / 120)
+	}
+
+	// Cleans up the windows.
+	for i, v := range Windows {
+		v.MakeContextCurrent()
+		Textures[i].End()
+		v.Destroy()
 	}
 }
