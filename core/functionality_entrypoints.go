@@ -59,9 +59,24 @@ func ShowShort() {
 
 // RunScreenCapture runs a screen capture.
 func RunScreenCapture() {
-	// TODO: Implement this!
-	regionselector.OpenRegionSelector()
-	println("RunScreenCapture")
+	r := regionselector.OpenRegionSelector()
+	if r == nil {
+		return
+	}
+	w := new(bytes.Buffer)
+	err := png.Encode(w, r.Selection)
+	if err != nil {
+		dialog.Message("%s", err.Error()).Error()
+		return
+	}
+	Filename := GenerateFilename() + ".png"
+	Default := GetConfiguredUploaders()[0].Uploader
+	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture {
+		Default = nil
+	}
+	Upload(w.Bytes(), Filename, nil, Default)
+	// TODO: Implement native notifications!
 }
 
 // RunGIFCapture runs a GIF capture.
