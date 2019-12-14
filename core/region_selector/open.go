@@ -19,11 +19,12 @@ func OpenRegionSelector() {
 	Displays := displaymanagement.GetActiveDisplaysOrdered()
 
 	// Multi-thread getting all of the displays and making all of the images darker.
-	Done := make(chan bool)
 	ScreenshotLen := 0
 	Screenshots := make([]*img.RGBA, len(Displays))
 	DarkerScreenshots := make([]*img.NRGBA, len(Displays))
 	ScreenshotsLock := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	wg.Add(len(Displays))
 	for i, v := range Displays {
 		go func(index int, rect img.Rectangle) {
 			// Takes the screenshot.
@@ -45,19 +46,14 @@ func OpenRegionSelector() {
 			// Adds one to the screenshot length.
 			ScreenshotLen++
 
-			// Defines if we are done.
-			DoneByCount := ScreenshotLen == len(Displays)
-
 			// Unlocks the screenshot lock.
 			ScreenshotsLock.Unlock()
 
-			// If we are done; handle the channel.
-			if DoneByCount {
-				Done <- true
-			}
+			// Sets this task to done.
+			wg.Done()
 		}(i, v)
 	}
-	<-Done
+	wg.Wait()
 
 	// Remap the monitors to the order of the "Displays" array.
 	GLFWMonitorsUnordered := glfw.GetMonitors()
