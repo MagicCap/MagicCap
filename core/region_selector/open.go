@@ -1,7 +1,8 @@
-package core
+package regionselector
 
 import (
 	"errors"
+	"github.com/MagicCap/MagicCap/core/display_management"
 	"github.com/disintegration/imaging"
 	"github.com/faiface/glhf"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -12,127 +13,10 @@ import (
 	"time"
 )
 
-// VertexShader is the vertex shader which is used by this render.
-var VertexShader = `
-#version 330 core
-
-in vec2 position;
-in vec2 texture;
-
-out vec2 Texture;
-
-void main() {
-	gl_Position = vec4(position, 0.0, 1.0);
-	Texture = texture;
-}
-`
-
-// FragmentShader is the fragment shader which is used by this render.
-var FragmentShader = `
-#version 330 core
-
-in vec2 Texture;
-
-out vec4 color;
-
-uniform sampler2D tex;
-
-void main() {
-	color = texture(tex, Texture);
-}`
-
-// GetDisplayImage is used to get the image to show up on the display.
-func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
-	ImageEdit := image
-	if DisplayPoint != nil {
-		// Copy the image.
-		b := ImageEdit.Bounds()
-		ImageCpy := img.NRGBA{
-			Pix:    make([]byte, len(ImageEdit.Pix)),
-			Stride: ImageEdit.Stride,
-			Rect:   ImageEdit.Rect,
-		}
-		for i, v := range ImageEdit.Pix {
-			ImageCpy.Pix[i] = v
-		}
-		ImageEdit = &ImageCpy
-
-		// Handles the drawing of the crosshair on the screen.
-		Height := b.Dy()
-		Width := b.Dx()
-		HeightComplete := 0
-		PixelOffset := ImageEdit.PixOffset(DisplayPoint.X, 0)
-		wg := sync.WaitGroup{}
-		wg.Add(Height + Width)
-		for HeightComplete != Height {
-			go func(offset int) {
-				defer wg.Done()
-				ImageEdit.Pix[offset+1] = 255 // R
-				ImageEdit.Pix[offset+2] = 255 // G
-				ImageEdit.Pix[offset+3] = 255 // B
-				ImageEdit.Pix[offset+4] = 255 // A
-			}(PixelOffset)
-			PixelOffset = ImageEdit.PixOffset(DisplayPoint.X, HeightComplete)
-			HeightComplete++
-		}
-		WidthComplete := 0
-		PixelOffset = ImageEdit.PixOffset(0, DisplayPoint.Y)
-		for WidthComplete != Width {
-			go func(offset int) {
-				defer wg.Done()
-				ImageEdit.Pix[offset+1] = 255 // R
-				ImageEdit.Pix[offset+2] = 255 // G
-				ImageEdit.Pix[offset+3] = 255 // B
-				ImageEdit.Pix[offset+4] = 255 // A
-			}(PixelOffset)
-			PixelOffset = ImageEdit.PixOffset(WidthComplete, DisplayPoint.Y)
-			WidthComplete++
-		}
-		wg.Wait()
-	}
-
-	// Returns the image.
-	return ImageEdit
-}
-
-// HandleWindow is used to handle a window.
-func HandleWindow(shader *glhf.Shader, texture *glhf.Texture) {
-	// Create the vertex slice.
-	slice := glhf.MakeVertexSlice(shader, 6, 6)
-	slice.Begin()
-	slice.SetVertexData([]float32{
-		-1, -1, 0, 1,
-		+1, -1, 1, 1,
-		+1, +1, 1, 0,
-
-		-1, -1, 0, 1,
-		+1, +1, 1, 0,
-		-1, +1, 0, 0,
-	})
-	slice.End()
-
-	// Clear the window.
-	glhf.Clear(1, 1, 1, 1)
-
-	// Render everything.
-	shader.Begin()
-	texture.Begin()
-	slice.Begin()
-	slice.Draw()
-	slice.End()
-	shader.End()
-}
-
-// KeyHandler is the keystroke handler.
-func KeyHandler(index int, keys []*glfw.Key) {
-	println(index)
-	println(keys)
-}
-
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
 func OpenRegionSelector() {
 	// Gets all of the displays.
-	Displays := GetActiveDisplaysOrdered()
+	Displays := displaymanagement.GetActiveDisplaysOrdered()
 
 	// Multi-thread getting all of the displays and making all of the images darker.
 	Done := make(chan bool)
@@ -248,7 +132,7 @@ func OpenRegionSelector() {
 						KeysDownLock.RUnlock()
 						ReleasedCount = 0
 						KeysDownLock.Lock()
-						KeyHandler(index, KeysDown)
+						KeyUpHandler(index, KeysDown)
 						KeysDown = make([]*glfw.Key, 0)
 						KeysDownLock.Unlock()
 					} else {

@@ -6,6 +6,7 @@ package core
 import (
 	"bytes"
 	"github.com/MagicCap/MagicCap/core/platform_specific"
+	"github.com/MagicCap/MagicCap/core/region_selector"
 	"github.com/faiface/mainthread"
 	"github.com/h2non/filetype"
 	"github.com/sqweek/dialog"
@@ -60,7 +61,7 @@ func ShowShort() {
 // RunScreenCapture runs a screen capture.
 func RunScreenCapture() {
 	// TODO: Implement this!
-	mainthread.Call(OpenRegionSelector)
+	mainthread.Call(regionselector.OpenRegionSelector)
 	println("RunScreenCapture")
 }
 
