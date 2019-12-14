@@ -46,11 +46,15 @@ func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
 	if DisplayPoint != nil {
 		// Copy the image.
 		b := ImageEdit.Bounds()
-		ImageCpy := img.NewNRGBA(b)
+		ImageCpy := img.NRGBA{
+			Pix:    make([]byte, len(ImageEdit.Pix)),
+			Stride: ImageEdit.Stride,
+			Rect:   ImageEdit.Rect,
+		}
 		for i, v := range ImageEdit.Pix {
 			ImageCpy.Pix[i] = v
 		}
-		ImageEdit = ImageCpy
+		ImageEdit = &ImageCpy
 
 		// Handles the drawing of the crosshair on the screen.
 		Height := b.Dy()
@@ -62,7 +66,6 @@ func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
 		for HeightComplete != Height {
 			go func(offset int) {
 				defer wg.Done()
-				ImageEdit.Pix[offset] = 255   // N
 				ImageEdit.Pix[offset+1] = 255 // R
 				ImageEdit.Pix[offset+2] = 255 // G
 				ImageEdit.Pix[offset+3] = 255 // B
@@ -76,7 +79,6 @@ func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
 		for WidthComplete != Width {
 			go func(offset int) {
 				defer wg.Done()
-				ImageEdit.Pix[offset] = 255   // N
 				ImageEdit.Pix[offset+1] = 255 // R
 				ImageEdit.Pix[offset+2] = 255 // G
 				ImageEdit.Pix[offset+3] = 255 // B
@@ -93,24 +95,7 @@ func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
 }
 
 // HandleWindow is used to handle a window.
-func HandleWindow(image *img.NRGBA) {
-	// Creates the shader.
-	shader, err := glhf.NewShader(glhf.AttrFormat{
-		{Name: "position", Type: glhf.Vec2},
-		{Name: "texture", Type: glhf.Vec2},
-	}, glhf.AttrFormat{}, VertexShader, FragmentShader)
-	if err != nil {
-		panic(err)
-	}
-
-	// Creates the texture.
-	texture := glhf.NewTexture(
-		image.Bounds().Dx(),
-		image.Bounds().Dy(),
-		true,
-		image.Pix,
-	)
-
+func HandleWindow(shader *glhf.Shader, texture *glhf.Texture) {
 	// Create the vertex slice.
 	slice := glhf.MakeVertexSlice(shader, 6, 6)
 	slice.Begin()
@@ -134,7 +119,6 @@ func HandleWindow(image *img.NRGBA) {
 	slice.Begin()
 	slice.Draw()
 	slice.End()
-	texture.End()
 	shader.End()
 }
 
@@ -203,6 +187,12 @@ func OpenRegionSelector() {
 		}
 	}
 
+	// Defines the shaders.
+	Shaders := make([]*glhf.Shader, len(GLFWMonitors))
+
+	// Defines the textures.
+	Textures := make([]*glhf.Texture, len(GLFWMonitors))
+
 	// Make a window on each display.
 	Windows := make([]*glfw.Window, len(GLFWMonitors))
 	for i, v := range Displays {
@@ -218,6 +208,23 @@ func OpenRegionSelector() {
 			panic(err)
 		}
 		Windows[i] = Window
+		Window.MakeContextCurrent()
+		s, err := glhf.NewShader(glhf.AttrFormat{
+			{Name: "position", Type: glhf.Vec2},
+			{Name: "texture", Type: glhf.Vec2},
+		}, glhf.AttrFormat{}, VertexShader, FragmentShader)
+		if err != nil {
+			panic(err)
+		}
+		Shaders[i] = s
+
+		// Creates the texture.
+		Textures[i] = glhf.NewTexture(
+			DarkerScreenshots[i].Bounds().Dx(),
+			DarkerScreenshots[i].Bounds().Dy(),
+			true,
+			DarkerScreenshots[i].Pix,
+		)
 	}
 
 	// Ensures the windows stay open.
@@ -229,7 +236,7 @@ func OpenRegionSelector() {
 		wg := sync.WaitGroup{}
 		WindowsLen := len(Windows)
 		wg.Add(WindowsLen)
-		Images := make([]*img.NRGBA, WindowsLen)
+		Images := make([]*img.NRGBA, len(GLFWMonitors))
 		for i, Rect := range Displays {
 			// Gets the point relative to the display.
 			// If DisplayPoint is nil, the point is not on this display.
@@ -244,8 +251,7 @@ func OpenRegionSelector() {
 			// Gets the image for the display.
 			go func(index int, image *img.NRGBA) {
 				defer wg.Done()
-				d := GetDisplayImage(DisplayPoint, image)
-				Images[index] = d
+				Images[index] = GetDisplayImage(DisplayPoint, image)
 			}(i, DarkerScreenshots[i])
 		}
 		wg.Wait()
@@ -259,8 +265,13 @@ func OpenRegionSelector() {
 			}
 			Window.MakeContextCurrent()
 
+			// Sets the texture.
+			texture := Textures[i]
+			image := Images[i]
+			texture.SetPixels(0, 0, image.Bounds().Dx(), image.Bounds().Dy(), image.Pix)
+
 			// Handles the window.
-			HandleWindow(Images[i])
+			HandleWindow(Shaders[i], Textures[i])
 
 			// Draws the buffer.
 			go Window.SwapBuffers()
