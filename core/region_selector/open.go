@@ -5,6 +5,7 @@ import (
 	"github.com/MagicCap/MagicCap/core/display_management"
 	"github.com/disintegration/imaging"
 	"github.com/faiface/glhf"
+	"github.com/faiface/mainthread"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
@@ -14,7 +15,7 @@ import (
 )
 
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
-func OpenRegionSelector() {
+func OpenRegionSelector() *SelectorResult {
 	// Gets all of the displays.
 	Displays := displaymanagement.GetActiveDisplaysOrdered()
 
@@ -56,7 +57,10 @@ func OpenRegionSelector() {
 	wg.Wait()
 
 	// Remap the monitors to the order of the "Displays" array.
-	GLFWMonitorsUnordered := glfw.GetMonitors()
+	var GLFWMonitorsUnordered []*glfw.Monitor
+	mainthread.Call(func () {
+		GLFWMonitorsUnordered = glfw.GetMonitors()
+	})
 	GLFWMonitors := make([]*glfw.Monitor, len(GLFWMonitorsUnordered))
 	for _, Monitor := range GLFWMonitorsUnordered {
 		x, y := Monitor.GetPos()
@@ -80,23 +84,28 @@ func OpenRegionSelector() {
 	// Defines the textures.
 	Textures := make([]*glhf.Texture, len(GLFWMonitors))
 
+	// Creates the event dispatcher.
+	dispatcher := EventDispatcher{}
+
 	// Make a window on each display.
 	Windows := make([]*glfw.Window, len(GLFWMonitors))
 	for i, v := range Displays {
 		// Creates the window.
 		var Window *glfw.Window
 		var err error
-		glfw.WindowHint(glfw.ContextVersionMajor, 3)
-		glfw.WindowHint(glfw.ContextVersionMinor, 3)
-		glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-		glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-		glfw.WindowHint(glfw.Resizable, glfw.False)
-		Window, err = glfw.CreateWindow(v.Max.X - v.Min.X, v.Max.Y - v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], nil)
-		if err != nil {
-			panic(err)
-		}
-		Windows[i] = Window
-		Window.MakeContextCurrent()
+		mainthread.Call(func() {
+			glfw.WindowHint(glfw.ContextVersionMajor, 3)
+			glfw.WindowHint(glfw.ContextVersionMinor, 3)
+			glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+			glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+			glfw.WindowHint(glfw.Resizable, glfw.False)
+			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], nil)
+			if err != nil {
+				panic(err)
+			}
+			Windows[i] = Window
+			Window.MakeContextCurrent()
+		})
 
 		// Sets the key handler.
 		KeysDown := make([]*glfw.Key, 0)
@@ -127,7 +136,7 @@ func OpenRegionSelector() {
 						KeysDownLock.RUnlock()
 						ReleasedCount = 0
 						KeysDownLock.Lock()
-						KeyUpHandler(w, KeysDown)
+						KeyUpHandler(w, KeysDown, &dispatcher)
 						KeysDown = make([]*glfw.Key, 0)
 						KeysDownLock.Unlock()
 					} else {
@@ -144,22 +153,24 @@ func OpenRegionSelector() {
 		})
 
 		// Creates the shader.
-		s, err := glhf.NewShader(glhf.AttrFormat{
-			{Name: "position", Type: glhf.Vec2},
-			{Name: "texture", Type: glhf.Vec2},
-		}, glhf.AttrFormat{}, VertexShader, FragmentShader)
-		if err != nil {
-			panic(err)
-		}
-		Shaders[i] = s
+		mainthread.Call(func() {
+			s, err := glhf.NewShader(glhf.AttrFormat{
+				{Name: "position", Type: glhf.Vec2},
+				{Name: "texture", Type: glhf.Vec2},
+			}, glhf.AttrFormat{}, VertexShader, FragmentShader)
+			if err != nil {
+				panic(err)
+			}
+			Shaders[i] = s
 
-		// Creates the texture.
-		Textures[i] = glhf.NewTexture(
-			DarkerScreenshots[i].Bounds().Dx(),
-			DarkerScreenshots[i].Bounds().Dy(),
-			true,
-			DarkerScreenshots[i].Pix,
-		)
+			// Creates the texture.
+			Textures[i] = glhf.NewTexture(
+				DarkerScreenshots[i].Bounds().Dx(),
+				DarkerScreenshots[i].Bounds().Dy(),
+				true,
+				DarkerScreenshots[i].Pix,
+			)
+		})
 	}
 
 	// Handles events in the window.
@@ -206,27 +217,34 @@ func OpenRegionSelector() {
 
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
-			// Makes the window the current context.
-			if Window.ShouldClose() {
-				ShouldBreakOuter = true
+			BreakHere := false
+			mainthread.Call(func() {
+				// Makes the window the current context.
+				if Window.ShouldClose() {
+					ShouldBreakOuter = true
+					BreakHere = true
+					return
+				}
+				Window.MakeContextCurrent()
+
+				// Sets the texture.
+				texture := Textures[i]
+				image := Images[i]
+				texture.SetPixels(0, 0, image.Bounds().Dx(), image.Bounds().Dy(), image.Pix)
+
+				// Handles the window.
+				HandleWindow(Shaders[i], Textures[i])
+			})
+			if BreakHere {
 				break
 			}
-			Window.MakeContextCurrent()
-
-			// Sets the texture.
-			texture := Textures[i]
-			image := Images[i]
-			texture.SetPixels(0, 0, image.Bounds().Dx(), image.Bounds().Dy(), image.Pix)
-
-			// Handles the window.
-			HandleWindow(Shaders[i], Textures[i])
 
 			// Draws the buffer.
 			go Window.SwapBuffers()
 		}
 
 		// Handles the outer for loop and polls for events.
-		glfw.PollEvents()
+		mainthread.Call(glfw.PollEvents)
 		if ShouldBreakOuter {
 			break
 		}
@@ -236,9 +254,37 @@ func OpenRegionSelector() {
 	}
 
 	// Cleans up the windows.
-	for i, v := range Windows {
-		v.MakeContextCurrent()
-		Textures[i].End()
-		v.Destroy()
+	mainthread.Call(func() {
+		for i, v := range Windows {
+			v.MakeContextCurrent()
+			Textures[i].End()
+			v.Destroy()
+		}
+	})
+
+	// Handles the "F" key being pressed.
+	if dispatcher.ShouldFullscreenCapture {
+		Display := 0
+		x, y := robotgo.GetMousePos()
+		for i, Rect := range Displays {
+			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
+				Display = i
+				break
+			}
+		}
+		Screenshot := Screenshots[Display]
+		return &SelectorResult{
+			Selection:    Screenshot,
+			Screenshots:  Screenshots,
+			Displays:     Displays,
+			DisplayIndex: Display,
+			TopLeftDisplay:      &img.Point{
+				X: 0,
+				Y: 0,
+			},
+		}
 	}
+
+	// Return null.
+	return nil
 }
