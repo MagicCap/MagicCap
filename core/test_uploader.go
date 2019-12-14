@@ -16,7 +16,7 @@ func TestUploader(UploaderName string) error {
 	for _, v := range Uploader.ConfigOptions {
 		IsolatedConfig[v.Value] = ConfigItems[v.Value]
 	}
-	url, err := Uploader.Upload(IsolatedConfig, Assets.Bytes("taskbar@2x.png"), "test.png")
+	url, err := Uploader.Upload(IsolatedConfig, CoreAssets.Bytes("taskbar@2x.png"), "test.png")
 	if err != nil {
 		return err
 	}

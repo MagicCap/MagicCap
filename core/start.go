@@ -24,8 +24,8 @@ var (
 	// ConfigPath defines the MagicCap folder path.
 	ConfigPath = path.Join(HomeDir, ".magiccap")
 
-	// Assets contains all of the data from "assets" when compiled.
-	Assets = packr.NewBox("../assets")
+	// CoreAssets contains all of the data from core assets when compiled.
+	CoreAssets = packr.NewBox("../assets/core")
 
 	// Version defines the version.
 	Version = "3.0.0a1"

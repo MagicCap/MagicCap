@@ -37,7 +37,7 @@ func main() {
 			panic(err)
 		}
 		if settings.WebviewConfig.URL == "__SHORTENER__" {
-			HTML := strings.Replace(core.Assets.String("shortener.html"), "inline_styling", core.CSS.String(
+			HTML := strings.Replace(core.CoreAssets.String("shortener.html"), "inline_styling", core.CSS.String(
 				"bulmaswatch/darkly/bulmaswatch.min.css"), 1)
 			settings.WebviewConfig.URL = `data:text/html,` + url.PathEscape(HTML)
 		}

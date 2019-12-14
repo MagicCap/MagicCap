@@ -15,7 +15,7 @@ func InitTray() {
 	GetConfigItems()
 
 	// Sets the tray icon.
-	b, err := Assets.Find("taskbar@2x.png")
+	b, err := CoreAssets.Find("taskbar@2x.png")
 	if err != nil {
 		panic(err)
 	}
