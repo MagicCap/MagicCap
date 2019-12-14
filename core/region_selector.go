@@ -9,6 +9,7 @@ import (
 	"github.com/kbinani/screenshot"
 	img "image"
 	"sync"
+	"time"
 )
 
 // VertexShader is the vertex shader which is used by this render.
@@ -228,9 +229,22 @@ func OpenRegionSelector() {
 	}
 
 	// Ensures the windows stay open.
+	LastPoint := img.Point{
+		X: -9999999999,
+		Y: -9999999999,
+	}
 	for {
 		// Gets the mouse position.
 		x, y := robotgo.GetMousePos()
+		p := img.Point{
+			X: x,
+			Y: y,
+		}
+		if LastPoint.Eq(p) {
+			time.Sleep(time.Millisecond * 20)
+			continue
+		}
+		LastPoint = p
 
 		// Handles getting the image in a thread.
 		wg := sync.WaitGroup{}
@@ -282,5 +296,8 @@ func OpenRegionSelector() {
 			break
 		}
 		glfw.PollEvents()
+
+		// Lock the framerate to 120fps.
+		time.Sleep(time.Second / 120)
 	}
 }
