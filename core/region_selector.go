@@ -123,6 +123,12 @@ func HandleWindow(shader *glhf.Shader, texture *glhf.Texture) {
 	shader.End()
 }
 
+// KeyHandler is the keystroke handler.
+func KeyHandler(index int, keys []*glfw.Key) {
+	println(index)
+	println(keys)
+}
+
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
 func OpenRegionSelector() {
 	// Gets all of the displays.
@@ -197,6 +203,7 @@ func OpenRegionSelector() {
 	// Make a window on each display.
 	Windows := make([]*glfw.Window, len(GLFWMonitors))
 	for i, v := range Displays {
+		// Creates the window.
 		var Window *glfw.Window
 		var err error
 		glfw.WindowHint(glfw.ContextVersionMajor, 3)
@@ -210,6 +217,54 @@ func OpenRegionSelector() {
 		}
 		Windows[i] = Window
 		Window.MakeContextCurrent()
+
+		// Sets the key handler.
+		index := i
+		KeysDown := make([]*glfw.Key, 0)
+		KeysDownLock := sync.RWMutex{}
+		KeysReleased := 0
+		KeysReleasedLock := sync.Mutex{}
+		Window.SetKeyCallback(func(_ *glfw.Window, key glfw.Key, _ int, action glfw.Action, _ glfw.ModifierKey) {
+			if action != glfw.Release {
+				// Log this key as down and return.
+				KeysDownLock.RLock()
+				KeysDown = append(KeysDown, &key)
+				KeysDownLock.RUnlock()
+				return
+			}
+
+			for _, v := range KeysDown {
+				if *v == key {
+					// Lock the keys released.
+					KeysReleasedLock.Lock()
+
+					// Set this key as released and get the released count.
+					KeysReleased++
+					ReleasedCount := KeysReleased
+
+					// Check if all the keys are released. If they are, call the key down function.
+					KeysDownLock.RLock()
+					if ReleasedCount == len(KeysDown) {
+						KeysDownLock.RUnlock()
+						ReleasedCount = 0
+						KeysDownLock.Lock()
+						KeyHandler(index, KeysDown)
+						KeysDown = make([]*glfw.Key, 0)
+						KeysDownLock.Unlock()
+					} else {
+						KeysDownLock.RUnlock()
+					}
+
+					// Unlock the keys released lock.
+					KeysReleasedLock.Unlock()
+
+					// Break out of this loop.
+					break
+				}
+			}
+		})
+
+		// Creates the shader.
 		s, err := glhf.NewShader(glhf.AttrFormat{
 			{Name: "position", Type: glhf.Vec2},
 			{Name: "texture", Type: glhf.Vec2},
