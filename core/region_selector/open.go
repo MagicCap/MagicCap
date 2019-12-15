@@ -108,6 +108,52 @@ func OpenRegionSelector() *SelectorResult {
 			Window.MakeContextCurrent()
 		})
 
+		// Sets the mouse button handler.
+		index := i
+		var FirstPos *img.Point
+		DisplayPos := v
+		Window.SetMouseButtonCallback(func (_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
+			if button != glfw.MouseButton1 {
+				return
+			}
+			x, y := robotgo.GetMousePos()
+			if action == glfw.Press {
+				FirstPos = &img.Point{
+					X: x - DisplayPos.Min.X,
+					Y: y - DisplayPos.Min.Y,
+				}
+				dispatcher.EscapeHandler = func() {
+					FirstPos = nil
+				}
+			} else if action == glfw.Release {
+				dispatcher.EscapeHandler = nil
+				FirstPosCpy := FirstPos
+				FirstPos = nil
+				if FirstPosCpy != nil {
+					// Get the result from here.
+					EndResult := &img.Point{
+						X: x - DisplayPos.Min.X,
+						Y: y - DisplayPos.Min.Y,
+					}
+
+					// Get the rectangle.
+					Rect := img.Rect(FirstPosCpy.X, FirstPosCpy.Y, EndResult.X, EndResult.Y)
+
+					// Gets the result.
+					dispatcher.Result = &SelectorResult{
+						Selection:      Screenshots[index].SubImage(Rect).(*img.RGBA),
+						Screenshots:    Screenshots,
+						Displays:       Displays,
+						DisplayIndex:   index,
+						TopLeftDisplay: &Rect.Min,
+					}
+
+					// Closes the window.
+					Window.SetShouldClose(true)
+				}
+			}
+		})
+
 		// Sets the key handler.
 		KeysDown := make([]*glfw.Key, 0)
 		KeysDownLock := sync.RWMutex{}
@@ -284,6 +330,11 @@ func OpenRegionSelector() *SelectorResult {
 				Y: 0,
 			},
 		}
+	}
+
+	// if Result isn't null, return it.
+	if dispatcher.Result != nil {
+		return dispatcher.Result
 	}
 
 	// Return null.

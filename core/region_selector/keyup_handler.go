@@ -11,6 +11,10 @@ func KeyUpHandler(window *glfw.Window, keys []*glfw.Key, dispatcher *EventDispat
 			window.SetShouldClose(true)
 			return
 		case glfw.KeyF:
+			if dispatcher.EscapeHandler != nil {
+				dispatcher.EscapeHandler()
+				return
+			}
 			window.SetShouldClose(true)
 			dispatcher.ShouldFullscreenCapture = true
 			return
