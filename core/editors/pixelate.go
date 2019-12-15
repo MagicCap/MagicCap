@@ -10,7 +10,7 @@ func init() {
 		Name:        "Pixelate",
 		Description: "Allows you to pixelate a image.",
 		Icon:        EditorAssets.Bytes("pixelate.png"),
-		Apply: func(Region *image.RGBA, _ [3]uint32) *image.RGBA {
+		Apply: func(Region *image.RGBA, _ [3]uint8) *image.RGBA {
 			g := gift.New(
 				gift.Pixelate(10),
 			)

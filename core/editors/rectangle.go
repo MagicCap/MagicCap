@@ -1,6 +1,7 @@
 package editors
 
 import (
+	"github.com/go-playground/colors"
 	"image"
 )
 
@@ -22,17 +23,22 @@ func init() {
 		Name:        "Rectangle",
 		Description: "Draws a rectangle on the screen.",
 		Icon:        EditorAssets.Bytes("rectangle.png"),
-		Apply: func(Region *image.RGBA, RGB [3]uint32) *image.RGBA {
+		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			i := image.NewRGBA(Region.Rect)
 			Y := 0
 			for Region.Bounds().Dy() != Y {
 				X := 0
 				for Region.Bounds().Dx() != X {
+					c, err := colors.RGB(RGB[0], RGB[1], RGB[2])
+					if err != nil {
+						panic(err)
+					}
+					rgba := c.ToRGBA()
 					i.Set(X, Y, &StaticRGBA{
-						R: RGB[0],
-						G: RGB[1],
-						B: RGB[2],
-						A: 4294967295,
+						R: uint32(rgba.R),
+						G: uint32(rgba.G),
+						B: uint32(rgba.B),
+						A: uint32(rgba.A),
 					})
 					X++
 				}
