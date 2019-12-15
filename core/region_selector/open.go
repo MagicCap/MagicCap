@@ -259,7 +259,7 @@ func OpenRegionSelector() *SelectorResult {
 			// Gets the image for the display.
 			go func(index int, image *img.NRGBA) {
 				defer wg.Done()
-				Images[index] = GetDisplayImage(DisplayPoint, image)
+				Images[index] = GetDisplayImage(DisplayPoint, image, FirstPosMap[index], &p, Screenshots[index])
 			}(i, DarkerScreenshots[i])
 		}
 		wg.Wait()

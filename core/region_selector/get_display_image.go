@@ -2,11 +2,15 @@ package regionselector
 
 import (
 	img "image"
+	"image/draw"
 	"sync"
 )
 
 // GetDisplayImage is used to get the image to show up on the display.
-func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
+func GetDisplayImage(
+	DisplayPoint *img.Point, image *img.NRGBA, FirstPos *img.Point,
+	LastPos *img.Point, OriginalScreenshot *img.RGBA,
+) *img.NRGBA {
 	ImageEdit := image
 	if DisplayPoint != nil {
 		// Copy the image.
@@ -20,6 +24,13 @@ func GetDisplayImage(DisplayPoint *img.Point, image *img.NRGBA) *img.NRGBA {
 			ImageCpy.Pix[i] = v
 		}
 		ImageEdit = &ImageCpy
+
+		// Handles the region selection.
+		if FirstPos != nil {
+			Rect := img.Rect(FirstPos.X, FirstPos.Y, LastPos.X, LastPos.Y)
+			RegionCropped := OriginalScreenshot.SubImage(Rect)
+			draw.Draw(ImageEdit, Rect, RegionCropped, Rect.Min, draw.Over)
+		}
 
 		// Handles the drawing of the crosshair on the screen.
 		Height := b.Dy()
