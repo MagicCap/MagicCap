@@ -85,6 +85,9 @@ func OpenRegionSelector() *SelectorResult {
 	// Defines the textures.
 	Textures := make([]*glhf.Texture, len(GLFWMonitors))
 
+	// Defines first positions for the region selector.
+	FirstPosMap := map[int]*img.Point{}
+
 	// Creates the event dispatcher.
 	dispatcher := EventDispatcher{}
 
@@ -110,7 +113,6 @@ func OpenRegionSelector() *SelectorResult {
 
 		// Sets the mouse button handler.
 		index := i
-		var FirstPos *img.Point
 		DisplayPos := v
 		Window.SetMouseButtonCallback(func (_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
 			if button != glfw.MouseButton1 {
@@ -118,17 +120,17 @@ func OpenRegionSelector() *SelectorResult {
 			}
 			x, y := robotgo.GetMousePos()
 			if action == glfw.Press {
-				FirstPos = &img.Point{
+				FirstPosMap[index] = &img.Point{
 					X: x - DisplayPos.Min.X,
 					Y: y - DisplayPos.Min.Y,
 				}
 				dispatcher.EscapeHandler = func() {
-					FirstPos = nil
+					FirstPosMap[index] = nil
 				}
 			} else if action == glfw.Release {
 				dispatcher.EscapeHandler = nil
-				FirstPosCpy := FirstPos
-				FirstPos = nil
+				FirstPosCpy := FirstPosMap[index]
+				FirstPosMap[index] = nil
 				if FirstPosCpy != nil {
 					// Get the result from here.
 					EndResult := &img.Point{
