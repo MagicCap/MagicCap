@@ -29,7 +29,7 @@ func GetDisplayImage(
 		if FirstPos != nil {
 			Rect := img.Rect(FirstPos.X, FirstPos.Y, LastPos.X, LastPos.Y)
 			RegionCropped := OriginalScreenshot.SubImage(Rect)
-			draw.Draw(ImageEdit, Rect, RegionCropped, Rect.Min, draw.Over)
+			draw.FloydSteinberg.Draw(ImageEdit, Rect, RegionCropped, Rect.Min)
 		}
 
 		// Handles the drawing of the crosshair on the screen.

@@ -13,6 +13,7 @@ import (
 	"golang.org/x/image/tiff"
 	"image/png"
 	"sync"
+	"time"
 )
 
 // TODO: A bug is somewhere in this codebase where open windows are not focused. It isn't here, but it needs patching!
@@ -81,8 +82,24 @@ func RunScreenCapture() {
 
 // RunGIFCapture runs a GIF capture.
 func RunGIFCapture() {
-	// TODO: Implement this!
-	println("RunGIFCapture")
+	r := regionselector.OpenRegionSelector()
+	if r == nil {
+		return
+	}
+	channel := make(chan bool)
+	// TODO: Add manual control!
+	go func() {
+		time.Sleep(time.Second * 10)
+		channel <- true
+	}()
+	b := NewGIFCapture(&r.Selection.Rect, channel)
+	Filename := GenerateFilename() + ".gif"
+	Default := GetConfiguredUploaders()[0].Uploader
+	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture {
+		Default = nil
+	}
+	Upload(b, Filename, nil, Default)
 }
 
 // RunClipboardCapture runs a clipboard capture.

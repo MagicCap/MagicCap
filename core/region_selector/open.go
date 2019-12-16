@@ -103,6 +103,11 @@ func OpenRegionSelector() *SelectorResult {
 			glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 			glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 			glfw.WindowHint(glfw.Resizable, glfw.False)
+			glfw.WindowHint(glfw.Focused, glfw.True)
+			glfw.WindowHint(glfw.Decorated, glfw.False)
+			glfw.WindowHint(glfw.Floating, glfw.True)
+			glfw.WindowHint(glfw.Maximized, glfw.True)
+			glfw.WindowHint(glfw.FocusOnShow, glfw.True)
 			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], nil)
 			if err != nil {
 				panic(err)
