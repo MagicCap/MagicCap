@@ -8,8 +8,8 @@ import (
 	"os"
 )
 
-// InitTray Initialises the tray.
-func InitTray() {
+// InitMainTray Initialises the tray.
+func InitMainTray() {
 	// Load the uploaders kernel and get config options.
 	LoadUploadersKernel()
 	GetConfigItems()

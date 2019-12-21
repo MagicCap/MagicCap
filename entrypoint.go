@@ -21,9 +21,9 @@ type CoreWindowConfig struct {
 }
 
 func main() {
-	if os.Getenv("SYSTRAY_MODE") == "true" {
+	if os.Getenv("SYSTRAY_MODE") == "1" {
 		runtime.LockOSThread()
-		systray.Run(core.InitTray, nil)
+		systray.Run(core.InitMainTray, nil)
 	} else if os.Getenv("WEBVIEW_MODE") == "true" {
 		runtime.LockOSThread()
 		var settings CoreWindowConfig

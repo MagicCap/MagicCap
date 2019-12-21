@@ -66,7 +66,7 @@ func RestartTrayProcess() {
 		_ = TrayProcess.Process.Kill()
 	}
 	TrayProcess = exec.Command(app)
-	TrayProcess.Env = append(os.Environ(), "SYSTRAY_MODE=true")
+	TrayProcess.Env = append(os.Environ(), "SYSTRAY_MODE=1")
 
 	// Handles stderr.
 	TrayProcess.Stderr = os.Stderr
