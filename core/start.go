@@ -5,12 +5,13 @@ package core
 
 import (
 	"fmt"
-	"github.com/faiface/mainthread"
-	"github.com/hackebrot/turtle"
 	"math/rand"
 	"os"
 	"path"
 	"time"
+
+	"github.com/faiface/mainthread"
+	"github.com/hackebrot/turtle"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -50,7 +51,7 @@ func Start() {
 	}
 
 	// Load in all of the emojis.
-	for  _, value := range turtle.Emojis {
+	for _, value := range turtle.Emojis {
 		Emojis = append(Emojis, value.String())
 	}
 
@@ -72,6 +73,9 @@ func Start() {
 	// Loads the SQLite3 DB.
 	LoadDatabase()
 
+	// Ensures there is a install ID.
+	EnsureInstallID()
+
 	// Starts the tray.
 	RestartTrayProcess()
 
@@ -83,5 +87,4 @@ func Start() {
 	for {
 		time.Sleep(time.Second)
 	}
-	// TODO: Make a install ID.
 }
