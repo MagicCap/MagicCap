@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "The config for MagicCap.",
   "scripts": {
-    "build": "parcel build ./src/mount.js --no-content-hash"
+    "build": "parcel build ./src/mount.js --no-content-hash",
+    "build-colors": "electron ./src/css/colors.js"
   },
   "repository": {
     "type": "git",
@@ -16,7 +17,8 @@
     "@vue/component-compiler-utils": "^3.0.2",
     "parcel-bundler": "1.12.4",
     "typescript": "3.5.1",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "electron": "7.1.7"
   },
   "author": "MagicCap Development Team",
   "license": "MPL-2.0",
