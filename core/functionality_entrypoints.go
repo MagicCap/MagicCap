@@ -77,7 +77,8 @@ func RunScreenCapture() {
 		Default = nil
 	}
 	Upload(w.Bytes(), Filename, nil, Default)
-	// TODO: Implement native notifications!
+	platformspecific.ThrowNotification("Hello World!", func() {})
+	// TODO: Fix bugs with this.
 }
 
 // RunGIFCapture runs a GIF capture.
