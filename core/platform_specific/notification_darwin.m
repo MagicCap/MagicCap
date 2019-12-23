@@ -9,7 +9,6 @@ void PushNotification(char* text, void* OnClick) {
     notification.title = @"MagicCap";
     notification.subtitle = [NSString stringWithUTF8String:text];
     notification.soundName = NSUserNotificationDefaultSoundName;
-    [notification setDeliveryDate:[NSDate dateWithTimeInterval:0 sinceDate:[NSDate date]]];
     [[NSUserNotificationCenter defaultUserNotificationCenter]
-            scheduleNotification:notification];
+            deliverNotification:notification];
 }

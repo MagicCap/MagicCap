@@ -1,9 +1,3 @@
 #!/bin/sh
-cd config/
-npm i
-npm run build
-cd ..
-go get .
-go get github.com/gobuffalo/packr/packr
-~/go/bin/packr build .
-mv ./MagicCap ./magiccap-darwin
+/bin/sh ./mac_build_scripts/mac_build_bin.sh
+/bin/sh ./mac_build_scripts/mac_create_app.sh
