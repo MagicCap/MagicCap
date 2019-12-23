@@ -5,6 +5,7 @@ package core
 
 import (
 	"fmt"
+	"github.com/kbinani/screenshot"
 	"math/rand"
 	"os"
 	"path"
@@ -78,6 +79,12 @@ func Start() {
 
 	// Starts the tray.
 	RestartTrayProcess()
+
+	// Take a 1x1 screenshot to ensure that it is ok and the permissions dialog pops up.
+	_, err = screenshot.Capture(1, 1, 1, 1)
+	if err != nil {
+		panic(err)
+	}
 
 	// Defines how long it took.
 	elapsed := time.Since(StartTime)

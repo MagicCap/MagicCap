@@ -171,7 +171,7 @@ func FileExtExpander(ext string) string {
 }
 
 // Upload handles all of the MagicCap side stuff.
-func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKernelStandards.Uploader) {
+func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKernelStandards.Uploader) (*string, bool) {
 	var url *string
 	if Uploader != nil {
 		// Handle uploading the file.
@@ -185,7 +185,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 		if err != nil {
 			dialog.Message("%s", err.Error()).Error()
 			LogUpload(Filename, nil, FilePath, false)
-			return
+			return nil, false
 		}
 		url = &urlRes
 		UploadOpen, _ := ConfigItems["upload_open"].(bool)
@@ -213,7 +213,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 			if err != nil {
 				dialog.Message("%s", err.Error()).Error()
 				LogUpload(Filename, nil, nil, false)
-				return
+				return nil, false
 			}
 		}
 	}
@@ -222,4 +222,5 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 	popped := exts[len(exts)-1]
 	FullExt := FileExtExpander(popped)
 	ClipboardAction(Data, FullExt, url)
+	return url, true
 }

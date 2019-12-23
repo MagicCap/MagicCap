@@ -76,9 +76,11 @@ func RunScreenCapture() {
 	if !UploadCapture {
 		Default = nil
 	}
-	Upload(w.Bytes(), Filename, nil, Default)
-	platformspecific.ThrowNotification("Hello World!", func() {})
-	// TODO: Fix bugs with this.
+	url, ok := Upload(w.Bytes(), Filename, nil, Default)
+	if !ok {
+		return
+	}
+	platformspecific.ThrowNotification("Screen capture successful.", url)
 }
 
 // RunGIFCapture runs a GIF capture.
@@ -100,7 +102,11 @@ func RunGIFCapture() {
 	if !UploadCapture {
 		Default = nil
 	}
-	Upload(b, Filename, nil, Default)
+	url, ok := Upload(b, Filename, nil, Default)
+	if !ok {
+		return
+	}
+	platformspecific.ThrowNotification("GIF capture successful.", url)
 }
 
 // RunClipboardCapture runs a clipboard capture.
@@ -144,6 +150,9 @@ func RunClipboardCapture() {
 		Default = nil
 	}
 	Filename := GenerateFilename() + "." + FileType
-	Upload(Data, Filename, nil, Default)
-	// TODO: Implement native notifications!
+	url, ok := Upload(Data, Filename, nil, Default)
+	if !ok {
+		return
+	}
+	platformspecific.ThrowNotification("Clipboard capture successful.", url)
 }

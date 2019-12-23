@@ -12,5 +12,7 @@
          <string>MagicCap</string>
          <key>CFBundlePackageType</key>
          <string>APPL</string>
+         <key>CFBundleIdentifier</key>
+         <string>org.magiccap.magiccap</string>
     </dict>
 </plist>
