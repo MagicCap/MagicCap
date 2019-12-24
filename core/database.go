@@ -118,7 +118,7 @@ func UpdateConfig() {
 	DatabaseLock.Unlock()
 	RestartTrayProcess()
 	// TODO: Handle hotkeys!
-	// TODO Refresh updates!
+	// TODO: Refresh updates!
 	// TODO: Handle start on login.
 }
 
