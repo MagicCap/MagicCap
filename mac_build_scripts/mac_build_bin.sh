@@ -3,7 +3,10 @@ cd config/
 npm i
 npm run build
 cd ..
-go get .
+go get
+CURRENT_CWD=$(pwd)
+cd ..
 go get github.com/gobuffalo/packr/packr
-~/go/bin/packr build .
+cd $CURRENT_CWD
+~/go/bin/packr build
 mv ./MagicCap ./magiccap-darwin
