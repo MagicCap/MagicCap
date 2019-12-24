@@ -5,7 +5,10 @@
 
 package platformspecific
 
-import "github.com/deckarep/gosx-notifier"
+import (
+	gosxnotifier "github.com/deckarep/gosx-notifier"
+	"github.com/getsentry/sentry-go"
+)
 
 // ThrowNotification is used to throw a notification to the OS.
 func ThrowNotification(Text string, URL *string) {
@@ -18,6 +21,7 @@ func ThrowNotification(Text string, URL *string) {
 	}
 	err := notif.Push()
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 }

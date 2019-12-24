@@ -3,21 +3,23 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/magiccap/MagicCap/core"
-	"github.com/faiface/mainthread"
-	"github.com/getlantern/systray"
-	"github.com/zserge/webview"
 	"net/url"
 	"os"
 	"runtime"
 	"strings"
+
+	"github.com/faiface/mainthread"
+	"github.com/getlantern/systray"
+	"github.com/getsentry/sentry-go"
+	"github.com/magiccap/MagicCap/core"
+	"github.com/zserge/webview"
 )
 
 // CoreWindowConfig defines the core window configuration.
 type CoreWindowConfig struct {
 	WebviewConfig webview.Settings
-	RGBA core.RGBAConfig
-	Fullscreen bool
+	RGBA          core.RGBAConfig
+	Fullscreen    bool
 }
 
 func main() {
@@ -30,10 +32,12 @@ func main() {
 		buf := bufio.NewReader(os.Stdin)
 		data, err := buf.ReadBytes('\n')
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		err = json.Unmarshal(data, &settings)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		if settings.WebviewConfig.URL == "__SHORTENER__" {

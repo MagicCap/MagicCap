@@ -5,15 +5,17 @@ package core
 
 import (
 	"encoding/json"
-	MagicCapKernel "github.com/magiccap/magiccap-uploaders-kernel"
-	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
-	"github.com/pkg/browser"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/getsentry/sentry-go"
+	MagicCapKernel "github.com/magiccap/magiccap-uploaders-kernel"
+	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
+	"github.com/pkg/browser"
 
 	"github.com/sqweek/dialog"
 )
@@ -39,10 +41,12 @@ func LoadUploadersKernel() {
 		}
 		b, err := ioutil.ReadAll(response.Body)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		err = ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0777)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		return &b
@@ -57,25 +61,30 @@ func LoadUploadersKernel() {
 		var Spec map[string]interface{}
 		err := json.Unmarshal(*b, &Spec)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		err = Kernel.Load(Spec)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 	} else {
 		// Loads the kernel.
 		b, err := ioutil.ReadFile(path.Join(ConfigPath, "kernel.json"))
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		var Spec map[string]interface{}
 		err = json.Unmarshal(b, &Spec)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		err = Kernel.Load(Spec)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 	}
@@ -96,10 +105,12 @@ func LoadUploadersKernel() {
 			var Spec map[string]interface{}
 			err := json.Unmarshal(*b, &Spec)
 			if err != nil {
+				sentry.CaptureException(err)
 				panic(err)
 			}
 			err = Kernel.Load(Spec)
 			if err != nil {
+				sentry.CaptureException(err)
 				panic(err)
 			}
 			RestartTrayProcess()
@@ -203,6 +214,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 				SavePath = path.Join(HomeDir, "Pictures", "MagicCap")
 				err := os.MkdirAll(SavePath, 0600)
 				if err != nil {
+					sentry.CaptureException(err)
 					panic(err)
 				}
 				ConfigItems["save_path"] = SavePath

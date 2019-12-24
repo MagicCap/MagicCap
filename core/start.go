@@ -78,6 +78,14 @@ func Start() {
 	// Boot message.
 	println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2019.")
 
+	// Catch any errors during initialisation and log them to Sentry.
+	defer func() {
+		if err := recover(); err != nil {
+			sentry.CaptureException(err.(error))
+			panic(err)
+		}
+	}()
+
 	// Loads up the uploader kernel.
 	LoadUploadersKernel()
 
@@ -93,6 +101,7 @@ func Start() {
 	// Take a 1x1 screenshot to ensure that it is ok and the permissions dialog pops up.
 	_, err = screenshot.Capture(1, 1, 1, 1)
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 

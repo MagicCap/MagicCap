@@ -3,14 +3,13 @@
 
 package core
 
-// TODO: Setup Sentry.
-
 import (
 	"bytes"
 	"image/png"
 	"sync"
 	"time"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/h2non/filetype"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
@@ -69,6 +68,7 @@ func RunFullscreenCapture() {
 	err := png.Encode(w, img)
 	if err != nil {
 		dialog.Message("%s", err.Error()).Error()
+		sentry.CaptureException(err)
 		return
 	}
 	Filename := GenerateFilename() + ".png"
@@ -94,6 +94,7 @@ func RunScreenCapture() {
 	err := png.Encode(w, r.Selection)
 	if err != nil {
 		dialog.Message("%s", err.Error()).Error()
+		sentry.CaptureException(err)
 		return
 	}
 	Filename := GenerateFilename() + ".png"
@@ -154,12 +155,14 @@ func RunClipboardCapture() {
 			img, err := tiff.Decode(bytes.NewReader(Data))
 			if err != nil {
 				dialog.Message("%s", err.Error()).Error()
+				sentry.CaptureException(err)
 				return
 			}
 			w := new(bytes.Buffer)
 			err = png.Encode(w, img)
 			if err != nil {
 				dialog.Message("%s", err.Error()).Error()
+				sentry.CaptureException(err)
 				return
 			}
 			Data = w.Bytes()

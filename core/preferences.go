@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/faiface/mainthread"
+	"github.com/getsentry/sentry-go"
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 	"github.com/pkg/browser"
 	"github.com/sqweek/dialog"
@@ -68,6 +69,7 @@ func HandleConfigRequest(ctx *fasthttp.RequestCtx) {
 		// Gets the config.
 		j, err := json.Marshal(&ConfigItems)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		ctx.Response.SetStatusCode(200)
@@ -79,6 +81,7 @@ func HandleConfigRequest(ctx *fasthttp.RequestCtx) {
 		NewConfig := make(map[string]interface{})
 		err := json.Unmarshal(ConfigBody, &NewConfig)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		ConfigItems = NewConfig
@@ -92,6 +95,7 @@ func GetCapturesRoute(ctx *fasthttp.RequestCtx) {
 	caps := GetCaptures()
 	j, err := json.Marshal(&caps)
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	ctx.Response.SetStatusCode(200)
@@ -103,6 +107,7 @@ func GetCapturesRoute(ctx *fasthttp.RequestCtx) {
 func DeleteCapturesRoute(ctx *fasthttp.RequestCtx) {
 	num, err := strconv.Atoi(string(ctx.Request.Body()))
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	DeleteCapture(num)
@@ -113,6 +118,7 @@ func DeleteCapturesRoute(ctx *fasthttp.RequestCtx) {
 func ChangefeedRoute(ctx *fasthttp.RequestCtx) {
 	j, err := json.Marshal(&Changes)
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	ctx.Response.SetStatusCode(200)
@@ -165,6 +171,7 @@ func ReplaceCapturesRoute(ctx *fasthttp.RequestCtx) {
 	var Data []map[string]interface{}
 	err := json.Unmarshal(ctx.Request.Body(), &Data)
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	PurgeCaptures()
@@ -184,6 +191,7 @@ func HandleUploaderTest(ctx *fasthttp.RequestCtx) {
 		errString := err.Error()
 		j, err := json.Marshal(&errString)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		ctx.Response.SetBody(j)
@@ -233,6 +241,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	case "/uploaders":
 		j, err := json.Marshal(&Kernel.Uploaders)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
@@ -257,6 +266,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		var Body map[string]string
 		err := json.Unmarshal(ctx.Request.Body(), &Body)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		mainthread.CallNonBlock(func() { OpenSaveDialog(Body) })
@@ -296,6 +306,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	case "/filename":
 		j, err := json.Marshal(GenerateFilename())
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		ctx.Response.SetStatusCode(200)
@@ -330,6 +341,7 @@ func OpenPreferences() {
 	// Create a socket.
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 
@@ -337,6 +349,7 @@ func OpenPreferences() {
 	go func() {
 		err := fasthttp.Serve(ln, ConfigHTTPHandler)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 	}()
@@ -378,6 +391,7 @@ func OpenPreferences() {
 	// Kill the socket.
 	err = ln.Close()
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 }

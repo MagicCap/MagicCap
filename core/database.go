@@ -10,6 +10,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/getsentry/sentry-go"
+
 	// Needed for SQLite3 support.
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -41,6 +43,7 @@ type Capture struct {
 func GetConfigItems() {
 	rows, err := Database.Query("SELECT * FROM config")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	ConfigItemsLock.Lock()
@@ -49,11 +52,13 @@ func GetConfigItems() {
 		var Value string
 		err = rows.Scan(&Key, &Value)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		var GenericInterface interface{}
 		err = json.Unmarshal([]byte(Value), &GenericInterface)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		ConfigItems[Key] = GenericInterface
@@ -66,22 +71,26 @@ func LoadDatabase() {
 	// Creates the config table.
 	_, err := Database.Exec("CREATE TABLE IF NOT EXISTS `config` (`key` TEXT NOT NULL, `value` TEXT NOT NULL)")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 
 	// Creates the captures table.
 	_, err = Database.Exec("CREATE TABLE IF NOT EXISTS `captures` (`filename` TEXT NOT NULL, `success` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `url` TEXT, `file_path` TEXT)")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	_, err = Database.Exec("CREATE INDEX IF NOT EXISTS TimestampIndex ON captures(timestamp)")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 
 	// Creates the tokens table.
 	_, err = Database.Exec("CREATE TABLE IF NOT EXISTS tokens (token TEXT NOT NULL, expires INTEGER NOT NULL, uploader TEXT NOT NULL)")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 
@@ -97,20 +106,24 @@ func UpdateConfig() {
 	DatabaseLock.Lock()
 	_, err := Database.Exec("DELETE FROM config")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	Statement, err := Database.Prepare("INSERT INTO config VALUES (?, ?)")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	ConfigItemsLock.RLock()
 	for k, v := range ConfigItems {
 		b, err := json.Marshal(&v)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		_, err = Statement.Exec(k, string(b))
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 	}
@@ -127,6 +140,7 @@ func LogUpload(Filename string, URL *string, FilePath *string, Success bool) {
 	DatabaseLock.Lock()
 	Statement, err := Database.Prepare("INSERT INTO captures VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	SuccessInt := 0
@@ -135,6 +149,7 @@ func LogUpload(Filename string, URL *string, FilePath *string, Success bool) {
 	}
 	_, err = Statement.Exec(Filename, SuccessInt, time.Now().Unix(), URL, FilePath)
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	DatabaseLock.Unlock()
@@ -145,6 +160,7 @@ func InsertUploads(Uploads []map[string]interface{}) {
 	DatabaseLock.Lock()
 	Statement, err := Database.Prepare("INSERT INTO captures VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	for _, v := range Uploads {
@@ -154,6 +170,7 @@ func InsertUploads(Uploads []map[string]interface{}) {
 		}
 		_, err = Statement.Exec(v["filename"], SuccessInt, v["timestamp"], v["url"], v["file_path"])
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 	}
@@ -167,10 +184,12 @@ func DeleteCapture(Timestamp int) {
 	DatabaseLock.Lock()
 	Statement, err := Database.Prepare("DELETE FROM captures WHERE timestamp = ?")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	_, err = Statement.Exec(Timestamp)
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	DatabaseLock.Unlock()
@@ -181,10 +200,12 @@ func PurgeCaptures() {
 	DatabaseLock.Lock()
 	Statement, err := Database.Prepare("DELETE FROM captures")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	_, err = Statement.Exec()
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
@@ -198,10 +219,12 @@ func GetCaptures() []*Capture {
 	DatabaseLock.Lock()
 	Statement, err := Database.Prepare("SELECT * FROM captures ORDER BY timestamp DESC")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	rows, err := Statement.Query()
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	for rows.Next() {
@@ -212,6 +235,7 @@ func GetCaptures() []*Capture {
 		var FilePath *string
 		err = rows.Scan(&Filename, &SuccessInt, &Timestamp, &URL, &FilePath)
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		arr = append(arr, &Capture{

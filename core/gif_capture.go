@@ -3,13 +3,15 @@ package core
 import (
 	"bytes"
 	"container/list"
-	"github.com/kbinani/screenshot"
 	"image"
 	"image/color/palette"
 	"image/draw"
 	"image/gif"
 	"sync"
 	"time"
+
+	"github.com/getsentry/sentry-go"
+	"github.com/kbinani/screenshot"
 )
 
 // NewGIFCapture is used to creat a GIF based on a display region.
@@ -29,6 +31,7 @@ func NewGIFCapture(Rect *image.Rectangle, StopChan chan bool) []byte {
 				// Take the screenshot.
 				s, err := screenshot.CaptureRect(*Rect)
 				if err != nil {
+					sentry.CaptureException(err)
 					panic(err)
 				}
 
@@ -70,6 +73,7 @@ func NewGIFCapture(Rect *image.Rectangle, StopChan chan bool) []byte {
 			wg.Wait()
 			err := gif.EncodeAll(&w, &GIF)
 			if err != nil {
+				sentry.CaptureException(err)
 				panic(err)
 			}
 			return w.Bytes()

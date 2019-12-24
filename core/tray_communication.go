@@ -7,6 +7,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
+
+	"github.com/getsentry/sentry-go"
 )
 
 // TrayProcess defines the process which is running the tray.
@@ -77,11 +79,13 @@ func RestartTrayProcess() {
 	// Handles stdout pipe.
 	stdout, err := TrayProcess.StdoutPipe()
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 
 	// Starts the process.
 	if err := TrayProcess.Start(); err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	println("Tray initialised.")
@@ -106,6 +110,7 @@ func RestartTrayProcess() {
 			if err == io.EOF {
 				break
 			} else if err != nil {
+				sentry.CaptureException(err)
 				panic(err)
 			}
 			if n != 0 {

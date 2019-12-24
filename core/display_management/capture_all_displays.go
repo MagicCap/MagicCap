@@ -1,8 +1,10 @@
 package displaymanagement
 
 import (
-	"github.com/kbinani/screenshot"
 	"image"
+
+	"github.com/getsentry/sentry-go"
+	"github.com/kbinani/screenshot"
 )
 
 // CaptureAllDisplays is a function used to capture all displays attached in order.
@@ -13,6 +15,7 @@ func CaptureAllDisplays(Ordered []image.Rectangle) []*image.RGBA {
 		if err != nil {
 			// This is a super core component; this shouldn't fail!
 			// If it does, this tool won't work for the user anyway.
+			sentry.CaptureException(err)
 			panic(err)
 		}
 		Screenshots[i] = s

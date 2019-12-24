@@ -2,17 +2,19 @@ package regionselector
 
 import (
 	"errors"
-	"github.com/magiccap/MagicCap/core/display_management"
-	_ "github.com/magiccap/MagicCap/core/editors"
-	"github.com/disintegration/imaging"
-	"github.com/faiface/glhf"
-	"github.com/faiface/mainthread"
-	"github.com/go-gl/glfw/v3.3/glfw"
-	"github.com/go-vgo/robotgo"
-	"github.com/kbinani/screenshot"
 	img "image"
 	"sync"
 	"time"
+
+	"github.com/disintegration/imaging"
+	"github.com/faiface/glhf"
+	"github.com/faiface/mainthread"
+	"github.com/getsentry/sentry-go"
+	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/go-vgo/robotgo"
+	"github.com/kbinani/screenshot"
+	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
+	_ "github.com/magiccap/MagicCap/core/editors"
 )
 
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
@@ -32,6 +34,7 @@ func OpenRegionSelector() *SelectorResult {
 			// Takes the screenshot.
 			Screenshot, err := screenshot.CaptureRect(rect)
 			if err != nil {
+				sentry.CaptureException(err)
 				panic(err)
 			}
 
@@ -59,7 +62,7 @@ func OpenRegionSelector() *SelectorResult {
 
 	// Remap the monitors to the order of the "Displays" array.
 	var GLFWMonitorsUnordered []*glfw.Monitor
-	mainthread.Call(func () {
+	mainthread.Call(func() {
 		GLFWMonitorsUnordered = glfw.GetMonitors()
 	})
 	GLFWMonitors := make([]*glfw.Monitor, len(GLFWMonitorsUnordered))
@@ -110,6 +113,7 @@ func OpenRegionSelector() *SelectorResult {
 			glfw.WindowHint(glfw.FocusOnShow, glfw.True)
 			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], nil)
 			if err != nil {
+				sentry.CaptureException(err)
 				panic(err)
 			}
 			Windows[i] = Window
@@ -119,7 +123,7 @@ func OpenRegionSelector() *SelectorResult {
 		// Sets the mouse button handler.
 		index := i
 		DisplayPos := v
-		Window.SetMouseButtonCallback(func (_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
+		Window.SetMouseButtonCallback(func(_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
 			if button != glfw.MouseButton1 {
 				return
 			}
@@ -332,7 +336,7 @@ func OpenRegionSelector() *SelectorResult {
 			Screenshots:  Screenshots,
 			Displays:     Displays,
 			DisplayIndex: Display,
-			TopLeftDisplay:      &img.Point{
+			TopLeftDisplay: &img.Point{
 				X: 0,
 				Y: 0,
 			},

@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/getlantern/systray"
+	"github.com/getsentry/sentry-go"
 )
 
 // InitMainTray Initialises the tray.
@@ -18,6 +19,7 @@ func InitMainTray() {
 	// Sets the tray icon.
 	b, err := CoreAssets.Find("taskbar@2x.png")
 	if err != nil {
+		sentry.CaptureException(err)
 		panic(err)
 	}
 	systray.SetIcon(b)

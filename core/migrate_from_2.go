@@ -6,6 +6,8 @@ package core
 import (
 	"os"
 	"path"
+
+	"github.com/getsentry/sentry-go"
 )
 
 // MigrateFrom2 is used to migrate MagicCap 2.X installs to 3.X without the user noticing any breaking changes.
@@ -18,6 +20,7 @@ func MigrateFrom2() {
 		}
 		err = os.Rename(path.Join(HomeDir, "magiccap.db"), path.Join(ConfigPath, "magiccap.db"))
 		if err != nil {
+			sentry.CaptureException(err)
 			panic(err)
 		}
 	} else {
