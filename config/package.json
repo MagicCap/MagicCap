@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/magiccap/MagicCap#readme",
   "dependencies": {
+    "@sentry/browser": "^5.10.2",
+    "@sentry/integrations": "^5.10.2",
     "babel-polyfill": "^6.26.0",
     "markdown-it": "^10.0.0",
     "vue": "^2.6.10"
