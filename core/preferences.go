@@ -5,15 +5,16 @@ package core
 
 import (
 	"encoding/json"
-	"github.com/magiccap/MagicCap/core/platform_specific"
-	"github.com/faiface/mainthread"
-	"github.com/pkg/browser"
-	"github.com/sqweek/dialog"
 	"io/ioutil"
 	"net"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/faiface/mainthread"
+	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
+	"github.com/pkg/browser"
+	"github.com/sqweek/dialog"
 
 	"github.com/gobuffalo/packr"
 	"github.com/matishsiao/goInfo"
@@ -37,9 +38,9 @@ var (
 	// CSSBase defines the base for all CSS.
 	CSSBase = CSS.String("components/base.css") + "\n" + CSS.String("components/button.css") + "\n" + CSS.String(
 		"components/docs.css") + "\n" + CSS.String("components/inputs.css") + "\n" + CSS.String(
-			"components/markdown.css") + "\n" + CSS.String("components/menu.css") + "\n" + CSS.String(
-				"components/modal.css") + CSS.String("components/scroll.css") + "\n" + CSS.String(
-					"components/table.css") + "\n" + CSS.String("components/tooltip.css")
+		"components/markdown.css") + "\n" + CSS.String("components/menu.css") + "\n" + CSS.String(
+		"components/modal.css") + CSS.String("components/scroll.css") + "\n" + CSS.String(
+		"components/table.css") + "\n" + CSS.String("components/tooltip.css")
 )
 
 // GetCSS is used to bundle all of the CSS.
@@ -129,7 +130,7 @@ func GetApplicationInfo(ctx *fasthttp.RequestCtx) {
 	Information := map[string]interface{}{
 		"version": Version,
 		"os": map[string]string{
-			"type": OS,
+			"type":    OS,
 			"release": info.Core,
 		},
 		"platform": strings.ToUpper(runtime.GOOS[:1]) + runtime.GOOS[1:],
@@ -200,10 +201,15 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.Header.Set("Content-Type", "text/html; charset=UTF-8")
 		ctx.Response.SetBody(Dist.Bytes("index.html"))
 		break
-	case "/js":
+	case "/mount.js":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/javascript; charset=UTF-8")
 		ctx.Response.SetBody(Dist.Bytes("mount.js"))
+		break
+	case "/mount.js.map":
+		ctx.Response.SetStatusCode(200)
+		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
+		ctx.Response.SetBody(Dist.Bytes("mount.js.map"))
 		break
 	case "/css":
 		ctx.Response.SetStatusCode(200)
