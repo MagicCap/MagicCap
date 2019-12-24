@@ -38,6 +38,7 @@
     import config from "../interfaces/config"
     import * as shell from "../electron_functionality_ports/shell"
 
+    // TODO: Add fullscreen capture hotkey.
     export default Vue.extend({
         name: "ClipboardAction",
         data() {
