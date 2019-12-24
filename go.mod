@@ -14,6 +14,7 @@ require (
 	github.com/fogleman/gg v1.3.0
 	github.com/gen2brain/shm v0.0.0-20191025110947-b09d223a76f1 // indirect
 	github.com/getlantern/systray v0.0.0-20191219131235-d922a91190d8
+	github.com/getsentry/sentry-go v0.3.0
 	github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
@@ -31,7 +32,6 @@ require (
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
-	github.com/pkg/errors v0.8.1 // indirect
 	github.com/shirou/gopsutil v2.19.11+incompatible // indirect
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
 	github.com/valyala/fasthttp v1.7.0

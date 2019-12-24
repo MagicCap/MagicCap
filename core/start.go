@@ -5,15 +5,17 @@ package core
 
 import (
 	"fmt"
-	"github.com/kbinani/screenshot"
 	"math/rand"
 	"os"
 	"path"
 	"time"
 
+	"github.com/kbinani/screenshot"
+
 	"github.com/faiface/mainthread"
 	"github.com/hackebrot/turtle"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/gobuffalo/packr"
@@ -58,6 +60,14 @@ func Start() {
 
 	// Gets the start time.
 	StartTime := time.Now()
+
+	// Initialises Sentry.
+	err = sentry.Init(sentry.ClientOptions{
+		Dsn: "https://9eafc18531ea47dcb497d21ab45f80d4@sentry.io/1865806",
+	})
+	if err != nil {
+		panic(err)
+	}
 
 	// Ensures that ConfigPath exists.
 	_ = os.MkdirAll(ConfigPath, 0777)
