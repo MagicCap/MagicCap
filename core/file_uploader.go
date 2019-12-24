@@ -27,5 +27,5 @@ func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
 	if !ok {
 		return
 	}
-	platformspecific.ThrowNotification("Screen capture successful.", url)
+	platformspecific.ThrowNotification("File upload successful.", url)
 }
