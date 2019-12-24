@@ -3,16 +3,18 @@
 
 package core
 
+// TODO: Setup Sentry.
+
 import (
 	"bytes"
 	"image/png"
 	"sync"
 	"time"
 
+	"github.com/h2non/filetype"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
-	"github.com/h2non/filetype"
 	"github.com/sqweek/dialog"
 	"github.com/zserge/webview"
 	"golang.org/x/image/tiff"
