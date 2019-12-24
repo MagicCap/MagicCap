@@ -1,10 +1,11 @@
 package displaymanagement
 
 import (
-	"github.com/disintegration/imaging"
 	"image"
 	"image/color"
 	"image/draw"
+
+	"github.com/disintegration/imaging"
 )
 
 // StitchAllDisplays is used to stitch all of the displays together.
@@ -44,17 +45,17 @@ func StitchAllDisplays() *image.NRGBA {
 	}
 
 	// Creates the new canvas.
-	img := imaging.New(MaxX + XLeftSide, MaxY + YLeftSide, color.Black)
+	img := imaging.New(MaxX+XLeftSide, MaxY+YLeftSide, color.Black)
 
 	// Draws the image on the canvas.
 	for i, v := range Images {
 		XL := AllDisplays[i].Min.X + XLeftSide
 		YL := AllDisplays[i].Min.Y + YLeftSide
-		NewRect := image.Rect(XL, YL, v.Rect.Dx() + XL, v.Rect.Dy() + YL)
+		NewRect := image.Rect(XL, YL, v.Rect.Dx()+XL, v.Rect.Dy()+YL)
 		v.Rect = NewRect
 		draw.Draw(img, NewRect, v, image.Point{
-			X: AllDisplays[i].Min.X + XLeftSide,
-			Y: AllDisplays[i].Min.Y + YLeftSide,
+			X: XL,
+			Y: YL,
 		}, draw.Src)
 	}
 
