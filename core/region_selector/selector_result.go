@@ -4,9 +4,9 @@ import "image"
 
 // SelectorResult defines the result from the region selector.
 type SelectorResult struct {
-	Selection *image.RGBA
-	Screenshots []*image.RGBA
-	Displays []image.Rectangle
-	DisplayIndex int
+	Selection      *image.RGBA
+	Screenshots    []*image.RGBA
+	Displays       []image.Rectangle
+	DisplayIndex   int
 	TopLeftDisplay *image.Point
 }

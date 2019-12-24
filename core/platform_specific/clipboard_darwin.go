@@ -29,9 +29,9 @@ func StringToClipboard(Data string) {
 
 // clipboardGetC is the C struct.
 type clipboardGetC struct {
-	text *C.char
+	text   *C.char
 	IsText bool
-	data unsafe.Pointer
+	data   unsafe.Pointer
 	length C.int
 }
 
