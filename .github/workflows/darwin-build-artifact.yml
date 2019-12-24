@@ -20,10 +20,10 @@ jobs:
         node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
     - name: Build application
-      run: mkdir -p ~/go/src/github.com/MagicCap/MagicCap && cp -r * ~/go/src/github.com/MagicCap/MagicCap && cd ~/go/src/github.com/MagicCap/MagicCap && ./mac_build.sh
+      run: mkdir -p ~/go/src/github.com/magiccap/MagicCap && cp -r * ~/go/src/github.com/magiccap/MagicCap && cd ~/go/src/github.com/magiccap/MagicCap && ./mac_build.sh
 
     - name: Copy the artifact
-      run: cp ~/go/src/github.com/MagicCap/MagicCap/magiccap-darwin ./magiccap-darwin
+      run: cp ~/go/src/github.com/magiccap/MagicCap/magiccap-darwin ./magiccap-darwin
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1

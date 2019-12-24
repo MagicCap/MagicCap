@@ -54,6 +54,9 @@ func HandleTrayOut(line string) {
 		case "RunClipboardCapture":
 			RunClipboardCapture()
 			break
+		case "RunFullscreenCapture":
+			RunFullscreenCapture()
+			break
 		}
 	}
 }

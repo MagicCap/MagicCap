@@ -2,8 +2,8 @@ package regionselector
 
 import (
 	"errors"
-	"github.com/MagicCap/MagicCap/core/display_management"
-	_ "github.com/MagicCap/MagicCap/core/editors"
+	"github.com/magiccap/MagicCap/core/display_management"
+	_ "github.com/magiccap/MagicCap/core/editors"
 	"github.com/disintegration/imaging"
 	"github.com/faiface/glhf"
 	"github.com/faiface/mainthread"

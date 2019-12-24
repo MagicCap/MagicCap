@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/MagicCap/MagicCap/core"
+	"github.com/magiccap/MagicCap/core"
 	"github.com/faiface/mainthread"
 	"github.com/getlantern/systray"
 	"github.com/zserge/webview"

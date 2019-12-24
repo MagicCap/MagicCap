@@ -4,8 +4,9 @@
 package core
 
 import (
-	"github.com/getlantern/systray"
 	"os"
+
+	"github.com/getlantern/systray"
 )
 
 // InitMainTray Initialises the tray.
@@ -22,6 +23,7 @@ func InitMainTray() {
 	systray.SetIcon(b)
 
 	// Add functionality button.
+	FullscreenCapButton := systray.AddMenuItem("Fullscreen Capture", "Used to capture the whole screen.")
 	ScreenCapButton := systray.AddMenuItem("Screen Capture", "Used to capture what is on the screen.")
 	GIFCapButton := systray.AddMenuItem("GIF Capture", "Used to capture what is on the screen as a GIF.")
 	ClipboardCaptureButton := systray.AddMenuItem("Clipboard Capture", "Used to capture and upload what is in the clipboard.")
@@ -50,6 +52,8 @@ func InitMainTray() {
 	// Handles all of the other events.
 	for {
 		select {
+		case <-FullscreenCapButton.ClickedCh:
+			_, _ = os.Stdout.Write([]byte("callRunFullscreenCapture\n"))
 		case <-ShortButton.ClickedCh:
 			_, _ = os.Stdout.Write([]byte("callShowShort\n"))
 		case <-ScreenCapButton.ClickedCh:

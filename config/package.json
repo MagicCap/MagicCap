@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MagicCap/MagicCap.git"
+    "url": "git+https://github.com/magiccap/MagicCap.git"
   },
   "keywords": [
     "frontend"
@@ -23,9 +23,9 @@
   "author": "MagicCap Development Team",
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/MagicCap/MagicCap/issues"
+    "url": "https://github.com/magiccap/MagicCap/issues"
   },
-  "homepage": "https://github.com/MagicCap/MagicCap#readme",
+  "homepage": "https://github.com/magiccap/MagicCap#readme",
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "markdown-it": "^10.0.0",

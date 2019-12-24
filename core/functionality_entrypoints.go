@@ -5,15 +5,17 @@ package core
 
 import (
 	"bytes"
-	"github.com/MagicCap/MagicCap/core/platform_specific"
-	"github.com/MagicCap/MagicCap/core/region_selector"
+	"image/png"
+	"sync"
+	"time"
+
+	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
+	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
+	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"github.com/h2non/filetype"
 	"github.com/sqweek/dialog"
 	"github.com/zserge/webview"
 	"golang.org/x/image/tiff"
-	"image/png"
-	"sync"
-	"time"
 )
 
 // TODO: A bug is somewhere in this codebase where open windows are not focused. It isn't here, but it needs patching!
@@ -29,11 +31,11 @@ var (
 // ShowShort shows the shortener screen.
 func ShowShort() {
 	s := SpawnWindowHandler(webview.Settings{
-		Title:                  "MagicCap Link Shortener",
-		URL:                    "__SHORTENER__",
-		Width:                  500,
-		Height:                 200,
-		Resizable:              false,
+		Title:     "MagicCap Link Shortener",
+		URL:       "__SHORTENER__",
+		Width:     500,
+		Height:    200,
+		Resizable: false,
 	}, RGBAConfig{
 		R: 0,
 		G: 0,
@@ -56,6 +58,28 @@ func ShowShort() {
 		ShortenerWindows = ShortenerWindows[:len(ShortenerWindows)-1]
 		ShortenerWindowsLock.Unlock()
 	}()
+}
+
+// RunFullscreenCapture runs a fullscreen capture.
+func RunFullscreenCapture() {
+	img := displaymanagement.StitchAllDisplays()
+	w := new(bytes.Buffer)
+	err := png.Encode(w, img)
+	if err != nil {
+		dialog.Message("%s", err.Error()).Error()
+		return
+	}
+	Filename := GenerateFilename() + ".png"
+	Default := GetConfiguredUploaders()[0].Uploader
+	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture {
+		Default = nil
+	}
+	url, ok := Upload(w.Bytes(), Filename, nil, Default)
+	if !ok {
+		return
+	}
+	platformspecific.ThrowNotification("Fullscreen capture successful.", url)
 }
 
 // RunScreenCapture runs a screen capture.

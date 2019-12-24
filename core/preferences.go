@@ -5,7 +5,7 @@ package core
 
 import (
 	"encoding/json"
-	"github.com/MagicCap/MagicCap/core/platform_specific"
+	"github.com/magiccap/MagicCap/core/platform_specific"
 	"github.com/faiface/mainthread"
 	"github.com/pkg/browser"
 	"github.com/sqweek/dialog"
