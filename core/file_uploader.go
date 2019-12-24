@@ -4,10 +4,12 @@
 package core
 
 import (
-	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
-	"github.com/sqweek/dialog"
 	"io/ioutil"
 	"path/filepath"
+
+	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
+	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
+	"github.com/sqweek/dialog"
 )
 
 // OpenFileUploader opens a file uploader.
@@ -21,6 +23,9 @@ func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
 		dialog.Message("%s", err.Error()).Error()
 		return
 	}
-	Upload(b, filepath.Base(fp), &fp, Uploader)
-	// TODO: Implement native notifications.
+	url, ok := Upload(b, filepath.Base(fp), &fp, Uploader)
+	if !ok {
+		return
+	}
+	platformspecific.ThrowNotification("Screen capture successful.", url)
 }
