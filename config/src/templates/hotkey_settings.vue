@@ -26,6 +26,12 @@
                         <input class="input" type="text" id="clipboardHotkey" placeholder="Clipboard Hotkey" :value="clipboardHotkey">
                     </div>
                 </div>
+                <div class="field">
+                    <label class="label" for="fullscreenHotkey">Fullscreen Hotkey:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="fullscreenHotkey" placeholder="Fullscreen Hotkey" :value="fullscreenHotkey">
+                    </div>
+                </div>
                 <br>
                 <a class="button is-link" @click="saveHotkeyConfig">Save Hotkey Configuration</a>
             </section>
@@ -38,7 +44,6 @@
     import config from "../interfaces/config"
     import * as shell from "../electron_functionality_ports/shell"
 
-    // TODO: Add fullscreen capture hotkey.
     export default Vue.extend({
         name: "ClipboardAction",
         data() {
@@ -47,6 +52,7 @@
                 gifHotkey: config.o.gif_hotkey || "",
                 screenshotHotkey: config.o.hotkey || "",
                 clipboardHotkey: config.o.clipboard_hotkey || "",
+                fullscreenHotkey: config.o.fullscreen_hotkey || "",
             }
         },
         methods: {
@@ -60,6 +66,8 @@
                 this.$data.gifHotkey = gifText
                 const clipboardText = (document.getElementById("clipboardHotkey")! as HTMLInputElement).value
                 this.$data.clipboardHotkey = clipboardText
+                const fullscreenText = (document.getElementById("fullscreenHotkey")! as HTMLInputElement).value
+                this.$data.fullscreenHotkey = fullscreenText
 
                 let changed = false
 
@@ -87,6 +95,15 @@
                         config.o.clipboard_hotkey = null
                     } else {
                         config.o.clipboard_hotkey = clipboardText
+                    }
+                }
+
+                if (config.o.fullscreen_hotkey !== clipboardText) {
+                    changed = true
+                    if (fullscreenText === "") {
+                        config.o.fullscreen_hotkey = null
+                    } else {
+                        config.o.fullscreen_hotkey = clipboardText
                     }
                 }
 
