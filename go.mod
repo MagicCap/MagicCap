@@ -3,6 +3,7 @@ module github.com/magiccap/MagicCap
 go 1.13
 
 require (
+	github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a
 	github.com/aws/aws-sdk-go v1.26.8 // indirect
 	github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb
 	github.com/denisbrodbeck/machineid v1.0.1

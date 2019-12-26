@@ -28,6 +28,9 @@ var (
 
 	// ConfigItemsLock is the R/W thread lock for the config.
 	ConfigItemsLock = sync.RWMutex{}
+
+	// LoginStartLast was the last value of "open_logim".
+	LoginStartLast bool
 )
 
 // Capture defines a capture taken by MagicCap.
@@ -97,6 +100,12 @@ func LoadDatabase() {
 	// Gets all of the config items.
 	GetConfigItems()
 
+	// Sets the login items.
+	LoginStartLast = ConfigItems["open_login"].(bool)
+
+	// Loads the hotkeys.
+	LoadHotkeys()
+
 	// Log that the database is initialised.
 	println("Database initialised.")
 }
@@ -129,10 +138,14 @@ func UpdateConfig() {
 	}
 	ConfigItemsLock.RUnlock()
 	DatabaseLock.Unlock()
+	OldLoginValue := LoginStartLast
+	LoginStartLast = ConfigItems["open_login"].(bool)
+	if OldLoginValue != LoginStartLast {
+		EditStartupValue(LoginStartLast)
+	}
 	RestartTrayProcess()
-	// TODO: Handle hotkeys!
+	ManageHotkeysEdit()
 	// TODO: Refresh updates!
-	// TODO: Handle start on login.
 }
 
 // LogUpload logs the upload to the config.
