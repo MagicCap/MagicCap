@@ -31,6 +31,9 @@ var (
 
 	// LoginStartLast was the last value of "open_logim".
 	LoginStartLast bool
+
+	// PostDatabaseLoadTasks are tasks which are to be fired after the database is loaded.
+	PostDatabaseLoadTasks = []func(){}
 )
 
 // Capture defines a capture taken by MagicCap.
@@ -105,6 +108,11 @@ func LoadDatabase() {
 
 	// Loads the hotkeys.
 	LoadHotkeys()
+
+	// Run post load tasks.
+	for _, v := range PostDatabaseLoadTasks {
+		v()
+	}
 
 	// Log that the database is initialised.
 	println("Database initialised.")

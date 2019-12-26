@@ -4,14 +4,34 @@
 package core
 
 import (
+	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/getsentry/sentry-go"
 )
 
 // MigrateFrom2 is used to migrate MagicCap 2.X installs to 3.X without the user noticing any breaking changes.
 func MigrateFrom2() {
+	// Handle ShareX config migration.
+	PostDatabaseLoadTasks = append(PostDatabaseLoadTasks, func() {
+		SXCUPath, ok := ConfigItems["sharex_sxcu_path"].(string)
+		if ok {
+			// Migrate this over to the new format.
+			if strings.HasPrefix(SXCUPath, "sxcu:") {
+				ConfigItems["sxcu_data"] = strings.TrimPrefix(SXCUPath, "sxcu:")
+			} else {
+				d, err := ioutil.ReadFile(SXCUPath)
+				if err == nil {
+					ConfigItems["sxcu_data"] = string(d)
+				}
+			}
+			delete(ConfigItems, "sharex_sxcu_path")
+			UpdateConfig()
+		}
+	})
+
 	// Moves ~/magiccap.db to ~/.magiccap/magiccap.db
 	if _, err := os.Stat(path.Join(ConfigPath, "magiccap.db")); os.IsNotExist(err) {
 		if _, err := os.Stat(path.Join(HomeDir, "magiccap.db")); os.IsNotExist(err) {

@@ -89,6 +89,23 @@
                                 </div>
                             </div>
                         </div>
+                        <div v-else-if="option.type === 'sxcu__EDGECASE'">
+                            <div class="field">
+                                <label class="label" :for="option.value">{{ option.name }}:</label>
+                                <div class="control">
+                                    <div v-if="getDefaultValue(option)">
+                                        <p>
+                                            <a @click="unlinkSxcu()" style="color: #add8e6">
+                                                A ShareX file is already configured. Click here to remove it from your current configuration.
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div v-else>
+                                        <input type="file" @change="loadSxcu">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div v-else-if="option.type === 'object'">
                             <div class="field">
                                 <label class="label" :for="option.value">{{ option.name }}:</label>
@@ -203,6 +220,19 @@
                     }
                 }
             },
+            loadSxcu(ev: any) {
+                this.$data.exception = ""
+                const vm = this
+                const file = ev.target.files[0]
+                const reader = new FileReader()
+
+                reader.onload = async e => {
+                    config.o.sxcu_data = e.target.result
+                    await config.save()
+                    vm.$forceUpdate()
+                }
+                reader.readAsText(file)
+            },
             renderUploader(key: string) {
                 const uploader = uploaders[key]
                 const options = []
@@ -212,6 +242,7 @@
                         case "text":
                         case "integer":
                         case "password":
+                        case "sxcu__EDGECASE":
                         case "boolean": {
                             options.push({
                                 type: option.type,
@@ -253,6 +284,12 @@
             resetValue(option: any) {
                 delete config.o[option.value]
                 config.save()
+            },
+            unlinkSxcu() {
+                this.$data.exception = ""
+                config.o.sxcu_data = undefined
+                const vm = this
+                config.save().then(() => vm.$forceUpdate())
             },
             changeOption: (option: any) => {
                 let res: undefined | any = (document.getElementById(option.value)! as HTMLInputElement).value
