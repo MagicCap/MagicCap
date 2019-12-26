@@ -4,6 +4,8 @@ go 1.13
 
 require (
 	github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a
+	github.com/antchfx/xmlquery v1.2.2 // indirect
+	github.com/antchfx/xpath v1.1.2 // indirect
 	github.com/aws/aws-sdk-go v1.26.8 // indirect
 	github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb
 	github.com/denisbrodbeck/machineid v1.0.1
@@ -16,6 +18,7 @@ require (
 	github.com/gen2brain/shm v0.0.0-20191025110947-b09d223a76f1 // indirect
 	github.com/getlantern/systray v0.0.0-20191219131235-d922a91190d8
 	github.com/getsentry/sentry-go v0.3.0
+	github.com/glenn-brown/golang-pkg-pcre v0.0.0-20120522223659-48bb82a8b8ce // indirect
 	github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
@@ -23,13 +26,14 @@ require (
 	github.com/go-vgo/robotgo v0.0.0-20191219222930-be112ee3124d
 	github.com/gobuffalo/packr v1.30.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/gotk3/gotk3 v0.0.0-20191204062422-9d4abcb16021 // indirect
 	github.com/h2non/filetype v1.0.10
 	github.com/hackebrot/turtle v0.1.0
 	github.com/jakemakesstuff/structuredhttp v0.0.0-20191023151727-a270b4cc8e22
 	github.com/jlaffaye/ftp v0.0.0-20191218041957-e1b8fdd0dcc3 // indirect
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
-	github.com/magiccap/magiccap-uploaders-kernel v0.0.0-20191201211719-a1b62566f8a4
+	github.com/magiccap/magiccap-uploaders-kernel v0.0.0-20191226195103-53b125e74bb9
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
