@@ -19,6 +19,9 @@ jobs:
       with:
         node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
+    - name: Install PCRE
+      run: brew install pcre
+
     - name: Build application
       run: ./mac_build.sh
 
