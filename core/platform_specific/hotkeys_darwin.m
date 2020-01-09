@@ -5,7 +5,7 @@
 #include "hotkeys_darwin.h"
 
 void UnloadHotkey(char* HotkeyID) {
-    if (strcmp(HotkeyID, "") == 0) {
+    if (strlen(HotkeyID) == 0) {
         return;
     }
     // TODO: Implement this!
