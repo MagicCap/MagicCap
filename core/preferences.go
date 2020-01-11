@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/faiface/mainthread"
 	"github.com/getsentry/sentry-go"
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 	"github.com/pkg/browser"
@@ -269,7 +268,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 			sentry.CaptureException(err)
 			panic(err)
 		}
-		mainthread.CallNonBlock(func() { OpenSaveDialog(Body) })
+		go platformspecific.ExecMainThread(func() { OpenSaveDialog(Body) })
 		ctx.Response.SetStatusCode(204)
 		break
 

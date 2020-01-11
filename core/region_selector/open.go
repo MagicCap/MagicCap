@@ -8,13 +8,13 @@ import (
 
 	"github.com/disintegration/imaging"
 	"github.com/faiface/glhf"
-	"github.com/faiface/mainthread"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
 	_ "github.com/magiccap/MagicCap/core/editors"
+	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 )
 
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
@@ -62,7 +62,7 @@ func OpenRegionSelector() *SelectorResult {
 
 	// Remap the monitors to the order of the "Displays" array.
 	var GLFWMonitorsUnordered []*glfw.Monitor
-	mainthread.Call(func() {
+	platformspecific.ExecMainThread(func() {
 		GLFWMonitorsUnordered = glfw.GetMonitors()
 	})
 	GLFWMonitors := make([]*glfw.Monitor, len(GLFWMonitorsUnordered))
@@ -100,7 +100,7 @@ func OpenRegionSelector() *SelectorResult {
 		// Creates the window.
 		var Window *glfw.Window
 		var err error
-		mainthread.Call(func() {
+		platformspecific.ExecMainThread(func() {
 			glfw.WindowHint(glfw.ContextVersionMajor, 3)
 			glfw.WindowHint(glfw.ContextVersionMinor, 3)
 			glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
@@ -211,7 +211,7 @@ func OpenRegionSelector() *SelectorResult {
 		})
 
 		// Creates the shader.
-		mainthread.Call(func() {
+		platformspecific.ExecMainThread(func() {
 			s, err := glhf.NewShader(glhf.AttrFormat{
 				{Name: "position", Type: glhf.Vec2},
 				{Name: "texture", Type: glhf.Vec2},
@@ -276,7 +276,7 @@ func OpenRegionSelector() *SelectorResult {
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
 			BreakHere := false
-			mainthread.Call(func() {
+			platformspecific.ExecMainThread(func() {
 				// Makes the window the current context.
 				if Window.ShouldClose() {
 					ShouldBreakOuter = true
@@ -302,7 +302,7 @@ func OpenRegionSelector() *SelectorResult {
 		}
 
 		// Handles the outer for loop and polls for events.
-		mainthread.Call(glfw.PollEvents)
+		platformspecific.ExecMainThread(glfw.PollEvents)
 		if ShouldBreakOuter {
 			break
 		}
@@ -312,7 +312,7 @@ func OpenRegionSelector() *SelectorResult {
 	}
 
 	// Cleans up the windows.
-	mainthread.Call(func() {
+	platformspecific.ExecMainThread(func() {
 		for i, v := range Windows {
 			v.MakeContextCurrent()
 			Textures[i].End()

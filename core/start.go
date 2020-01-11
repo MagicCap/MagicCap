@@ -10,15 +10,16 @@ import (
 	"path"
 	"time"
 
+	"github.com/faiface/mainthread"
+	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/kbinani/screenshot"
 
-	"github.com/faiface/mainthread"
 	"github.com/hackebrot/turtle"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/gobuffalo/packr"
+	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 )
 
 var (
@@ -43,15 +44,19 @@ func Start() {
 	// Handle the random seed.
 	rand.Seed(time.Now().UnixNano())
 
-	// Initialises glfw/gl.
-	err := mainthread.CallErr(glfw.Init)
-	if err != nil {
-		panic(err)
-	}
-	err = mainthread.CallErr(gl.Init)
-	if err != nil {
-		panic(err)
-	}
+	// Initialise NSApplication in the main thread if this is macOS.
+	// If not, it should call the ready callback.
+	mainthread.CallNonBlock(platformspecific.NSApplicationStart(func() {
+		// Initialises glfw/gl.
+		err := glfw.Init()
+		if err != nil {
+			panic(err)
+		}
+		err = gl.Init()
+		if err != nil {
+			panic(err)
+		}
+	}))
 
 	// Load in all of the emojis.
 	for _, value := range turtle.Emojis {
@@ -62,7 +67,7 @@ func Start() {
 	StartTime := time.Now()
 
 	// Initialises Sentry.
-	err = sentry.Init(sentry.ClientOptions{
+	err := sentry.Init(sentry.ClientOptions{
 		Dsn: "https://9eafc18531ea47dcb497d21ab45f80d4@sentry.io/1865806",
 	})
 	if err != nil {
