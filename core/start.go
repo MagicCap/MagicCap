@@ -81,7 +81,7 @@ func Start() {
 	MigrateFrom2()
 
 	// Boot message.
-	println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2019.")
+	println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2020.")
 
 	// Catch any errors during initialisation and log them to Sentry.
 	defer func() {
