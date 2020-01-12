@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/faiface/mainthread"
-	"github.com/getlantern/systray"
 	"github.com/getsentry/sentry-go"
 	"github.com/magiccap/MagicCap/core"
 	"github.com/zserge/webview"
@@ -23,10 +22,7 @@ type CoreWindowConfig struct {
 }
 
 func main() {
-	if os.Getenv("SYSTRAY_MODE") == "1" {
-		runtime.LockOSThread()
-		systray.Run(core.InitMainTray, nil)
-	} else if os.Getenv("WEBVIEW_MODE") == "true" {
+	if os.Getenv("WEBVIEW_MODE") == "true" {
 		runtime.LockOSThread()
 		var settings CoreWindowConfig
 		buf := bufio.NewReader(os.Stdin)

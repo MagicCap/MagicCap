@@ -113,7 +113,7 @@ func LoadUploadersKernel() {
 				sentry.CaptureException(err)
 				panic(err)
 			}
-			RestartTrayProcess()
+			RestartTrayProcess(false)
 		}
 	}()
 }
@@ -121,6 +121,7 @@ func LoadUploadersKernel() {
 // ConfiguredUploader defines a configured uploader.
 type ConfiguredUploader struct {
 	Name     string
+	Slug     string
 	Uploader *MagicCapKernelStandards.Uploader
 }
 
@@ -153,12 +154,14 @@ func GetConfiguredUploaders() []ConfiguredUploader {
 			if UploaderDefault == k {
 				Uploader := ConfiguredUploader{
 					Name:     Name + " (Default)",
+					Slug:     k,
 					Uploader: v,
 				}
 				SupportedUploaders = append([]ConfiguredUploader{Uploader}, SupportedUploaders...)
 			} else {
 				SupportedUploaders = append(SupportedUploaders, ConfiguredUploader{
 					Name:     Name,
+					Slug:     k,
 					Uploader: v,
 				})
 			}

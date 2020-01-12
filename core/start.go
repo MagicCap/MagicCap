@@ -44,20 +44,6 @@ func Start() {
 	// Handle the random seed.
 	rand.Seed(time.Now().UnixNano())
 
-	// Initialise NSApplication in the main thread if this is macOS.
-	// If not, it should call the ready callback.
-	mainthread.CallNonBlock(platformspecific.NSApplicationStart(func() {
-		// Initialises glfw/gl.
-		err := glfw.Init()
-		if err != nil {
-			panic(err)
-		}
-		err = gl.Init()
-		if err != nil {
-			panic(err)
-		}
-	}))
-
 	// Load in all of the emojis.
 	for _, value := range turtle.Emojis {
 		Emojis = append(Emojis, value.String())
@@ -96,12 +82,8 @@ func Start() {
 
 	// Loads the SQLite3 DB.
 	LoadDatabase()
-
 	// Ensures there is a install ID.
 	EnsureInstallID()
-
-	// Starts the tray.
-	RestartTrayProcess()
 
 	// Take a 1x1 screenshot to ensure that it is ok and the permissions dialog pops up.
 	_, err = screenshot.Capture(1, 1, 1, 1)
@@ -109,6 +91,23 @@ func Start() {
 		sentry.CaptureException(err)
 		panic(err)
 	}
+
+	// Initialise NSApplication in the main thread if this is macOS.
+	// If not, it should call the ready callback.
+	mainthread.CallNonBlock(platformspecific.NSApplicationStart(func() {
+		// Initialises glfw/gl.
+		err := glfw.Init()
+		if err != nil {
+			panic(err)
+		}
+		err = gl.Init()
+		if err != nil {
+			panic(err)
+		}
+
+		// Starts the tray.
+		RestartTrayProcess(true)
+	}))
 
 	// Defines how long it took.
 	elapsed := time.Since(StartTime)

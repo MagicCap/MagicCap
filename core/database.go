@@ -151,7 +151,7 @@ func UpdateConfig() {
 	if OldLoginValue != LoginStartLast {
 		EditStartupValue(LoginStartLast)
 	}
-	RestartTrayProcess()
+	RestartTrayProcess(false)
 	ManageHotkeysEdit()
 	// TODO: Refresh updates!
 }
