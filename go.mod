@@ -11,7 +11,7 @@ require (
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/disintegration/gift v1.2.1
 	github.com/disintegration/imaging v1.6.2
-	github.com/esimov/stackblur-go v1.0.0
+	github.com/esimov/stackblur-go v1.0.1-0.20190712082326-fff1ca4c8ff4
 	github.com/faiface/glhf v0.0.0-20181018222622-82a6317ac380
 	github.com/faiface/mainthread v0.0.0-20171120011319-8b78f0a41ae3
 	github.com/fogleman/gg v1.3.0

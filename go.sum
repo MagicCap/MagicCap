@@ -49,6 +49,8 @@ github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25Kn
 github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385/go.mod h1:0vRUJqYpeSZifjYj7uP3BG/gKcuzL9xWVV/Y+cK33KM=
 github.com/esimov/stackblur-go v1.0.0 h1:PuXWrQ16VIh6Di+tn3CpKAyzkIIECo9DPGVecrzyDGc=
 github.com/esimov/stackblur-go v1.0.0/go.mod h1:a3zzeKuJKUpCcReHmEsuPaEnq42D2b/bHoCI8UjIuMY=
+github.com/esimov/stackblur-go v1.0.1-0.20190712082326-fff1ca4c8ff4 h1:LwOM6TvE/4VQdZXtVUFkvoYYj6prTJRjpYM+X3EGut8=
+github.com/esimov/stackblur-go v1.0.1-0.20190712082326-fff1ca4c8ff4/go.mod h1:a3zzeKuJKUpCcReHmEsuPaEnq42D2b/bHoCI8UjIuMY=
 github.com/etcd-io/bbolt v1.3.3/go.mod h1:ZF2nL25h33cCyBtcyWeZ2/I3HQOfTP+0PIEvHjkjCrw=
 github.com/faiface/glhf v0.0.0-20181018222622-82a6317ac380 h1:FvZ0mIGh6b3kOITxUnxS3tLZMh7yEoHo75v3/AgUqg0=
 github.com/faiface/glhf v0.0.0-20181018222622-82a6317ac380/go.mod h1:zqnPFFIuYFFxl7uH2gYByJwIVKG7fRqlqQCbzAnHs9g=
