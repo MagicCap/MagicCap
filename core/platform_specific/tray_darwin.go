@@ -41,5 +41,5 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 	Icon := TaskbarAssets.Bytes("icon.png")
 	CIcon := C.CBytes(Icon)
 	defer C.free(CIcon)
-	C.InitTray(&Names[0], &SlugsC[0], C.int(len(Uploaders)), (*C.uchar)(CIcon), C.int(len(Icon)))
+	C.InitTray(&Names[0], &SlugsC[0], C.int(len(Uploaders)), (*C.uchar)(CIcon), C.ulong(len(Icon)))
 }

@@ -2,7 +2,6 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2020.
 
 #import <Cocoa/Cocoa.h>
-#import <string.h>
 
 void CTrayCallbackHandler(char* callback);
 
@@ -46,7 +45,7 @@ void CTrayCallbackHandler(char* callback);
 @implementation MagicCapUploaderButtonWrapper
 -(void) Run{
     char* slug = [self slug];
-    int len = strlen(slug);
+    int len = (int)strlen(slug);
     char* appended = (char*)malloc((len + 6) * sizeof(char));
     appended[0] = 'u';
     appended[1] = 'p';
@@ -62,26 +61,31 @@ void CTrayCallbackHandler(char* callback);
 }
 @end
 
-void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, int IconLen) {
+void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, size_t IconLen) {
     // Get the status bar.
     NSStatusBar* StatusBar = [NSStatusBar systemStatusBar];
+
+    // Create the status item.
+    NSStatusItem* StatusItem = [[StatusBar statusItemWithLength:NSSquareStatusItemLength] retain];
+
+    // Get the delegate.
+    NSObject* delegate = [NSValue valueWithPointer:[[NSApplication sharedApplication] delegate]];
+
+    // Set the target of the status bar to the delegate.
+    StatusItem.target = delegate;
 
     // Defines the handler.
     TrayCallbackHandlers* handlers = [[TrayCallbackHandlers alloc] init];
 
-    // Create the status item. Set the image to the PNG from the bundle.
-    NSStatusItem* StatusItem = [[StatusBar statusItemWithLength:NSSquareStatusItemLength] retain];
+    // Set the icon from the PNG specified.
     NSData* ImageData = [NSData dataWithBytes:Icon length:IconLen];
     NSImage* image = [[NSImage alloc] initWithData:ImageData];
-    [StatusItem setImage:image];
+    StatusItem.image = image;
     [image release];
 
     // Initialise the tooltip.
-    [StatusItem setToolTip:@"MagicCap"];
-    [StatusItem setHighlightMode:YES];
-
-    // Get the delegate.
-    NSObject* delegate = [[NSApplication sharedApplication] delegate];
+    StatusItem.toolTip = @"MagicCap";
+    StatusItem.highlightMode = YES;
 
     // Create the menu.
     NSMenu* menu = [[NSMenu alloc] initWithTitle:@"MagicCap"];
@@ -90,31 +94,36 @@ void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, i
     NSMenuItem* FullscreenButton = [[NSMenuItem alloc] initWithTitle:@"Fullscreen Capture" action:@selector(FullscreenTrayCallback) keyEquivalent:@""];
     FullscreenButton.target = handlers;
     [menu addItem:FullscreenButton];
+    [FullscreenButton release];
 
     // Create the screen capture button.
     NSMenuItem* ScreenButton = [[NSMenuItem alloc] initWithTitle:@"Screen Capture" action:@selector(ScreenTrayCallback) keyEquivalent:@""];
     ScreenButton.target = handlers;
     [menu addItem:ScreenButton];
+    [ScreenButton release];
 
     // Create the GIF capture button.
     NSMenuItem* GIFButton = [[NSMenuItem alloc] initWithTitle:@"GIF Capture" action:@selector(GIFTrayCallback) keyEquivalent:@""];
     GIFButton.target = handlers;
     [menu addItem:GIFButton];
+    [GIFButton release];
 
     // Create the clipboard capture button.
     NSMenuItem* ClipboardButton = [[NSMenuItem alloc] initWithTitle:@"Clipboard Capture" action:@selector(ClipboardTrayCallback) keyEquivalent:@""];
     ClipboardButton.target = handlers;
     [menu addItem:ClipboardButton];
+    [ClipboardButton release];
 
     // Create the link shortener button.
     NSMenuItem* LinkShortButton = [[NSMenuItem alloc] initWithTitle:@"Link Shortener" action:@selector(LinkShortenerTrayCallback) keyEquivalent:@""];
     LinkShortButton.target = handlers;
     [menu addItem:LinkShortButton];
+    [LinkShortButton release];
 
     // Handle the "Upload to..." options.
     [menu addItem:[NSMenuItem separatorItem]];
     NSMenuItem* UploadToButton = [[NSMenuItem alloc] init];
-    [UploadToButton setTitle:@"Upload to..."];
+    UploadToButton.title = @"Upload to...";
     NSMenu* submenu = [[NSMenu alloc] initWithTitle:@"Upload to..."];
     for (int i = 0; i < UploadersLen; i++) {
         NSString* UploaderNSString = [NSString stringWithUTF8String:Uploaders[i]];
@@ -123,8 +132,9 @@ void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, i
         NSMenuItem* UploaderButton = [[NSMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Upload file to %@", UploaderNSString] action:@selector(Run) keyEquivalent:@""];
         UploaderButton.target = wrapper;
         [submenu addItem:UploaderButton];
+        [UploaderButton release];
     }
-    [UploadToButton setSubmenu:submenu];
+    UploadToButton.submenu = submenu;
     [menu addItem:UploadToButton];
     [menu addItem:[NSMenuItem separatorItem]];
 
@@ -139,8 +149,12 @@ void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, i
     [menu addItem:QuitButton];
 
     // Set the menu to the status item.
-    [StatusItem setMenu:menu];
+    StatusItem.menu = menu;
 
-    // Set the target of the status bar to the delegate.
-    [StatusItem setTarget:delegate];
+    // Release everything we can.
+    [menu release];
+    [UploadToButton release];
+    [submenu release];
+    [PrefButton release];
+    [QuitButton release];
 }

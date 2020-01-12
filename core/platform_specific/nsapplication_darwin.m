@@ -15,8 +15,9 @@ void CReadyCallback();
 @end
 
 void DelegateInit() {
-    MagicCapDelegate* delegate = [[MagicCapDelegate alloc] init];
+    MagicCapDelegate* delegate = (MagicCapDelegate *) [[MagicCapDelegate alloc] init];
     NSApplication* application = [NSApplication sharedApplication];
     [application setDelegate:delegate];
     [NSApp run];
+    [delegate release];
 }

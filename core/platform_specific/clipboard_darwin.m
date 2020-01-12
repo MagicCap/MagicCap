@@ -4,7 +4,7 @@
 #import <Cocoa/Cocoa.h>
 #include "clipboard_darwin.h"
 
-void ClipboardHandlerBytes(uint8_t* data, int64_t len, char* extension) {
+void ClipboardHandlerBytes(const uint8_t* data, int64_t len, char* extension) {
 	NSString* extconv = [NSString stringWithCString:extension encoding:NSUTF8StringEncoding];
 	NSString* file = [
 		NSString stringWithFormat:@"public.%@",
@@ -12,7 +12,7 @@ void ClipboardHandlerBytes(uint8_t* data, int64_t len, char* extension) {
 	];
 	[
 		[NSPasteboard generalPasteboard]
-		declareTypes:[NSArray arrayWithObject:file]
+		declareTypes:@[file]
 		owner:nil
 	];
 	[
@@ -27,7 +27,7 @@ void ClipboardHandlerBytes(uint8_t* data, int64_t len, char* extension) {
 void ClipboardHandlerText(char* data) {
     [
     	[NSPasteboard generalPasteboard]
-    	declareTypes:[NSArray arrayWithObject:NSStringPboardType]
+    	declareTypes:@[NSStringPboardType]
     	owner:nil
 	];
 	[
@@ -69,7 +69,7 @@ struct ClipboardGet* ClipboardHandlerGet() {
             result->IsText = IsText;
             result->data = [data bytes];
             unsigned long len = [data length];
-            result->length = (int)len;
+            result->length = (unsigned long *) (int) len;
             result->text = NULL;
         }
         return result;

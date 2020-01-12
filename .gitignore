@@ -7,3 +7,4 @@ config/dist/mount.js
 config/dist/mount.js.map
 selector/dist/mount.js
 selector/dist/mount.js.map
+cmake-build-debug

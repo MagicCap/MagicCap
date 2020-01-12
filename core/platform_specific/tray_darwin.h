@@ -4,5 +4,6 @@
 #ifndef _TRAY_DARWIN_H
 #define _TRAY_DARWIN_H
 #include <stdint.h>
-void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, int IconLen);
+#include <stddef.h>
+void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, size_t IconLen);
 #endif
