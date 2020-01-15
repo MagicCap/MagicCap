@@ -61,32 +61,41 @@ void CTrayCallbackHandler(char* callback);
 }
 @end
 
+// The currently showing status item.
+NSStatusItem* StatusItem = NULL;
+
+// Defines the tray callback handlers.
+TrayCallbackHandlers* handlers;
+
 void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, size_t IconLen) {
     // Get the status bar.
     NSStatusBar* StatusBar = [NSStatusBar systemStatusBar];
 
-    // Create the status item.
-    NSStatusItem* StatusItem = [[StatusBar statusItemWithLength:NSSquareStatusItemLength] retain];
-
     // Get the delegate.
     NSObject* delegate = [NSValue valueWithPointer:[[NSApplication sharedApplication] delegate]];
 
-    // Set the target of the status bar to the delegate.
-    StatusItem.target = delegate;
+    // Setup the tray properly.
+    if (StatusItem == NULL) {
+        // Initialise the handlers.
+        handlers = [[TrayCallbackHandlers alloc] init];
 
-    // Defines the handler.
-    TrayCallbackHandlers* handlers = [[TrayCallbackHandlers alloc] init];
+        // Set the status item.
+        StatusItem = [[StatusBar statusItemWithLength:NSSquareStatusItemLength] retain];
 
-    // Set the icon from the PNG specified.
-    NSData* ImageData = [NSData dataWithBytes:Icon length:IconLen];
-    NSImage* image = [[NSImage alloc] initWithData:ImageData];
-    image.size = NSMakeSize(18.0, 18.0);
-    StatusItem.image = image;
-    [image release];
+        // Set the target of the status bar to the delegate.
+        StatusItem.target = delegate;
 
-    // Initialise the tooltip.
-    StatusItem.toolTip = @"MagicCap";
-    StatusItem.highlightMode = YES;
+        // Set the icon from the PNG specified.
+        NSData* ImageData = [NSData dataWithBytes:Icon length:IconLen];
+        NSImage* image = [[NSImage alloc] initWithData:ImageData];
+        image.size = NSMakeSize(18.0, 18.0);
+        StatusItem.image = image;
+        [image release];
+
+        // Initialise the tooltip.
+        StatusItem.toolTip = @"MagicCap";
+        StatusItem.highlightMode = YES;
+    }
 
     // Create the menu.
     NSMenu* menu = [[NSMenu alloc] initWithTitle:@"MagicCap"];
