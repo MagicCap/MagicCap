@@ -8,7 +8,7 @@ package platformspecific
 #cgo CFLAGS: -x objective-c
 #cgo LDFLAGS: -framework Cocoa
 #include <stdlib.h>
-#include "nsapplication_darwin.h"
+#include "application_loop_darwin.h"
 */
 import "C"
 
@@ -21,8 +21,8 @@ func CReadyCallback() {
 	OnReady()
 }
 
-// NSApplicationStart exports a function which is used to start the NSApplication instance.
-func NSApplicationStart(ReadyCallback func()) func() {
+// ApplicationLoopStart exports a function which is used to start the application loop.
+func ApplicationLoopStart(ReadyCallback func()) func() {
 	OnReady = ReadyCallback
 	return func() {
 		C.DelegateInit()

@@ -1,5 +1,5 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
-// Copyright (C) Jake Gealer <jake@gealer.email> 2019.
+// Copyright (C) Jake Gealer <jake@gealer.email> 2019-2020.
 
 package core
 
@@ -92,9 +92,8 @@ func Start() {
 		panic(err)
 	}
 
-	// Initialise NSApplication in the main thread if this is macOS.
-	// If not, it should call the ready callback.
-	mainthread.CallNonBlock(platformspecific.NSApplicationStart(func() {
+	// Initialise the application loop in the main thread.
+	mainthread.CallNonBlock(platformspecific.ApplicationLoopStart(func() {
 		// Initialises glfw/gl.
 		err := glfw.Init()
 		if err != nil {
