@@ -80,6 +80,7 @@ void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, s
     // Set the icon from the PNG specified.
     NSData* ImageData = [NSData dataWithBytes:Icon length:IconLen];
     NSImage* image = [[NSImage alloc] initWithData:ImageData];
+    image.size = NSMakeSize(18.0, 18.0);
     StatusItem.image = image;
     [image release];
 
