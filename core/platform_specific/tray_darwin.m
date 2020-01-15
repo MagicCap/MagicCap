@@ -69,19 +69,19 @@ TrayCallbackHandlers* handlers;
 
 // Used to initialise/reboot the tray.
 void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, size_t IconLen) {
-    // Get the status bar.
-    NSStatusBar* StatusBar = [NSStatusBar systemStatusBar];
-
-    // Get the delegate.
-    NSObject* delegate = [NSValue valueWithPointer:[[NSApplication sharedApplication] delegate]];
-
     // Setup the tray properly.
     if (StatusItem == NULL) {
         // Initialise the handlers.
         handlers = [[TrayCallbackHandlers alloc] init];
 
+        // Get the status bar.
+        NSStatusBar* StatusBar = [NSStatusBar systemStatusBar];
+
         // Set the status item.
         StatusItem = [[StatusBar statusItemWithLength:NSSquareStatusItemLength] retain];
+
+        // Get the delegate.
+        NSObject* delegate = [NSValue valueWithPointer:[[NSApplication sharedApplication] delegate]];
 
         // Set the target of the status bar to the delegate.
         StatusItem.target = delegate;
