@@ -67,6 +67,7 @@ NSStatusItem* StatusItem = NULL;
 // Defines the tray callback handlers.
 TrayCallbackHandlers* handlers;
 
+// Used to initialise/reboot the tray.
 void InitTray(char** Uploaders, char** Slugs, int UploadersLen, uint8_t* Icon, size_t IconLen) {
     // Get the status bar.
     NSStatusBar* StatusBar = [NSStatusBar systemStatusBar];
