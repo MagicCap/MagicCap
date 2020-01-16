@@ -106,6 +106,10 @@ func Start() {
 
 		// Starts the tray.
 		RestartTrayProcess(true)
+
+		// Testing.
+		w := platformspecific.NewWebview("https://google.com/")
+		println(w.CWebview)
 	}))
 
 	// Defines how long it took.
