@@ -30,6 +30,7 @@ require (
 	github.com/h2non/filetype v1.0.10
 	github.com/hackebrot/turtle v0.1.0
 	github.com/jakemakesstuff/structuredhttp v0.0.0-20191023151727-a270b4cc8e22
+	github.com/jakemakesstuff/webview v0.0.0-20200119144555-73a122c313e8
 	github.com/jlaffaye/ftp v0.0.0-20191218041957-e1b8fdd0dcc3 // indirect
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
 	github.com/magiccap/magiccap-uploaders-kernel v0.0.0-20191226225326-6af75d79a3ff
@@ -38,7 +39,6 @@ require (
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
 	github.com/valyala/fasthttp v1.8.0
-	github.com/zserge/webview v0.0.0-20200110090726-f78d5821f03c
 	golang.org/x/image v0.0.0-20191214001246-9130b4cfad52
 	gopkg.in/ajg/form.v1 v1.5.1 // indirect
 )

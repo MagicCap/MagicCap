@@ -108,7 +108,7 @@ func Start() {
 		RestartTrayProcess(true)
 
 		// Testing.
-		w := platformspecific.NewWebview("https://google.com/")
+		w := platformspecific.NewWebview("https://google.com/", "Testing 123", 1000, 1000)
 		println(w.CWebview)
 	}))
 

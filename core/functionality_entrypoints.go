@@ -15,7 +15,7 @@ import (
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"github.com/sqweek/dialog"
-	"github.com/zserge/webview"
+	"github.com/jakemakesstuff/webview"
 	"golang.org/x/image/tiff"
 )
 

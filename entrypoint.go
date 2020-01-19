@@ -11,7 +11,7 @@ import (
 	"github.com/faiface/mainthread"
 	"github.com/getsentry/sentry-go"
 	"github.com/magiccap/MagicCap/core"
-	"github.com/zserge/webview"
+	"github.com/jakemakesstuff/webview"
 )
 
 // CoreWindowConfig defines the core window configuration.

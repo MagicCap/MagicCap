@@ -21,9 +21,12 @@ type Webview struct {
 }
 
 // NewWebview creates a new webview.
-func NewWebview(URL string) *Webview {
+func NewWebview(URL string, Title string, Width int, Height int) *Webview {
 	URLLen := len(URL)
 	URLC := C.CString(URL)
 	defer C.free(unsafe.Pointer(URLC))
-	return &Webview{CWebview: C.MakeWebview(URLC, C.int(URLLen))}
+	TitleLen := len(Title)
+	TitleC := C.CString(Title)
+	defer C.free(unsafe.Pointer(TitleC))
+	return &Webview{CWebview: C.MakeWebview(URLC, C.int(URLLen), TitleC, C.int(TitleLen), C.int(Width), C.int(Height))}
 }

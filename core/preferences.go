@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
@@ -19,7 +20,7 @@ import (
 	"github.com/gobuffalo/packr"
 	"github.com/matishsiao/goInfo"
 	"github.com/valyala/fasthttp"
-	"github.com/zserge/webview"
+	"github.com/jakemakesstuff/webview"
 )
 
 var (
@@ -370,19 +371,30 @@ func OpenPreferences() {
 	if Theme {
 		ZeroOr255 = 255
 	}
-	ConfigWindow = SpawnWindowHandler(webview.Settings{
-		Title:     "MagicCap" + VersionBit,
-		URL:       URL,
-		Width:     1200,
-		Height:    600,
-		Resizable: false,
-	}, RGBAConfig{
-		R: ZeroOr255,
-		G: ZeroOr255,
-		B: ZeroOr255,
-		A: 255,
-	}, false)
-	ConfigWindow.Wait()
+	var v webview.WebView
+	platformspecific.ExecMainThread(func() {
+		v = webview.New(webview.Settings{
+			Title:     "MagicCap" + VersionBit,
+			URL:       URL,
+			Width:     1200,
+			Height:    600,
+			Resizable: false,
+		})
+	})
+	v.Dispatch(func() {
+		v.SetColor(ZeroOr255, ZeroOr255, ZeroOr255, 255)
+	})
+	ContinueLooping := true
+	for ContinueLooping {
+		if v.ShouldExit() {
+			println("here")
+			return
+		}
+		platformspecific.ExecMainThread(func() {
+			ContinueLooping = v.Loop(true)
+		})
+		time.Sleep(5 * time.Millisecond)
+	}
 
 	// Null-ify the config window.
 	ConfigWindow = nil

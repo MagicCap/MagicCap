@@ -10,7 +10,7 @@ import (
 	"os/exec"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/zserge/webview"
+	"github.com/jakemakesstuff/webview"
 )
 
 // WindowHandler is used to define a process being used for handling windows.
