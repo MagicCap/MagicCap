@@ -28,6 +28,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7 // indirect
 	github.com/gotk3/gotk3 v0.0.0-20200103101635-d3629b451bb5 // indirect
 	github.com/h2non/filetype v1.0.10
+	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/hackebrot/turtle v0.1.0
 	github.com/jakemakesstuff/structuredhttp v0.0.0-20191023151727-a270b4cc8e22
 	github.com/jakemakesstuff/webview v0.0.0-20200119144555-73a122c313e8

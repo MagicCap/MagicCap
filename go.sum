@@ -117,6 +117,8 @@ github.com/gotk3/gotk3 v0.0.0-20200103101635-d3629b451bb5 h1:FEketUKKSYVEM7KBQmh
 github.com/gotk3/gotk3 v0.0.0-20200103101635-d3629b451bb5/go.mod h1:Eew3QBwAOBTrfFFDmsDE5wZWbcagBL1NUslj1GhRveo=
 github.com/h2non/filetype v1.0.10 h1:z+SJfnL6thYJ9kAST+6nPRXp1lMxnOVbMZHNYHMar0s=
 github.com/h2non/filetype v1.0.10/go.mod h1:isekKqOuhMj+s/7r3rIeTErIRy4Rub5uBWHfvMusLMU=
+github.com/hackebrot/go-repr v0.1.0 h1:28FyOiVx+rHPqEj/nqUbxqs2ocz2hfM9gP01kAeJJoA=
+github.com/hackebrot/go-repr v0.1.0/go.mod h1:5nbEBC4Y57U1dVAlQGF4lQdqAJZAwu7cszx8HtEq8XM=
 github.com/hackebrot/turtle v0.1.0 h1:cmS72nZuooIARtgix6IRPvmw8r4u8olEZW02Q3DB8YQ=
 github.com/hackebrot/turtle v0.1.0/go.mod h1:vDjX4rgnTSlvROhwGbE2GiB43F/l/8V5TXoRJL2cYTs=
 github.com/hashicorp/go-version v1.2.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=

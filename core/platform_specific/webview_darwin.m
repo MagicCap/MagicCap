@@ -3,8 +3,20 @@
 
 #import <WebKit/WebKit.h>
 
+void CWebviewClose(int Listener);
+
+@interface MagicCapWebviewWindowDelegate : NSObject <NSWindowDelegate>
+@property int Listener;
+@end
+
+@implementation MagicCapWebviewWindowDelegate
+- (void)windowWillClose:(NSNotification *)_ {
+    CWebviewClose([self Listener]);
+};
+@end
+
 // Handles making the webview.
-NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize) {
+NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, int Listener) {
     // Create the view URL from the C bytes.
     NSString* ViewURL = [[NSString alloc] initWithBytes:URL length:URLLen encoding:NSUTF8StringEncoding];
 
@@ -27,6 +39,9 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     }
     NSWindow* window = [[NSWindow alloc] initWithContentRect:frame
         styleMask:styleMask backing:NSBackingStoreBuffered defer:NO];
+    MagicCapWebviewWindowDelegate* delegate = [[MagicCapWebviewWindowDelegate alloc] init];
+    delegate.Listener = Listener;
+    window.delegate = delegate;
 
     // Create the webview widget to go into the window.
     WKWebView* wv = [[WKWebView alloc] initWithFrame:frame];

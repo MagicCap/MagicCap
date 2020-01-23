@@ -109,7 +109,10 @@ func Start() {
 
 		// Testing.
 		w := platformspecific.NewWebview("https://google.com/", "Testing 123", 1000, 1000, true)
-		println(w.CWebview)
+		go func() {
+			w.Wait()
+			println("window closed")
+		}()
 	}))
 
 	// Defines how long it took.
