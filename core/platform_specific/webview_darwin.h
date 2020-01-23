@@ -5,4 +5,5 @@
 #define _WEBVIEW_DARWIN_H
 #import <WebKit/WebKit.h>
 NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, int Listener);
+void ExitWebview(NSWindow* Window);
 #endif

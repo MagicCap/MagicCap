@@ -113,6 +113,11 @@ func Start() {
 			w.Wait()
 			println("window closed")
 		}()
+		go func() {
+			time.Sleep(time.Second * 10)
+			println("autokill")
+			platformspecific.ExecMainThread(w.Exit)
+		}()
 	}))
 
 	// Defines how long it took.

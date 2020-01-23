@@ -40,6 +40,11 @@ func (w *Webview) Wait() {
 	w.wg.Wait()
 }
 
+// Exit is used to exit the window.
+func (w *Webview) Exit() {
+	C.ExitWebview(w.CWebview)
+}
+
 // NewWebview creates a new webview.
 func NewWebview(URL string, Title string, Width int, Height int, Resizable bool) *Webview {
 	URLLen := len(URL)

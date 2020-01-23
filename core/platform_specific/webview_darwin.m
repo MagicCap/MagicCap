@@ -72,3 +72,8 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     // Return the webview window.
     return window;
 }
+
+// Used to exit the webview.
+void ExitWebview(NSWindow* Window) {
+    [Window close];
+}
