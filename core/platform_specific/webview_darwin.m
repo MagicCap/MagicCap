@@ -4,22 +4,56 @@
 #import <WebKit/WebKit.h>
 
 // Handles making the webview.
-WKWebView* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height) {
+NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize) {
+    // Create the view URL from the C bytes.
     NSString* ViewURL = [[NSString alloc] initWithBytes:URL length:URLLen encoding:NSUTF8StringEncoding];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:ViewURL]];
+
+    // Create the URL request with said string.
+    NSURL* ParsedURL = [NSURL URLWithString:ViewURL];
+    NSURLRequest* request = [NSURLRequest requestWithURL:ParsedURL];
+
+    // Release the view URL string (no longer needed).
     [ViewURL release];
-    CGRect frame = CGRectMake(0, 0, 1000, 1000);
-    NSWindow* window = [[[NSWindow alloc] initWithContentRect:frame
-        styleMask:NSResizableWindowMask | NSClosableWindowMask
-        | NSTitledWindowMask | NSTexturedBackgroundWindowMask | NSFullSizeContentViewWindowMask backing:NSBackingStoreBuffered defer:NO]
-            autorelease];
-    WKWebView* wv = [[WKWebView alloc] initWithFrame:window.frame];
+
+    // Create the frame for the window.
+    CGRect frame = CGRectMake(0, 0, Width, Height);
+
+    // Create the actual window.
+    int styleMask = NSClosableWindowMask
+        | NSTitledWindowMask | NSTexturedBackgroundWindowMask |
+        NSFullSizeContentViewWindowMask;
+    if (Resize) {
+        styleMask |= NSResizableWindowMask;
+    }
+    NSWindow* window = [[NSWindow alloc] initWithContentRect:frame
+        styleMask:styleMask backing:NSBackingStoreBuffered defer:NO];
+
+    // Create the webview widget to go into the window.
+    WKWebView* wv = [[WKWebView alloc] initWithFrame:frame];
+
+    // Go to the URL specified.
     [wv loadRequest:request];
+
+    // Release the request.
+    [request release];
+
+    // Allow the webview widget to auto resize.
+    wv.autoresizingMask = NSViewHeightSizable | NSViewMaxYMargin | NSViewWidthSizable;
+
+    // Set some properties for the window.
     [window.contentView addSubview:wv];
     [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
+
+    // Set the title.
     NSString* title = [[NSString alloc] initWithBytes:Title length:TitleLen encoding:NSUTF8StringEncoding];
     [window setTitle:title];
     [title release];
-    [window makeKeyAndOrderFront:[NSValue valueWithPointer:[[NSApplication sharedApplication] delegate]]];
-    return wv;
+
+    // Handle the window ordering.
+    [NSApp activateIgnoringOtherApps:YES];
+    [window makeKeyAndOrderFront:[NSApplication sharedApplication]];
+    [window becomeKeyWindow];
+
+    // Return the webview window.
+    return window;
 }

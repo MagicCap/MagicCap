@@ -4,5 +4,5 @@
 #ifndef _WEBVIEW_DARWIN_H
 #define _WEBVIEW_DARWIN_H
 #import <WebKit/WebKit.h>
-WKWebView* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height);
+NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize);
 #endif

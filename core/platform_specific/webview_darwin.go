@@ -17,16 +17,16 @@ import "unsafe"
 
 // Webview defines the webview handler.
 type Webview struct {
-	CWebview *C.WKWebView
+	CWebview *C.NSWindow
 }
 
 // NewWebview creates a new webview.
-func NewWebview(URL string, Title string, Width int, Height int) *Webview {
+func NewWebview(URL string, Title string, Width int, Height int, Resizable bool) *Webview {
 	URLLen := len(URL)
 	URLC := C.CString(URL)
 	defer C.free(unsafe.Pointer(URLC))
 	TitleLen := len(Title)
 	TitleC := C.CString(Title)
 	defer C.free(unsafe.Pointer(TitleC))
-	return &Webview{CWebview: C.MakeWebview(URLC, C.int(URLLen), TitleC, C.int(TitleLen), C.int(Width), C.int(Height))}
+	return &Webview{CWebview: C.MakeWebview(URLC, C.int(URLLen), TitleC, C.int(TitleLen), C.int(Width), C.int(Height), C.bool(Resizable))}
 }
