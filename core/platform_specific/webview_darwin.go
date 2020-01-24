@@ -63,5 +63,10 @@ func NewWebview(URL string, Title string, Width int, Height int, Resizable bool)
 	wg := sync.WaitGroup{}
 	wg.Add(1)
 	webviewListeners[listener] = &wg
-	return &Webview{CWebview: C.MakeWebview(URLC, C.int(URLLen), TitleC, C.int(TitleLen), C.int(Width), C.int(Height), C.bool(Resizable), C.int(listener)), wg: &wg}
+	return &Webview{
+		CWebview: C.MakeWebview(
+			URLC, C.int(URLLen), TitleC, C.int(TitleLen), C.int(Width), C.int(Height),
+			C.bool(Resizable), C.int(listener)),
+		wg: &wg,
+	}
 }
