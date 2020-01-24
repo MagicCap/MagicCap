@@ -12,6 +12,7 @@ void CWebviewClose(int Listener);
 @implementation MagicCapWebviewWindowDelegate
 - (void)windowWillClose:(NSNotification *)_ {
     CWebviewClose([self Listener]);
+    [self release];
 };
 @end
 
