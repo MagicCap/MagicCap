@@ -14,10 +14,26 @@ void CWebviewClose(int Listener);
     CWebviewClose([self Listener]);
     [self release];
 };
+
+- (BOOL)canBecomeKeyWindow {
+    return YES;
+};
+@end
+
+@interface MagicCapWebviewDelegate : NSObject <WKUIDelegate>
+@end
+
+@implementation MagicCapWebviewDelegate
+- (BOOL)acceptsFirstResponder {
+    return YES;
+};
 @end
 
 // Handles making the webview.
 NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, int Listener) {
+    // Ensure the application is configured to ignore other apps.
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+
     // Create the view URL from the C bytes.
     NSString* ViewURL = [[NSString alloc] initWithBytes:URL length:URLLen encoding:NSUTF8StringEncoding];
 
@@ -32,9 +48,7 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     CGRect frame = CGRectMake(0, 0, Width, Height);
 
     // Create the actual window.
-    int styleMask = NSClosableWindowMask
-        | NSTitledWindowMask | NSTexturedBackgroundWindowMask |
-        NSFullSizeContentViewWindowMask;
+    int styleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable;
     if (Resize) {
         styleMask |= NSResizableWindowMask;
     }
@@ -46,6 +60,8 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
 
     // Create the webview widget to go into the window.
     WKWebView* wv = [[WKWebView alloc] initWithFrame:frame];
+    MagicCapWebviewDelegate* UIDelegate = [[MagicCapWebviewDelegate alloc] init];
+    wv.UIDelegate = UIDelegate;
 
     // Go to the URL specified.
     [wv loadRequest:request];
@@ -54,22 +70,23 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     [request release];
 
     // Allow the webview widget to auto resize.
-    wv.autoresizingMask = NSViewHeightSizable | NSViewMaxYMargin | NSViewWidthSizable;
+    [wv setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
+    [wv setAutoresizesSubviews:YES];
 
-    // Set some properties for the window.
-    [window.contentView addSubview:wv];
-    [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
+    // Set the content view of the window.
+    window.contentView = wv;
 
     // Set the title.
     NSString* title = [[NSString alloc] initWithBytes:Title length:TitleLen encoding:NSUTF8StringEncoding];
     [window setTitle:title];
     [title release];
 
+    // Center the window.
+    [window center]; 
+
     // Handle the window ordering.
-    [NSApp activateIgnoringOtherApps:YES];
-    [window setLevel:NSStatusWindowLevel];
-    [window makeKeyAndOrderFront:nil];
-    [window becomeKeyWindow];
+    [window orderFrontRegardless];
+    [window makeKeyWindow];
 
     // Return the webview window.
     return window;
@@ -82,5 +99,5 @@ void ExitWebview(NSWindow* Window) {
 
 // Used to focus the webview.
 void FocusWebview(NSWindow* Window) {
-    [Window becomeKeyWindow];
+    [Window orderFrontRegardless];
 }
