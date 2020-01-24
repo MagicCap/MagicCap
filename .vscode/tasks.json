@@ -1,0 +1,10 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "confbuild",
+            "command": "cd config && npm i && NODE_ENV=development npm run build",
+            "type": "shell"
+        }
+    ]
+}

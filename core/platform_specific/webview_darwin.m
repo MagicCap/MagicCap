@@ -66,7 +66,8 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
 
     // Handle the window ordering.
     [NSApp activateIgnoringOtherApps:YES];
-    [window makeKeyAndOrderFront:[NSApplication sharedApplication]];
+    [window setLevel:NSStatusWindowLevel];
+    [window makeKeyAndOrderFront:nil];
     [window becomeKeyWindow];
 
     // Return the webview window.
