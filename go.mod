@@ -4,9 +4,9 @@ go 1.13
 
 require (
 	github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a
-	github.com/antchfx/xmlquery v1.2.2 // indirect
+	github.com/antchfx/xmlquery v1.2.3 // indirect
 	github.com/antchfx/xpath v1.1.4 // indirect
-	github.com/aws/aws-sdk-go v1.28.0 // indirect
+	github.com/aws/aws-sdk-go v1.28.8 // indirect
 	github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/disintegration/gift v1.2.1
@@ -22,16 +22,14 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
 	github.com/go-playground/colors v1.2.0
-	github.com/go-vgo/robotgo v0.0.0-20200111145433-6e6028a14d57
+	github.com/go-vgo/robotgo v0.0.0-20200123154043-e7ab665c511e
 	github.com/gobuffalo/packr v1.30.1
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
-	github.com/golang/groupcache v0.0.0-20191227052852-215e87163ea7 // indirect
-	github.com/gotk3/gotk3 v0.0.0-20200103101635-d3629b451bb5 // indirect
+	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
+	github.com/gotk3/gotk3 v0.0.0-20200122052051-1b4add5ab128 // indirect
 	github.com/h2non/filetype v1.0.10
-	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/hackebrot/turtle v0.1.0
 	github.com/jakemakesstuff/structuredhttp v0.0.0-20191023151727-a270b4cc8e22
-	github.com/jakemakesstuff/webview v0.0.0-20200119144555-73a122c313e8
 	github.com/jlaffaye/ftp v0.0.0-20191218041957-e1b8fdd0dcc3 // indirect
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
 	github.com/magiccap/magiccap-uploaders-kernel v0.0.0-20191226225326-6af75d79a3ff
@@ -40,6 +38,6 @@ require (
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
 	github.com/valyala/fasthttp v1.8.0
-	golang.org/x/image v0.0.0-20191214001246-9130b4cfad52
+	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 	gopkg.in/ajg/form.v1 v1.5.1 // indirect
 )

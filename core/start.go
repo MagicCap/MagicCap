@@ -106,18 +106,6 @@ func Start() {
 
 		// Starts the tray.
 		RestartTrayProcess(true)
-
-		// Testing.
-		w := platformspecific.NewWebview("https://google.com/", "Testing 123", 1000, 1000, true)
-		go func() {
-			w.Wait()
-			println("window closed")
-		}()
-		go func() {
-			time.Sleep(time.Second * 10)
-			println("autokill")
-			platformspecific.ExecMainThread(w.Exit)
-		}()
 	}))
 
 	// Defines how long it took.

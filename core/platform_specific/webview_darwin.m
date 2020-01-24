@@ -77,3 +77,8 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
 void ExitWebview(NSWindow* Window) {
     [Window close];
 }
+
+// Used to focus the webview.
+void FocusWebview(NSWindow* Window) {
+    [Window becomeKeyWindow];
+}

@@ -6,6 +6,8 @@ package core
 import (
 	"bytes"
 	"image/png"
+	"net/url"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,7 +17,6 @@ import (
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"github.com/sqweek/dialog"
-	"github.com/jakemakesstuff/webview"
 	"golang.org/x/image/tiff"
 )
 
@@ -23,7 +24,7 @@ import (
 
 var (
 	// ShortenerWindows defines all of the shorteners open.
-	ShortenerWindows = make([]*WindowHandler, 0)
+	ShortenerWindows = make([]*platformspecific.Webview, 0)
 
 	// ShortenerWindowsLock is the R/W lock used.
 	ShortenerWindowsLock = sync.RWMutex{}
@@ -31,18 +32,13 @@ var (
 
 // ShowShort shows the shortener screen.
 func ShowShort() {
-	s := SpawnWindowHandler(webview.Settings{
-		Title:     "MagicCap Link Shortener",
-		URL:       "__SHORTENER__",
-		Width:     500,
-		Height:    200,
-		Resizable: false,
-	}, RGBAConfig{
-		R: 0,
-		G: 0,
-		B: 0,
-		A: 255,
-	}, false)
+	HTML := strings.Replace(CoreAssets.String("shortener.html"), "inline_styling", CSS.String(
+		"bulmaswatch/darkly/bulmaswatch.min.css"), 1)
+	URL := `data:text/html,` + url.PathEscape(HTML)
+	var s *platformspecific.Webview
+	platformspecific.ExecMainThread(func() {
+		s = platformspecific.NewWebview(URL, "MagicCap Link Shortener", 500, 200, false)
+	})
 	ShortenerWindowsLock.Lock()
 	ShortenerWindows = append(ShortenerWindows, s)
 	ShortenerWindowsLock.Unlock()

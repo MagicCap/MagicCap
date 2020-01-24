@@ -35,17 +35,22 @@ func CWebviewClose(Listener int) {
 	delete(webviewListeners, Listener)
 }
 
-// Wait is used to wait for a webview.
+// Wait is used to wait for a webview. This is blocking and should NOT be ran in the main thread.
 func (w *Webview) Wait() {
 	w.wg.Wait()
 }
 
-// Exit is used to exit the window.
+// Exit is used to exit the window. This needs to be ran in the main thread.
 func (w *Webview) Exit() {
 	C.ExitWebview(w.CWebview)
 }
 
-// NewWebview creates a new webview.
+// Focus is used to focus the window. This needs to be ran in the main thread.
+func (w *Webview) Focus() {
+	C.FocusWebview(w.CWebview)
+}
+
+// NewWebview creates a new webview. This should be made from the main thread.
 func NewWebview(URL string, Title string, Width int, Height int, Resizable bool) *Webview {
 	URLLen := len(URL)
 	URLC := C.CString(URL)

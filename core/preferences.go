@@ -10,7 +10,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/getsentry/sentry-go"
 	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
@@ -20,12 +19,11 @@ import (
 	"github.com/gobuffalo/packr"
 	"github.com/matishsiao/goInfo"
 	"github.com/valyala/fasthttp"
-	"github.com/jakemakesstuff/webview"
 )
 
 var (
 	// ConfigWindow defines the config window.
-	ConfigWindow *WindowHandler
+	ConfigWindow *platformspecific.Webview
 
 	// CSS defines the box containing CSS.
 	CSS = packr.NewBox("../config/src/css")
@@ -335,6 +333,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 func OpenPreferences() {
 	// Only allow a single instance of the config.
 	if ConfigWindow != nil {
+		platformspecific.ExecMainThread(ConfigWindow.Focus)
 		return
 	}
 
@@ -363,38 +362,12 @@ func OpenPreferences() {
 	} else if strings.Contains(Version, "b") {
 		VersionBit = " Beta"
 	}
-	ZeroOr255 := uint8(0)
-	Theme, ok := ConfigItems["light_theme"].(bool)
-	if !ok {
-		Theme = false
-	}
-	if Theme {
-		ZeroOr255 = 255
-	}
-	var v webview.WebView
 	platformspecific.ExecMainThread(func() {
-		v = webview.New(webview.Settings{
-			Title:     "MagicCap" + VersionBit,
-			URL:       URL,
-			Width:     1200,
-			Height:    600,
-			Resizable: false,
-		})
+		ConfigWindow = platformspecific.NewWebview(URL, "MagicCap"+VersionBit, 1200, 600, false)
 	})
-	v.Dispatch(func() {
-		v.SetColor(ZeroOr255, ZeroOr255, ZeroOr255, 255)
-	})
-	ContinueLooping := true
-	for ContinueLooping {
-		if v.ShouldExit() {
-			println("here")
-			return
-		}
-		platformspecific.ExecMainThread(func() {
-			ContinueLooping = v.Loop(true)
-		})
-		time.Sleep(5 * time.Millisecond)
-	}
+
+	// Wait for the config window.
+	ConfigWindow.Wait()
 
 	// Null-ify the config window.
 	ConfigWindow = nil
