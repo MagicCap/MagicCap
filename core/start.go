@@ -111,9 +111,4 @@ func Start() {
 	// Defines how long it took.
 	elapsed := time.Since(StartTime)
 	fmt.Printf("Initialisation took %s.\n", elapsed)
-
-	// Keep the app alive.
-	for {
-		time.Sleep(time.Second)
-	}
 }
