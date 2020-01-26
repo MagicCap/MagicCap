@@ -14,7 +14,12 @@ void CWebviewClose(int Listener);
     CWebviewClose([self Listener]);
     [self release];
 };
+@end
 
+@interface MagicCapWebviewWindow : NSWindow
+@end
+
+@implementation MagicCapWebviewWindow
 - (BOOL)canBecomeKeyWindow {
     return YES;
 };
@@ -58,7 +63,7 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     if (Resize) {
         styleMask |= NSResizableWindowMask;
     }
-    NSWindow* window = [[NSWindow alloc] initWithContentRect:frame
+    MagicCapWebviewWindow* window = [[MagicCapWebviewWindow alloc] initWithContentRect:frame
         styleMask:styleMask backing:NSBackingStoreBuffered defer:NO];
     MagicCapWebviewWindowDelegate* delegate = [[MagicCapWebviewWindowDelegate alloc] init];
     delegate.Listener = Listener;
@@ -79,8 +84,14 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     [wv setAutoresizingMask:NSViewHeightSizable | NSViewWidthSizable];
     [wv setAutoresizesSubviews:YES];
 
+    // Make the window key and order it to the front.
+    [window makeKeyAndOrderFront:nil];
+
     // Set the content view of the window.
-    [window.contentView addSubview:wv];
+    [window setContentView:wv];
+    [window setInitialFirstResponder:wv];
+    [window setNextResponder:wv];
+    [window makeFirstResponder:wv];
 
     // Set the title.
     NSString* title = [[NSString alloc] initWithBytes:Title length:TitleLen encoding:NSUTF8StringEncoding];
@@ -90,11 +101,8 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     // Center the window.
     [window center]; 
 
-    // Handle the window ordering.
+    // Handle the window level.
     [window setLevel:kCGMaximumWindowLevel];
-    [window orderFrontRegardless];
-    [window makeMainWindow];
-    [window makeKeyWindow];
 
     // Create the menu item.
     id menubar = [[NSMenu alloc] initWithTitle:@""];
