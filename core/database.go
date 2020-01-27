@@ -104,7 +104,7 @@ func LoadDatabase() {
 	GetConfigItems()
 
 	// Sets the login items.
-	LoginStartLast = ConfigItems["open_login"].(bool)
+	LoginStartLast, _ = ConfigItems["open_login"].(bool)
 
 	// Loads the hotkeys.
 	LoadHotkeys()
@@ -147,7 +147,7 @@ func UpdateConfig() {
 	ConfigItemsLock.RUnlock()
 	DatabaseLock.Unlock()
 	OldLoginValue := LoginStartLast
-	LoginStartLast = ConfigItems["open_login"].(bool)
+	LoginStartLast, _ = ConfigItems["open_login"].(bool)
 	if OldLoginValue != LoginStartLast {
 		EditStartupValue(LoginStartLast)
 	}

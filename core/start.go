@@ -82,6 +82,7 @@ func Start() {
 
 	// Loads the SQLite3 DB.
 	LoadDatabase()
+
 	// Ensures there is a install ID.
 	EnsureInstallID()
 

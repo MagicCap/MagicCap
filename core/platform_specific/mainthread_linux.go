@@ -1,13 +1,12 @@
-// +build !darwin
-
+// +build linux
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2020.
 
 package platformspecific
 
-import "github.com/faiface/mainthread"
+import "github.com/gotk3/gotk3/glib"
 
 // ExecMainThread is used to execute a function on the main thread.
 func ExecMainThread(Function func()) {
-	mainthread.Call(Function)
+	glib.IdleAdd(Function)
 }
