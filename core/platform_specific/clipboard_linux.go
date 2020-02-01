@@ -4,7 +4,6 @@
 
 package platformspecific
 
-
 import (
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
@@ -49,17 +48,16 @@ func GetClipboard() *ClipboardResult {
 		}
 		r.Text = &s
 		return &r
-	} else {
-		e = clipboard.WaitIsImageAvailable()
-		if !e {
-			return &r
-		}
-		i, err := clipboard.WaitForImage()
-		if err != nil {
-			return &r
-		}
-		pixels := i.GetPixels()
-		r.Data = &pixels
+	}
+	e = clipboard.WaitIsImageAvailable()
+	if !e {
 		return &r
 	}
+	i, err := clipboard.WaitForImage()
+	if err != nil {
+		return &r
+	}
+	pixels := i.GetPixels()
+	r.Data = &pixels
+	return &r
 }

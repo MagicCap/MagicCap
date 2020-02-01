@@ -4,9 +4,19 @@
 
 package platformspecific
 
-import "github.com/gotk3/gotk3/glib"
+import (
+	"sync"
+
+	"github.com/gotk3/gotk3/glib"
+)
 
 // ExecMainThread is used to execute a function on the main thread.
 func ExecMainThread(Function func()) {
-	glib.IdleAdd(Function)
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+	glib.IdleAdd(func() {
+		Function()
+		wg.Done()
+	})
+	wg.Wait()
 }
