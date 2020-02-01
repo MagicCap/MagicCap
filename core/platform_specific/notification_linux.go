@@ -4,26 +4,50 @@
 
 package platformspecific
 
-import "github.com/gotk3/gotk3/glib"
+import (
+	"github.com/esiqveland/notify"
+	"github.com/godbus/dbus"
+	"github.com/pkg/browser"
+)
 
 // ThrowNotification is used to throw a notification to the OS.
 func ThrowNotification(Text string, URL *string) {
-	ExecMainThread(func() {
-		// Create the notification.
-		notif := glib.NotificationNew("MagicCap")
-		notif.SetBody(Text)
+	// Create the session bus.
+	b, err := dbus.SessionBus()
+	if err != nil {
+		panic(err)
+	}
 
-		// Make a copy of the pointer and its contents.
-		//var u *string
-		if URL != nil {
-			//x := *URL
-			//u = &x
+	// Create the notifier.
+	notifier, err := notify.New(b)
+	if err != nil {
+		panic(err)
+	}
+
+	// Create the notification.
+	var Actions []string
+	if URL != nil {
+		Actions = []string{"open_url", "Open URL"}
+	}
+	n := notify.Notification{
+		AppName: "MagicCap",
+		Summary: "MagicCap",
+		Actions: Actions,
+		Body:    Text,
+	}
+
+	// Send the notification.
+	id, err := notifier.SendNotification(n)
+	if err != nil {
+		panic(err)
+	}
+
+	// Listen for invoked action.
+	Channel := notifier.ActionInvoked()
+	go func() {
+		action := <-Channel
+		if action.ID == id && URL != nil {
+			browser.OpenURL(*URL)
 		}
-
-		// Setup the notification and run it.
-		//notif.SetDefaultAction("app.show-url")
-		mainApplication.SendNotification(appID, notif)
-		//notif.Unref()
-		println("notif")
-	})
+	}()
 }

@@ -26,9 +26,6 @@ func ApplicationLoopStart(ReadyCallback func()) func() {
 	}
 
 	application.Connect("activate", func() {
-		// Call the ready callback.
-		ReadyCallback()
-
 		// I'm aware this is super hacky, but it works!
 		w, err := gtk.WindowNew(0)
 		if err != nil {
@@ -37,6 +34,9 @@ func ApplicationLoopStart(ReadyCallback func()) func() {
 		w.Present()
 		w.Hide()
 		application.AddWindow(w)
+
+		// Call the ready callback.
+		ReadyCallback()
 	})
 
 	// Run the application.

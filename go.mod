@@ -12,6 +12,7 @@ require (
 	github.com/disintegration/gift v1.2.1
 	github.com/disintegration/imaging v1.6.2
 	github.com/esimov/stackblur-go v1.0.1-0.20190712082326-fff1ca4c8ff4
+	github.com/esiqveland/notify v0.1.2
 	github.com/faiface/glhf v0.0.0-20181018222622-82a6317ac380
 	github.com/faiface/mainthread v0.0.0-20171120011319-8b78f0a41ae3
 	github.com/fogleman/gg v1.3.0
@@ -24,6 +25,7 @@ require (
 	github.com/go-playground/colors v1.2.0
 	github.com/go-vgo/robotgo v0.0.0-20200123154043-e7ab665c511e
 	github.com/gobuffalo/packr v1.30.1
+	github.com/godbus/dbus v5.0.1+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/gotk3/gotk3 v0.0.0-20200122052051-1b4add5ab128
