@@ -67,6 +67,9 @@ func NewWebview(URL string, Title string, Width int, Height int, Resizable bool)
 	win.ShowAll()
 	wv.LoadURI(URL)
 
+	// Present the window.
+	win.Present()
+
 	// Return the Webview struct.
 	return &Webview{wg: &wg, window: win}
 }
