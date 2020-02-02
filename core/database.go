@@ -168,7 +168,7 @@ func LogUpload(Filename string, URL *string, FilePath *string, Success bool) {
 	if Success {
 		SuccessInt++
 	}
-	_, err = Statement.Exec(Filename, SuccessInt, time.Now().Unix(), URL, FilePath)
+	_, err = Statement.Exec(Filename, SuccessInt, time.Now().UnixNano()/1000000, URL, FilePath)
 	if err != nil {
 		sentry.CaptureException(err)
 		panic(err)
