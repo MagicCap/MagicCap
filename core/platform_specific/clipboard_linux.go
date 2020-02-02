@@ -10,15 +10,16 @@ import (
 )
 
 // BytesToClipboard is used to place bytes in the clipboard.
-func BytesToClipboard(Data []byte, Extension string) {
-	// TODO: Handle bytes on Linux.
-	//screen, err := gdk.DisplayGetDefault()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//clipboard, _ := gtk.ClipboardGetForDisplay(screen, gdk.SELECTION_CLIPBOARD)
-	//clipboard.SetText(Data)
-	//clipboard.Store()
+func BytesToClipboard(Data []byte, _ string) {
+	screen, err := gdk.DisplayGetDefault()
+	if err != nil {
+		panic(err)
+	}
+	clipboard, _ := gtk.ClipboardGetForDisplay(screen, gdk.SELECTION_CLIPBOARD)
+	PixbufLoader, _ := gdk.PixbufLoaderNew()
+	Pixbuf, _ := PixbufLoader.WriteAndReturnPixbuf(Data)
+	clipboard.SetImage(Pixbuf)
+	clipboard.Store()
 }
 
 // StringToClipboard is used to place a string in the clipboard.
