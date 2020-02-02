@@ -24,7 +24,7 @@ func (w *Webview) Wait() {
 
 // Exit is used to exit the window. This needs to be ran in the main thread.
 func (w *Webview) Exit() {
-	w.window.Destroy()
+	w.window.Close()
 }
 
 // Focus is used to focus the window. This needs to be ran in the main thread.
