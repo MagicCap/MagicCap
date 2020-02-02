@@ -148,25 +148,8 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 	menu.Append(m)
 
 	if CurrentIndicator == nil {
-		// HACK: We can't pass bytes to appindicator, so temp save the icon and load it.
-		// After 10 seconds we delete it. The application will be loaded by then anyway (I would've thought it'd crash if it hung for 10 seconds).
-		Icon := TaskbarAssets.Bytes("icon.png")
-		TempDir, err := ioutil.TempDir("", "magiccap_icon")
-		if err != nil {
-			panic(err)
-		}
-		Path := path.Join(TempDir, "icon.png")
-		err = ioutil.WriteFile(Path, Icon, 0664)
-		if err != nil {
-			panic(err)
-		}
-		go func() {
-			time.Sleep(time.Second * 10)
-			os.RemoveAll(TempDir)
-		}()
-
 		// Create the indicator (tray icon).
-		CurrentIndicator = appindicator.New("magiccap-core", Path, appindicator.CategoryApplicationStatus)
+		CurrentIndicator = appindicator.New("magiccap-core", "", appindicator.CategoryApplicationStatus)
 
 		// Set the title to "MagicCap".
 		CurrentIndicator.SetTitle("MagicCap")
@@ -174,6 +157,24 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 		// Set the status to active.
 		CurrentIndicator.SetStatus(appindicator.StatusActive)
 	}
+
+	// HACK: We can't pass bytes to appindicator, so temp save the icon and load it.
+	// After 10 seconds we delete it. The application will be loaded by then anyway (I would've thought it'd crash if it hung for 10 seconds).
+	Icon := TaskbarAssets.Bytes("icon.png")
+	TempDir, err := ioutil.TempDir("", "magiccap_icon")
+	if err != nil {
+		panic(err)
+	}
+	Path := path.Join(TempDir, "icon.png")
+	err = ioutil.WriteFile(Path, Icon, 0664)
+	if err != nil {
+		panic(err)
+	}
+	go func() {
+		time.Sleep(time.Second * 10)
+		os.RemoveAll(TempDir)
+	}()
+	CurrentIndicator.SetIcon(Path)
 
 	// Set the menu.
 	CurrentIndicator.SetMenu(menu)
