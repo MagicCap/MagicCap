@@ -4,26 +4,69 @@
 
 package platformspecific
 
+import (
+	"sync"
+
+	webkit "github.com/andre-hub/go-webkit2"
+	"github.com/gotk3/gotk3/gtk"
+)
+
 // Webview defines the webview handler.
-type Webview struct {}
+type Webview struct {
+	window *gtk.Window
+	wg     *sync.WaitGroup
+}
 
 // Wait is used to wait for a webview. This is blocking and should NOT be ran in the main thread.
 func (w *Webview) Wait() {
-	// TODO: Implement this!
+	w.wg.Wait()
 }
 
 // Exit is used to exit the window. This needs to be ran in the main thread.
 func (w *Webview) Exit() {
-	// TODO: Implement this!
+	w.window.Destroy()
 }
 
 // Focus is used to focus the window. This needs to be ran in the main thread.
 func (w *Webview) Focus() {
-	// TODO: Implement this!
+	w.window.Present()
 }
 
 // NewWebview creates a new webview. This should be made from the main thread.
 func NewWebview(URL string, Title string, Width int, Height int, Resizable bool) *Webview {
-	// TODO: Implement this!
-	return &Webview{}
+	// Create the window.
+	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
+	if err != nil {
+		panic(err)
+	}
+
+	// Set the window title.
+	win.SetTitle(Title)
+
+	// Set the width/height.
+	win.SetDefaultSize(Width, Height)
+
+	// Set if it is resizable.
+	win.SetResizable(Resizable)
+
+	// Create a wait group for the view.
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
+	// Mark as done when the window is destroyed.
+	win.Connect("destroy", func() {
+		wg.Done()
+	})
+
+	// Create the webview, set the URL and associate it with the window.
+	wv, err := webkit.WebViewNew()
+	if err != nil {
+		panic(err)
+	}
+	win.Add(wv)
+	win.ShowAll()
+	wv.LoadURI(URL)
+
+	// Return the Webview struct.
+	return &Webview{wg: &wg, window: win}
 }

@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a
+	github.com/andre-hub/go-webkit2 v0.0.0-20180415141131-4c31e287aa11
 	github.com/antchfx/xmlquery v1.2.3 // indirect
 	github.com/antchfx/xpath v1.1.4 // indirect
 	github.com/aws/aws-sdk-go v1.28.8 // indirect
@@ -28,7 +29,7 @@ require (
 	github.com/godbus/dbus v5.0.1+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
-	github.com/gotk3/gotk3 v0.0.0-20200122052051-1b4add5ab128
+	github.com/gotk3/gotk3 v0.0.0-20200129211157-69caac910e50
 	github.com/h2non/filetype v1.0.10
 	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/hackebrot/turtle v0.1.0

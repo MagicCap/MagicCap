@@ -14,5 +14,5 @@ var ConfiguredHandlers map[string]func()
 
 // InitTray is used to initialise the tray.
 func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
-	// TODO: Implement this!
+	// TODO: Figure out the tray on linux.
 }
