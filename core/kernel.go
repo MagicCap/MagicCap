@@ -209,7 +209,10 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 	}
 	if FilePath == nil {
 		// Handle saving the file if required.
-		SaveCapture, _ := ConfigItems["save_capture"].(bool)
+		SaveCapture, ok := ConfigItems["save_capture"].(bool)
+		if !ok {
+			SaveCapture = true
+		}
 		if SaveCapture {
 			SavePath, ok := ConfigItems["save_path"].(string)
 			if !ok {
