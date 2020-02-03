@@ -25,27 +25,27 @@ func UnloadHotkeys() {
 // LoadHotkeys is used to load up the hotkeys.
 func LoadHotkeys() {
 	// Clipboard capture
-	ClipboardHotkey, _ := ConfigItems["clipboard_hotkey"].(*string)
-	if ClipboardHotkey != nil {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(*ClipboardHotkey, RunClipboardCapture))
+	ClipboardHotkey, ok := ConfigItems["clipboard_hotkey"].(string)
+	if ok {
+		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(ClipboardHotkey, RunClipboardCapture))
 	}
 
 	// GIF capture
-	GIFHotkey, _ := ConfigItems["gif_hotkey"].(*string)
-	if GIFHotkey != nil {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(*GIFHotkey, RunGIFCapture))
+	GIFHotkey, ok := ConfigItems["gif_hotkey"].(string)
+	if ok {
+		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(GIFHotkey, RunGIFCapture))
 	}
 
 	// Normal capture
-	NormalCapHotkey, _ := ConfigItems["hotkey"].(*string)
-	if NormalCapHotkey != nil {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(*NormalCapHotkey, RunScreenCapture))
+	NormalCapHotkey, ok := ConfigItems["hotkey"].(string)
+	if ok {
+		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(NormalCapHotkey, RunScreenCapture))
 	}
 
 	// Fullscreen capture
-	FullscreenCapHotkey, _ := ConfigItems["fullscreen_hotkey"].(*string)
-	if FullscreenCapHotkey != nil {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(*FullscreenCapHotkey, RunFullscreenCapture))
+	FullscreenCapHotkey, ok := ConfigItems["fullscreen_hotkey"].(string)
+	if ok {
+		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(FullscreenCapHotkey, RunFullscreenCapture))
 	}
 }
 

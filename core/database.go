@@ -103,9 +103,6 @@ func LoadDatabase() {
 	// Gets all of the config items.
 	GetConfigItems()
 
-	// Sets the login items.
-	LoginStartLast, _ = ConfigItems["open_login"].(bool)
-
 	// Loads the hotkeys.
 	LoadHotkeys()
 

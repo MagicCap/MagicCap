@@ -30,6 +30,7 @@ require (
 	github.com/godbus/dbus v5.0.1+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
+	github.com/google/uuid v1.1.1
 	github.com/gotk3/gotk3 v0.0.0-20200129211157-69caac910e50
 	github.com/h2non/filetype v1.0.10
 	github.com/hackebrot/go-repr v0.1.0 // indirect
@@ -41,6 +42,7 @@ require (
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
+	github.com/robotn/gohook v0.0.0-20200111152647-5bfaedadd9dd
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
 	github.com/valyala/fasthttp v1.8.0
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
