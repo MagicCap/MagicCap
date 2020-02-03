@@ -1,0 +1,20 @@
+name: Create Linux build artifact
+
+on:
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Run the Linux build script
+      run: ./linux_build.sh
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: magiccap-linux
+        path: magiccap-linux

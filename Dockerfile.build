@@ -1,0 +1,18 @@
+# Handle the config UI.
+FROM node:12-alpine3.11
+WORKDIR /var/magiccap
+RUN apk add util-linux
+COPY . .
+RUN cd config && npm i && npm run build
+
+# Handle the rest of the application.
+FROM golang:1.13-alpine
+WORKDIR /var/magiccap
+RUN apk add glfw-dev git gcc glib-dev pcre libc-dev libxi-dev libxkbcommon-dev libxtst-dev libpng-dev cairo-dev gtk+3.0-dev webkit2gtk-dev
+RUN apk add -X http://dl-cdn.alpinelinux.org/alpine/edge/testing libappindicator-dev
+COPY --from=0 /var/magiccap .
+RUN go get
+RUN cd .. && go get github.com/gobuffalo/packr/packr && cd magiccap
+
+# Set the command to build to the MagicCap mount.
+CMD packr build -o /var/magiccap-mount/magiccap-linux
