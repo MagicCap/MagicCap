@@ -1,10 +1,10 @@
+// +build linux
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019-2020.
 
 package platformspecific
 
 import (
-	"runtime"
 	"strings"
 	"sync"
 
@@ -61,11 +61,7 @@ func LoadHotkey(Keys string, Callback func()) string {
 			v = "+"
 		} else if v == "commandorcontrol" || v == "cmdorctrl" {
 			// This is platform dependant - handle this here!
-			if runtime.GOOS == "darwin" {
-				v = "command"
-			} else {
-				v = "ctrl"
-			}
+			v = "ctrl"
 		} else if v == "control" {
 			// Handle shorthanding this.
 			v = "ctrl"
