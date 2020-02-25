@@ -5,8 +5,8 @@
 package platformspecific
 
 /*
-#cgo CFLAGS: -x objective-c -I/Library/Frameworks/MASShortcut.framework/Headers
-#cgo LDFLAGS: -framework Foundation -framework Cocoa /Library/Frameworks/MASShortcut.framework/MASShortcut
+#cgo CFLAGS: -x objective-c -I.
+#cgo LDFLAGS: -framework Foundation -framework Cocoa ${SRCDIR}/MASShortcut.o
 #include <stdlib.h>
 #include "hotkeys_darwin.h"
 */
