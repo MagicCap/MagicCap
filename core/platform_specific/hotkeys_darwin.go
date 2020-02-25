@@ -11,11 +11,19 @@ package platformspecific
 #include "hotkeys_darwin.h"
 */
 import "C"
-import "strings"
-import "github.com/google/uuid"
+import (
+	"strconv"
+	"strings"
+)
 
-// HotkeyCallbackHandlers are all of the callback handlers.
-var HotkeyCallbackHandlers = map[int]func(){}
+// hotkey defines all of the parts required in a hotkey.
+type hotkey struct {
+	Callback func()
+	CPtr     *C.MASShortcut
+}
+
+// hotkeys are all of the callback handlers.
+var hotkeys = map[int]*hotkey{}
 
 // NextHotkeyCallback is the ID of the next callback.
 var NextHotkeyCallback = 0
@@ -27,10 +35,13 @@ func CHotkeyCallback(CIndex C.int) {
 	Index := int(CIndex)
 
 	// Get the function and delete when fetched.
-	Function := HotkeyCallbackHandlers[Index]
+	s, ok := hotkeys[Index]
+	if !ok {
+		return
+	}
 
 	// Call the function in a thread.
-	go Function()
+	go s.Callback()
 }
 
 // KeyMaps is used to map a key to the int value.
@@ -110,9 +121,6 @@ var KeyMaps = map[string]int{
 	"esc":       0x35,
 }
 
-// id2shortcut maps the ID to a shortcut.
-var id2shortcut = map[string]*C.MASShortcut{}
-
 // UnloadHotkey is used to unload a hotkey ID.
 func UnloadHotkey(HotkeyID string) {
 	// Ignore blank string.
@@ -120,8 +128,17 @@ func UnloadHotkey(HotkeyID string) {
 		return
 	}
 
-	// Garbage collection.
-	delete(id2shortcut, HotkeyID)
+	// Disable the hotkey and garbage collection.
+	i, err := strconv.Atoi(HotkeyID)
+	if err != nil {
+		return
+	}
+	h, ok := hotkeys[i]
+	if !ok {
+		return
+	}
+	C.UnloadHotkey(h.CPtr)
+	delete(hotkeys, i)
 }
 
 // LoadHotkey is used to load in a hotkey.
@@ -166,10 +183,8 @@ func LoadHotkey(Keys string, Callback func()) string {
 
 	// Call the C function.
 	HotkeyID := NextHotkeyCallback
-	HotkeyCallbackHandlers[HotkeyID] = Callback
-	NextHotkeyCallback++
 	CPtr := C.LoadHotkey(C.int(KeysInt), C.int(ModifiersInt), C.int(HotkeyID))
-	ID := uuid.Must(uuid.NewUUID()).String()
-	id2shortcut[ID] = CPtr
-	return ID
+	hotkeys[HotkeyID] = &hotkey{Callback: Callback, CPtr: CPtr}
+	NextHotkeyCallback++
+	return strconv.Itoa(HotkeyID)
 }
