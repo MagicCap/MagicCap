@@ -3,6 +3,7 @@ package regionselector
 import (
 	"errors"
 	img "image"
+	"image/draw"
 	"sync"
 	"time"
 
@@ -25,7 +26,7 @@ func OpenRegionSelector() *SelectorResult {
 	// Multi-thread getting all of the displays and making all of the images darker.
 	ScreenshotLen := 0
 	Screenshots := make([]*img.RGBA, len(Displays))
-	DarkerScreenshots := make([]*img.NRGBA, len(Displays))
+	DarkerScreenshots := make([]*img.RGBA, len(Displays))
 	ScreenshotsLock := sync.Mutex{}
 	wg := sync.WaitGroup{}
 	wg.Add(len(Displays))
@@ -46,7 +47,9 @@ func OpenRegionSelector() *SelectorResult {
 
 			// Adds the screenshots to the arrays.
 			Screenshots[index] = Screenshot
-			DarkerScreenshots[index] = Darker
+			i := img.NewRGBA(Darker.Rect)
+			draw.Draw(i, i.Rect, Darker, img.Point{X: 0, Y: 0}, draw.Over)
+			DarkerScreenshots[index] = i
 
 			// Adds one to the screenshot length.
 			ScreenshotLen++
@@ -253,7 +256,7 @@ func OpenRegionSelector() *SelectorResult {
 		wg := sync.WaitGroup{}
 		WindowsLen := len(Windows)
 		wg.Add(WindowsLen)
-		Images := make([]*img.NRGBA, len(GLFWMonitors))
+		Images := make([]*img.RGBA, len(GLFWMonitors))
 		for i, Rect := range Displays {
 			// Gets the point relative to the display.
 			// If DisplayPoint is nil, the point is not on this display.
@@ -266,7 +269,7 @@ func OpenRegionSelector() *SelectorResult {
 			}
 
 			// Gets the image for the display.
-			go func(index int, image *img.NRGBA) {
+			go func(index int, image *img.RGBA) {
 				defer wg.Done()
 				Images[index] = GetDisplayImage(DisplayPoint, image, FirstPosMap[index], &p, Screenshots[index])
 			}(i, DarkerScreenshots[i])

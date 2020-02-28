@@ -119,7 +119,6 @@ var hotkeys = []hotkey{}
 var hotkeyLock = sync.RWMutex{}
 
 // handleKeyDown is used to handle a key going down.
-// TODO: Handle command key
 func handleKeyDown(ev hook.Event) {
 	// Add the key to the array.
 	downKeysLock.Lock()
