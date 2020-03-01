@@ -28,4 +28,5 @@ func HandleWindow(shader *glhf.Shader, texture *glhf.Texture) {
 	slice.Draw()
 	slice.End()
 	shader.End()
+	texture.End()
 }

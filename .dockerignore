@@ -2,3 +2,4 @@ config/.cache
 config/node_modules
 .idea
 linux_build.sh
+.git

@@ -275,7 +275,6 @@ func OpenRegionSelector() *SelectorResult {
 				// Handles the window.
 				Texture := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i])
 				HandleWindow(Shaders[i], Texture)
-				Texture.End()
 			})
 
 			if BreakHere {

@@ -8,7 +8,8 @@ RUN cd config && npm i && npm run build
 # Handle the rest of the application.
 FROM golang:1.13-alpine
 WORKDIR /var/magiccap
-RUN apk add libappindicator-dev glfw-dev git gcc glib-dev pcre libc-dev libxi-dev libxkbcommon-dev libxtst-dev libpng-dev cairo-dev gtk+3.0-dev webkit2gtk-dev
+RUN apk add glfw-dev git gcc glib-dev pcre libc-dev libxi-dev libxkbcommon-dev libxtst-dev libpng-dev cairo-dev gtk+3.0-dev webkit2gtk-dev
+RUN apk add --repository=http://nl.alpinelinux.org/alpine/edge/community libappindicator-dev
 COPY --from=0 /var/magiccap .
 RUN go get
 RUN cd .. && go get github.com/gobuffalo/packr/packr && cd magiccap
