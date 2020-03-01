@@ -89,7 +89,8 @@ func OpenRegionSelector() *SelectorResult {
 	Shaders := make([]*glhf.Shader, len(GLFWMonitors))
 
 	// Defines the textures.
-	Textures := make([]*glhf.Texture, len(GLFWMonitors))
+	DarkerTextures := make([]*glhf.Texture, len(GLFWMonitors))
+	NormalTextures := make([]*glhf.Texture, len(GLFWMonitors))
 
 	// Defines first positions for the region selector.
 	FirstPosMap := map[int]*img.Point{}
@@ -225,39 +226,33 @@ func OpenRegionSelector() *SelectorResult {
 			Shaders[i] = s
 
 			// Creates the texture.
-			Textures[i] = glhf.NewTexture(
+			DarkerTextures[i] = glhf.NewTexture(
 				DarkerScreenshots[i].Bounds().Dx(),
 				DarkerScreenshots[i].Bounds().Dy(),
 				true,
 				DarkerScreenshots[i].Pix,
 			)
+
+			// Creates the brighter texture.
+			NormalTextures[i] = glhf.NewTexture(
+				Screenshots[i].Bounds().Dx(),
+				Screenshots[i].Bounds().Dy(),
+				true,
+				Screenshots[i].Pix,
+			)
 		})
 	}
 
 	// Handles events in the window.
-	LastPoint := img.Point{
-		X: -9999999999,
-		Y: -9999999999,
-	}
 	for {
 		// Gets the mouse position.
 		x, y := robotgo.GetMousePos()
-		p := img.Point{
-			X: x,
-			Y: y,
-		}
-		if LastPoint.Eq(p) {
-			time.Sleep(time.Millisecond * 20)
-			continue
-		}
-		LastPoint = p
 
-		// Handles getting the image in a thread.
-		wg := sync.WaitGroup{}
-		WindowsLen := len(Windows)
-		wg.Add(WindowsLen)
-		Images := make([]*img.RGBA, len(GLFWMonitors))
-		for i, Rect := range Displays {
+		ShouldBreakOuter := false
+		for i, Window := range Windows {
+			// Get the rectangle for this display.
+			Rect := Displays[i]
+
 			// Gets the point relative to the display.
 			// If DisplayPoint is nil, the point is not on this display.
 			var DisplayPoint *img.Point
@@ -268,16 +263,6 @@ func OpenRegionSelector() *SelectorResult {
 				}
 			}
 
-			// Gets the image for the display.
-			go func(index int, image *img.RGBA) {
-				defer wg.Done()
-				Images[index] = GetDisplayImage(DisplayPoint, image, FirstPosMap[index], &p, Screenshots[index])
-			}(i, DarkerScreenshots[i])
-		}
-		wg.Wait()
-
-		ShouldBreakOuter := false
-		for i, Window := range Windows {
 			BreakHere := false
 			platformspecific.ExecMainThread(func() {
 				// Makes the window the current context.
@@ -288,14 +273,12 @@ func OpenRegionSelector() *SelectorResult {
 				}
 				Window.MakeContextCurrent()
 
-				// Sets the texture.
-				texture := Textures[i]
-				image := Images[i]
-				texture.SetPixels(0, 0, image.Bounds().Dx(), image.Bounds().Dy(), image.Pix)
-
 				// Handles the window.
-				HandleWindow(Shaders[i], Textures[i])
+				Texture := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i])
+				HandleWindow(Shaders[i], Texture)
+				Texture.End()
 			})
+
 			if BreakHere {
 				break
 			}
@@ -316,9 +299,8 @@ func OpenRegionSelector() *SelectorResult {
 
 	// Cleans up the windows.
 	platformspecific.ExecMainThread(func() {
-		for i, v := range Windows {
+		for _, v := range Windows {
 			v.MakeContextCurrent()
-			Textures[i].End()
 			v.Destroy()
 		}
 	})
