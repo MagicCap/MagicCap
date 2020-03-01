@@ -5,7 +5,6 @@ import (
 	img "image"
 	"image/draw"
 	"sync"
-	"time"
 
 	"github.com/disintegration/imaging"
 	"github.com/faiface/glhf"
@@ -292,9 +291,6 @@ func OpenRegionSelector() *SelectorResult {
 		if ShouldBreakOuter {
 			break
 		}
-
-		// Lock the framerate to 120fps.
-		time.Sleep(time.Second / 120)
 	}
 
 	// Cleans up the windows.
