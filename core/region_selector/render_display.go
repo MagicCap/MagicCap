@@ -53,39 +53,40 @@ func RenderDisplay(
 	// Being the rendered texture modifications.
 	RenderedTexture.Begin()
 
-	// If FirstPos is not nil, try and crop "NormalTexture".
-	if FirstPos != nil {
-		// Handle the logic behind positioning.
-		if DisplayPoint.X != FirstPos.X {
-			// Create w/h/Top/Left ignoring that
-			Left := FirstPos.X
-			if Left > DisplayPoint.X {
-				Left = DisplayPoint.X
-			}
-			w := DisplayPoint.X - FirstPos.X
-			if 0 > w {
-				w = FirstPos.X - DisplayPoint.X
-			}
-			h := DisplayPoint.Y - FirstPos.Y
-			if 0 > h {
-				h = FirstPos.Y - DisplayPoint.Y
-			}
-			Top := FirstPos.Y
-			if Top > DisplayPoint.Y {
-				Top = DisplayPoint.Y
-			}
-
-			// Write the pixels to the render.
-			NormalTexture.Begin()
-			Pixels := NormalTexture.Pixels(Left, Top, w, h)
-			NormalTexture.End()
-			RenderedTexture.SetPixels(Left, Top, w, h, Pixels)
-			dashedBorder(RenderedTexture, Left, Top, w, h)
-		}
-	}
-
-	// If DisplayPoint is not nil, try drawing it.
+	// If DisplayPoint is not nil, try drawing the stuff relating to it.
 	if DisplayPoint != nil {
+		// If FirstPos is not nil, try and crop "NormalTexture".
+		if FirstPos != nil {
+			// Handle the logic behind positioning.
+			if DisplayPoint.X != FirstPos.X {
+				// Create w/h/Top/Left ignoring that
+				Left := FirstPos.X
+				if Left > DisplayPoint.X {
+					Left = DisplayPoint.X
+				}
+				w := DisplayPoint.X - FirstPos.X
+				if 0 > w {
+					w = FirstPos.X - DisplayPoint.X
+				}
+				h := DisplayPoint.Y - FirstPos.Y
+				if 0 > h {
+					h = FirstPos.Y - DisplayPoint.Y
+				}
+				Top := FirstPos.Y
+				if Top > DisplayPoint.Y {
+					Top = DisplayPoint.Y
+				}
+
+				// Write the pixels to the render.
+				NormalTexture.Begin()
+				Pixels := NormalTexture.Pixels(Left, Top, w, h)
+				NormalTexture.End()
+				RenderedTexture.SetPixels(Left, Top, w, h, Pixels)
+				dashedBorder(RenderedTexture, Left, Top, w, h)
+			}
+		}
+
+		// Draw the X/Y line.
 		var XLine []uint8
 		var YLine []uint8
 		wg := sync.WaitGroup{}
