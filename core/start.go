@@ -41,6 +41,9 @@ var (
 
 // Start is the main entrypoint for the application.
 func Start() {
+	// Make the MagicCap internal directory.
+	_ = os.MkdirAll(ConfigPath, 0700)
+
 	// Handle the random seed.
 	rand.Seed(time.Now().UnixNano())
 
@@ -59,9 +62,6 @@ func Start() {
 	if err != nil {
 		panic(err)
 	}
-
-	// Ensures that ConfigPath exists.
-	_ = os.MkdirAll(ConfigPath, 0777)
 
 	// Does any migrations which are needed.
 	MigrateFrom2()

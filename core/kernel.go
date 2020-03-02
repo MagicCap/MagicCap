@@ -1,5 +1,5 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
-// Copyright (C) Jake Gealer <jake@gealer.email> 2019.
+// Copyright (C) Jake Gealer <jake@gealer.email> 2019-2020.
 
 package core
 
@@ -44,7 +44,7 @@ func LoadUploadersKernel() {
 			sentry.CaptureException(err)
 			panic(err)
 		}
-		err = ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0777)
+		err = ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0600)
 		if err != nil {
 			sentry.CaptureException(err)
 			panic(err)
@@ -53,7 +53,7 @@ func LoadUploadersKernel() {
 	}
 
 	// Gets the uploader kernel.
-	if _, err := os.Stat(path.Join(ConfigPath, "kernel.json")); os.IsNotExist(err) {
+	if _, err := os.Stat(path.Join(ConfigPath, "kernel.json")); err != nil {
 		// Pull the kernel.
 		b := PullUploadersKernel()
 
@@ -218,7 +218,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 			if !ok {
 				// Make ~/Pictures/MagicCap
 				SavePath = path.Join(HomeDir, "Pictures", "MagicCap")
-				err := os.MkdirAll(SavePath, 0600)
+				err := os.MkdirAll(SavePath, 0700)
 				if err != nil {
 					sentry.CaptureException(err)
 					panic(err)

@@ -166,7 +166,7 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 		panic(err)
 	}
 	Path := path.Join(TempDir, "icon.png")
-	err = ioutil.WriteFile(Path, Icon, 0664)
+	err = ioutil.WriteFile(Path, Icon, 0600)
 	if err != nil {
 		panic(err)
 	}
