@@ -243,9 +243,26 @@ func OpenRegionSelector() *SelectorResult {
 	}
 
 	// Handles events in the window.
+	FirstTick := true
+	LastMouseDisplay := -1
 	for {
 		// Gets the mouse position.
 		x, y := robotgo.GetMousePos()
+
+		// Defines if the mouse moved displays during the process.
+		MouseMovedDisplay := false
+		for i, Rect := range Displays {
+			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
+				if LastMouseDisplay != i {
+					// The last display the mouse was on was not i.
+					// This means that the mouse moved display.
+					// We do this in another loop so that we can enforce it across all displays in the loop below.
+					LastMouseDisplay = i
+					MouseMovedDisplay = true
+				}
+				break
+			}
+		}
 
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
@@ -255,7 +272,7 @@ func OpenRegionSelector() *SelectorResult {
 			// Gets the point relative to the display.
 			// If DisplayPoint is nil, the point is not on this display.
 			var DisplayPoint *img.Point
-			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
+			if LastMouseDisplay == i {
 				DisplayPoint = &img.Point{
 					X: x - Rect.Min.X,
 					Y: y - Rect.Min.Y,
@@ -263,6 +280,7 @@ func OpenRegionSelector() *SelectorResult {
 			}
 
 			BreakHere := false
+			ContinueHere := false
 			platformspecific.ExecMainThread(func() {
 				// Makes the window the current context.
 				if Window.ShouldClose() {
@@ -270,6 +288,14 @@ func OpenRegionSelector() *SelectorResult {
 					BreakHere = true
 					return
 				}
+
+				// Don't bother drawing if this is not the current display.
+				if DisplayPoint == nil && !FirstTick && !MouseMovedDisplay {
+					ContinueHere = true
+					return
+				}
+
+				// Make this window the current context.
 				Window.MakeContextCurrent()
 
 				// Handles the window.
@@ -279,6 +305,8 @@ func OpenRegionSelector() *SelectorResult {
 
 			if BreakHere {
 				break
+			} else if ContinueHere {
+				continue
 			}
 
 			// Draws the buffer.
@@ -290,6 +318,9 @@ func OpenRegionSelector() *SelectorResult {
 		if ShouldBreakOuter {
 			break
 		}
+
+		// Ensure FirstTick is false.
+		FirstTick = false
 	}
 
 	// Cleans up the windows.

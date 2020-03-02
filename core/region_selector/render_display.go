@@ -81,6 +81,10 @@ func RenderDisplay(
 				NormalTexture.Begin()
 				Pixels := NormalTexture.Pixels(Left, Top, w, h)
 				NormalTexture.End()
+				if len(Pixels) == 0 {
+					// In this season of "Why the fuck is this a bug?"
+					return RenderedTexture
+				}
 				RenderedTexture.SetPixels(Left, Top, w, h, Pixels)
 				dashedBorder(RenderedTexture, Left, Top, w, h)
 			}
