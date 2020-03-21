@@ -28,7 +28,7 @@ require (
 	github.com/go-vgo/robotgo v0.0.0-20200123154043-e7ab665c511e
 	github.com/gobuffalo/packr v1.30.1
 	github.com/godbus/dbus v5.0.1+incompatible
-	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/google/uuid v1.1.1
 	github.com/gotk3/gotk3 v0.0.0-20200129211157-69caac910e50

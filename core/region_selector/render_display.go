@@ -2,6 +2,7 @@ package regionselector
 
 import (
 	"image"
+	"strconv"
 	"sync"
 
 	"github.com/faiface/glhf"
@@ -42,6 +43,7 @@ func dashedBorder(RenderedTexture *glhf.Texture, x, y, w, h int) {
 func RenderDisplay(
 	DisplayPoint *image.Point, FirstPos *image.Point,
 	NormalTexture *glhf.Texture, DarkerTexture *glhf.Texture,
+	RawX int, RawY int,
 ) *glhf.Texture {
 	// Create a copy of "DarkerTexture".
 	DarkerTexture.Begin()
@@ -89,6 +91,11 @@ func RenderDisplay(
 				dashedBorder(RenderedTexture, Left, Top, w, h)
 			}
 		}
+
+		// Draw the font for the X/Y texture.
+		DisplayString := "X: " + strconv.Itoa(RawX) + " | Y: " + strconv.Itoa(RawY)
+		FontImg := RenderText(DisplayString, 20)
+		RenderedTexture.SetPixels(DisplayPoint.X+10, DisplayPoint.Y+10, FontImg.Bounds().Dx(), FontImg.Bounds().Dy(), FontImg.Pix)
 
 		// Draw the X/Y line.
 		var XLine []uint8

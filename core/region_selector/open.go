@@ -299,7 +299,7 @@ func OpenRegionSelector() *SelectorResult {
 				Window.MakeContextCurrent()
 
 				// Handles the window.
-				Texture := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i])
+				Texture := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y)
 				HandleWindow(Shaders[i], Texture)
 			})
 
