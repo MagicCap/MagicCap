@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v1
 
     - name: Run the Linux build script
-      run: ./linux_build.sh
+      run: ./linux_build_local.sh
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1
