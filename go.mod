@@ -46,6 +46,5 @@ require (
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
 	github.com/valyala/fasthttp v1.8.0
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
-	github.com/godbus/dbus/v5 v5.0.4-0.20200214231604-06fc4b473149
 	gopkg.in/ajg/form.v1 v1.5.1 // indirect
 )
