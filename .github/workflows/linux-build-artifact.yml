@@ -10,6 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Install needed apt deps
+      run: sudo apt install libglfw3-dev pcre libxi-dev libxkbcommon-dev libxtst-dev libpng-dev libwebkit2gtk-4.0-dev
+
     - name: Run the Linux build script
       run: ./linux_build_local.sh
 
