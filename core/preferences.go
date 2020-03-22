@@ -5,6 +5,8 @@ package core
 
 import (
 	"encoding/json"
+	"github.com/magiccap/MagicCap/core/clipboard"
+	"github.com/magiccap/MagicCap/core/mainthread"
 	"io/ioutil"
 	"net"
 	"runtime"
@@ -12,7 +14,7 @@ import (
 	"strings"
 
 	"github.com/getsentry/sentry-go"
-	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
+	"github.com/magiccap/MagicCap/core/webview"
 	"github.com/pkg/browser"
 	"github.com/sqweek/dialog"
 
@@ -23,7 +25,7 @@ import (
 
 var (
 	// ConfigWindow defines the config window.
-	ConfigWindow *platformspecific.Webview
+	ConfigWindow *webview.Webview
 
 	// CSS defines the box containing CSS.
 	CSS = packr.NewBox("../config/src/css")
@@ -249,7 +251,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 
 	// Handles ports of Electron functions.
 	case "/clipboard":
-		platformspecific.StringToClipboard(string(ctx.Request.Body()))
+		clipboard.StringToClipboard(string(ctx.Request.Body()))
 		ctx.Response.SetStatusCode(204)
 		break
 	case "/open/url":
@@ -267,7 +269,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 			sentry.CaptureException(err)
 			panic(err)
 		}
-		go platformspecific.ExecMainThread(func() { OpenSaveDialog(Body) })
+		go mainthread.ExecMainThread(func() { OpenSaveDialog(Body) })
 		ctx.Response.SetStatusCode(204)
 		break
 
@@ -333,7 +335,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 func OpenPreferences() {
 	// Only allow a single instance of the config.
 	if ConfigWindow != nil {
-		platformspecific.ExecMainThread(ConfigWindow.Focus)
+		mainthread.ExecMainThread(ConfigWindow.Focus)
 		return
 	}
 
@@ -362,8 +364,8 @@ func OpenPreferences() {
 	} else if strings.Contains(Version, "b") {
 		VersionBit = " Beta"
 	}
-	platformspecific.ExecMainThread(func() {
-		ConfigWindow = platformspecific.NewWebview(URL, "MagicCap"+VersionBit, 1200, 600, false)
+	mainthread.ExecMainThread(func() {
+		ConfigWindow = webview.NewWebview(URL, "MagicCap"+VersionBit, 1200, 600, false)
 	})
 
 	// Wait for the config window.

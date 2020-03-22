@@ -4,10 +4,10 @@
 package core
 
 import (
+	"github.com/magiccap/MagicCap/core/notifications"
 	"io/ioutil"
 	"path/filepath"
 
-	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 	MagicCapKernelStandards "github.com/magiccap/magiccap-uploaders-kernel/standards"
 	"github.com/sqweek/dialog"
 )
@@ -27,5 +27,5 @@ func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
 	if !ok {
 		return
 	}
-	platformspecific.ThrowNotification("File upload successful.", url)
+	notifications.ThrowNotification("File upload successful.", url)
 }

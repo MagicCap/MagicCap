@@ -1,9 +1,8 @@
 package core
 
 import (
+	"github.com/magiccap/MagicCap/core/hotkeys"
 	"sync"
-
-	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 )
 
 // HotkeyIDs is an array of used hotkeys.
@@ -16,7 +15,7 @@ var HotkeyIDsLock = sync.Mutex{}
 func UnloadHotkeys() {
 	HotkeyIDsLock.Lock()
 	for _, v := range HotkeyIDs {
-		platformspecific.UnloadHotkey(v)
+		hotkeys.UnloadHotkey(v)
 	}
 	HotkeyIDs = make([]string, 0)
 	HotkeyIDsLock.Unlock()
@@ -27,25 +26,25 @@ func LoadHotkeys() {
 	// Clipboard capture
 	ClipboardHotkey, ok := ConfigItems["clipboard_hotkey"].(string)
 	if ok {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(ClipboardHotkey, RunClipboardCapture))
+		HotkeyIDs = append(HotkeyIDs, hotkeys.LoadHotkey(ClipboardHotkey, RunClipboardCapture))
 	}
 
 	// GIF capture
 	GIFHotkey, ok := ConfigItems["gif_hotkey"].(string)
 	if ok {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(GIFHotkey, RunGIFCapture))
+		HotkeyIDs = append(HotkeyIDs, hotkeys.LoadHotkey(GIFHotkey, RunGIFCapture))
 	}
 
 	// Normal capture
 	NormalCapHotkey, ok := ConfigItems["hotkey"].(string)
 	if ok {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(NormalCapHotkey, RunScreenCapture))
+		HotkeyIDs = append(HotkeyIDs, hotkeys.LoadHotkey(NormalCapHotkey, RunScreenCapture))
 	}
 
 	// Fullscreen capture
 	FullscreenCapHotkey, ok := ConfigItems["fullscreen_hotkey"].(string)
 	if ok {
-		HotkeyIDs = append(HotkeyIDs, platformspecific.LoadHotkey(FullscreenCapHotkey, RunFullscreenCapture))
+		HotkeyIDs = append(HotkeyIDs, hotkeys.LoadHotkey(FullscreenCapHotkey, RunFullscreenCapture))
 	}
 }
 

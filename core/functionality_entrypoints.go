@@ -5,6 +5,9 @@ package core
 
 import (
 	"bytes"
+	"github.com/magiccap/MagicCap/core/clipboard"
+	"github.com/magiccap/MagicCap/core/mainthread"
+	"github.com/magiccap/MagicCap/core/notifications"
 	"image/png"
 	"net/url"
 	"strings"
@@ -14,8 +17,8 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/h2non/filetype"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
-	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
+	"github.com/magiccap/MagicCap/core/webview"
 	"github.com/sqweek/dialog"
 	"golang.org/x/image/tiff"
 )
@@ -24,7 +27,7 @@ import (
 
 var (
 	// ShortenerWindows defines all of the shorteners open.
-	ShortenerWindows = make([]*platformspecific.Webview, 0)
+	ShortenerWindows = make([]*webview.Webview, 0)
 
 	// ShortenerWindowsLock is the R/W lock used.
 	ShortenerWindowsLock = sync.RWMutex{}
@@ -35,9 +38,9 @@ func ShowShort() {
 	HTML := strings.Replace(CoreAssets.String("shortener.html"), "inline_styling", CSS.String(
 		"bulmaswatch/darkly/bulmaswatch.min.css"), 1)
 	URL := `data:text/html,` + url.PathEscape(HTML)
-	var s *platformspecific.Webview
-	platformspecific.ExecMainThread(func() {
-		s = platformspecific.NewWebview(URL, "MagicCap Link Shortener", 500, 200, false)
+	var s *webview.Webview
+	mainthread.ExecMainThread(func() {
+		s = webview.NewWebview(URL, "MagicCap Link Shortener", 500, 200, false)
 	})
 	ShortenerWindowsLock.Lock()
 	ShortenerWindows = append(ShortenerWindows, s)
@@ -77,7 +80,7 @@ func RunFullscreenCapture() {
 	if !ok {
 		return
 	}
-	platformspecific.ThrowNotification("Fullscreen capture successful.", url)
+	notifications.ThrowNotification("Fullscreen capture successful.", url)
 }
 
 // RunScreenCapture runs a screen capture.
@@ -103,7 +106,7 @@ func RunScreenCapture() {
 	if !ok {
 		return
 	}
-	platformspecific.ThrowNotification("Screen capture successful.", url)
+	notifications.ThrowNotification("Screen capture successful.", url)
 }
 
 // RunGIFCapture runs a GIF capture.
@@ -129,12 +132,12 @@ func RunGIFCapture() {
 	if !ok {
 		return
 	}
-	platformspecific.ThrowNotification("GIF capture successful.", url)
+	notifications.ThrowNotification("GIF capture successful.", url)
 }
 
 // RunClipboardCapture runs a clipboard capture.
 func RunClipboardCapture() {
-	c := platformspecific.GetClipboard()
+	c := clipboard.GetClipboard()
 	FileType := "txt"
 	var Data []byte
 	if c.Text == nil {
@@ -179,5 +182,5 @@ func RunClipboardCapture() {
 	if !ok {
 		return
 	}
-	platformspecific.ThrowNotification("Clipboard capture successful.", url)
+	notifications.ThrowNotification("Clipboard capture successful.", url)
 }

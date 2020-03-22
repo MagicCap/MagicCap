@@ -3,7 +3,9 @@
 
 package core
 
-import "github.com/magiccap/MagicCap/core/platform_specific"
+import (
+	"github.com/magiccap/MagicCap/core/clipboard"
+)
 
 // ClipboardAction handles the clipboard action.
 func ClipboardAction(Data []byte, Extension string, URL *string) {
@@ -17,13 +19,13 @@ func ClipboardAction(Data []byte, Extension string, URL *string) {
 		return
 	case 1:
 		// Copy the file to the clipboard.
-		platformspecific.BytesToClipboard(Data, Extension)
+		clipboard.BytesToClipboard(Data, Extension)
 	case 2:
 		// Copy the URL to the clipboard. If there is no URL, dump the bytes.
 		if URL == nil {
-			platformspecific.BytesToClipboard(Data, Extension)
+			clipboard.BytesToClipboard(Data, Extension)
 		} else {
-			platformspecific.StringToClipboard(*URL)
+			clipboard.StringToClipboard(*URL)
 		}
 	}
 }

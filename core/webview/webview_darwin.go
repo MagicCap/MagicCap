@@ -3,11 +3,11 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2020.
 
-package platformspecific
+package webview
 
 /*
 #cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework Webkit
+#cgo LDFLAGS: -framework Webkit -framework Cocoa
 #include <stdlib.h>
 #import <WebKit/WebKit.h>
 #include "webview_darwin.h"

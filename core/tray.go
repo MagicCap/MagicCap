@@ -4,7 +4,7 @@
 package core
 
 import (
-	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
+	"github.com/magiccap/MagicCap/core/tray"
 	"os"
 )
 
@@ -54,7 +54,7 @@ func RestartTrayProcess(ColdBoot bool) {
 			OpenFileUploader(v.Uploader)
 		}
 	}
-	platformspecific.InitTray(UploaderNames, Slugs, Callbacks)
+	tray.InitTray(UploaderNames, Slugs, Callbacks)
 
 	// Print when it is done.
 	println("Tray initialised.")

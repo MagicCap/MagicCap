@@ -2,7 +2,7 @@
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
-package platformspecific
+package clipboard
 
 /*
 #cgo CFLAGS: -x objective-c
@@ -11,7 +11,9 @@ package platformspecific
 #include "clipboard_darwin.h"
 */
 import "C"
-import "unsafe"
+import (
+	"unsafe"
+)
 
 // BytesToClipboard is used to place bytes in the clipboard.
 func BytesToClipboard(Data []byte, Extension string) {

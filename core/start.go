@@ -5,6 +5,7 @@ package core
 
 import (
 	"fmt"
+	"github.com/magiccap/MagicCap/core/apploop"
 	"math/rand"
 	"os"
 	"path"
@@ -19,7 +20,6 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/gobuffalo/packr"
-	platformspecific "github.com/magiccap/MagicCap/core/platform_specific"
 )
 
 var (
@@ -94,7 +94,7 @@ func Start() {
 	}
 
 	// Initialise the application loop in the main thread.
-	mainthread.CallNonBlock(platformspecific.ApplicationLoopStart(func() {
+	mainthread.CallNonBlock(apploop.ApplicationLoopStart(func() {
 		// Initialises glfw/gl.
 		err := glfw.Init()
 		if err != nil {
