@@ -6,7 +6,7 @@ package platformspecific
 
 import (
 	"github.com/esiqveland/notify"
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/pkg/browser"
 )
 
@@ -19,7 +19,12 @@ func ThrowNotification(Text string, URL *string) {
 	}
 
 	// Create the notifier.
-	notifier, err := notify.New(b)
+	onAction := func(action *notify.ActionInvokedSignal) {
+		if URL != nil {
+			browser.OpenURL(*URL)
+		}
+	}
+	notifier, err := notify.New(b, notify.WithOnAction(onAction))
 	if err != nil {
 		panic(err)
 	}
@@ -37,17 +42,8 @@ func ThrowNotification(Text string, URL *string) {
 	}
 
 	// Send the notification.
-	id, err := notifier.SendNotification(n)
+	_, err = notifier.SendNotification(n)
 	if err != nil {
 		panic(err)
 	}
-
-	// Listen for invoked action.
-	Channel := notifier.ActionInvoked()
-	go func() {
-		action := <-Channel
-		if action.ID == id && URL != nil {
-			browser.OpenURL(*URL)
-		}
-	}()
 }
