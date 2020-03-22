@@ -21,7 +21,7 @@ var TotalCalls = 0
 var Calls = map[int]func(){}
 
 // CallsWaiters is a map of wait groups.
-var CallsWaiters = map[int]*sync.WaitGroup{}
+var CallsWaiters = map[int]*chan bool{}
 
 // CallsLock is the thread lock used for callbacks.
 var CallsLock = sync.Mutex{}
@@ -37,7 +37,7 @@ func CCallbackHandler(CIndex C.int) {
 
 	// Get the function and wait group and delete them when fetched.
 	Function := Calls[Index]
-	wg := CallsWaiters[Index]
+	ret := CallsWaiters[Index]
 	delete(Calls, Index)
 	delete(CallsWaiters, Index)
 
@@ -48,7 +48,7 @@ func CCallbackHandler(CIndex C.int) {
 	Function()
 
 	// Mark it as done in the wait group.
-	wg.Done()
+	*ret <- true
 }
 
 // ExecMainThread is used to execute a function on the main thread.
@@ -59,10 +59,9 @@ func ExecMainThread(Function func()) {
 	// Set the index.
 	Index := TotalCalls
 
-	// Create the wait group.
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	CallsWaiters[Index] = &wg
+	// Create the return channel.
+	ret := make(chan bool)
+	CallsWaiters[Index] = &ret
 
 	// Insert the function call.
 	Calls[Index] = Function
@@ -77,5 +76,5 @@ func ExecMainThread(Function func()) {
 	C.handle_mainthread(C.int(Index))
 
 	// Wait for the function to be complete.
-	wg.Wait()
+	<-ret
 }

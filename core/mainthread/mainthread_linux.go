@@ -5,18 +5,15 @@
 package mainthread
 
 import (
-	"sync"
-
 	"github.com/gotk3/gotk3/glib"
 )
 
 // ExecMainThread is used to execute a function on the main thread.
 func ExecMainThread(Function func()) {
-	wg := sync.WaitGroup{}
-	wg.Add(1)
+	ret := make(chan bool)
 	glib.IdleAdd(func() {
 		Function()
-		wg.Done()
+		ret <- true
 	})
-	wg.Wait()
+	<- ret
 }
