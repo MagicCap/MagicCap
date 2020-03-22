@@ -119,6 +119,14 @@ func RenderDisplay(
 		wg.Wait()
 		RenderedTexture.SetPixels(0, DisplayPoint.Y, Width, 1, XLine)
 		RenderedTexture.SetPixels(DisplayPoint.X, 0, 1, Height, YLine)
+
+		// Draw the top bar.
+		RenderedTexture.SetPixels((Width/2)-(editorTopBar.Bounds().Dx()/2), 20, editorTopBar.Bounds().Dx(), editorTopBar.Bounds().Dy(), editorTopBar.Pix)
+		IconOffset := (Width / 2) - (editorTopBar.Bounds().Dx() / 2) + 40
+		for _, k := range editorsOrdered {
+			RenderedTexture.SetPixels(IconOffset, 30, preloadedIcons[k].Bounds().Dx(), preloadedIcons[k].Bounds().Dy(), preloadedIcons[k].(*image.NRGBA).Pix)
+			IconOffset += 100
+		}
 	}
 
 	// End the rendered texture modifications.

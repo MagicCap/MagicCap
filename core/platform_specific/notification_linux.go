@@ -6,7 +6,7 @@ package platformspecific
 
 import (
 	"github.com/esiqveland/notify"
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 	"github.com/pkg/browser"
 )
 
