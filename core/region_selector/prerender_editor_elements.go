@@ -5,6 +5,7 @@ import (
 	"github.com/disintegration/imaging"
 	"github.com/magiccap/MagicCap/core/editors"
 	"image"
+	"image/color"
 	"image/draw"
 	"image/png"
 	"sort"
@@ -15,6 +16,7 @@ var (
 	preloadedIcons          = map[string]image.Image{}
 	editorsOrdered 	        []string
 	editorTopBar            *image.RGBA
+	SelectedItemRender 		[]byte
 )
 
 func init() {
@@ -31,7 +33,27 @@ func init() {
 	}
 	sort.Strings(editorsOrdered)
 
+	// Pre-render the selector icon.
+	p, err := png.Decode(bytes.NewReader(editors.SelectorIcon))
+	if err != nil {
+		panic(err)
+	}
+	preloadedIcons["__selector"] = imaging.Resize(p, 30, 30, imaging.Box)
+
 	// Create the editor top bar.
-	editorTopBar = image.NewRGBA(image.Rectangle{Max: image.Pt(100*len(editors.Editors), 50)})
+	editorTopBar = image.NewRGBA(image.Rectangle{Max: image.Pt(100*(len(editors.Editors)+1), 50)})
 	draw.Draw(editorTopBar, editorTopBar.Rect, image.Black, image.ZP, draw.Over)
+
+	// Pre-render the selected item highlight.
+	i := image.NewRGBA(image.Rectangle{Max: image.Pt(100, 50)})
+	y := 0
+	for y != i.Rect.Dy() {
+		x := 0
+		for x != i.Rect.Dx() {
+			i.Set(x, y, color.RGBA{0, 137, 177, 0xFF})
+			x++
+		}
+		y++
+	}
+	SelectedItemRender = i.Pix
 }

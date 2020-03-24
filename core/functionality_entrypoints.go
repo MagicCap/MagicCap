@@ -85,7 +85,7 @@ func RunFullscreenCapture() {
 
 // RunScreenCapture runs a screen capture.
 func RunScreenCapture() {
-	r := regionselector.OpenRegionSelector()
+	r := regionselector.OpenRegionSelector(true)
 	if r == nil {
 		return
 	}
@@ -111,7 +111,7 @@ func RunScreenCapture() {
 
 // RunGIFCapture runs a GIF capture.
 func RunGIFCapture() {
-	r := regionselector.OpenRegionSelector()
+	r := regionselector.OpenRegionSelector(false)
 	if r == nil {
 		return
 	}

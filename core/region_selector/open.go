@@ -2,6 +2,7 @@ package regionselector
 
 import (
 	"errors"
+	"github.com/magiccap/MagicCap/core/editors"
 	"github.com/magiccap/MagicCap/core/mainthread"
 	img "image"
 	"image/draw"
@@ -17,8 +18,13 @@ import (
 	_ "github.com/magiccap/MagicCap/core/editors"
 )
 
+type edit struct {
+	p *img.Point
+	r *img.RGBA
+}
+
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
-func OpenRegionSelector() *SelectorResult {
+func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 	// Gets all of the displays.
 	Displays := displaymanagement.GetActiveDisplaysOrdered()
 
@@ -95,11 +101,22 @@ func OpenRegionSelector() *SelectorResult {
 	FirstPosMap := map[int]*img.Point{}
 
 	// Creates the event dispatcher.
-	dispatcher := EventDispatcher{}
+	dispatcher := EventDispatcher{
+		History: map[int][]*edit{},
+	}
+
+	// Defines the currently selected editor.
+	SelectedEditor := "__selector"
+
+	// Defines the hovering editor.
+	// A blank string means it isn't hovering.
+	HoveringEditor := ""
 
 	// Make a window on each display.
 	Windows := make([]*glfw.Window, len(GLFWMonitors))
 	for i, v := range Displays {
+		// TODO: Create shortcut so CTRLOrCMD+Z can work.
+
 		// Creates the window.
 		var Window *glfw.Window
 		var err error
@@ -132,6 +149,10 @@ func OpenRegionSelector() *SelectorResult {
 			}
 			x, y := robotgo.GetMousePos()
 			if action == glfw.Press {
+				if HoveringEditor != "" {
+					// Ignore this! This is in the editor.
+					return
+				}
 				FirstPosMap[index] = &img.Point{
 					X: x - DisplayPos.Min.X,
 					Y: y - DisplayPos.Min.Y,
@@ -140,8 +161,17 @@ func OpenRegionSelector() *SelectorResult {
 					FirstPosMap[index] = nil
 				}
 			} else if action == glfw.Release {
-				dispatcher.EscapeHandler = nil
-				FirstPosCpy := FirstPosMap[index]
+				if HoveringEditor != "" {
+					// Handle selecting a editor.
+					SelectedEditor = HoveringEditor
+					return
+				}
+
+				FirstPosCpy, ok := FirstPosMap[index]
+				if !ok {
+					// Ignore this!
+					return
+				}
 				FirstPosMap[index] = nil
 				if FirstPosCpy != nil {
 					// Get the result from here.
@@ -153,17 +183,59 @@ func OpenRegionSelector() *SelectorResult {
 					// Get the rectangle.
 					Rect := img.Rect(FirstPosCpy.X, FirstPosCpy.Y, EndResult.X, EndResult.Y)
 
-					// Gets the result.
-					dispatcher.Result = &SelectorResult{
-						Selection:      Screenshots[index].SubImage(Rect).(*img.RGBA),
-						Screenshots:    Screenshots,
-						Displays:       Displays,
-						DisplayIndex:   index,
-						TopLeftDisplay: &Rect.Min,
-					}
+					// Nil the escape handler.
+					dispatcher.EscapeHandler = nil
 
-					// Closes the window.
-					Window.SetShouldClose(true)
+					if SelectedEditor == "__selector" {
+						// Apply all edits for this display.
+						Edits, _ := dispatcher.History[index]
+						for _, v := range Edits {
+							// Get the screenshot.
+							s := Screenshots[index]
+
+							// Draws the edit.
+							x := 0
+							for x != v.r.Rect.Dx() {
+								y := 0
+								for y != v.r.Rect.Dy() {
+									s.Set(x+v.p.X, y+v.p.Y, v.r.At(x, y))
+									y++
+								}
+								x++
+							}
+						}
+
+						// Sets the result.
+						dispatcher.Result = &SelectorResult{
+							Selection:      Screenshots[index].SubImage(Rect).(*img.RGBA),
+							Screenshots:    Screenshots,
+							Displays:       Displays,
+							DisplayIndex:   index,
+							TopLeftDisplay: &Rect.Min,
+						}
+
+						// Closes the window.
+						Window.SetShouldClose(true)
+					} else {
+						// Get the selection.
+						Selection := Screenshots[index].SubImage(Rect).(*img.RGBA)
+
+						// Run the editor.
+						// TODO: Don't hardcode RGBA values.
+						Result := editors.Editors[SelectedEditor].Apply(Selection, [3]uint8{255, 255, 255})
+						h, ok := dispatcher.History[index]
+						if ok {
+							dispatcher.History[index] = append(h, &edit{
+								p: &Rect.Min,
+								r: Result,
+							})
+						} else {
+							dispatcher.History[index] = []*edit{{
+								p: &Rect.Min,
+								r: Result,
+							}}
+						}
+					}
 				}
 			}
 		})
@@ -299,7 +371,8 @@ func OpenRegionSelector() *SelectorResult {
 				Window.MakeContextCurrent()
 
 				// Handles the window.
-				Texture := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y)
+				Texture, h := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y, SelectedEditor, ShowEditors, dispatcher.History[i])
+				HoveringEditor = h
 				HandleWindow(Shaders[i], Texture)
 			})
 

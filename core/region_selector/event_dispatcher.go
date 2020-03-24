@@ -5,4 +5,5 @@ type EventDispatcher struct {
 	ShouldFullscreenCapture bool
 	EscapeHandler           func()
 	Result                  *SelectorResult
+	History                 map[int][]*edit
 }

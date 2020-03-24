@@ -3,6 +3,7 @@ package editors
 import (
 	"github.com/fogleman/gg"
 	"image"
+	"image/draw"
 )
 
 func init() {
@@ -13,9 +14,7 @@ func init() {
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			// Creates the image.
 			img := image.NewRGBA(Region.Bounds())
-			for i, v := range Region.Pix {
-				img.Pix[i] = v
-			}
+			draw.Draw(img, img.Rect, Region, image.ZP, draw.Over)
 
 			// Draws the circle.
 			Radius := Region.Bounds().Dx()
