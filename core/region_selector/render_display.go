@@ -100,6 +100,13 @@ func RenderDisplay(
 					return RenderedTexture, HoveringEditor
 				}
 				RenderedTexture.SetPixels(Left, Top, w, h, Pixels)
+
+				// HACK: Redraw the history. There's definitely a more elegant way of doing this.
+				// But eh, it'd be a tiny performance improvement.
+				for _, v := range History {
+					RenderedTexture.SetPixels(v.p.X, v.p.Y, v.r.Rect.Dx(), v.r.Rect.Dy(), v.r.Pix)
+				}
+
 				dashedBorder(RenderedTexture, Left, Top, w, h)
 			}
 		}
