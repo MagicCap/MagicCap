@@ -114,27 +114,33 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 
 	// Make a window on each display.
 	Windows := make([]*glfw.Window, len(GLFWMonitors))
+	var FirstWindow *glfw.Window
 	for i, v := range Displays {
-		// TODO: Create shortcut so CTRLOrCMD+Z can work.
-
 		// Creates the window.
 		var Window *glfw.Window
 		var err error
 		mainthread.ExecMainThread(func() {
+			// Creates the OpenGL context.
 			glfw.WindowHint(glfw.ContextVersionMajor, 3)
 			glfw.WindowHint(glfw.ContextVersionMinor, 3)
 			glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
 			glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-			glfw.WindowHint(glfw.Resizable, glfw.False)
-			glfw.WindowHint(glfw.Focused, glfw.True)
+
+			// Sets all of the used window hints.
+			glfw.WindowHint(glfw.CenterCursor, glfw.False)
 			glfw.WindowHint(glfw.Decorated, glfw.False)
-			glfw.WindowHint(glfw.Floating, glfw.True)
-			glfw.WindowHint(glfw.Maximized, glfw.True)
 			glfw.WindowHint(glfw.FocusOnShow, glfw.True)
-			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], nil)
+			glfw.WindowHint(glfw.Floating, glfw.True)
+			glfw.WindowHint(glfw.AutoIconify, glfw.False)
+
+			// Create the display window.
+			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], FirstWindow)
 			if err != nil {
 				sentry.CaptureException(err)
 				panic(err)
+			}
+			if FirstWindow == nil {
+				FirstWindow = Window
 			}
 			Windows[i] = Window
 			Window.MakeContextCurrent()
