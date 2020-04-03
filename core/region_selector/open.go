@@ -23,8 +23,13 @@ type edit struct {
 	r *img.RGBA
 }
 
+var regionSelectorLock = sync.Mutex{}
+
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
 func OpenRegionSelector(ShowEditors bool) *SelectorResult {
+	// Lock the region selector.
+	regionSelectorLock.Lock()
+
 	// Gets all of the displays.
 	Displays := displaymanagement.GetActiveDisplaysOrdered()
 
@@ -132,6 +137,7 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 			glfw.WindowHint(glfw.FocusOnShow, glfw.True)
 			glfw.WindowHint(glfw.Floating, glfw.True)
 			glfw.WindowHint(glfw.AutoIconify, glfw.False)
+			glfw.WindowHint(glfw.Resizable, glfw.False)
 
 			// Create the display window.
 			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], FirstWindow)
@@ -342,6 +348,15 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 			}
 		}
 
+		// Handles polling for events.
+		// This is in another loop because we want to do it for each display.
+		for _, Window := range Windows {
+			go mainthread.ExecMainThread(func() {
+				Window.MakeContextCurrent()
+				glfw.PollEvents()
+			})
+		}
+
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
 			// Get the rectangle for this display.
@@ -392,8 +407,7 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 			go Window.SwapBuffers()
 		}
 
-		// Handles the outer for loop and polls for events.
-		mainthread.ExecMainThread(glfw.PollEvents)
+		// Handles the outer for loops.
 		if ShouldBreakOuter {
 			break
 		}
@@ -421,6 +435,7 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 			}
 		}
 		Screenshot := Screenshots[Display]
+		regionSelectorLock.Unlock()
 		return &SelectorResult{
 			Selection:    Screenshot,
 			Screenshots:  Screenshots,
@@ -435,9 +450,11 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 
 	// if Result isn't null, return it.
 	if dispatcher.Result != nil {
+		regionSelectorLock.Unlock()
 		return dispatcher.Result
 	}
 
 	// Return null.
+	regionSelectorLock.Unlock()
 	return nil
 }
