@@ -23,8 +23,6 @@ import (
 	"golang.org/x/image/tiff"
 )
 
-// TODO: A bug is somewhere in this codebase where open windows are not focused. It isn't here, but it needs patching!
-
 var (
 	// ShortenerWindows defines all of the shorteners open.
 	ShortenerWindows = make([]*webview.Webview, 0)
