@@ -1,6 +1,6 @@
 package regionselector
 
-import "github.com/faiface/glhf"
+import "github.com/MagicCap/glhf"
 
 // HandleWindow is used to handle a window.
 func HandleWindow(shader *glhf.Shader, texture *glhf.Texture) {

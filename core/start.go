@@ -5,15 +5,14 @@ package core
 
 import (
 	"fmt"
+	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/magiccap/MagicCap/core/apploop"
 	"math/rand"
 	"os"
 	"path"
 	"time"
 
-	"github.com/faiface/mainthread"
-	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/kbinani/screenshot"
 
 	"github.com/hackebrot/turtle"
@@ -41,60 +40,8 @@ var (
 
 // Start is the main entrypoint for the application.
 func Start() {
-	// Make the MagicCap internal directory.
-	_ = os.MkdirAll(ConfigPath, 0700)
-
-	// Handle the random seed.
-	rand.Seed(time.Now().UnixNano())
-
-	// Load in all of the emojis.
-	for _, value := range turtle.Emojis {
-		Emojis = append(Emojis, value.String())
-	}
-
-	// Gets the start time.
-	StartTime := time.Now()
-
-	// Initialises Sentry.
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn: "https://9eafc18531ea47dcb497d21ab45f80d4@sentry.io/1865806",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	// Does any migrations which are needed.
-	MigrateFrom2()
-
-	// Boot message.
-	println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2020.")
-
-	// Catch any errors during initialisation and log them to Sentry.
-	defer func() {
-		if err := recover(); err != nil {
-			sentry.CaptureException(err.(error))
-			panic(err)
-		}
-	}()
-
-	// Loads up the uploader kernel.
-	LoadUploadersKernel()
-
-	// Loads the SQLite3 DB.
-	LoadDatabase()
-
-	// Ensures there is a install ID.
-	EnsureInstallID()
-
-	// Take a 1x1 screenshot to ensure that it is ok and the permissions dialog pops up.
-	_, err = screenshot.Capture(1, 1, 1, 1)
-	if err != nil {
-		sentry.CaptureException(err)
-		panic(err)
-	}
-
 	// Initialise the application loop in the main thread.
-	mainthread.CallNonBlock(apploop.ApplicationLoopStart(func() {
+	apploop.ApplicationLoopStart(func() {
 		// Initialises glfw/gl.
 		err := glfw.Init()
 		if err != nil {
@@ -105,11 +52,63 @@ func Start() {
 			panic(err)
 		}
 
+		// Make the MagicCap internal directory.
+		_ = os.MkdirAll(ConfigPath, 0700)
+
+		// Handle the random seed.
+		rand.Seed(time.Now().UnixNano())
+
+		// Load in all of the emojis.
+		for _, value := range turtle.Emojis {
+			Emojis = append(Emojis, value.String())
+		}
+
+		// Gets the start time.
+		StartTime := time.Now()
+
+		// Initialises Sentry.
+		err = sentry.Init(sentry.ClientOptions{
+			Dsn: "https://9eafc18531ea47dcb497d21ab45f80d4@sentry.io/1865806",
+		})
+		if err != nil {
+			panic(err)
+		}
+
+		// Boot message.
+		println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2020.")
+
+		// Catch any errors during initialisation and log them to Sentry.
+		defer func() {
+			if err := recover(); err != nil {
+				sentry.CaptureException(err.(error))
+				panic(err)
+			}
+		}()
+
+		// Take a 1x1 screenshot to ensure that it is ok and the permissions dialog pops up.
+		_, err = screenshot.Capture(1, 1, 1, 1)
+		if err != nil {
+			sentry.CaptureException(err)
+			panic(err)
+		}
+
+		// Does any migrations which are needed.
+		MigrateFrom2()
+
+		// Loads up the uploader kernel.
+		LoadUploadersKernel()
+
+		// Loads the SQLite3 DB.
+		LoadDatabase()
+
+		// Ensures there is a install ID.
+		EnsureInstallID()
+
 		// Starts the tray.
 		RestartTrayProcess(true)
-	}))
 
-	// Defines how long it took.
-	elapsed := time.Since(StartTime)
-	fmt.Printf("Initialisation took %s.\n", elapsed)
+		// Defines how long it took.
+		elapsed := time.Since(StartTime)
+		fmt.Printf("Initialisation took %s.\n", elapsed)
+	})
 }

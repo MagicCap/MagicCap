@@ -17,8 +17,11 @@ var mainApplication *gtk.Application
 // appID is the ID of the application.
 var appID = "org.magiccap.magiccap"
 
-// ApplicationLoopStart exports a function which is used to start the application loop.
-func ApplicationLoopStart(ReadyCallback func()) func() {
+// ApplicationLoopStart is used to start the application loop.
+func ApplicationLoopStart(ReadyCallback func()) {
+	// Lock the OS thread.
+	runtime.LockOSThread()
+
 	// Create the application.
 	application, err := gtk.ApplicationNew(appID, glib.APPLICATION_FLAGS_NONE)
 	if err != nil {
@@ -41,7 +44,5 @@ func ApplicationLoopStart(ReadyCallback func()) func() {
 
 	// Run the application.
 	mainApplication = application
-	return func() {
-		os.Exit(application.Run(nil))
-	}
+	os.Exit(application.Run(nil))
 }

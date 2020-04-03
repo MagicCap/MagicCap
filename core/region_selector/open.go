@@ -8,8 +8,8 @@ import (
 	"image/draw"
 	"sync"
 
+	"github.com/MagicCap/glhf"
 	"github.com/disintegration/imaging"
-	"github.com/faiface/glhf"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-vgo/robotgo"
@@ -395,6 +395,9 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 				Texture, h := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y, SelectedEditor, ShowEditors, dispatcher.History[i])
 				HoveringEditor = h
 				HandleWindow(Shaders[i], Texture)
+
+				// Swap the window buffers.
+				Window.SwapBuffers()
 			})
 
 			if BreakHere {
@@ -402,9 +405,6 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 			} else if ContinueHere {
 				continue
 			}
-
-			// Draws the buffer.
-			go Window.SwapBuffers()
 		}
 
 		// Handles the outer for loops.

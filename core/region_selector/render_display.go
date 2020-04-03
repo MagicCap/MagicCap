@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/faiface/glhf"
+	"github.com/MagicCap/glhf"
 )
 
 func dashedBorder(RenderedTexture *glhf.Texture, x, y, w, h int) {
