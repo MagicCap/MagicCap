@@ -351,13 +351,7 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 		}
 
 		// Handles polling for events.
-		// This is in another loop because we want to do it for each display.
-		for _, Window := range Windows {
-			go mainthread.ExecMainThread(func() {
-				Window.MakeContextCurrent()
-				glfw.PollEvents()
-			})
-		}
+		mainthread.ExecMainThread(glfw.PollEvents)
 
 		ShouldBreakOuter := false
 		for i, Window := range Windows {
