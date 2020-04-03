@@ -14,11 +14,6 @@ import (
 
 // UnloadAllHotkeys is used to unload all hotkeys.
 func UnloadAllHotkeys() {
-	// Ignore blank string.
-	if HotkeyID == "" {
-		return
-	}
-
 	// Lock the hotkeys.
 	hotkeyLock.RLock()
 
