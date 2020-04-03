@@ -117,6 +117,9 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 	// A blank string means it isn't hovering.
 	HoveringEditor := ""
 
+	// Defines the last display the mouse was on.
+	LastMouseDisplay := -1
+
 	// Make a window on each display.
 	Windows := make([]*glfw.Window, len(GLFWMonitors))
 	var FirstWindow *glfw.Window
@@ -281,7 +284,7 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 						KeysDownLock.RUnlock()
 						ReleasedCount = 0
 						KeysDownLock.Lock()
-						KeyUpHandler(w, KeysDown, &dispatcher)
+						KeyUpHandler(w, KeysDown, LastMouseDisplay, &dispatcher)
 						KeysDown = make([]*glfw.Key, 0)
 						KeysDownLock.Unlock()
 					} else {
@@ -328,7 +331,6 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 
 	// Handles events in the window.
 	FirstTick := true
-	LastMouseDisplay := -1
 	for {
 		// Gets the mouse position.
 		x, y := robotgo.GetMousePos()
