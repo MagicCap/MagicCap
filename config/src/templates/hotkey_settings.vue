@@ -98,12 +98,12 @@
                     }
                 }
 
-                if (config.o.fullscreen_hotkey !== clipboardText) {
+                if (config.o.fullscreen_hotkey !== fullscreenText) {
                     changed = true
                     if (fullscreenText === "") {
                         config.o.fullscreen_hotkey = null
                     } else {
-                        config.o.fullscreen_hotkey = clipboardText
+                        config.o.fullscreen_hotkey = fullscreenText
                     }
                 }
 

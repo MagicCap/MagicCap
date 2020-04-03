@@ -6,7 +6,7 @@
 void CHotkeyCallback(int index);
 
 // Loads the hotkey.
-MASShortcut* LoadHotkey(int Keys, int Modifiers, int CallbackID) {
+void LoadHotkey(int Keys, int Modifiers, int CallbackID) {
     MASShortcut* shortcut = [MASShortcut shortcutWithKeyCode:Keys modifierFlags:Modifiers];
     [[MASShortcutMonitor sharedMonitor] registerShortcut:shortcut withAction:^(void) {
         CHotkeyCallback(CallbackID);
@@ -14,6 +14,6 @@ MASShortcut* LoadHotkey(int Keys, int Modifiers, int CallbackID) {
 }
 
 // Unloads the hotkey.
-void UnloadHotkey(MASShortcut* shortcut) {
-    [[MASShortcutMonitor sharedMonitor] unregisterShortcut:shortcut];
+void UnloadAll() {
+    [[MASShortcutMonitor sharedMonitor] unregisterAllShortcuts];
 }

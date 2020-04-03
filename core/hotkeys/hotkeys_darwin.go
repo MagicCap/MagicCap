@@ -16,14 +16,8 @@ import (
 	"strings"
 )
 
-// hotkey defines all of the parts required in a hotkey.
-type hotkey struct {
-	Callback func()
-	CPtr     *C.MASShortcut
-}
-
 // hotkeys are all of the callback handlers.
-var hotkeys = map[int]*hotkey{}
+var hotkeys = map[int]func(){}
 
 // NextHotkeyCallback is the ID of the next callback.
 var NextHotkeyCallback = 0
@@ -41,7 +35,7 @@ func CHotkeyCallback(CIndex C.int) {
 	}
 
 	// Call the function in a thread.
-	go s.Callback()
+	go s()
 }
 
 // KeyMaps is used to map a key to the int value.
@@ -121,24 +115,13 @@ var KeyMaps = map[string]int{
 	"esc":       0x35,
 }
 
-// UnloadHotkey is used to unload a hotkey ID.
-func UnloadHotkey(HotkeyID string) {
-	// Ignore blank string.
-	if HotkeyID == "" {
-		return
-	}
+// UnloadAllHotkeys is used to unload all hotkeys.
+func UnloadAllHotkeys() {
+	// Blank the hotkeys map.
+	hotkeys = map[int]func(){}
 
-	// Disable the hotkey and garbage collection.
-	i, err := strconv.Atoi(HotkeyID)
-	if err != nil {
-		return
-	}
-	h, ok := hotkeys[i]
-	if !ok {
-		return
-	}
-	C.UnloadHotkey(h.CPtr)
-	delete(hotkeys, i)
+	// Run the UnloadAll C function.
+	C.UnloadAll()
 }
 
 // LoadHotkey is used to load in a hotkey.
@@ -183,8 +166,8 @@ func LoadHotkey(Keys string, Callback func()) string {
 
 	// Call the C function.
 	HotkeyID := NextHotkeyCallback
-	CPtr := C.LoadHotkey(C.int(KeysInt), C.int(ModifiersInt), C.int(HotkeyID))
-	hotkeys[HotkeyID] = &hotkey{Callback: Callback, CPtr: CPtr}
+	C.LoadHotkey(C.int(KeysInt), C.int(ModifiersInt), C.int(HotkeyID))
+	hotkeys[HotkeyID] = Callback
 	NextHotkeyCallback++
 	return strconv.Itoa(HotkeyID)
 }

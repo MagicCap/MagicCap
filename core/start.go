@@ -101,6 +101,9 @@ func Start() {
 		// Loads the SQLite3 DB.
 		LoadDatabase()
 
+		// Loads the hotkeys.
+		LoadHotkeys()
+
 		// Ensures there is a install ID.
 		EnsureInstallID()
 

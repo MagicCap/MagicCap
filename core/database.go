@@ -103,9 +103,6 @@ func LoadDatabase() {
 	// Gets all of the config items.
 	GetConfigItems()
 
-	// Loads the hotkeys.
-	LoadHotkeys()
-
 	// Run post load tasks.
 	for _, v := range PostDatabaseLoadTasks {
 		v()

@@ -14,9 +14,7 @@ var HotkeyIDsLock = sync.Mutex{}
 // UnloadHotkeys is used to unload the hotkeys.
 func UnloadHotkeys() {
 	HotkeyIDsLock.Lock()
-	for _, v := range HotkeyIDs {
-		hotkeys.UnloadHotkey(v)
-	}
+	hotkeys.UnloadAllHotkeys()
 	HotkeyIDs = make([]string, 0)
 	HotkeyIDsLock.Unlock()
 }

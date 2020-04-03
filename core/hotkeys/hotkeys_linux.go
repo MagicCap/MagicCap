@@ -12,33 +12,21 @@ import (
 	hook "github.com/robotn/gohook"
 )
 
-// UnloadHotkey is used to unload a hotkey ID.
-func UnloadHotkey(HotkeyID string) {
+// UnloadAllHotkeys is used to unload all hotkeys.
+func UnloadAllHotkeys() {
 	// Ignore blank string.
 	if HotkeyID == "" {
 		return
 	}
 
-	// Read lock the hotkeys.
+	// Lock the hotkeys.
 	hotkeyLock.RLock()
 
-	// Iterate through the hotkeys, finding that index.
-	Index := 0
-	for i, v := range hotkeys {
-		if v.id == HotkeyID {
-			Index = i
-			break
-		}
-	}
+	// Reset hotkeys.
+	hotkeys = []hotkey{}
 
-	// Read unlock the hotkeys.
+	// Unlock the hotkeys.
 	hotkeyLock.RUnlock()
-
-	// Remove the item from the array.
-	hotkeyLock.Lock()
-	hotkeys[Index] = hotkeys[len(hotkeys)-1]
-	hotkeys = hotkeys[:len(hotkeys)-1]
-	hotkeyLock.Unlock()
 }
 
 // LoadHotkey is used to load in a hotkey.

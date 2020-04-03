@@ -4,6 +4,6 @@
 #include "./headers/MASShortcut/Shortcut.h"
 #ifndef _HOTKEYS_DARWIN_H
 #define _HOTKEYS_DARWIN_H
-MASShortcut* LoadHotkey(int Keys, int Modifiers, int CallbackID);
-void UnloadHotkey(MASShortcut* shortcut);
+void LoadHotkey(int Keys, int Modifiers, int CallbackID);
+void UnloadAll();
 #endif
