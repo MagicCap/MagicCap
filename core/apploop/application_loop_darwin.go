@@ -11,10 +11,7 @@ package apploop
 #include "application_loop_darwin.h"
 */
 import "C"
-import (
-	"github.com/magiccap/MagicCap/core/mainthread"
-	"runtime"
-)
+import "runtime"
 
 // OnReady is a function that will be called by the C ready function.
 var OnReady func()
@@ -22,7 +19,7 @@ var OnReady func()
 // CReadyCallback is the callback which will be called by C.
 //export CReadyCallback
 func CReadyCallback() {
-	go mainthread.ExecMainThread(OnReady)
+	OnReady()
 }
 
 // ApplicationLoopStart is used to start the application loop.
