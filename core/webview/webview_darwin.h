@@ -4,7 +4,7 @@
 #ifndef _WEBVIEW_DARWIN_H
 #define _WEBVIEW_DARWIN_H
 #import <WebKit/WebKit.h>
-NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, int Listener);
+NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, bool AlwaysOnTop, int Listener);
 void ExitWebview(NSWindow* Window);
 void FocusWebview(NSWindow* Window);
 #endif

@@ -44,7 +44,7 @@ static id create_menu_item(id title, SEL action, NSString* key) {
 }
 
 // Handles making the webview.
-NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, int Listener) {
+NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, bool AlwaysOnTop, int Listener) {
     // Create the view URL from the C bytes.
     NSString* ViewURL = [[NSString alloc] initWithBytes:URL length:URLLen encoding:NSUTF8StringEncoding];
 
@@ -99,10 +99,12 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     [title release];
 
     // Center the window.
-    [window center]; 
+    [window center];
 
-    // Handle the window level.
-    [window setLevel:kCGMaximumWindowLevel];
+    // Handle the always on top functionality.
+    if (AlwaysOnTop) {
+        [window setLevel:kCGMaximumWindowLevel];
+    }
 
     // Create the menu item.
     id menubar = [[NSMenu alloc] initWithTitle:@""];
@@ -127,6 +129,9 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     item = create_menu_item(t, @selector(terminate:), @"q");
     [appMenu addItem:item];
     [[NSApplication sharedApplication] setMainMenu:menubar];
+
+    // Focus the window.
+    [window orderFrontRegardless];
 
     // Return the webview window.
     return window;

@@ -52,7 +52,7 @@ func (w *Webview) Focus() {
 }
 
 // NewWebview creates a new webview. This should be made from the main thread.
-func NewWebview(URL string, Title string, Width int, Height int, Resizable bool) *Webview {
+func NewWebview(URL string, Title string, Width int, Height int, Resizable bool, AlwaysOnTop bool) *Webview {
 	URLLen := len(URL)
 	URLC := C.CString(URL)
 	defer C.free(unsafe.Pointer(URLC))
@@ -67,7 +67,7 @@ func NewWebview(URL string, Title string, Width int, Height int, Resizable bool)
 	return &Webview{
 		CWebview: C.MakeWebview(
 			URLC, C.int(URLLen), TitleC, C.int(TitleLen), C.int(Width), C.int(Height),
-			C.bool(Resizable), C.int(listener)),
+			C.bool(Resizable), C.bool(AlwaysOnTop), C.int(listener)),
 		wg: &wg,
 	}
 }

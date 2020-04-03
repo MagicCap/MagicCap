@@ -33,11 +33,16 @@ func (w *Webview) Focus() {
 }
 
 // NewWebview creates a new webview. This should be made from the main thread.
-func NewWebview(URL string, Title string, Width int, Height int, Resizable bool) *Webview {
+func NewWebview(URL string, Title string, Width int, Height int, Resizable bool, AlwaysOnTop bool) *Webview {
 	// Create the window.
 	win, err := gtk.WindowNew(gtk.WINDOW_TOPLEVEL)
 	if err != nil {
 		panic(err)
+	}
+
+	// Handle if the window should always be on top.
+	if AlwaysOnTop {
+		win.SetKeepAbove(true)
 	}
 
 	// Set the window title.

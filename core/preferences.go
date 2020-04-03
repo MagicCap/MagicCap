@@ -365,7 +365,7 @@ func OpenPreferences() {
 		VersionBit = " Beta"
 	}
 	mainthread.ExecMainThread(func() {
-		ConfigWindow = webview.NewWebview(URL, "MagicCap"+VersionBit, 1200, 600, false)
+		ConfigWindow = webview.NewWebview(URL, "MagicCap"+VersionBit, 1200, 600, false, false)
 	})
 
 	// Wait for the config window.

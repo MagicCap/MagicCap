@@ -38,7 +38,7 @@ func ShowShort() {
 	URL := `data:text/html,` + url.PathEscape(HTML)
 	var s *webview.Webview
 	mainthread.ExecMainThread(func() {
-		s = webview.NewWebview(URL, "MagicCap Link Shortener", 500, 200, false)
+		s = webview.NewWebview(URL, "MagicCap Link Shortener", 500, 200, false, true)
 	})
 	ShortenerWindowsLock.Lock()
 	ShortenerWindows = append(ShortenerWindows, s)
