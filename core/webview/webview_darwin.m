@@ -99,10 +99,7 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     [title release];
 
     // Center the window.
-    [window center]; 
-
-    // Handle the window level.
-    [window setLevel:kCGMaximumWindowLevel];
+    [window center];
 
     // Create the menu item.
     id menubar = [[NSMenu alloc] initWithTitle:@""];
