@@ -209,7 +209,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 		if SaveCapture {
 			SavePath, ok := ConfigItems["save_path"].(string)
 			if !ok {
-				makeSavePath()
+				SavePath = makeSavePath()
 			}
 			Joined := path.Join(SavePath, Filename)
 			err := ioutil.WriteFile(Joined, Data, 0600)
