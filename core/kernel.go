@@ -55,12 +55,17 @@ func LoadUploadersKernel() {
 
 	// Gets the uploader kernel.
 	if _, err := os.Stat(path.Join(ConfigPath, "kernel.json")); err != nil {
-		// Pull the kernel.
-		b := PullUploadersKernel()
+		// Grab the cached copy of the kernel.
+		b := CoreAssets.Bytes("kernel.json")
+		err := ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0600)
+		if err != nil {
+			sentry.CaptureException(err)
+			panic(err)
+		}
 
 		// Load the kernel.
 		var Spec map[string]interface{}
-		err := json.Unmarshal(*b, &Spec)
+		err = json.Unmarshal(b, &Spec)
 		if err != nil {
 			sentry.CaptureException(err)
 			panic(err)

@@ -13,6 +13,7 @@ RUN apk add --repository=http://nl.alpinelinux.org/alpine/edge/community libappi
 COPY --from=0 /var/magiccap .
 RUN go get
 RUN cd .. && go get github.com/gobuffalo/packr/packr && cd magiccap
+RUN cd assets && go run . && cd ..
 
 # Set the command to build to the MagicCap mount.
 CMD packr build -o /var/magiccap-mount/magiccap-linux
