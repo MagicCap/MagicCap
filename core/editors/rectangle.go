@@ -2,9 +2,6 @@ package editors
 
 import (
 	"image"
-
-	"github.com/getsentry/sentry-go"
-	"github.com/go-playground/colors"
 )
 
 // StaticRGBA is a struct used for static RGBA values.
@@ -28,21 +25,15 @@ func init() {
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			i := image.NewRGBA(Region.Rect)
 			Y := 0
+			Block := 0
 			for Region.Bounds().Dy() != Y {
 				X := 0
 				for Region.Bounds().Dx() != X {
-					c, err := colors.RGB(RGB[0], RGB[1], RGB[2])
-					if err != nil {
-						sentry.CaptureException(err)
-						panic(err)
-					}
-					rgba := c.ToRGBA()
-					i.Set(X, Y, &StaticRGBA{
-						R: uint32(rgba.R),
-						G: uint32(rgba.G),
-						B: uint32(rgba.B),
-						A: uint32(rgba.A),
-					})
+					i.Pix[Block] = RGB[0]
+					i.Pix[Block+1] = RGB[1]
+					i.Pix[Block+2] = RGB[2]
+					i.Pix[Block+3] = 255
+					Block += 4
 					X++
 				}
 				Y++

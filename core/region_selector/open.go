@@ -237,7 +237,7 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 
 						// Run the editor.
 						// TODO: Don't hardcode RGBA values.
-						Result := editors.Editors[SelectedEditor].Apply(Selection, [3]uint8{255, 255, 255})
+						Result := editors.Editors[SelectedEditor].Apply(Selection, [3]uint8{255, 0, 0})
 						h, ok := dispatcher.History[index]
 						if ok {
 							dispatcher.History[index] = append(h, &edit{
