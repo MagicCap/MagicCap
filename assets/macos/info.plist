@@ -14,5 +14,7 @@
          <string>APPL</string>
          <key>CFBundleIdentifier</key>
          <string>org.magiccap.magiccap</string>
+         <key>CFBundleIconFile</key>
+         <string>icon</string>
     </dict>
 </plist>

@@ -27,6 +27,7 @@ var (
 	}
 
 	// UploadersURL defines the URL where the uploaders are at.
+	// TODO: Change this URL!
 	UploadersURL = "https://magiccap-s3.sfo2.digitaloceanspaces.com/kernel/v1.json"
 )
 
