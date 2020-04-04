@@ -4,19 +4,6 @@ import (
 	"image"
 )
 
-// StaticRGBA is a struct used for static RGBA values.
-type StaticRGBA struct {
-	R uint32
-	G uint32
-	B uint32
-	A uint32
-}
-
-// RGBA exposes the RGBA values.
-func (s *StaticRGBA) RGBA() (r uint32, g uint32, b uint32, a uint32) {
-	return s.R, s.G, s.B, s.A
-}
-
 func init() {
 	Editors["rectangle"] = &Editor{
 		Name:        "Rectangle",
