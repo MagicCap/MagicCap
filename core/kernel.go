@@ -200,26 +200,6 @@ func makeSavePath() string {
 // Upload handles all of the MagicCap side stuff.
 func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKernelStandards.Uploader) (*string, bool) {
 	var url *string
-	if Uploader != nil {
-		// Handle uploading the file.
-		IsolatedConfig := map[string]interface{}{}
-		for _, v := range Uploader.ConfigOptions {
-			IsolatedConfig[v.Value] = ConfigItems[v.Value]
-		}
-		urlRes, err := Uploader.Upload(IsolatedConfig, Data, Filename)
-		timestamp := time.Now().UnixNano() / int64(time.Millisecond)
-		Changes = &timestamp
-		if err != nil {
-			dialog.Message("%s", err.Error()).Error()
-			LogUpload(Filename, nil, FilePath, false)
-			return nil, false
-		}
-		url = &urlRes
-		UploadOpen, _ := ConfigItems["upload_open"].(bool)
-		if UploadOpen {
-			_ = browser.OpenURL(urlRes)
-		}
-	}
 	if FilePath == nil {
 		// Handle saving the file if required.
 		SaveCapture, ok := ConfigItems["save_capture"].(bool)
@@ -238,6 +218,27 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 				LogUpload(Filename, nil, nil, false)
 				return nil, false
 			}
+			FilePath = &Joined
+		}
+	}
+	if Uploader != nil {
+		// Handle uploading the file.
+		IsolatedConfig := map[string]interface{}{}
+		for _, v := range Uploader.ConfigOptions {
+			IsolatedConfig[v.Value] = ConfigItems[v.Value]
+		}
+		urlRes, err := Uploader.Upload(IsolatedConfig, Data, Filename)
+		timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+		Changes = &timestamp
+		if err != nil {
+			dialog.Message("%s", err.Error()).Error()
+			LogUpload(Filename, nil, FilePath, false)
+			return nil, false
+		}
+		url = &urlRes
+		UploadOpen, _ := ConfigItems["upload_open"].(bool)
+		if UploadOpen {
+			_ = browser.OpenURL(urlRes)
 		}
 	}
 	LogUpload(Filename, url, FilePath, true)
