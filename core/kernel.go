@@ -223,7 +223,9 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 	}
 	if Uploader != nil {
 		// Handle uploading the file.
-		IsolatedConfig := map[string]interface{}{}
+		IsolatedConfig := map[string]interface{}{
+			"install_id": ConfigItems["install_id"],
+		}
 		for _, v := range Uploader.ConfigOptions {
 			IsolatedConfig[v.Value] = ConfigItems[v.Value]
 		}
