@@ -185,6 +185,18 @@ func FileExtExpander(ext string) string {
 	return l
 }
 
+func makeSavePath() string {
+	SavePath := path.Join(HomeDir, "Pictures", "MagicCap")
+	err := os.MkdirAll(SavePath, 0600)
+	if err != nil {
+		sentry.CaptureException(err)
+		panic(err)
+	}
+	ConfigItems["save_path"] = SavePath
+	UpdateConfig()
+	return SavePath
+}
+
 // Upload handles all of the MagicCap side stuff.
 func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKernelStandards.Uploader) (*string, bool) {
 	var url *string
@@ -217,15 +229,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 		if SaveCapture {
 			SavePath, ok := ConfigItems["save_path"].(string)
 			if !ok {
-				// Make ~/Pictures/MagicCap
-				SavePath = path.Join(HomeDir, "Pictures", "MagicCap")
-				err := os.MkdirAll(SavePath, 0700)
-				if err != nil {
-					sentry.CaptureException(err)
-					panic(err)
-				}
-				ConfigItems["save_path"] = SavePath
-				UpdateConfig()
+				makeSavePath()
 			}
 			Joined := path.Join(SavePath, Filename)
 			err := ioutil.WriteFile(Joined, Data, 0600)

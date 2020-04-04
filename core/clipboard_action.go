@@ -11,7 +11,7 @@ import (
 func ClipboardAction(Data []byte, Extension string, URL *string) {
 	Action, ok := ConfigItems["clipboard_action"].(float64)
 	if !ok {
-		Action = 1
+		Action = 2
 	}
 	switch Action {
 	case 0:

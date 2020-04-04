@@ -44,7 +44,7 @@
                 return {
                     active: false,
                     action: config.o.clipboard_action,
-                    fileConfigCheckboxI: config.o.save_capture || false,
+                    fileConfigCheckboxI: config.o.save_capture === undefined ? true : config.o.save_capture,
                     fileNamingPatternI: config.o.file_naming_pattern || "screenshot_%date%_%time%",
                     fileSaveFolderI: config.o.save_path,
                     fileNamingPreview: "",

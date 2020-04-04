@@ -171,7 +171,7 @@
                 uploaders: uploaders,
                 uploader: {} as any,
                 active: false,
-                checkUploaderUpload: Boolean(config.o.upload_capture),
+                checkUploaderUpload: config.o.upload_capture === undefined ? true : config.o.upload_capture,
                 checkUploaderOpen: Boolean(config.o.upload_open),
             }
         },

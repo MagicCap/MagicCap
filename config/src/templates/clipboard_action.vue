@@ -32,7 +32,7 @@
         data() {
             return {
                 active: false,
-                action: config.o.clipboard_action,
+                action: config.o.clipboard_action || 2,
             }
         },
         methods: {

@@ -70,8 +70,8 @@ func RunFullscreenCapture() {
 	}
 	Filename := GenerateFilename() + ".png"
 	Default := GetConfiguredUploaders()[0].Uploader
-	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
-	if !UploadCapture {
+	UploadCapture, ok := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture && ok {
 		Default = nil
 	}
 	url, ok := Upload(w.Bytes(), Filename, nil, Default)
@@ -96,8 +96,8 @@ func RunScreenCapture() {
 	}
 	Filename := GenerateFilename() + ".png"
 	Default := GetConfiguredUploaders()[0].Uploader
-	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
-	if !UploadCapture {
+	UploadCapture, ok := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture && ok {
 		Default = nil
 	}
 	url, ok := Upload(w.Bytes(), Filename, nil, Default)
@@ -122,8 +122,8 @@ func RunGIFCapture() {
 	b := NewGIFCapture(&r.Selection.Rect, channel)
 	Filename := GenerateFilename() + ".gif"
 	Default := GetConfiguredUploaders()[0].Uploader
-	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
-	if !UploadCapture {
+	UploadCapture, ok := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture && ok {
 		Default = nil
 	}
 	url, ok := Upload(b, Filename, nil, Default)
@@ -171,8 +171,8 @@ func RunClipboardCapture() {
 		Data = []byte(*c.Text)
 	}
 	Default := GetConfiguredUploaders()[0].Uploader
-	UploadCapture, _ := ConfigItems["upload_capture"].(bool)
-	if !UploadCapture {
+	UploadCapture, ok := ConfigItems["upload_capture"].(bool)
+	if !UploadCapture && ok {
 		Default = nil
 	}
 	Filename := GenerateFilename() + "." + FileType

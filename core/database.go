@@ -103,6 +103,11 @@ func LoadDatabase() {
 	// Gets all of the config items.
 	GetConfigItems()
 
+	// If the length of the database is 0, make the save path.
+	if len(ConfigItems) == 0 {
+		makeSavePath()
+	}
+
 	// Run post load tasks.
 	for _, v := range PostDatabaseLoadTasks {
 		v()

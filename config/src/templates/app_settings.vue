@@ -10,7 +10,7 @@
 
                 <h1 class="modal-card-title">About: <small class="muted">MagicCap v{{ version }}</small></h1>
 
-                <p>Copyright (C) MagicCap Development Team 2018-2019.</p>
+                <p>Copyright (C) MagicCap Development Team 2018-2020.</p>
                 <p>This software is licensed under the <a @click="openMPL" class="url">MPL-2.0</a> license.</p>
                 <p v-if="liteTouch">Some settings are managed by your system administrator.</p>
                 <p>
