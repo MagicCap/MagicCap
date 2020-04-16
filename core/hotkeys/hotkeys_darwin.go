@@ -4,7 +4,6 @@
 
 package hotkeys
 
-import "C"
 import (
 	"github.com/MagicCap/MASShortcut"
 	"strings"
