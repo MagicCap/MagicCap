@@ -4,39 +4,13 @@
 
 package hotkeys
 
-/*
-#cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework Foundation -framework Cocoa ${SRCDIR}/MASShortcut.o
-#include <stdlib.h>
-#include "hotkeys_darwin.h"
-*/
 import "C"
 import (
-	"strconv"
+	"github.com/MagicCap/MASShortcut"
 	"strings"
 )
 
-// hotkeys are all of the callback handlers.
-var hotkeys = map[int]func(){}
-
-// NextHotkeyCallback is the ID of the next callback.
-var NextHotkeyCallback = 0
-
-// CHotkeyCallback is a function which can be called from C to dispatch the callback.
-//export CHotkeyCallback
-func CHotkeyCallback(CIndex C.int) {
-	// Get the int value.
-	Index := int(CIndex)
-
-	// Get the function and delete when fetched.
-	s, ok := hotkeys[Index]
-	if !ok {
-		return
-	}
-
-	// Call the function in a thread.
-	go s()
-}
+var globalMonitor = masshortcut.GetGlobalShortcutMonitor()
 
 // KeyMaps is used to map a key to the int value.
 var KeyMaps = map[string]int{
@@ -117,18 +91,14 @@ var KeyMaps = map[string]int{
 
 // UnloadAllHotkeys is used to unload all hotkeys.
 func UnloadAllHotkeys() {
-	// Blank the hotkeys map.
-	hotkeys = map[int]func(){}
-
-	// Run the UnloadAll C function.
-	C.UnloadAll()
+	globalMonitor.UnregisterShortcuts()
 }
 
 // LoadHotkey is used to load in a hotkey.
-func LoadHotkey(Keys string, Callback func()) string {
+func LoadHotkey(Keys string, Callback func()) {
 	// Ignore blank string.
 	if Keys == "" {
-		return ""
+		return
 	}
 
 	// Defines the keys and modifiers.
@@ -158,16 +128,12 @@ func LoadHotkey(Keys string, Callback func()) string {
 		} else {
 			key, ok := KeyMaps[v]
 			if !ok {
-				return ""
+				return
 			}
 			KeysInt |= key
 		}
 	}
 
-	// Call the C function.
-	HotkeyID := NextHotkeyCallback
-	C.LoadHotkey(C.int(KeysInt), C.int(ModifiersInt), C.int(HotkeyID))
-	hotkeys[HotkeyID] = Callback
-	NextHotkeyCallback++
-	return strconv.Itoa(HotkeyID)
+	// Call the MASShortcut function.
+	globalMonitor.RegisterShortcut(KeysInt, ModifiersInt, Callback)
 }

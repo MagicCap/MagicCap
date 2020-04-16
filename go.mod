@@ -3,6 +3,8 @@ module github.com/magiccap/MagicCap
 go 1.14
 
 require (
+	github.com/MagicCap/MASShortcut v0.0.0-20200416233756-4d389c66c33b
+	github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9
 	github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a
 	github.com/andre-hub/go-webkit2 v0.0.0-20180415141131-4c31e287aa11
 	github.com/antchfx/xmlquery v1.2.3 // indirect
@@ -15,7 +17,6 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/esimov/stackblur-go v1.0.1-0.20190712082326-fff1ca4c8ff4
 	github.com/esiqveland/notify v0.9.2-0.20200215122350-1b5447e242c7
-	github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9
 	github.com/fogleman/gg v1.3.0
 	github.com/gen2brain/shm v0.0.0-20191025110947-b09d223a76f1 // indirect
 	github.com/getsentry/sentry-go v0.4.0
@@ -23,7 +24,6 @@ require (
 	github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
-	github.com/go-playground/colors v1.2.0
 	github.com/go-vgo/robotgo v0.0.0-20200123154043-e7ab665c511e
 	github.com/gobuffalo/packr v1.30.1
 	github.com/godbus/dbus/v5 v5.0.3
@@ -34,7 +34,6 @@ require (
 	github.com/h2non/filetype v1.0.10
 	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/hackebrot/turtle v0.1.0
-	github.com/jakemakesstuff/lilliput v0.0.0-20200227233528-d6b57d780ae1
 	github.com/jakemakesstuff/structuredhttp v0.0.0-20191023151727-a270b4cc8e22
 	github.com/jlaffaye/ftp v0.0.0-20191218041957-e1b8fdd0dcc3 // indirect
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
