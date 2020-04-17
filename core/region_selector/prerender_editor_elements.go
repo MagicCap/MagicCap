@@ -19,7 +19,8 @@ var (
 	SelectedItemRender 		[]byte
 )
 
-func init() {
+// PrerenderEditorElements is used to pre-render editor elements.
+func PrerenderEditorElements() {
 	// Pre-render the descriptions/icons for the editors.
 	editorsOrdered = make([]string, 0, len(editors.Editors))
 	for k, v := range editors.Editors {

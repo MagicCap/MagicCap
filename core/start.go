@@ -8,6 +8,7 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/magiccap/MagicCap/core/apploop"
+	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"math/rand"
 	"os"
 	"path"
@@ -97,6 +98,9 @@ func Start() {
 
 		// Loads up the uploader kernel.
 		LoadUploadersKernel()
+
+		// Pre-render the editor elements.
+		regionselector.PrerenderEditorElements()
 
 		// Loads the SQLite3 DB.
 		LoadDatabase()
