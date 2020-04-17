@@ -8,6 +8,7 @@ import (
 	"github.com/magiccap/MagicCap/core/clipboard"
 	"github.com/magiccap/MagicCap/core/mainthread"
 	"github.com/magiccap/MagicCap/core/notifications"
+	"github.com/magiccap/MagicCap/core/utils"
 	"image/png"
 	"net/url"
 	"strings"
@@ -33,8 +34,8 @@ var (
 
 // ShowShort shows the shortener screen.
 func ShowShort() {
-	HTML := strings.Replace(CoreAssets.String("shortener.html"), "inline_styling", CSS.String(
-		"bulmaswatch/darkly/bulmaswatch.min.css"), 1)
+	HTML := strings.Replace(utils.MustString(CoreAssets, "shortener.html"), "inline_styling", utils.MustString(
+		CSS, "bulmaswatch/darkly/bulmaswatch.min.css"), 1)
 	URL := `data:text/html,` + url.PathEscape(HTML)
 	var s *webview.Webview
 	mainthread.ExecMainThread(func() {

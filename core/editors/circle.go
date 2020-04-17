@@ -2,6 +2,7 @@ package editors
 
 import (
 	"github.com/fogleman/gg"
+	"github.com/magiccap/MagicCap/core/utils"
 	"image"
 	"image/draw"
 )
@@ -10,7 +11,7 @@ func init() {
 	Editors["circle"] = &Editor{
 		Name:        "Circle",
 		Description: "Draws a circle on the screen.",
-		Icon:        EditorAssets.Bytes("circle.png"),
+		Icon:        utils.MustBytes(EditorAssets, "circle.png"),
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			// Creates the image.
 			img := image.NewRGBA(Region.Bounds())

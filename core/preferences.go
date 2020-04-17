@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/magiccap/MagicCap/core/clipboard"
 	"github.com/magiccap/MagicCap/core/mainthread"
+	"github.com/magiccap/MagicCap/core/utils"
 	"io/ioutil"
 	"net"
 	"runtime"
@@ -18,7 +19,7 @@ import (
 	"github.com/pkg/browser"
 	"github.com/sqweek/dialog"
 
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/matishsiao/goInfo"
 	"github.com/valyala/fasthttp"
 )
@@ -28,20 +29,20 @@ var (
 	ConfigWindow *webview.Webview
 
 	// CSS defines the box containing CSS.
-	CSS = packr.NewBox("../config/src/css")
+	CSS = packr.New("css", "../config/src/css")
 
 	// Dist defines the folder containing the build.
-	Dist = packr.NewBox("../config/dist")
+	Dist = packr.New("dist", "../config/dist")
 
 	// Changes defines if there has been any changes since the capture UI opened.
 	Changes *int64
 
 	// CSSBase defines the base for all CSS.
-	CSSBase = CSS.String("components/base.css") + "\n" + CSS.String("components/button.css") + "\n" + CSS.String(
-		"components/docs.css") + "\n" + CSS.String("components/inputs.css") + "\n" + CSS.String(
-		"components/markdown.css") + "\n" + CSS.String("components/menu.css") + "\n" + CSS.String(
-		"components/modal.css") + CSS.String("components/scroll.css") + "\n" + CSS.String(
-		"components/table.css") + "\n" + CSS.String("components/tooltip.css")
+	CSSBase = utils.MustString(CSS, "components/base.css") + "\n" + utils.MustString(CSS, "components/button.css") + "\n" + utils.MustString(CSS, 
+		"components/docs.css") + "\n" + utils.MustString(CSS, "components/inputs.css") + "\n" + utils.MustString(CSS, 
+		"components/markdown.css") + "\n" + utils.MustString(CSS, "components/menu.css") + "\n" + utils.MustString(CSS, 
+		"components/modal.css") + utils.MustString(CSS, "components/scroll.css") + "\n" + utils.MustString(CSS, 
+		"components/table.css") + "\n" + utils.MustString(CSS, "components/tooltip.css")
 )
 
 // GetCSS is used to bundle all of the CSS.
@@ -56,10 +57,10 @@ func GetCSS() string {
 		ThemeString = "dark"
 		BulmaswatchString = "darkly"
 	}
-	res := CSS.String("bulmaswatch/" + BulmaswatchString + "/bulmaswatch.min.css")
+	res := utils.MustString(CSS, "bulmaswatch/" + BulmaswatchString + "/bulmaswatch.min.css")
 	res += "\n" + CSSBase
-	res += "\n" + CSS.String("fontawesome-free/css/all.min.css")
-	res += "\n" + CSS.String(ThemeString+".css")
+	res += "\n" + utils.MustString(CSS, "fontawesome-free/css/all.min.css")
+	res += "\n" + utils.MustString(CSS, ThemeString+".css")
 	return res
 }
 
@@ -207,17 +208,17 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	case "/":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "text/html; charset=UTF-8")
-		ctx.Response.SetBody(Dist.Bytes("index.html"))
+		ctx.Response.SetBody(utils.MustBytes(Dist, "index.html"))
 		break
 	case "/mount.js":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/javascript; charset=UTF-8")
-		ctx.Response.SetBody(Dist.Bytes("mount.js"))
+		ctx.Response.SetBody(utils.MustBytes(Dist, "mount.js"))
 		break
 	case "/mount.js.map":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
-		ctx.Response.SetBody(Dist.Bytes("mount.js.map"))
+		ctx.Response.SetBody(utils.MustBytes(Dist, "mount.js.map"))
 		break
 	case "/css":
 		ctx.Response.SetStatusCode(200)
@@ -323,7 +324,7 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		if Path[:9] == "/webfonts" {
 			Item := Path[9:]
 			ctx.Response.SetStatusCode(200)
-			ctx.Response.SetBody(CSS.Bytes("fontawesome-free/webfonts" + Item))
+			ctx.Response.SetBody(utils.MustBytes(CSS, "fontawesome-free/webfonts" + Item))
 		} else {
 			ctx.Response.SetStatusCode(404)
 			ctx.Response.SetBody([]byte("Not found."))

@@ -11,12 +11,12 @@ import (
 	"time"
 
 	"github.com/dawidd6/go-appindicator"
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/gotk3/gotk3/gtk"
 )
 
 // TaskbarAssets is used to get assets for the taskbar.
-var TaskbarAssets = packr.NewBox("../../assets/taskbar")
+var TaskbarAssets = packr.New("taskbar", "../../assets/taskbar")
 
 // ConfiguredHandlers are all of the handlers in use.
 var ConfiguredHandlers map[string]func()
@@ -160,7 +160,7 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 
 	// HACK: We can't pass bytes to appindicator, so temp save the icon and load it.
 	// After 10 seconds we delete it. The application will be loaded by then anyway (I would've thought it'd crash if it hung for 10 seconds).
-	Icon := TaskbarAssets.Bytes("icon.png")
+	Icon := utils.MustBytes(TaskbarAssets, "icon.png")
 	TempDir, err := ioutil.TempDir("", "magiccap_icon")
 	if err != nil {
 		panic(err)

@@ -9,6 +9,7 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/magiccap/MagicCap/core/apploop"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
+	"github.com/magiccap/MagicCap/core/utils"
 	"math/rand"
 	"os"
 	"path"
@@ -19,7 +20,7 @@ import (
 	"github.com/hackebrot/turtle"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 )
 
 var (
@@ -30,7 +31,7 @@ var (
 	ConfigPath = path.Join(HomeDir, ".magiccap")
 
 	// CoreAssets contains all of the data from core assets when compiled.
-	CoreAssets = packr.NewBox("../assets/core")
+	CoreAssets = packr.New("core", "../assets/core")
 
 	// Version defines the version.
 	Version = "3.0.0a1"
@@ -100,7 +101,7 @@ func Start() {
 		LoadUploadersKernel()
 
 		// Pre-render the editor elements.
-		regionselector.PrerenderEditorElements(CoreAssets.Bytes("Roboto-Light.ttf"))
+		regionselector.PrerenderEditorElements(utils.MustBytes(CoreAssets, "Roboto-Light.ttf"))
 
 		// Loads the SQLite3 DB.
 		LoadDatabase()

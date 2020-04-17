@@ -1,4 +1,6 @@
 package editors
 
+import "github.com/magiccap/MagicCap/core/utils"
+
 // SelectorIcon is the selector icon.
-var SelectorIcon = EditorAssets.Bytes("crosshair.png")
+var SelectorIcon = utils.MustBytes(EditorAssets, "crosshair.png")

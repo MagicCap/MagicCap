@@ -5,6 +5,7 @@ package core
 
 import (
 	"encoding/json"
+	"github.com/magiccap/MagicCap/core/utils"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -56,7 +57,7 @@ func LoadUploadersKernel() {
 	// Gets the uploader kernel.
 	if _, err := os.Stat(path.Join(ConfigPath, "kernel.json")); err != nil {
 		// Grab the cached copy of the kernel.
-		b := CoreAssets.Bytes("kernel.json")
+		b := utils.MustBytes(CoreAssets, "kernel.json")
 		err := ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0600)
 		if err != nil {
 			sentry.CaptureException(err)

@@ -12,10 +12,13 @@ package tray
 #include "tray_darwin.h"
 */
 import "C"
-import "github.com/gobuffalo/packr"
+import (
+	"github.com/gobuffalo/packr/v2"
+	"github.com/magiccap/MagicCap/core/utils"
+)
 
 // TaskbarAssets is used to get assets for the taskbar.
-var TaskbarAssets = packr.NewBox("../../assets/taskbar")
+var TaskbarAssets = packr.New("taskbar", "../../assets/taskbar")
 
 // ConfiguredHandlers are all of the handlers in use.
 var ConfiguredHandlers map[string]func()
@@ -38,7 +41,7 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 		SlugsC[i] = C.CString(Slugs[i])
 		i++
 	}
-	Icon := TaskbarAssets.Bytes("icon.png")
+	Icon := utils.MustBytes(TaskbarAssets, "icon.png")
 	CIcon := C.CBytes(Icon)
 	defer C.free(CIcon)
 	C.InitTray(&Names[0], &SlugsC[0], C.int(len(Uploaders)), (*C.uchar)(CIcon), C.ulong(len(Icon)))

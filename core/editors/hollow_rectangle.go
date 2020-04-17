@@ -2,6 +2,7 @@ package editors
 
 import (
 	"github.com/disintegration/gift"
+	"github.com/magiccap/MagicCap/core/utils"
 	"image"
 	"image/draw"
 )
@@ -10,7 +11,7 @@ func init() {
 	Editors["hollowRectangle"] = &Editor{
 		Name:        "Hollow Rectangle",
 		Description: "Draws a hollow rectangle on the screen.",
-		Icon:        EditorAssets.Bytes("hollow_rectangle.png"),
+		Icon:        utils.MustBytes(EditorAssets, "hollow_rectangle.png"),
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			// Gets the first/last block line.
 			RowSize := Region.Rect.Dx()*4
