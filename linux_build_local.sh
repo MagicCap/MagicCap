@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 cd config/
 npm i
 npm run build
@@ -11,7 +12,8 @@ cd $CURRENT_CWD
 cd assets
 go run .
 cd ..
-~/go/bin/packr2
+PATH=$PATH:/packr2:$HOME/go/bin
+packr2
 go build .
-~/go/bin/packr2 clean
+packr2 clean
 mv ./MagicCap ./magiccap-linux

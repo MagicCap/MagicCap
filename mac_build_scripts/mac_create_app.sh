@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 mkdir -p ./MagicCap.app/Contents/MacOS
 mkdir -p ./MagicCap.app/Contents/Resources
 cp ./assets/macos/info.plist ./MagicCap.app/Contents/info.plist
