@@ -4,18 +4,13 @@ import (
 	"image"
 	"image/draw"
 
-	"github.com/gobuffalo/packr"
-	"github.com/golang/freetype"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
 
-// RenderAssets is the assets which are used to render.
-var RenderAssets = packr.NewBox("../../assets/render")
-
 // Roboto is the main font which we are using.
-var Roboto, _ = freetype.ParseFont(RenderAssets.Bytes("Roboto-Light.ttf"))
+var Roboto *truetype.Font
 
 // RenderText is used to render the text into an image.
 func RenderText(Text string, FontSize int) *image.RGBA {

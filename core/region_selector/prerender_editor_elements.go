@@ -3,6 +3,7 @@ package regionselector
 import (
 	"bytes"
 	"github.com/disintegration/imaging"
+	"github.com/golang/freetype"
 	"github.com/magiccap/MagicCap/core/editors"
 	"image"
 	"image/color"
@@ -20,7 +21,14 @@ var (
 )
 
 // PrerenderEditorElements is used to pre-render editor elements.
-func PrerenderEditorElements() {
+func PrerenderEditorElements(FontBytes []byte) {
+	// Load in the Roboto font.
+	r, err := freetype.ParseFont(FontBytes)
+	if err != nil {
+		panic(err)
+	}
+	Roboto = r
+
 	// Pre-render the descriptions/icons for the editors.
 	editorsOrdered = make([]string, 0, len(editors.Editors))
 	for k, v := range editors.Editors {
