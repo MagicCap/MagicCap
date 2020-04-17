@@ -12,8 +12,6 @@ cd $CURRENT_CWD
 cd assets
 go run .
 cd ..
-PATH=$PATH:$HOME/go/bin
 PATH=$PATH:$HOME/go/bin packr2
-go build .
+go build -o ./magiccap-darwin .
 PATH=$PATH:$HOME/go/bin packr2 clean
-mv ./MagicCap ./magiccap-darwin

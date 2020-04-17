@@ -13,6 +13,5 @@ cd assets
 go run .
 cd ..
 PATH=$PATH:$HOME/go/bin packr2
-go build .
+go build -o magiccap-linux .
 PATH=$PATH:$HOME/go/bin packr2 clean
-mv ./MagicCap ./magiccap-linux
