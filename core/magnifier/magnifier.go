@@ -24,9 +24,9 @@ type Magnifier struct {
 
 // This function is designed to append something to each row within an array.
 // To use this function, simply pass in the array, what you want to append/prepend, whether you want to append and the number of rows.
-func appendToRows(Array, ToAppend []byte, Append bool, Rows int) []byte {
+func appendToRows(Array, ToAppend []byte, Repeat int, Append bool, Rows int) []byte {
 	// Create the new array.
-	NewArray := make([]byte, 0, len(Array)+(len(ToAppend)*Rows))
+	NewArray := make([]byte, 0, len(Array)+(len(ToAppend)*Repeat*Rows))
 
 	// Get the length of each row.
 	RowLen := len(Array)/Rows
@@ -38,11 +38,15 @@ func appendToRows(Array, ToAppend []byte, Append bool, Rows int) []byte {
 		if i == RowLen {
 			// Ok, we append everything and replace x.
 			if !Append {
-				NewArray = append(NewArray, ToAppend...)
+				for i := 0; i < Repeat; i++ {
+					NewArray = append(NewArray, ToAppend...)
+				}
 			}
 			NewArray = append(NewArray, x...)
 			if Append {
-				NewArray = append(NewArray, ToAppend...)
+				for i := 0; i < Repeat; i++ {
+					NewArray = append(NewArray, ToAppend...)
+				}
 			}
 			x = make([]byte, RowLen)
 			i = 0
@@ -180,10 +184,10 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 		// TODO: Fix the left/right overflow! For some reason this is broken.
 		if LeftOverflow {
 			// For each row, we need to add a bunch of 4 byte blocks to the front of it ([0 0 0 255]).
-			b = appendToRows(b, black, false, h)
+			b = appendToRows(b, black, LeftAdd, false, h)
 		} else if RightOverflow {
 			// For each row, we need to add a bunch of 4 byte blocks to the end of it ([0 0 0 255]).
-			b = appendToRows(b, black, true, h)
+			b = appendToRows(b, black, WidthAdd * -1, true, h)
 		}
 	}
 
