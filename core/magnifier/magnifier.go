@@ -181,7 +181,6 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 		// Now we shall handle the horizontal calculations.
 		// This requires a bit more maths since we need to think about each row.
 		black := []byte{0, 0, 0, 255}
-		// TODO: Fix the left/right overflow! For some reason this is broken.
 		if LeftOverflow {
 			// For each row, we need to add a bunch of 4 byte blocks to the front of it ([0 0 0 255]).
 			b = appendToRows(b, black, LeftAdd, false, h)
@@ -318,8 +317,8 @@ func NewMagnifier(origin *glhf.Texture, InitPos *image.Point) *Magnifier {
 	d()
 	go func() {
 		for {
-			// Add a 30fps cap to this.
-			time.Sleep(time.Second / 30)
+			// Add a 60fps cap to this.
+			time.Sleep(time.Second / 60)
 			if d() {
 				return
 			}
