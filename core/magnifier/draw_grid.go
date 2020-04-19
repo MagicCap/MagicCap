@@ -43,12 +43,16 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 		// Get the current index.
 		CurrentIndex := i*w*4
 
+		// Get the width endpoint start.
+		WEndpointStart := (w / 2) - (every / 2)
+
 		if i >= HMidpointStart && HMidpointEnd >= i {
 			// This is in the horizontal midpoint.
 			// We need to run some logic here to handle showing the current pixel.
 			ReallignedArray = append(ReallignedArray, CrosshairRowLeft...)
-			index := CurrentIndex + ((w * 4) / 2) - ((every * 4) / 2)
-			ReallignedArray = append(ReallignedArray, b[index:index+(every * 4)]...)
+			WEndpointMemStart := WEndpointStart * 4
+			WEndpointMemEnd := WEndpointMemStart + (every * 4)
+			ReallignedArray = append(ReallignedArray, b[CurrentIndex+WEndpointMemStart:CurrentIndex+WEndpointMemEnd]...)
 			ReallignedArray = append(ReallignedArray, CrosshairRowRight...)
 			rc++
 			continue
@@ -65,6 +69,8 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 		Row := b[CurrentIndex:CurrentIndex+len(GridRow)]
 
 		// Handle the columns.
+		WEndpointEnd := WEndpointStart + (every / 2)
+		WEndpointStart -= every / 2
 		for x := 0; x < w; x++ {
 			if (x+1)%every == 0 {
 				// Handle setting this pixel to the expected color.
@@ -78,6 +84,13 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 					Row[StartPos+1] = 0
 					Row[StartPos+2] = 0
 				}
+				Row[StartPos+3] = 255
+			} else if x >= WEndpointStart && WEndpointEnd >= x {
+				// Handle the white pixel placement.
+				StartPos := x*4
+				Row[StartPos] = 255
+				Row[StartPos+1] = 255
+				Row[StartPos+2] = 255
 				Row[StartPos+3] = 255
 			}
 		}
