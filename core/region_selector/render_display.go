@@ -45,7 +45,7 @@ func RenderDisplay(
 	DisplayPoint *image.Point, FirstPos *image.Point,
 	NormalTexture *glhf.Texture, DarkerTexture *glhf.Texture,
 	RawX int, RawY int, SelectedKey string, ShowEditors bool,
-	History []*edit,
+	History []*edit, MagnifierFrame *[]byte,
 ) (*glhf.Texture, string) {
 	// Create a copy of "DarkerTexture".
 	DarkerTexture.Begin()
@@ -56,6 +56,11 @@ func RenderDisplay(
 
 	// Being the rendered texture modifications.
 	RenderedTexture.Begin()
+
+	// TODO: Move this in some nice way!
+	if MagnifierFrame != nil {
+		RenderedTexture.SetPixels(0, 0, 200, 200, *MagnifierFrame)
+	}
 
 	// Copy in any history relating to the display.
 	for _, v := range History {

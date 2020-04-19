@@ -3,6 +3,7 @@ package regionselector
 import (
 	"errors"
 	"github.com/magiccap/MagicCap/core/editors"
+	"github.com/magiccap/MagicCap/core/magnifier"
 	"github.com/magiccap/MagicCap/core/mainthread"
 	img "image"
 	"image/draw"
@@ -101,6 +102,16 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 	// Defines the textures.
 	DarkerTextures := make([]*glhf.Texture, len(GLFWMonitors))
 	NormalTextures := make([]*glhf.Texture, len(GLFWMonitors))
+
+	// Defines the magnifier for each display.
+	Magnifiers := make([]*magnifier.Magnifier, len(GLFWMonitors))
+
+	// Kills all of the magnifiers.
+	KillMagnifiers := func() {
+		for _, v := range Magnifiers {
+			v.Kill()
+		}
+	}
 
 	// Defines first positions for the region selector.
 	FirstPosMap := map[int]*img.Point{}
@@ -320,12 +331,13 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 			)
 
 			// Creates the brighter texture.
-			NormalTextures[i] = glhf.NewTexture(
+			t := glhf.NewTexture(
 				Screenshots[i].Bounds().Dx(),
 				Screenshots[i].Bounds().Dy(),
 				true,
 				Screenshots[i].Pix,
 			)
+			NormalTextures[i] = t
 		})
 	}
 
@@ -367,6 +379,15 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 					Y: y - Rect.Min.Y,
 				}
 			}
+			if Magnifiers[i] == nil {
+				// The magnifier has not been created yet, we should create it.
+				Magnifiers[i] = magnifier.NewMagnifier(NormalTextures[i], DisplayPoint)
+			}
+			if DisplayPoint != nil {
+				// The user is on this display, ensure the magnifier position is correct (but in a goroutine, we don't want to block the draw).
+				m := Magnifiers[i]
+				go m.SetPos(DisplayPoint.X, DisplayPoint.Y)
+			}
 
 			BreakHere := false
 			ContinueHere := false
@@ -388,7 +409,8 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 				Window.MakeContextCurrent()
 
 				// Handles the window.
-				Texture, h := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y, SelectedEditor, ShowEditors, dispatcher.History[i])
+				f := Magnifiers[i].GetFrame()
+				Texture, h := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y, SelectedEditor, ShowEditors, dispatcher.History[i], &f)
 				HoveringEditor = h
 				HandleWindow(Shaders[i], Texture)
 
@@ -432,6 +454,7 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 		}
 		Screenshot := Screenshots[Display]
 		regionSelectorLock.Unlock()
+		KillMagnifiers()
 		return &SelectorResult{
 			Selection:    Screenshot,
 			Screenshots:  Screenshots,
@@ -447,10 +470,12 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 	// if Result isn't null, return it.
 	if dispatcher.Result != nil {
 		regionSelectorLock.Unlock()
+		KillMagnifiers()
 		return dispatcher.Result
 	}
 
 	// Return null.
 	regionSelectorLock.Unlock()
+	KillMagnifiers()
 	return nil
 }
