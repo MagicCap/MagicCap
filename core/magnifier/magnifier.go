@@ -114,8 +114,8 @@ func NewMagnifier(origin *glhf.Texture, InitPos *image.Point) *Magnifier {
 	d()
 	go func() {
 		for {
-			// Add a 60fps cap to this.
-			time.Sleep(time.Second / 60)
+			// Add a 30fps cap to this.
+			time.Sleep(time.Second / 30)
 			if d() {
 				return
 			}

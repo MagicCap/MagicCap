@@ -27,7 +27,7 @@ type edit struct {
 var regionSelectorLock = sync.Mutex{}
 
 // OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
-func OpenRegionSelector(ShowEditors bool) *SelectorResult {
+func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	// Lock the region selector.
 	regionSelectorLock.Lock()
 
@@ -108,8 +108,10 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 
 	// Kills all of the magnifiers.
 	KillMagnifiers := func() {
-		for _, v := range Magnifiers {
-			v.Kill()
+		if ShowMagnifier {
+			for _, v := range Magnifiers {
+				v.Kill()
+			}
 		}
 	}
 
@@ -379,11 +381,11 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 					Y: y - Rect.Min.Y,
 				}
 			}
-			if Magnifiers[i] == nil {
+			if ShowMagnifier && Magnifiers[i] == nil {
 				// The magnifier has not been created yet, we should create it.
 				Magnifiers[i] = magnifier.NewMagnifier(NormalTextures[i], DisplayPoint)
 			}
-			if DisplayPoint != nil {
+			if ShowMagnifier && DisplayPoint != nil {
 				// The user is on this display, ensure the magnifier position is correct (but in a goroutine, we don't want to block the draw).
 				m := Magnifiers[i]
 				go m.SetPos(DisplayPoint.X, DisplayPoint.Y)
@@ -409,8 +411,12 @@ func OpenRegionSelector(ShowEditors bool) *SelectorResult {
 				Window.MakeContextCurrent()
 
 				// Handles the window.
-				f := Magnifiers[i].GetFrame()
-				Texture, h := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y, SelectedEditor, ShowEditors, dispatcher.History[i], &f)
+				var f *[]byte
+				if ShowMagnifier {
+					x := Magnifiers[i].GetFrame()
+					f = &x
+				}
+				Texture, h := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y, SelectedEditor, ShowEditors, dispatcher.History[i], f)
 				HoveringEditor = h
 				HandleWindow(Shaders[i], Texture)
 

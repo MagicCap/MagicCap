@@ -84,7 +84,11 @@ func RunFullscreenCapture() {
 
 // RunScreenCapture runs a screen capture.
 func RunScreenCapture() {
-	r := regionselector.OpenRegionSelector(true)
+	ShowMagnifier, ok := ConfigItems["magnifier"].(bool)
+	if !ok {
+		ShowMagnifier = true
+	}
+	r := regionselector.OpenRegionSelector(true, ShowMagnifier)
 	if r == nil {
 		return
 	}
@@ -110,7 +114,11 @@ func RunScreenCapture() {
 
 // RunGIFCapture runs a GIF capture.
 func RunGIFCapture() {
-	r := regionselector.OpenRegionSelector(false)
+	ShowMagnifier, ok := ConfigItems["magnifier"].(bool)
+	if !ok {
+		ShowMagnifier = true
+	}
+	r := regionselector.OpenRegionSelector(false, ShowMagnifier)
 	if r == nil {
 		return
 	}

@@ -57,11 +57,6 @@ func RenderDisplay(
 	// Being the rendered texture modifications.
 	RenderedTexture.Begin()
 
-	// TODO: Move this in some nice way!
-	if MagnifierFrame != nil {
-		RenderedTexture.SetPixels(0, 0, 200, 200, *MagnifierFrame)
-	}
-
 	// Copy in any history relating to the display.
 	for _, v := range History {
 		RenderedTexture.SetPixels(v.p.X, v.p.Y, v.r.Rect.Dx(), v.r.Rect.Dy(), v.r.Pix)
@@ -205,11 +200,21 @@ func RenderDisplay(
 			}
 		}
 
+		// Draw the magnifier if there is enough space and it is enabled.
+		if MagnifierFrame != nil {
+			RenderedTexture.SetPixels(DisplayPoint.X+10, DisplayPoint.Y+50, 200, 200, *MagnifierFrame)
+		}
+
 		// Draw the X/Y font texture.
 		if ShowXY {
 			DisplayString := "X: " + strconv.Itoa(RawX) + " | Y: " + strconv.Itoa(RawY)
 			FontImg := RenderText(DisplayString, 20)
-			RenderedTexture.SetPixels(DisplayPoint.X+10, DisplayPoint.Y+10, FontImg.Bounds().Dx(), FontImg.Bounds().Dy(), FontImg.Pix)
+			X := FontImg.Bounds().Dx()
+			LeftOffset := 0
+			if MagnifierFrame != nil {
+				LeftOffset = 100 - (X / 2)
+			}
+			RenderedTexture.SetPixels(DisplayPoint.X+10+LeftOffset, DisplayPoint.Y+10, X, FontImg.Bounds().Dy(), FontImg.Pix)
 		}
 	}
 
