@@ -4,25 +4,62 @@ package magnifier
 func drawGrid(b []byte, white bool, every, w, h int) []byte {
 	// Create the grid column.
 	GridRow := make([]byte, w*4)
-	for i := range GridRow {
-		if white || (i+1)%4 == 0 {
-			GridRow[i] = 255
+	Tasks := make(chan bool)
+	go func() {
+		for i := range GridRow {
+			if white || (i+1)%4 == 0 {
+				GridRow[i] = 255
+			}
 		}
+		Tasks <- true
+	}()
+	XMidpoint := (w*4)/2
+	CrosshairRowLeft := make([]byte, XMidpoint-(every*4))
+	CrosshairRowRight := make([]byte, XMidpoint)
+	go func() {
+		for i := range CrosshairRowLeft {
+			CrosshairRowLeft[i] = 255
+		}
+		Tasks <- true
+	}()
+	go func() {
+		for i := range CrosshairRowRight {
+			CrosshairRowRight[i] = 255
+		}
+		Tasks <- true
+	}()
+	for i := 0; i < 3; i++ {
+		<-Tasks
 	}
+
+	// Get the height midpoint start/end.
+	HMidpointStart := (h/2)-every
+	HMidpointEnd := HMidpointStart+every
 
 	// Draw the rows/columns.
 	ReallignedArray := make([]byte, 0, len(b))
 	rc := 0
 	for i := 0; i < h; i++ {
+		// Get the current index.
+		CurrentIndex := i*w*4
+
+		if i >= HMidpointStart && HMidpointEnd >= i {
+			// This is in the horizontal midpoint.
+			// We need to run some logic here to handle showing the current pixel.
+			ReallignedArray = append(ReallignedArray, CrosshairRowLeft...)
+			index := CurrentIndex + ((w * 4) / 2) - ((every * 4) / 2)
+			ReallignedArray = append(ReallignedArray, b[index:index+(every * 4)]...)
+			ReallignedArray = append(ReallignedArray, CrosshairRowRight...)
+			rc++
+			continue
+		}
+
 		// If rows complete mod every is 0, insert rows here.
 		if rc%every == 0 {
 			ReallignedArray = append(ReallignedArray, GridRow...)
 			rc++
 			continue
 		}
-
-		// Get the current index.
-		CurrentIndex := i*w*4
 
 		// Get the row.
 		Row := b[CurrentIndex:CurrentIndex+len(GridRow)]
