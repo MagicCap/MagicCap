@@ -10,6 +10,11 @@ import (
 	"github.com/pkg/browser"
 )
 
+// NotificationInit handles any initialisation which needs to be done for notifications to work.
+func NotificationInit() {
+	// Linux requires none.
+}
+
 // ThrowNotification is used to throw a notification to the OS.
 func ThrowNotification(Text string, URL *string) {
 	// Create the session bus.

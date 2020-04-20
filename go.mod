@@ -11,7 +11,6 @@ require (
 	github.com/antchfx/xpath v1.1.4 // indirect
 	github.com/aws/aws-sdk-go v1.28.8 // indirect
 	github.com/dawidd6/go-appindicator v0.0.0-20190913173241-21b44adc5189
-	github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/disintegration/gift v1.2.1
 	github.com/disintegration/imaging v1.6.2

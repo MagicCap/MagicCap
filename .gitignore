@@ -10,3 +10,5 @@ selector/dist/mount.js.map
 cmake-build-debug
 assets/core/kernel.json
 MagicCap.app/
+magiccap-darwin
+magiccap-linux

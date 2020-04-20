@@ -8,6 +8,7 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/magiccap/MagicCap/core/apploop"
+	"github.com/magiccap/MagicCap/core/notifications"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"github.com/magiccap/MagicCap/core/utils"
 	"math/rand"
@@ -44,6 +45,9 @@ var (
 func Start() {
 	// Initialise the application loop in the main thread.
 	apploop.ApplicationLoopStart(func() {
+		// Boot message.
+		println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2020.")
+
 		// Initialises glfw/gl.
 		err := glfw.Init()
 		if err != nil {
@@ -53,6 +57,9 @@ func Start() {
 		if err != nil {
 			panic(err)
 		}
+
+		// Initialise notifications.
+		notifications.NotificationInit()
 
 		// Make the MagicCap internal directory.
 		_ = os.MkdirAll(ConfigPath, 0700)
@@ -75,9 +82,6 @@ func Start() {
 		if err != nil {
 			panic(err)
 		}
-
-		// Boot message.
-		println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2020.")
 
 		// Catch any errors during initialisation and log them to Sentry.
 		defer func() {
