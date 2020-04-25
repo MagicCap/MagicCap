@@ -14,7 +14,7 @@ package notifications
 
 /*
 #cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework UserNotifications -framework Cocoa
+#cgo LDFLAGS: -framework Cocoa
 #include <stdlib.h>
 #include "notification_darwin.h"
 */

@@ -21,8 +21,10 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 	BottomOverFlow := top+h > m.originHeight
 	if !LeftOverflow && !TopOverflow && !RightOverflow && !BottomOverFlow {
 		// This is great! Run the basic pixels function.
-		mainthread.ExecMainThread(func() { b = m.originTexture.Pixels(left, top, w, h) })
-		mainthread.ExecMainThread(m.originTexture.End)
+		mainthread.ExecMainThread(func() {
+			b = m.originTexture.Pixels(left, top, w, h)
+			m.originTexture.End()
+		})
 	} else {
 		// We have an overflow somewhere. We need to handle this during the processing.
 		LeftAdd := 0
@@ -56,8 +58,10 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 
 		// Get the relevant pixels from the display.
 		DisplayPixelsW := w+WidthAdd
-		mainthread.ExecMainThread(func() { b = m.originTexture.Pixels(left+LeftAdd, top+TopAdd, DisplayPixelsW, h+HeightAdd) })
-		mainthread.ExecMainThread(m.originTexture.End)
+		mainthread.ExecMainThread(func() {
+			b = m.originTexture.Pixels(left+LeftAdd, top+TopAdd, DisplayPixelsW, h+HeightAdd)
+			m.originTexture.End()
+		})
 
 		// Ok, step 2. We now need to handle processing these bytes in various ways to add "blackness" where there is missing content.
 

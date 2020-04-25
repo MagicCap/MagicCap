@@ -19,5 +19,5 @@ void DelegateInit() {
     NSApplication* application = [NSApplication sharedApplication];
     [application setDelegate:delegate];
     [application setActivationPolicy:NSApplicationActivationPolicyAccessory];
-    [NSApp run];
+    [application run];
 }

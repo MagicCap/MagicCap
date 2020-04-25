@@ -38,6 +38,7 @@ require (
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
 	github.com/magiccap/magiccap-uploaders-kernel v0.0.0-20191226225326-6af75d79a3ff
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
+	github.com/mattn/go-pointer v0.0.0-20171114154726-1d30dc4b6f28
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/robotn/gohook v0.0.0-20200111152647-5bfaedadd9dd

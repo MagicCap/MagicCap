@@ -3,5 +3,5 @@
 
 #ifndef _MAINTHREAD_DARWIN_H
 #define _MAINTHREAD_DARWIN_H
-void handle_mainthread(int index);
+void handle_mainthread(void* func);
 #endif

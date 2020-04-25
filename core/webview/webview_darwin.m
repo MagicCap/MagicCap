@@ -38,11 +38,6 @@ void CWebviewClose(int Listener);
 };
 @end
 
-// Create the menu item.
-static id create_menu_item(id title, SEL action, NSString* key) {
-  return [[NSMenuItem alloc] initWithTitle:title action:action keyEquivalent:key];
-}
-
 // Handles making the webview.
 NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Width, int Height, bool Resize, bool AlwaysOnTop, int Listener) {
     // Create the view URL from the C bytes.
@@ -61,7 +56,7 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     // Create the actual window.
     unsigned int styleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable;
     if (Resize) {
-        styleMask |= NSResizableWindowMask;
+        styleMask |= NSWindowStyleMaskResizable;
     }
     MagicCapWebviewWindow* window = [[MagicCapWebviewWindow alloc] initWithContentRect:frame
         styleMask:styleMask backing:NSBackingStoreBuffered defer:NO];
@@ -105,30 +100,6 @@ NSWindow* MakeWebview(char* URL, int URLLen, char* Title, int TitleLen, int Widt
     if (AlwaysOnTop) {
         [window setLevel:kCGMaximumWindowLevel];
     }
-
-    // Create the menu item.
-    id menubar = [[NSMenu alloc] initWithTitle:@""];
-    id appName = [[NSProcessInfo processInfo] processName];
-    id appMenuItem = [NSMenuItem alloc];
-    [appMenuItem initWithTitle:appName action:nil keyEquivalent:@""];
-    id appMenu = [[NSMenu alloc] initWithTitle:appName];
-    [appMenuItem setSubmenu:appMenu];
-    [menubar addItem:appMenuItem];
-    NSString* t = @"Hide ";
-    t = [t stringByAppendingString:appName];
-    id item = create_menu_item(t, @selector(hide:), @"h");
-    [appMenu addItem:item];
-    item = create_menu_item(@"Hide Others", @selector(hideOtherApplications:), @"h");
-    [item setKeyEquivalentModifierMask:NSEventModifierFlagOption | NSEventModifierFlagCommand];
-    [appMenu addItem:item];
-    item = create_menu_item(@"Show All", @selector(unhideAllApplications:), @"");
-    [appMenu addItem:item];
-    [appMenu addItem:[NSMenuItem separatorItem]];
-    t = @"Quit ";
-    t = [t stringByAppendingString:appName];
-    item = create_menu_item(t, @selector(terminate:), @"q");
-    [appMenu addItem:item];
-    [[NSApplication sharedApplication] setMainMenu:menubar];
 
     // Focus the window.
     [window orderFrontRegardless];
