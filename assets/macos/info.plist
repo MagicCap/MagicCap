@@ -16,5 +16,7 @@
          <string>org.magiccap.magiccap</string>
          <key>CFBundleIconFile</key>
          <string>icon</string>
+         <key>NSHighResolutionCapable</key>
+         <true />
     </dict>
 </plist>
