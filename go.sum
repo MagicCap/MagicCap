@@ -11,8 +11,8 @@ github.com/CloudyKit/fastprinter v0.0.0-20170127035650-74b38d55f37a/go.mod h1:EF
 github.com/CloudyKit/jet v2.1.3-0.20180809161101-62edd43e4f88+incompatible/go.mod h1:HPYO+50pSWkPoj9Q/eq0aRGByCL6ScRlUmiEX5Zgm+w=
 github.com/Joker/hpp v1.0.0/go.mod h1:8x5n+M1Hp5hC0g8okX3sR3vFQwynaX/UgSOM9MeBKzY=
 github.com/Joker/jade v1.0.1-0.20190614124447-d475f43051e7/go.mod h1:6E6s8o2AE4KhCrqr6GRJjdC/gNfTdxkIXvuGZZda2VM=
-github.com/MagicCap/MASShortcut v0.0.0-20200416233756-4d389c66c33b h1:3f9Uh26aFcB6CX+r2Brt1Bpa3W5fhyC0kHFV/A1Wha4=
-github.com/MagicCap/MASShortcut v0.0.0-20200416233756-4d389c66c33b/go.mod h1:0XG85HDuvl2EdLIOBniSCa3bGVAfedPW7WZKcdHJ1cA=
+github.com/MagicCap/MASShortcut v0.0.0-20200430165135-1c251561be6f h1:HFj/T1xTMmyzQD9IYdgO/WbDA9Oh1ik4aEc3xTPBueM=
+github.com/MagicCap/MASShortcut v0.0.0-20200430165135-1c251561be6f/go.mod h1:0XG85HDuvl2EdLIOBniSCa3bGVAfedPW7WZKcdHJ1cA=
 github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9 h1:nEIOJB6160OncBL5J11GD7nsIONiE5rZ+QIQvZ8y51c=
 github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9/go.mod h1:NqPBduErg0xjNr0f3R8zMrSK7kiuVvX/1Ruwba+moh8=
 github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a h1:fXK2KsfnkBV9Nh+9SKzHchYjuE9s0vI20JG1mbtEAcc=

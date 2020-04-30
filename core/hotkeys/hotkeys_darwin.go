@@ -10,8 +10,6 @@ import (
 	"strings"
 )
 
-var globalMonitor = masshortcut.GetGlobalShortcutMonitor()
-
 // KeyMaps is used to map a key to the int value.
 var KeyMaps = map[string]int{
 	"plus":      0x15,
@@ -91,7 +89,7 @@ var KeyMaps = map[string]int{
 
 // UnloadAllHotkeys is used to unload all hotkeys.
 func UnloadAllHotkeys() {
-	globalMonitor.UnregisterShortcuts()
+	masshortcut.UnregisterShortcuts()
 }
 
 // LoadHotkey is used to load in a hotkey.
@@ -135,5 +133,5 @@ func LoadHotkey(Keys string, Callback func()) {
 	}
 
 	// Call the MASShortcut function.
-	globalMonitor.RegisterShortcut(KeysInt, ModifiersInt, Callback)
+	masshortcut.RegisterShortcut(KeysInt, ModifiersInt, Callback)
 }

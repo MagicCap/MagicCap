@@ -3,7 +3,7 @@ module github.com/magiccap/MagicCap
 go 1.14
 
 require (
-	github.com/MagicCap/MASShortcut v0.0.0-20200416233756-4d389c66c33b
+	github.com/MagicCap/MASShortcut v0.0.0-20200430165135-1c251561be6f
 	github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9
 	github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a
 	github.com/andre-hub/go-webkit2 v0.0.0-20180415141131-4c31e287aa11
