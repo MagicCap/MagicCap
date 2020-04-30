@@ -27,6 +27,49 @@ void CWebviewClose(int Listener);
 - (BOOL)canBecomeMainWindow {
     return YES;
 };
+
+// This event has no reason to exist in my opinion.
+// Why in the name of living fuck does returning NO crash the application and not use some default handler?
+- (BOOL)performKeyEquivalent:(NSEvent *)event {
+    // Get the hit key.
+    NSString* key = [event charactersIgnoringModifiers];
+
+    // Do a switch on the key.
+    NSString* text;
+    switch ([key characterAtIndex:0]) {
+        case 'c':
+            // Handle copy.
+            [self.contentView evaluateJavaScript:@"document.execCommand('copy')" completionHandler:nil];
+            break;
+        case 'v':
+            // Handle paste.
+            text = [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString];
+            if (text == NULL) {
+                return YES;
+            }
+            text = [text stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+            [self.contentView evaluateJavaScript:[
+                NSString stringWithFormat:@"document.execCommand('insertText', false, `%@`)",
+                [text stringByReplacingOccurrencesOfString:@"`" withString:@"\\`"]
+            ] completionHandler:nil];
+            break;
+        case 'x':
+            // Handle cut.
+            [self.contentView evaluateJavaScript:@"document.execCommand('cut')" completionHandler:nil];
+            break;
+        case 'z':
+            // Handle undo.
+            [self.contentView evaluateJavaScript:@"document.execCommand('undo')" completionHandler:nil];
+            break;
+        case 'a':
+            // Handle select all.
+            [self.contentView evaluateJavaScript:@"document.execCommand('selectAll')" completionHandler:nil];
+            break;
+    }
+
+    // Return true since we handled this event.
+    return YES;
+}
 @end
 
 @interface MagicCapWebviewDelegate : NSObject <WKUIDelegate>
