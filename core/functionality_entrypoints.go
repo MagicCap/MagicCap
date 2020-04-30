@@ -5,23 +5,22 @@ package core
 
 import (
 	"bytes"
+	"github.com/getsentry/sentry-go"
+	"github.com/h2non/filetype"
 	"github.com/magiccap/MagicCap/core/clipboard"
+	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
 	"github.com/magiccap/MagicCap/core/mainthread"
 	"github.com/magiccap/MagicCap/core/notifications"
+	regionselector "github.com/magiccap/MagicCap/core/region_selector"
+	"github.com/magiccap/MagicCap/core/tempicon"
 	"github.com/magiccap/MagicCap/core/utils"
+	"github.com/magiccap/MagicCap/core/webview"
+	"github.com/sqweek/dialog"
+	"golang.org/x/image/tiff"
 	"image/png"
 	"net/url"
 	"strings"
 	"sync"
-	"time"
-
-	"github.com/getsentry/sentry-go"
-	"github.com/h2non/filetype"
-	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
-	regionselector "github.com/magiccap/MagicCap/core/region_selector"
-	"github.com/magiccap/MagicCap/core/webview"
-	"github.com/sqweek/dialog"
-	"golang.org/x/image/tiff"
 )
 
 var (
@@ -123,12 +122,16 @@ func RunGIFCapture() {
 		return
 	}
 	channel := make(chan bool)
-	// TODO: Add manual control!
-	go func() {
-		time.Sleep(time.Second * 10)
-		channel <- true
-	}()
+	var t *tempicon.TempIcon
+	mainthread.ExecMainThread(func() {
+		t = tempicon.InitTempIcon(utils.MustBytes(CoreAssets, "stop.png"), func() {
+			t.CloseIcon()
+			channel <- true
+			t = tempicon.InitTempIcon(utils.MustBytes(CoreAssets, "cog.png"), nil)
+		})
+	})
 	b := NewGIFCapture(&r.Selection.Rect, channel)
+	mainthread.ExecMainThread(t.CloseIcon)
 	Filename := GenerateFilename() + ".gif"
 	Default := GetConfiguredUploaders()[0].Uploader
 	UploadCapture, ok := ConfigItems["upload_capture"].(bool)

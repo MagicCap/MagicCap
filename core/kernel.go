@@ -120,7 +120,8 @@ func LoadUploadersKernel() {
 				sentry.CaptureException(err)
 				panic(err)
 			}
-			RestartTrayProcess(false)
+			// RestartTrayProcess(false)
+			// TODO: Allow the tray process to be rebooted. The reason this is not possible right now is because it relates to the tray bug.
 		}
 	}()
 }
