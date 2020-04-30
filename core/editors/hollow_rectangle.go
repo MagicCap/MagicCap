@@ -4,7 +4,6 @@ import (
 	"github.com/disintegration/gift"
 	"github.com/magiccap/MagicCap/core/utils"
 	"image"
-	"image/draw"
 )
 
 func init() {
@@ -14,12 +13,14 @@ func init() {
 		Icon:        utils.MustBytes(EditorAssets, "hollow_rectangle.png"),
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			// Gets the first/last block line.
-			RowSize := Region.Rect.Dx()*4
+			X := Region.Rect.Dx()
+			Y := Region.Rect.Dy()
+			RowSize := X*4
 			FirstBlockLine := RowSize
-			if Region.Rect.Dy() >= 4 {
+			if Y >= 4 {
 				FirstBlockLine *= 2
 			}
-			ArrSize := (Region.Rect.Dx()*Region.Rect.Dy())*4
+			ArrSize := (X*Y)*4
 			LastBlockLine := ArrSize - FirstBlockLine
 
 			// Creates the image.
@@ -51,19 +52,22 @@ func init() {
 				x--
 			}
 
-			// Draw the sides of the hollow rectangle.
-			SideLine := image.NewRGBA(image.Rect(Region.Rect.Min.X,  Region.Rect.Min.Y, Region.Rect.Min.X+1, Region.Rect.Max.Y))
-			x = 0
-			y = 0
-			for x != len(SideLine.Pix) {
-				SideLine.Pix[x] = ByteMap[y]
-				y++
-				if y == 4 {
-					y = 0
-				}
-				x++
+			// Draws the left and right of the hollow rectangle.
+			for i := 0; i < Y; i++ {
+				// Get the start of the row.
+				RowStart := i*RowSize
+
+				// Set the left/right side.
+				img.Pix[RowStart] = RGB[0]
+				img.Pix[RowStart+1] = RGB[1]
+				img.Pix[RowStart+2] = RGB[2]
+				img.Pix[RowStart+3] = 255
+				RightSideStart := RowStart+(RowSize-4)
+				img.Pix[RightSideStart] = RGB[0]
+				img.Pix[RightSideStart+1] = RGB[1]
+				img.Pix[RightSideStart+2] = RGB[2]
+				img.Pix[RightSideStart+3] = 255
 			}
-			draw.Draw(img, SideLine.Rect, SideLine, image.ZP, draw.Src)
 
 			// Returns the image.
 			return img
