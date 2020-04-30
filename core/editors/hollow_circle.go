@@ -32,4 +32,7 @@ func init() {
 			return img
 		},
 	}
+
+	// TODO: Fix hollow circle.
+	delete(Editors, "hollowCircle")
 }

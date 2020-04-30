@@ -32,4 +32,7 @@ func init() {
 			return img
 		},
 	}
+
+	// TODO: Fix circle.
+	delete(Editors, "circle")
 }

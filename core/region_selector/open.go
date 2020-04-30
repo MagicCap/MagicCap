@@ -133,6 +133,17 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	// Defines the last display the mouse was on.
 	LastMouseDisplay := -1
 
+	// Applies edits to a image.
+	EditImage := func(index int) *img.RGBA {
+		// Apply all edits for this display.
+		Edits, _ := dispatcher.History[index]
+		s := Screenshots[index]
+		for _, v := range Edits {
+			draw.Draw(s, v.r.Rect, v.r, *v.p, draw.Src)
+		}
+		return s
+	}
+
 	// Make a window on each display.
 	Windows := make([]*glfw.Window, len(GLFWMonitors))
 	var FirstWindow *glfw.Window
@@ -215,27 +226,9 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 					dispatcher.EscapeHandler = nil
 
 					if SelectedEditor == "__selector" {
-						// Apply all edits for this display.
-						Edits, _ := dispatcher.History[index]
-						for _, v := range Edits {
-							// Get the screenshot.
-							s := Screenshots[index]
-
-							// Draws the edit.
-							x := 0
-							for x != v.r.Rect.Dx() {
-								y := 0
-								for y != v.r.Rect.Dy() {
-									s.Set(x+v.p.X, y+v.p.Y, v.r.At(x, y))
-									y++
-								}
-								x++
-							}
-						}
-
 						// Sets the result.
 						dispatcher.Result = &SelectorResult{
-							Selection:      Screenshots[index].SubImage(Rect).(*img.RGBA),
+							Selection:      EditImage(index).SubImage(Rect).(*img.RGBA),
 							Screenshots:    Screenshots,
 							Displays:       Displays,
 							DisplayIndex:   index,
@@ -458,11 +451,10 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 				break
 			}
 		}
-		Screenshot := Screenshots[Display]
 		regionSelectorLock.Unlock()
 		KillMagnifiers()
 		return &SelectorResult{
-			Selection:    Screenshot,
+			Selection:    EditImage(Display),
 			Screenshots:  Screenshots,
 			Displays:     Displays,
 			DisplayIndex: Display,

@@ -14,7 +14,6 @@ require (
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/disintegration/gift v1.2.1
 	github.com/disintegration/imaging v1.6.2
-	github.com/esimov/stackblur-go v1.0.1-0.20190712082326-fff1ca4c8ff4
 	github.com/esiqveland/notify v0.9.2-0.20200215122350-1b5447e242c7
 	github.com/fogleman/gg v1.3.0
 	github.com/gen2brain/shm v0.0.0-20191025110947-b09d223a76f1 // indirect

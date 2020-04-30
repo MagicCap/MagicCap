@@ -18,5 +18,3 @@ type Editor struct {
 	Icon        []byte
 	Apply       func(Region *image.RGBA, RGB [3]uint8) *image.RGBA
 }
-
-// TODO: Fix some editors!
