@@ -1,0 +1,5 @@
+{
+  "exec": "./magiccap",
+  "endpoint": "https://ironfist.magiccap.org/client",
+  "folder": "~/.magiccap/ironfist"
+}

@@ -12,3 +12,5 @@ assets/core/kernel.json
 MagicCap.app/
 magiccap-darwin
 magiccap-linux
+application_bundle.zip
+magiccap-bundled

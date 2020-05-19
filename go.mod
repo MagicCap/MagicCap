@@ -32,6 +32,7 @@ require (
 	github.com/h2non/filetype v1.0.10
 	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/hackebrot/turtle v0.1.0
+	github.com/jakemakesstuff/ironfist/wrapper v0.0.0-20200519162811-2d755d8234a4
 	github.com/jakemakesstuff/structuredhttp v0.0.0-20191023151727-a270b4cc8e22
 	github.com/jlaffaye/ftp v0.0.0-20191218041957-e1b8fdd0dcc3 // indirect
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
