@@ -2,14 +2,13 @@ package regionselector
 
 import (
 	"github.com/magiccap/MagicCap/core/editors"
+	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	"image"
 	"strconv"
 	"sync"
-
-	"github.com/MagicCap/glhf"
 )
 
-func dashedBorder(RenderedTexture *glhf.Texture, x, y, w, h int) {
+func dashedBorder(RenderedTexture renderers.Texture, x, y, w, h int) {
 	// Premake the top/bottom bit of the border.
 	TopBottomBorder := make([]uint8, 0, w*4)
 	Index := 0
@@ -43,16 +42,15 @@ func dashedBorder(RenderedTexture *glhf.Texture, x, y, w, h int) {
 // RenderDisplay is used to render the display.
 func RenderDisplay(
 	DisplayPoint *image.Point, FirstPos *image.Point,
-	NormalTexture *glhf.Texture, DarkerTexture *glhf.Texture,
+	index int, renderer renderers.Renderer,
 	RawX int, RawY int, SelectedKey string, ShowEditors bool,
 	History []*edit, MagnifierFrame *[]byte,
-) (*glhf.Texture, string) {
-	// Create a copy of "DarkerTexture".
-	DarkerTexture.Begin()
-	Width := DarkerTexture.Width()
-	Height := DarkerTexture.Height()
-	RenderedTexture := glhf.NewTexture(Width, Height, true, DarkerTexture.Pixels(0, 0, Width, Height))
-	DarkerTexture.End()
+) string {
+	// Create a copy of the darker texture.
+	RenderedTexture := renderer.GetDarkerTexture(index)
+
+	// Get the width/height.
+	Width, Height := RenderedTexture.GetWidthHeight()
 
 	// Being the rendered texture modifications.
 	RenderedTexture.Begin()
@@ -92,12 +90,10 @@ func RenderDisplay(
 				}
 
 				// Write the pixels to the render.
-				NormalTexture.Begin()
-				Pixels := NormalTexture.Pixels(Left, Top, w, h)
-				NormalTexture.End()
+				Pixels := renderer.GetNormalTexturePixels(index, Left, Top, w, h)
 				if len(Pixels) == 0 {
 					// In this season of "Why the fuck is this a bug?"
-					return RenderedTexture, HoveringEditor
+					return HoveringEditor
 				}
 				RenderedTexture.SetPixels(Left, Top, w, h, Pixels)
 
@@ -221,6 +217,9 @@ func RenderDisplay(
 	// End the rendered texture modifications.
 	RenderedTexture.End()
 
+	// Apply this texture.
+	renderer.RenderTexture(index, RenderedTexture)
+
 	// Return the rendered texture and hovering editor.
-	return RenderedTexture, HoveringEditor
+	return HoveringEditor
 }

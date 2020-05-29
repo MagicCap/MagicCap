@@ -1,15 +1,10 @@
 package magnifier
 
-import "github.com/magiccap/MagicCap/core/mainthread"
-
 // Used to get the region from the origin texture. Put a black outline in the event it doesn't fit.
 func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 	// Get the left/top of the texture.
 	left := x-(w/2)
 	top := y-(h/2)
-
-	// Handle the begin function of the texture.
-	mainthread.ExecMainThread(m.originTexture.Begin)
 
 	// Will be set as the resulting bytes from the main thread.
 	var b []byte
@@ -21,10 +16,7 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 	BottomOverFlow := top+h > m.originHeight
 	if !LeftOverflow && !TopOverflow && !RightOverflow && !BottomOverFlow {
 		// This is great! Run the basic pixels function.
-		mainthread.ExecMainThread(func() {
-			b = m.originTexture.Pixels(left, top, w, h)
-			m.originTexture.End()
-		})
+		b = m.renderer.GetNormalTexturePixels(m.index, left, top, w, h)
 	} else {
 		// We have an overflow somewhere. We need to handle this during the processing.
 		LeftAdd := 0
@@ -58,10 +50,7 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 
 		// Get the relevant pixels from the display.
 		DisplayPixelsW := w+WidthAdd
-		mainthread.ExecMainThread(func() {
-			b = m.originTexture.Pixels(left+LeftAdd, top+TopAdd, DisplayPixelsW, h+HeightAdd)
-			m.originTexture.End()
-		})
+		b = m.renderer.GetNormalTexturePixels(m.index, left+LeftAdd, top+TopAdd, DisplayPixelsW, h+HeightAdd)
 
 		// Ok, step 2. We now need to handle processing these bytes in various ways to add "blackness" where there is missing content.
 

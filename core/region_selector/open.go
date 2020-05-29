@@ -1,18 +1,15 @@
 package regionselector
 
 import (
-	"errors"
 	"github.com/magiccap/MagicCap/core/editors"
 	"github.com/magiccap/MagicCap/core/magnifier"
-	"github.com/magiccap/MagicCap/core/mainthread"
+	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	img "image"
 	"image/draw"
 	"sync"
 
-	"github.com/MagicCap/glhf"
 	"github.com/disintegration/imaging"
 	"github.com/getsentry/sentry-go"
-	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
@@ -74,37 +71,9 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	}
 	wg.Wait()
 
-	// Remap the monitors to the order of the "Displays" array.
-	var GLFWMonitorsUnordered []*glfw.Monitor
-	mainthread.ExecMainThread(func() {
-		GLFWMonitorsUnordered = glfw.GetMonitors()
-	})
-	GLFWMonitors := make([]*glfw.Monitor, len(GLFWMonitorsUnordered))
-	for _, Monitor := range GLFWMonitorsUnordered {
-		x, y := Monitor.GetPos()
-		Matches := false
-		for i, v := range Displays {
-			if v.Bounds().Min.X == x && v.Bounds().Min.Y == y {
-				// This is the correct display.
-				GLFWMonitors[i] = Monitor
-				Matches = true
-				break
-			}
-		}
-		if !Matches {
-			panic(errors.New("cannot find matching glfw display"))
-		}
-	}
-
-	// Defines the shaders.
-	Shaders := make([]*glhf.Shader, len(GLFWMonitors))
-
-	// Defines the textures.
-	DarkerTextures := make([]*glhf.Texture, len(GLFWMonitors))
-	NormalTextures := make([]*glhf.Texture, len(GLFWMonitors))
 
 	// Defines the magnifier for each display.
-	Magnifiers := make([]*magnifier.Magnifier, len(GLFWMonitors))
+	Magnifiers := make([]*magnifier.Magnifier, len(Displays))
 
 	// Kills all of the magnifiers.
 	KillMagnifiers := func() {
@@ -144,197 +113,135 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 		return s
 	}
 
-	// Make a window on each display.
-	Windows := make([]*glfw.Window, len(GLFWMonitors))
-	var FirstWindow *glfw.Window
-	for i, v := range Displays {
-		// Creates the window.
-		var Window *glfw.Window
-		var err error
-		mainthread.ExecMainThread(func() {
-			// Creates the OpenGL context.
-			glfw.WindowHint(glfw.ContextVersionMajor, 3)
-			glfw.WindowHint(glfw.ContextVersionMinor, 3)
-			glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-			glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+	// Defines the renderer.
+	renderer := renderers.OSRenderer()
 
-			// Sets all of the used window hints.
-			glfw.WindowHint(glfw.CenterCursor, glfw.False)
-			glfw.WindowHint(glfw.Decorated, glfw.False)
-			glfw.WindowHint(glfw.FocusOnShow, glfw.True)
-			glfw.WindowHint(glfw.Floating, glfw.True)
-			glfw.WindowHint(glfw.AutoIconify, glfw.False)
-			glfw.WindowHint(glfw.Resizable, glfw.False)
+	// Set the mouse press callbacks.
+	renderer.SetMousePressCallback(func(index int, pos img.Rectangle) {
+		x, y := robotgo.GetMousePos()
 
-			// Create the display window.
-			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", GLFWMonitors[i], FirstWindow)
-			if err != nil {
-				sentry.CaptureException(err)
-				panic(err)
+		if HoveringEditor != "" {
+			// Ignore this! This is in the editor.
+			return
+		}
+		FirstPosMap[index] = &img.Point{
+			X: x - pos.Min.X,
+			Y: y - pos.Min.Y,
+		}
+		dispatcher.EscapeHandler = func() {
+			FirstPosMap[index] = nil
+		}
+	})
+	renderer.SetMouseReleaseCallback(func(index int, pos img.Rectangle) {
+		x, y := robotgo.GetMousePos()
+
+		if HoveringEditor != "" {
+			// Handle selecting a editor.
+			SelectedEditor = HoveringEditor
+			return
+		}
+
+		FirstPosCpy, ok := FirstPosMap[index]
+		if !ok {
+			// Ignore this!
+			return
+		}
+		FirstPosMap[index] = nil
+		if FirstPosCpy != nil {
+			// Get the result from here.
+			EndResult := &img.Point{
+				X: x - pos.Min.X,
+				Y: y - pos.Min.Y,
 			}
-			if FirstWindow == nil {
-				FirstWindow = Window
-			}
-			Windows[i] = Window
-			Window.MakeContextCurrent()
-		})
 
-		// Sets the mouse button handler.
-		index := i
-		DisplayPos := v
-		Window.SetMouseButtonCallback(func(_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
-			if button != glfw.MouseButton1 {
-				return
-			}
-			x, y := robotgo.GetMousePos()
-			if action == glfw.Press {
-				if HoveringEditor != "" {
-					// Ignore this! This is in the editor.
-					return
-				}
-				FirstPosMap[index] = &img.Point{
-					X: x - DisplayPos.Min.X,
-					Y: y - DisplayPos.Min.Y,
-				}
-				dispatcher.EscapeHandler = func() {
-					FirstPosMap[index] = nil
-				}
-			} else if action == glfw.Release {
-				if HoveringEditor != "" {
-					// Handle selecting a editor.
-					SelectedEditor = HoveringEditor
-					return
+			// Get the rectangle.
+			Rect := img.Rect(FirstPosCpy.X, FirstPosCpy.Y, EndResult.X, EndResult.Y)
+
+			// Nil the escape handler.
+			dispatcher.EscapeHandler = nil
+
+			if SelectedEditor == "__selector" {
+				// Sets the result.
+				dispatcher.Result = &SelectorResult{
+					Selection:      EditImage(index).SubImage(Rect).(*img.RGBA),
+					Screenshots:    Screenshots,
+					Displays:       Displays,
+					DisplayIndex:   index,
+					TopLeftDisplay: &Rect.Min,
 				}
 
-				FirstPosCpy, ok := FirstPosMap[index]
-				if !ok {
-					// Ignore this!
-					return
-				}
-				FirstPosMap[index] = nil
-				if FirstPosCpy != nil {
-					// Get the result from here.
-					EndResult := &img.Point{
-						X: x - DisplayPos.Min.X,
-						Y: y - DisplayPos.Min.Y,
-					}
+				// Closes the window.
+				renderer.ShouldClose()
+			} else {
+				// Get the selection.
+				Selection := Screenshots[index].SubImage(Rect).(*img.RGBA)
 
-					// Get the rectangle.
-					Rect := img.Rect(FirstPosCpy.X, FirstPosCpy.Y, EndResult.X, EndResult.Y)
-
-					// Nil the escape handler.
-					dispatcher.EscapeHandler = nil
-
-					if SelectedEditor == "__selector" {
-						// Sets the result.
-						dispatcher.Result = &SelectorResult{
-							Selection:      EditImage(index).SubImage(Rect).(*img.RGBA),
-							Screenshots:    Screenshots,
-							Displays:       Displays,
-							DisplayIndex:   index,
-							TopLeftDisplay: &Rect.Min,
-						}
-
-						// Closes the window.
-						Window.SetShouldClose(true)
-					} else {
-						// Get the selection.
-						Selection := Screenshots[index].SubImage(Rect).(*img.RGBA)
-
-						// Run the editor.
-						// TODO: Don't hardcode RGBA values.
-						Result := editors.Editors[SelectedEditor].Apply(Selection, [3]uint8{255, 0, 0})
-						h, ok := dispatcher.History[index]
-						if ok {
-							dispatcher.History[index] = append(h, &edit{
-								p: &Rect.Min,
-								r: Result,
-							})
-						} else {
-							dispatcher.History[index] = []*edit{{
-								p: &Rect.Min,
-								r: Result,
-							}}
-						}
-					}
+				// Run the editor.
+				// TODO: Don't hardcode RGBA values.
+				Result := editors.Editors[SelectedEditor].Apply(Selection, [3]uint8{255, 0, 0})
+				h, ok := dispatcher.History[index]
+				if ok {
+					dispatcher.History[index] = append(h, &edit{
+						p: &Rect.Min,
+						r: Result,
+					})
+				} else {
+					dispatcher.History[index] = []*edit{{
+						p: &Rect.Min,
+						r: Result,
+					}}
 				}
 			}
-		})
+		}
+	})
 
-		// Sets the key handler.
-		KeysDown := make([]*glfw.Key, 0)
-		KeysDownLock := sync.RWMutex{}
-		KeysReleased := 0
-		KeysReleasedLock := sync.Mutex{}
-		Window.SetKeyCallback(func(w *glfw.Window, key glfw.Key, _ int, action glfw.Action, _ glfw.ModifierKey) {
-			if action != glfw.Release {
-				// Log this key as down and return.
+	// Sets the key handler.
+	KeysDown := make([]int, 0)
+	KeysDownLock := sync.RWMutex{}
+	KeysReleased := 0
+	KeysReleasedLock := sync.Mutex{}
+	renderer.SetKeyCallback(func(Release bool, index, key int) {
+		if !Release {
+			// Log this key as down and return.
+			KeysDownLock.RLock()
+			KeysDown = append(KeysDown, key)
+			KeysDownLock.RUnlock()
+			return
+		}
+
+		for _, v := range KeysDown {
+			if v == key {
+				// Lock the keys released.
+				KeysReleasedLock.Lock()
+
+				// Set this key as released and get the released count.
+				KeysReleased++
+				ReleasedCount := KeysReleased
+
+				// Check if all the keys are released. If they are, call the key down function.
 				KeysDownLock.RLock()
-				KeysDown = append(KeysDown, &key)
-				KeysDownLock.RUnlock()
-				return
-			}
-
-			for _, v := range KeysDown {
-				if *v == key {
-					// Lock the keys released.
-					KeysReleasedLock.Lock()
-
-					// Set this key as released and get the released count.
-					KeysReleased++
-					ReleasedCount := KeysReleased
-
-					// Check if all the keys are released. If they are, call the key down function.
-					KeysDownLock.RLock()
-					if ReleasedCount == len(KeysDown) {
-						KeysDownLock.RUnlock()
-						ReleasedCount = 0
-						KeysDownLock.Lock()
-						KeyUpHandler(w, KeysDown, LastMouseDisplay, &dispatcher)
-						KeysDown = make([]*glfw.Key, 0)
-						KeysDownLock.Unlock()
-					} else {
-						KeysDownLock.RUnlock()
-					}
-
-					// Unlock the keys released lock.
-					KeysReleasedLock.Unlock()
-
-					// Break out of this loop.
-					break
+				if ReleasedCount == len(KeysDown) {
+					KeysDownLock.RUnlock()
+					ReleasedCount = 0
+					KeysDownLock.Lock()
+					KeyUpHandler(renderer, KeysDown, LastMouseDisplay, &dispatcher)
+					KeysDown = make([]int, 0)
+					KeysDownLock.Unlock()
+				} else {
+					KeysDownLock.RUnlock()
 				}
+
+				// Unlock the keys released lock.
+				KeysReleasedLock.Unlock()
+
+				// Break out of this loop.
+				break
 			}
-		})
+		}
+	})
 
-		// Creates the shader.
-		mainthread.ExecMainThread(func() {
-			s, err := glhf.NewShader(glhf.AttrFormat{
-				{Name: "position", Type: glhf.Vec2},
-				{Name: "texture", Type: glhf.Vec2},
-			}, glhf.AttrFormat{}, VertexShader, FragmentShader)
-			if err != nil {
-				panic(err)
-			}
-			Shaders[i] = s
-
-			// Creates the texture.
-			DarkerTextures[i] = glhf.NewTexture(
-				DarkerScreenshots[i].Bounds().Dx(),
-				DarkerScreenshots[i].Bounds().Dy(),
-				true,
-				DarkerScreenshots[i].Pix,
-			)
-
-			// Creates the brighter texture.
-			t := glhf.NewTexture(
-				Screenshots[i].Bounds().Dx(),
-				Screenshots[i].Bounds().Dy(),
-				true,
-				Screenshots[i].Pix,
-			)
-			NormalTextures[i] = t
-		})
-	}
+	// Initialise the renderer.
+	renderer.Init(Displays, DarkerScreenshots, Screenshots)
 
 	// Handles events in the window.
 	FirstTick := true
@@ -358,10 +265,10 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 		}
 
 		// Handles polling for events.
-		mainthread.ExecMainThread(glfw.PollEvents)
+		renderer.PollEvents()
 
 		ShouldBreakOuter := false
-		for i, Window := range Windows {
+		for i := range Displays {
 			// Get the rectangle for this display.
 			Rect := Displays[i]
 
@@ -376,7 +283,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 			}
 			if ShowMagnifier && Magnifiers[i] == nil {
 				// The magnifier has not been created yet, we should create it.
-				Magnifiers[i] = magnifier.NewMagnifier(NormalTextures[i], DisplayPoint)
+				Magnifiers[i] = magnifier.NewMagnifier(renderer, i, Screenshots[i].Bounds().Dx(), Screenshots[i].Bounds().Dy(), DisplayPoint)
 			}
 			if ShowMagnifier && DisplayPoint != nil {
 				// The user is on this display, ensure the magnifier position is correct (but in a goroutine, we don't want to block the draw).
@@ -384,44 +291,25 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 				go m.SetPos(DisplayPoint.X, DisplayPoint.Y)
 			}
 
-			BreakHere := false
-			ContinueHere := false
-			mainthread.ExecMainThread(func() {
-				// Makes the window the current context.
-				if Window.ShouldClose() {
-					ShouldBreakOuter = true
-					BreakHere = true
-					return
-				}
-
-				// Don't bother drawing if this is not the current display.
-				if DisplayPoint == nil && !FirstTick && !MouseMovedDisplay {
-					ContinueHere = true
-					return
-				}
-
-				// Make this window the current context.
-				Window.MakeContextCurrent()
-
-				// Handles the window.
-				var f *[]byte
-				if ShowMagnifier {
-					x := Magnifiers[i].GetFrame()
-					f = &x
-				}
-				Texture, h := RenderDisplay(DisplayPoint, FirstPosMap[i], NormalTextures[i], DarkerTextures[i], x, y, SelectedEditor, ShowEditors, dispatcher.History[i], f)
-				HoveringEditor = h
-				HandleWindow(Shaders[i], Texture)
-
-				// Swap the window buffers.
-				Window.SwapBuffers()
-			})
-
-			if BreakHere {
+			// Makes the window the current context.
+			if renderer.WindowShouldClose(i) {
+				ShouldBreakOuter = true
 				break
-			} else if ContinueHere {
+			}
+
+			// Don't bother drawing if this is not the current display.
+			if DisplayPoint == nil && !FirstTick && !MouseMovedDisplay {
 				continue
 			}
+
+			// Handles the window.
+			var f *[]byte
+			if ShowMagnifier {
+				x := Magnifiers[i].GetFrame()
+				f = &x
+			}
+			h := RenderDisplay(DisplayPoint, FirstPosMap[i], i, renderer, x, y, SelectedEditor, ShowEditors, dispatcher.History[i], f)
+			HoveringEditor = h
 		}
 
 		// Handles the outer for loops.
@@ -434,12 +322,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	}
 
 	// Cleans up the windows.
-	mainthread.ExecMainThread(func() {
-		for _, v := range Windows {
-			v.MakeContextCurrent()
-			v.Destroy()
-		}
-	})
+	renderer.DestroyAll()
 
 	// Handles the "F" key being pressed.
 	if dispatcher.ShouldFullscreenCapture {

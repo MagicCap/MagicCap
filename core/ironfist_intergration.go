@@ -76,7 +76,10 @@ func autoupdateLoop() {
 			continue
 		}
 		if pending {
-			wrapper.HandleUpdate()
+			err = wrapper.HandleUpdate()
+			if err != nil {
+				sentry.CaptureException(err)
+			}
 		}
 	}
 }

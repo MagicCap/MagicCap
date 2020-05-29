@@ -1,7 +1,6 @@
-package regionselector
+package renderers
 
-// VertexShader is the vertex shader which is used by this render.
-var VertexShader = `
+var vertexShader = `
 #version 330 core
 
 in vec2 position;
@@ -15,8 +14,7 @@ void main() {
 }
 `
 
-// FragmentShader is the fragment shader which is used by this render.
-var FragmentShader = `
+var fragmentShader = `
 #version 330 core
 
 in vec2 Texture;

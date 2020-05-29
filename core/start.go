@@ -5,11 +5,10 @@ package core
 
 import (
 	"fmt"
-	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/magiccap/MagicCap/core/apploop"
 	"github.com/magiccap/MagicCap/core/notifications"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
+	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	"github.com/magiccap/MagicCap/core/utils"
 	"math/rand"
 	"os"
@@ -48,15 +47,8 @@ func Start() {
 		// Boot message.
 		println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2020.")
 
-		// Initialises glfw/gl.
-		err := glfw.Init()
-		if err != nil {
-			panic(err)
-		}
-		err = gl.Init()
-		if err != nil {
-			panic(err)
-		}
+		// Initialises the renderer.
+		renderers.RendererInit()
 
 		// Initialise notifications.
 		notifications.NotificationInit()
@@ -76,7 +68,7 @@ func Start() {
 		StartTime := time.Now()
 
 		// Initialises Sentry.
-		err = sentry.Init(sentry.ClientOptions{
+		err := sentry.Init(sentry.ClientOptions{
 			Dsn: "https://9eafc18531ea47dcb497d21ab45f80d4@sentry.io/1865806",
 		})
 		if err != nil {

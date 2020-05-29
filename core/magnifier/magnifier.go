@@ -1,7 +1,7 @@
 package magnifier
 
 import (
-	"github.com/MagicCap/glhf"
+	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	"image"
 	"sync"
 	"time"
@@ -11,7 +11,8 @@ import (
 type Magnifier struct {
 	imgLock sync.Mutex
 	img []byte
-	originTexture *glhf.Texture
+	index int
+	renderer renderers.Renderer
 	pos *image.Point
 	lastPos *image.Point
 	posLock sync.Mutex
@@ -70,16 +71,11 @@ func (m *Magnifier) SetPos(x, y int) {
 	m.posLock.Unlock()
 }
 
-// Get information about the texture.
-func (m *Magnifier) getTextureInformation() {
-	m.originWidth = m.originTexture.Width()
-	m.originHeight = m.originTexture.Height()
-}
-
 // NewMagnifier is used to create a new version of the magnifier.
-func NewMagnifier(origin *glhf.Texture, InitPos *image.Point) *Magnifier {
-	m := Magnifier{originTexture: origin, pos: InitPos}
-	m.getTextureInformation()
+func NewMagnifier(renderer renderers.Renderer, index int, width, height int, InitPos *image.Point) *Magnifier {
+	m := Magnifier{renderer: renderer, index: index, pos: InitPos}
+	m.originHeight = height
+	m.originWidth = width
 	d := func() bool {
 		m.posLock.Lock()
 		p := m.pos
