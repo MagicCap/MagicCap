@@ -13,6 +13,7 @@ package mainthread
 import "C"
 import (
 	"github.com/mattn/go-pointer"
+	"github.com/petermattis/fastcgo"
 	"unsafe"
 )
 
@@ -46,7 +47,7 @@ func ExecMainThread(Function func()) {
 	}
 
 	// Call the C async function with the pointer.
-	C.handle_mainthread(pointer.Save(cbh))
+	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(pointer.Save(cbh))), 0, 0, 0)
 
 	// Wait for the function to be complete.
 	<-cbh.channel

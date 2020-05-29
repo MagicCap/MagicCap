@@ -40,6 +40,7 @@ require (
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-pointer v0.0.0-20171114154726-1d30dc4b6f28
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
+	github.com/petermattis/fastcgo v0.0.0-20170816164731-e33892440abb
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/robotn/gohook v0.0.0-20200111152647-5bfaedadd9dd
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
