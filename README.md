@@ -1,4 +1,4 @@
-<p><img src="https://i.imgur.com/3YKOjAF.png" alt="MagicCap" width="50%"></p>
+<p><img src="https://raw.githubusercontent.com/MagicCap/MagicCap/master/branding/3YKOjAF.png" alt="MagicCap" width="50%"></p>
 
 <p>
     <a href="https://circleci.com/gh/MagicCap/MagicCap/tree/master" title="CircleCI" target="_blank">
