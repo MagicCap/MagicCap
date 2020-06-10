@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"container/list"
 	"image"
-	"image/color"
 	"image/color/palette"
 	"image/draw"
 	"image/gif"
@@ -29,30 +28,37 @@ func gifEncoder(wg *sync.WaitGroup, Images *list.List, fps int) []byte {
 	}
 
 	// Defines the space per frame.
-	spf := 1 / float64(fps)
+	spf := int(100 / float64(fps))
 
 	// Get the bounds of the front image.
 	b := Images.Front().Value.(*image.RGBA).Bounds()
 
+	// Defines the limited part of plan 9 that we need.
+	p9l := palette.Plan9[:opts.NumColors]
+
 	// Get the items from the array.
 	x := Images.Front()
-	i := 0
+	index := 0
+	wg.Add(l)
 	for x != nil {
-		// Draw the paletted image.
-		pimg := image.NewPaletted(b, palette.Plan9[:opts.NumColors])
-		if opts.Quantizer != nil {
-			pimg.Palette = opts.Quantizer.Quantize(make(color.Palette, 0, opts.NumColors), x.Value.(*image.RGBA))
-		}
-		opts.Drawer.Draw(pimg, b, x.Value.(*image.RGBA), image.ZP)
+		go func(i int, r *image.RGBA) {
+			// Draw the paletted image.
+			pimg := image.NewPaletted(b, p9l)
+			opts.Drawer.Draw(pimg, b, r, image.ZP)
 
-		// Add to the images.
-		g.Image[i] = pimg
-		g.Delay[i] = int(spf*100)
+			// Add to the images.
+			g.Image[i] = pimg
+			g.Delay[i] = spf
+
+			// Set wg option to done.
+			wg.Done()
+		}(index, x.Value.(*image.RGBA))
 
 		// Get the next item from the list.
 		x = x.Next()
-		i++
+		index++
 	}
+	wg.Wait()
 
 	// Encodes the GIF.
 	buf := bytes.Buffer{}
