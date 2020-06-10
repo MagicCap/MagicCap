@@ -23,5 +23,5 @@ func BenchmarkGIFEncoder(b *testing.B) {
 	b.ResetTimer()
 
 	// Encode the GIF.
-	gifEncoder(wg, l)
+	gifEncoder(wg, l, 30)
 }
