@@ -41,6 +41,7 @@ var (
 )
 
 // Start is the main entrypoint for the application.
+//export Start
 func Start() {
 	// Initialise the application loop in the main thread.
 	apploop.ApplicationLoopStart(func() {

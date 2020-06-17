@@ -2,21 +2,37 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
+        <key>CFBundleSupportedPlatforms</key>
+        <array>
+            <string>MacOSX</string>
+        </array>
          <key>CFBundleExecutable</key>
          <string>MagicCap</string>
          <key>NSUserNotificationAlertStyle</key>
          <string>alert</string>
-         <key>CFBundleIdentifier</key>
-         <string>MagicCap.app</string>
          <key>CFBundleName</key>
          <string>MagicCap</string>
          <key>CFBundlePackageType</key>
          <string>APPL</string>
+         <key>CFBundleVersion</key>
+         <string>3.0.0</string>
+         <key>CFBundleShortVersionString</key>
+         <string>3.0.0</string>
+         <key>CFBundleURLName</key>
+         <string>org.magiccap.magiccap</string>
          <key>CFBundleIdentifier</key>
          <string>org.magiccap.magiccap</string>
          <key>CFBundleIconFile</key>
          <string>icon</string>
+         <key>LSApplicationCategoryType</key>
+         <string>public.app-category.utilities</string>
          <key>NSHighResolutionCapable</key>
+         <true />
+         <key>com.apple.security.app-sandbox</key>
+         <true />
+         <key>com.apple.security.files.user-selected.read-write</key>
+         <true />
+         <key>com.apple.security.assets.pictures.read-write</key>
          <true />
     </dict>
 </plist>

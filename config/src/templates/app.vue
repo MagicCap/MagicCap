@@ -59,13 +59,6 @@
 
                         <li>
                             <a
-                                @click="toggleCoreModal('Updates')"
-                                data-tooltip="Check for updates and toggle receiving beta updates"
-                                data-tooltip-position="right">
-                                <i class="fas fa-cloud-download-alt"></i> Updates</a>
-                        </li>
-                        <li>
-                            <a
                                 @click="toggleTheme"
                                 data-tooltip="Switch between light and dark mode"
                                 data-tooltip-position="right">
@@ -119,7 +112,6 @@
             <UploaderConfig ref="UploaderConfig" @appsettings-show="toggleCoreModal('AppSettings')"></UploaderConfig>
             <Debug ref="Debug"></Debug>
             <AppSettings ref="AppSettings" @debug-show="toggleCoreModal('Debug')" @open-dialog="openDialog"></AppSettings>
-            <Updates ref="Updates"></Updates>
             <Docs ref="Docs"></Docs>
             <SelectorSettings ref="SelectorSettings"></SelectorSettings>
         </div>
@@ -135,7 +127,6 @@ s
     import UploaderConfig from "./uploader_config"
     import AppSettings from "./app_settings"
     import Debug from "./debug"
-    import Updates from "./updates"
     import Docs from "./docs"
     import SelectorSettings from "./selector_settings"
     import Dialog from "./dialog"
@@ -151,7 +142,6 @@ s
             UploaderConfig,
             AppSettings,
             Debug,
-            Updates,
             Docs,
             SelectorSettings,
             Dialog,

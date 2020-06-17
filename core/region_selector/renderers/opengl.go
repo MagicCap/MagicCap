@@ -98,11 +98,11 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 	// Make a window on each display.
 	r.windows = make([]*glfw.Window, len(r.glfwMonitors))
 	var FirstWindow *glfw.Window
-	for i, v := range r.displays {
-		// Creates the window.
-		var Window *glfw.Window
-		var err error
-		mainthread.ExecMainThread(func() {
+	mainthread.ExecMainThread(func() {
+		for i, v := range r.displays {
+			// Creates the window.
+			var Window *glfw.Window
+			var err error
 			// Creates the OpenGL context.
 			glfw.WindowHint(glfw.ContextVersionMajor, 3)
 			glfw.WindowHint(glfw.ContextVersionMinor, 3)
@@ -128,38 +128,36 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 			}
 			r.windows[i] = Window
 			Window.MakeContextCurrent()
-		})
 
-		// Remember these for later.
-		index := i
-		DisplayPos := v
+			// Remember these for later.
+			index := i
+			DisplayPos := v
 
-		// Sets the mouse button handler.
-		Window.SetMouseButtonCallback(func(_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
-			if button != glfw.MouseButton1 {
-				return
-			}
-
-			if action == glfw.Press {
-				if r.mousePressCb != nil {
-					r.mousePressCb(index, DisplayPos)
+			// Sets the mouse button handler.
+			Window.SetMouseButtonCallback(func(_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
+				if button != glfw.MouseButton1 {
+					return
 				}
-			} else if action == glfw.Release {
-				if r.mouseReleaseCb != nil {
-					r.mouseReleaseCb(index, DisplayPos)
+
+				if action == glfw.Press {
+					if r.mousePressCb != nil {
+						r.mousePressCb(index, DisplayPos)
+					}
+				} else if action == glfw.Release {
+					if r.mouseReleaseCb != nil {
+						r.mouseReleaseCb(index, DisplayPos)
+					}
 				}
-			}
-		})
+			})
 
-		// Sets the key handler.
-		Window.SetKeyCallback(func(_ *glfw.Window, key glfw.Key, _ int, action glfw.Action, _ glfw.ModifierKey) {
-			if r.keyCb != nil {
-				r.keyCb(action == glfw.Release, index, int(key))
-			}
-		})
+			// Sets the key handler.
+			Window.SetKeyCallback(func(_ *glfw.Window, key glfw.Key, _ int, action glfw.Action, _ glfw.ModifierKey) {
+				if r.keyCb != nil {
+					r.keyCb(action == glfw.Release, index, int(key))
+				}
+			})
 
-		// Creates all required OpenGL definitions.
-		mainthread.ExecMainThread(func() {
+			// Creates all required OpenGL definitions.
 			s, err := glhf.NewShader(glhf.AttrFormat{
 				{Name: "position", Type: glhf.Vec2},
 				{Name: "texture", Type: glhf.Vec2},
@@ -185,8 +183,8 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 				Screenshots[i].Pix,
 			)
 			r.normalTextures[i] = t
-		})
-	}
+		}
+	})
 }
 
 type openGlTexture struct {

@@ -13,8 +13,8 @@ func BenchmarkGIFEncoder(b *testing.B) {
 	// Create the mock images.
 	l := list.New()
 	i := 0
-	for i != 10000 {
-		img := image.NewRGBA(image.Rect(0, 0, 200, 200))
+	for i != 1000 {
+		img := image.NewRGBA(image.Rect(0, 0, 2000, 2000))
 		draw.Draw(img, img.Rect, image.Black, image.Point{}, draw.Over)
 		l.PushBack(img)
 		i++

@@ -14,3 +14,4 @@ magiccap-darwin
 magiccap-linux
 application_bundle.zip
 magiccap-bundled
+*-packr.go

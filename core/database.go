@@ -152,7 +152,6 @@ func UpdateConfig() {
 	}
 	RestartTrayProcess(false)
 	ManageHotkeysEdit()
-	// TODO: Refresh updates!
 }
 
 // LogUpload logs the upload to the config.

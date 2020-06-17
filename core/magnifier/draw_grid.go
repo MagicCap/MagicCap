@@ -44,7 +44,7 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 		CurrentIndex := i*w*4
 
 		// Get the width endpoint start.
-		WEndpointStart := (w / 2) - (every / 2)
+		WEndpointStart := (w / 2) - (every / 2) - 1
 
 		if i >= HMidpointStart && HMidpointEnd >= i {
 			// This is in the horizontal midpoint.
