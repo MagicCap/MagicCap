@@ -4,7 +4,8 @@
 // eslint-disable no-inline-comments
 
 import { post } from "chainfetch"
-import { readFile } from "fs-nextra"
+import { promises } from "fs"
+const { readFile } = promises
 import * as safeEval from "safe-eval"
 import { ConfigHandler } from "../config"
 

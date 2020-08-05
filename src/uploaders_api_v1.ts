@@ -138,19 +138,20 @@ app.get("/uploaders_api/v1/uploaders/default_check", [authMiddleware], (req: any
 
 // Throws up an uploader prompt.
 const uploaderPrompt = (uploaderSlug: string) => {
-    const uploader = (uploaders as any)[uploaderSlug]
-    dialog.showMessageBox({
-        type: "info",
-        buttons: ["Yes", "No"],
-        message: `Set "${uploader.name}" as your default uploader?`,
-        detail: `Do you want to set "${uploader.name}" as your default uploader? This will also enable capture uploading.`,
-    }, res => {
-        if (res === 0) {
+    const uploader = (uploaders as any)[uploaderSlug];
+    (async() => {
+        const { response } = await dialog.showMessageBox({
+            type: "info",
+            buttons: ["Yes", "No"],
+            message: `Set "${uploader.name}" as your default uploader?`,
+            detail: `Do you want to set "${uploader.name}" as your default uploader? This will also enable capture uploading.`,
+        })
+        if (response === 0) {
             config.o.save_capture = true
             config.o.uploader_type = uploaderSlug
             config.save()
         }
-    })
+    })()
 }
 
 // Allows for a uploader to prompt to be default.

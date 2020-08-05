@@ -10,7 +10,8 @@ import * as os from "os"
 import * as path from "path"
 import { spawn } from "child_process"
 import * as sharp from "sharp"
-import { readFile } from "fs-nextra"
+import { promises } from "fs"
+const { readFile } = promises
 import config from "../config"
 import expressApp from "../web_server"
 // @ts-ignore

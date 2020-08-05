@@ -10,7 +10,6 @@ import config from "./config"
 import capture from "./capture"
 import liteTouchConfig from "./lite_touch"
 import { app, Tray, Menu, dialog, systemPreferences, BrowserWindow, ipcMain, nativeImage } from "electron"
-import { readFile } from "fs-nextra"
 import testUploader from "./test_uploader"
 import autoUpdateLoop from "./autoupdate"
 import * as i18n from "./i18n"
@@ -23,6 +22,8 @@ import OAuth2 from "./oauth2"
 import editors from "./editors"
 import expressApp from "./web_server"
 import getDefaultConfig from "./default_config"
+import { promises } from "fs"
+const { readFile } = promises
 
 /**
  * Creates the GUI menu on macOS.
@@ -211,25 +212,22 @@ ipcMain.on("window-show", () => {
  */
 async function dropdownMenuUpload(uploader: any) {
     const selectFilei18n = await i18n.getPoPhrase("Select file...", "app")
-    await dialog.showOpenDialog(BrowserWindow.getFocusedWindow()!, {
+    const ret = await dialog.showOpenDialog(BrowserWindow.getFocusedWindow()!, {
         title: selectFilei18n,
-        // @ts-ignore
-        multiSelections: true,
-        openDirectory: false,
-    }, async(filePaths: string[]) => {
-        if (filePaths) {
-            const path = filePaths[0]
-            const buffer = await readFile(path)
-            const filename = path
-                .split("\\")
-                .pop()!
-                .split("/")
-                .pop()
-            await capture.file(buffer as Buffer, filename as string, path).upload(uploader).notify("File successfully uploaded.")
-                .log()
-                .run()
-        }
+        properties: ["openFile", "multiSelections"],
     })
+    if (ret.filePaths.length > 0) {
+        const path = ret.filePaths[0]
+        const buffer = await readFile(path)
+        const filename = path
+            .split("\\")
+            .pop()!
+            .split("/")
+            .pop()
+        await capture.file(buffer as Buffer, filename as string, path).upload(uploader).notify("File successfully uploaded.")
+            .log()
+            .run()
+    }
 }
 
 /**

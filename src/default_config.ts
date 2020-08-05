@@ -6,7 +6,7 @@ import { app } from "electron"
 import { sep } from "path"
 import darkThemeInformation from "./system_dark_theme"
 import newInstallId from "./install_id"
-import { ensureDir } from "fs-nextra"
+import ensureDir from "./ensureDir"
 
 /**
  * Creates the default config.

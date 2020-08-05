@@ -2,7 +2,6 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2018-2019.
 
 import { AUTOUPDATE_ON } from "./build_info"
-import { stat, writeFile } from "fs-nextra"
 import { app, dialog } from "electron"
 import { get } from "chainfetch"
 import { exec } from "child_process"
@@ -10,6 +9,8 @@ import { exec } from "child_process"
 import * as sudo from "sudo-prompt"
 import * as i18n from "./i18n"
 import config from "./config"
+import { promises } from "fs"
+const { stat, writeFile } = promises
 
 // Ignores this while the app is open.
 const tempIgnore: string[] = []
@@ -131,31 +132,30 @@ async function handleUpdate(updateInfo: any) {
     const messagei18n = await i18n.getPoPhrase("A new version of MagicCap is available.", "autoupdate")
     const detaili18n = await i18n.getPoPhrase("You are on {current} and the latest is {latest}. Here are the changelogs since your current release:\n\n{changelogs}", "autoupdate")
 
-    await dialog.showMessageBox({
+    const { response } = await dialog.showMessageBox({
         type: "warning",
         buttons: [updateNowi18n, notNowi18n, skipi18n],
         title: "MagicCap",
         message: messagei18n,
         detail: detaili18n.replace("{current}", `v${app.getVersion()}`).replace("{latest}", `v${updateInfo.current}`).replace("{changelogs}", updateInfo.changelogs),
-    }, async response => {
-        switch (response) {
-            case 2:
-                if (config.o.ignored_updates !== undefined) {
-                    config.o.ignored_updates.push(updateInfo.current)
-                } else {
-                    config.o.ignored_updates = [updateInfo.current]
-                }
-                config.save()
-                break
-            case 1:
-                tempIgnore.push(updateInfo.current)
-                break
-            case 0:
-                updateRunning = true
-                await doUpdate(updateInfo)
-                updateRunning = false
-        }
     })
+    switch (response) {
+        case 2:
+            if (config.o.ignored_updates !== undefined) {
+                config.o.ignored_updates.push(updateInfo.current)
+            } else {
+                config.o.ignored_updates = [updateInfo.current]
+            }
+            config.save()
+            break
+        case 1:
+            tempIgnore.push(updateInfo.current)
+            break
+        case 0:
+            updateRunning = true
+            await doUpdate(updateInfo)
+            updateRunning = false
+    }
 }
 
 /**
@@ -195,28 +195,27 @@ export default async function autoUpdateLoop() {
             const noi18n = await i18n.getPoPhrase("No", "autoupdate")
             const dontAski18n = await i18n.getPoPhrase("Don't ask again", "autoupdate")
             const messagei18n = await i18n.getPoPhrase("In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.", "autoupdate")
-            await dialog.showMessageBox({
+            const { response } = await dialog.showMessageBox({
                 type: "warning",
                 buttons: [yesi18n, noi18n, dontAski18n],
                 title: "MagicCap",
                 message: messagei18n,
-            }, async response => {
-                let toCont = true
-                switch (response) {
-                    case 2:
-                        toCont = false
-                        config.o.autoupdate_on = false
-                        config.save()
-                        break
-                    case 1:
-                        toCont = false
-                        break
-                    case 0:
-                        await downloadBin()
-                        break
-                }
-                res(toCont)
             })
+            let toCont = true
+            switch (response) {
+                case 2:
+                    toCont = false
+                    config.o.autoupdate_on = false
+                    config.save()
+                    break
+                case 1:
+                    toCont = false
+                    break
+                case 0:
+                    await downloadBin()
+                    break
+            }
+            res(toCont)
         })
         if (!toContinue) {
             return
@@ -244,23 +243,22 @@ async function manualCheck() {
             const yesi18n = await i18n.getPoPhrase("Yes", "autoupdate")
             const noi18n = await i18n.getPoPhrase("No", "autoupdate")
             const messagei18n = await i18n.getPoPhrase("In order for autoupdate to work, MagicCap has to install some autoupdate binaries. Shall I do that? MagicCap will not autoupdate without this.", "autoupdate")
-            await dialog.showMessageBox({
+            const { response } = await dialog.showMessageBox({
                 type: "warning",
                 buttons: [yesi18n, noi18n],
                 title: "MagicCap",
                 message: messagei18n,
-            }, async response => {
-                let toCont = true
-                switch (response) {
-                    case 1:
-                        toCont = false
-                        break
-                    case 0:
-                        await downloadBin()
-                        break
-                }
-                res(toCont)
             })
+            let toCont = true
+            switch (response) {
+                case 1:
+                    toCont = false
+                    break
+                case 0:
+                    await downloadBin()
+                    break
+            }
+            res(toCont)
         })
         if (!cont) {
             return

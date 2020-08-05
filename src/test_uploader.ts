@@ -1,5 +1,6 @@
 // Defines required items.
-import { readFile } from "fs-nextra"
+import { promises } from "fs"
+const { readFile } = promises
 import * as uuidv4 from "uuid/v4"
 import { get } from "chainfetch"
 import config from "./config"

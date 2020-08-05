@@ -9,7 +9,8 @@ import ffmpegFetcher from "./ffmpeg"
 import { spawn } from "child_process"
 import * as tempDir from "temp-dir"
 import * as uuid from "uuid/v4"
-import * as fsNextra from "fs-nextra"
+import { promises } from "fs"
+const fsNextra = promises
 
 // Imports Aperture if this is macOS.
 let aperture: undefined | any

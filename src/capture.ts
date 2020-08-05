@@ -5,7 +5,7 @@
 
 // Imports go here.
 import * as gifman from "./gif_capture"
-import * as fsnextra from "fs-nextra"
+import { promises } from "fs"
 import * as electron from "electron"
 import * as i18n from "./i18n"
 import * as sharp from "sharp"
@@ -15,8 +15,10 @@ import selector from "./selector"
 import editors from "./editors"
 import config from "./config"
 import { importedUploaders, nameUploaderMap } from "./uploaders"
+import ensureDir from "./ensureDir"
 const captureDatabase = SQLite3(`${require("os").homedir()}/magiccap.db`)
 const { clipboard, nativeImage, Tray, dialog, shell, Notification } = electron
+const fsnextra = promises
 
 // Defines if we are in a GIF.
 let inGif = false
@@ -147,7 +149,7 @@ export default class CaptureCore {
                 }
                 if (!this._fp && config.o.save_capture && config.o.save_path) {
                     // We need to save this and tailor the return.
-                    await fsnextra.ensureDir(config.o.save_path)
+                    await ensureDir(config.o.save_path)
                     this._fp = `${config.o.save_path}${this._filename}`
                     await fsnextra.writeFile(this._fp, this.buffer)
                 }
@@ -300,7 +302,7 @@ export default class CaptureCore {
             }
 
             // @ts-ignore
-            const selection = await selector(selectorArgs)
+            const selection = await selector(selectorArgs) as any
             if (!selection) {
                 throw new Error("Screenshot cancelled.")
             }
@@ -342,16 +344,11 @@ export default class CaptureCore {
                 // @ts-ignore
                 cls.buffer = buffer
             } else {
-                const displayFull = selection.screenshots[selection.display]
-
-                let sharpDesktop = sharp(displayFull)
-
-                for (const part of selection.displayEdits) {
-                    sharpDesktop = sharp(await sharpDesktop.overlayWith(part.edit, {
-                        left: Math.floor(part.left),
-                        top: Math.floor(part.top),
-                    }).toBuffer())
-                }
+                const sharpDesktop = sharp(selection.screenshots[selection.display]).composite(selection.displayEdits.map((part: any) => ({
+                    input: part.edit,
+                    left: Math.floor(part.left),
+                    top: Math.floor(part.top),
+                })))
 
                 const cropped = await sharpDesktop.extract({
                     top: Math.floor(selection.start.pageY),

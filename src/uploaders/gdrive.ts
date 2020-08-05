@@ -80,6 +80,7 @@ export default {
             },
         })
         const driveId = driveResponse.data.id
+        // @ts-ignore
         await drive.permissions.create({
             // @ts-ignore
             fileId: driveId,
