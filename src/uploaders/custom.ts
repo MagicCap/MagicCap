@@ -39,7 +39,7 @@ export default {
         let res = await post(config.o.custom_url)
             .set(config.o.custom_headers)
             .attach(config.o.custom_body)
-            .attach("file", buffer, filename)
+            .attach(config.o.custom_image, buffer, filename)
 
         if (!config.o.custom_response) return res.body
         return res.body[config.o.custom_response]
