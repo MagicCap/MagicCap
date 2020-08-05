@@ -293,17 +293,15 @@ export default async(buttons: any[]) => {
 
     // Shoves everything in the background.
     uuids = []
-    const promises = [];
-    (() => {
-        for (const d in displays) {
-            const promise = screenshotter({ format: "png", screen: Number(d) })
-            promise
-            promises.push(promise)
-            uuids.push(uuidv4())
-        }
-    })()
+    const a: Promise<Buffer>[] = []
+    for (const d in displays) {
+        const promise = screenshotter({ format: "png", screen: Number(d) })
+        promise
+        a.push(promise)
+        uuids.push(uuidv4())
+    }
 
-    screenshots = await Promise.all(promises) as Buffer[]
+    screenshots = await Promise.all(a) as Buffer[]
 
     screens = spawnWindows(displays, primaryId)
 

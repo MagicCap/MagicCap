@@ -2,9 +2,8 @@
 // Copyright (C) Jake Gealer <jake@gealer.email> 2019.
 
 // Gets the language pack information.
-import { promises } from "fs"
+import { promises, readdirSync, statSync } from "fs"
 const { readFile } = promises
-import { readdirSync, statSync } from "fs"
 import { join } from "path"
 import config from "../config"
 import * as PO from "pofile"
