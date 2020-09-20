@@ -5,6 +5,7 @@ package core
 
 import (
 	"encoding/json"
+	"github.com/magiccap/MagicCap/core/mainthread"
 	"github.com/magiccap/MagicCap/core/utils"
 	"io/ioutil"
 	"net/http"
@@ -35,7 +36,7 @@ var (
 // LoadUploadersKernel loads up the kernel.
 func LoadUploadersKernel() {
 	// Pulls the uploaders kernel.
-	PullUploadersKernel := func() *[]byte {
+	PullUploadersKernel := func() []byte {
 		response, err := http.Get(UploadersURL)
 		if err != nil {
 			os.Stderr.Write([]byte("Failed to pull the uploaders kernel!\n"))
@@ -46,19 +47,19 @@ func LoadUploadersKernel() {
 			sentry.CaptureException(err)
 			panic(err)
 		}
-		err = ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0600)
+		err = ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0666)
 		if err != nil {
 			sentry.CaptureException(err)
 			panic(err)
 		}
-		return &b
+		return b
 	}
 
 	// Gets the uploader kernel.
 	if _, err := os.Stat(path.Join(ConfigPath, "kernel.json")); err != nil {
 		// Grab the cached copy of the kernel.
 		b := utils.MustBytes(CoreAssets, "kernel.json")
-		err := ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0600)
+		err := ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0666)
 		if err != nil {
 			sentry.CaptureException(err)
 			panic(err)
@@ -110,7 +111,7 @@ func LoadUploadersKernel() {
 				continue
 			}
 			var Spec map[string]interface{}
-			err := json.Unmarshal(*b, &Spec)
+			err := json.Unmarshal(b, &Spec)
 			if err != nil {
 				sentry.CaptureException(err)
 				panic(err)
@@ -144,7 +145,7 @@ func GetConfiguredUploaders() []ConfiguredUploader {
 	// Get the default.
 	UploaderDefault, ok := ConfigItems["uploader_type"].(string)
 	if !ok {
-		UploaderDefault = "magiccap"
+		UploaderDefault = "imgur"
 	}
 
 	// Check all the config items are supported.
@@ -194,7 +195,7 @@ func FileExtExpander(ext string) string {
 
 func makeSavePath() string {
 	SavePath := path.Join(HomeDir, "Pictures", "MagicCap")
-	err := os.MkdirAll(SavePath, 0600)
+	err := os.MkdirAll(SavePath, 0666)
 	if err != nil {
 		sentry.CaptureException(err)
 		panic(err)
@@ -219,9 +220,11 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 				SavePath = makeSavePath()
 			}
 			Joined := path.Join(SavePath, Filename)
-			err := ioutil.WriteFile(Joined, Data, 0600)
+			err := ioutil.WriteFile(Joined, Data, 0666)
 			if err != nil {
-				dialog.Message("%s", err.Error()).Error()
+				mainthread.ExecMainThread(func() {
+					dialog.Message("%s", err.Error()).Error()
+				})
 				LogUpload(Filename, nil, nil, false)
 				return nil, false
 			}
@@ -230,9 +233,7 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 	}
 	if Uploader != nil {
 		// Handle uploading the file.
-		IsolatedConfig := map[string]interface{}{
-			"install_id": ConfigItems["install_id"],
-		}
+		IsolatedConfig := map[string]interface{}{}
 		for _, v := range Uploader.ConfigOptions {
 			IsolatedConfig[v.Value] = ConfigItems[v.Value]
 		}
@@ -240,7 +241,9 @@ func Upload(Data []byte, Filename string, FilePath *string, Uploader *MagicCapKe
 		timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 		Changes = &timestamp
 		if err != nil {
-			dialog.Message("%s", err.Error()).Error()
+			mainthread.ExecMainThread(func() {
+				dialog.Message("%s", err.Error()).Error()
+			})
 			LogUpload(Filename, nil, FilePath, false)
 			return nil, false
 		}

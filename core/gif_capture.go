@@ -3,10 +3,10 @@ package core
 import (
 	"bytes"
 	"container/list"
+	gif "github.com/jakemakesstuff/faster-image-gif"
 	"image"
 	"image/color/palette"
 	"image/draw"
-	"image/gif"
 	"sync"
 	"time"
 
@@ -62,7 +62,7 @@ func gifEncoder(wg *sync.WaitGroup, Images *list.List, fps int) []byte {
 
 	// Encodes the GIF.
 	buf := bytes.Buffer{}
-	_ = gif.EncodeAll(&buf, g)
+	_ = gif.EncodeAllMultithreaded(&buf, g)
 	return buf.Bytes()
 }
 

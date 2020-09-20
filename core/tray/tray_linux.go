@@ -5,14 +5,13 @@
 package tray
 
 import (
-	"io/ioutil"
-	"os"
-	"path"
-	"time"
-
 	"github.com/dawidd6/go-appindicator"
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gotk3/gotk3/gtk"
+	"github.com/magiccap/MagicCap/core/utils"
+	"io/ioutil"
+	"os"
+	"path"
 )
 
 // TaskbarAssets is used to get assets for the taskbar.
@@ -161,19 +160,15 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 	// HACK: We can't pass bytes to appindicator, so temp save the icon and load it.
 	// After 10 seconds we delete it. The application will be loaded by then anyway (I would've thought it'd crash if it hung for 10 seconds).
 	Icon := utils.MustBytes(TaskbarAssets, "icon.png")
-	TempDir, err := ioutil.TempDir("", "magiccap_icon")
+	TempDir, err := ioutil.TempDir(os.Getenv("TMPDIR"), "magiccap_icon")
 	if err != nil {
 		panic(err)
 	}
 	Path := path.Join(TempDir, "icon.png")
-	err = ioutil.WriteFile(Path, Icon, 0600)
+	err = ioutil.WriteFile(Path, Icon, 0666)
 	if err != nil {
 		panic(err)
 	}
-	go func() {
-		time.Sleep(time.Second * 10)
-		os.RemoveAll(TempDir)
-	}()
 	CurrentIndicator.SetIcon(Path)
 
 	// Set the menu.

@@ -47,7 +47,7 @@ func (t *TempIcon) CloseIcon() {
 }
 
 // InitTempIcon is used to initialise the temp icon.
-func InitTempIcon(Icon []byte, Handler func()) *TempIcon {
+func InitTempIcon(Icon []byte, Handler func(), _ string) *TempIcon {
 	HandlerID := -1
 	if Handler != nil {
 		NextHandlerLock.Lock()

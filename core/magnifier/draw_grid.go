@@ -1,5 +1,7 @@
 package magnifier
 
+import "sync"
+
 // Draw the grid.
 func drawGrid(b []byte, white bool, every, w, h int) []byte {
 	// Create the grid column.
@@ -104,5 +106,98 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 	b = ReallignedArray
 
 	// Return the bytes.
+	return b
+}
+
+// Defines the information for the grid cache.
+type cacheInfo struct {
+	w, h, every int
+}
+
+// Handles the grid cache. We basically expect a 100% cache hit rate unless the size changes.
+var (
+	whiteGridCache = map[cacheInfo][]byte{}
+	blackGridCache = map[cacheInfo][]byte{}
+	whiteGridCacheLock = sync.RWMutex{}
+	blackGridCacheLock = sync.RWMutex{}
+)
+
+// The magic byte used to represent blank-ness.
+const magicByte = uint8(0x69)
+
+// Pre-render a 200x200 grid with a row every 10px that's both black and white.
+func init() {
+	whiteGridCacheLock.Lock()
+	blackGridCacheLock.Lock()
+	filled1 := make([]byte, 200*200*4)
+	filled2 := make([]byte, 200*200*4)
+	for i := range filled1 {
+		filled1[i] = magicByte
+		filled2[i] = magicByte
+	}
+	whiteGridCache[cacheInfo{
+		w:     200,
+		h:     200,
+		every: 10,
+	}] = drawGrid(filled1, true,10,200, 200)
+	blackGridCache[cacheInfo{
+		w:     200,
+		h:     200,
+		every: 10,
+	}] = drawGrid(filled2, false,10,200, 200)
+	whiteGridCacheLock.Unlock()
+	blackGridCacheLock.Unlock()
+}
+
+// Draw the grid with a cache.
+func drawGridCached(b []byte, white bool, every, w, h int) []byte {
+	var cached []byte
+	if white {
+		whiteGridCacheLock.RLock()
+		cached, _ = whiteGridCache[cacheInfo{
+			w:     w,
+			h:     h,
+			every: every,
+		}]
+		whiteGridCacheLock.RUnlock()
+	} else {
+		blackGridCacheLock.RLock()
+		cached, _ = blackGridCache[cacheInfo{
+			w:     w,
+			h:     h,
+			every: every,
+		}]
+		blackGridCacheLock.RUnlock()
+	}
+	if cached == nil {
+		// Create the grid.
+		cached = make([]byte, w*h*4)
+		for i := range cached {
+			cached[i] = magicByte
+		}
+		cached = drawGrid(cached, white, every, w, h)
+		if white {
+			whiteGridCacheLock.Lock()
+			whiteGridCache[cacheInfo{
+				w:     w,
+				h:     h,
+				every: every,
+			}] = cached
+			whiteGridCacheLock.Unlock()
+		} else {
+			blackGridCacheLock.Lock()
+			blackGridCache[cacheInfo{
+				w:     w,
+				h:     h,
+				every: every,
+			}] = cached
+			blackGridCacheLock.Unlock()
+		}
+	}
+	for i, v := range cached {
+		if v != magicByte {
+			b[i] = v
+		}
+	}
 	return b
 }

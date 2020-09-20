@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile("./core/kernel.json", b, 0600)
+	err = ioutil.WriteFile("./core/kernel.json", b, 0666)
 	if err != nil {
 		panic(err)
 	}

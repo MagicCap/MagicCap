@@ -64,7 +64,9 @@ func RunFullscreenCapture() {
 	w := new(bytes.Buffer)
 	err := png.Encode(w, img)
 	if err != nil {
-		dialog.Message("%s", err.Error()).Error()
+		mainthread.ExecMainThread(func() {
+			dialog.Message("%s", err.Error()).Error()
+		})
 		sentry.CaptureException(err)
 		return
 	}
@@ -94,7 +96,9 @@ func RunScreenCapture() {
 	w := new(bytes.Buffer)
 	err := png.Encode(w, r.Selection)
 	if err != nil {
-		dialog.Message("%s", err.Error()).Error()
+		mainthread.ExecMainThread(func() {
+			dialog.Message("%s", err.Error()).Error()
+		})
 		sentry.CaptureException(err)
 		return
 	}
@@ -127,8 +131,8 @@ func RunGIFCapture() {
 		t = tempicon.InitTempIcon(utils.MustBytes(CoreAssets, "stop.png"), func() {
 			t.CloseIcon()
 			channel <- true
-			t = tempicon.InitTempIcon(utils.MustBytes(CoreAssets, "cog.png"), nil)
-		})
+			t = tempicon.InitTempIcon(utils.MustBytes(CoreAssets, "cog.png"), nil, "")
+		}, "Stop GIF Capture")
 	})
 	b := NewGIFCapture(&r.Selection.Rect, channel)
 	mainthread.ExecMainThread(t.CloseIcon)
@@ -155,7 +159,9 @@ func RunClipboardCapture() {
 		f, _ := filetype.Match(Data)
 		if f == filetype.Unknown {
 			// We do not know the MIME type. RIP.
-			dialog.Message("%s", "File type not supported.").Error()
+			mainthread.ExecMainThread(func() {
+				dialog.Message("%s", "File type not supported.").Error()
+			})
 			return
 		}
 		if f.MIME.Value == "image/tiff" {
@@ -163,14 +169,18 @@ func RunClipboardCapture() {
 			FileType = "png"
 			img, err := tiff.Decode(bytes.NewReader(Data))
 			if err != nil {
-				dialog.Message("%s", err.Error()).Error()
+				mainthread.ExecMainThread(func() {
+					dialog.Message("%s", err.Error()).Error()
+				})
 				sentry.CaptureException(err)
 				return
 			}
 			w := new(bytes.Buffer)
 			err = png.Encode(w, img)
 			if err != nil {
-				dialog.Message("%s", err.Error()).Error()
+				mainthread.ExecMainThread(func() {
+					dialog.Message("%s", err.Error()).Error()
+				})
 				sentry.CaptureException(err)
 				return
 			}

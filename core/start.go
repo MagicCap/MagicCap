@@ -55,7 +55,7 @@ func Start() {
 		notifications.NotificationInit()
 
 		// Make the MagicCap internal directory.
-		_ = os.MkdirAll(ConfigPath, 0700)
+		_ = os.MkdirAll(ConfigPath, 0666)
 
 		// Handle the random seed.
 		rand.Seed(time.Now().UnixNano())
@@ -105,9 +105,6 @@ func Start() {
 
 		// Loads the hotkeys.
 		LoadHotkeys()
-
-		// Ensures there is a install ID.
-		EnsureInstallID()
 
 		// Starts the tray.
 		RestartTrayProcess(true)

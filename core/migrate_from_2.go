@@ -30,6 +30,13 @@ func MigrateFrom2() {
 			delete(ConfigItems, "sharex_sxcu_path")
 			UpdateConfig()
 		}
+	}, func() {
+		defaultUploader, _ := ConfigItems["uploader_type"].(string)
+		if defaultUploader == "magiccap" {
+			// Make this imgur due to i.magiccap deprecation.
+			ConfigItems["uploader_type"] = "imgur"
+			UpdateConfig()
+		}
 	})
 
 	// Moves ~/magiccap.db to ~/.magiccap/magiccap.db
@@ -47,4 +54,6 @@ func MigrateFrom2() {
 		// This user is using 3.X already. Return here.
 		return
 	}
+
+	// TODO: Post beta, we should destroy magiccap-updater and ask about ffmpeg
 }

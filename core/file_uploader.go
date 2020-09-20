@@ -4,6 +4,7 @@
 package core
 
 import (
+	"github.com/magiccap/MagicCap/core/mainthread"
 	"github.com/magiccap/MagicCap/core/notifications"
 	"io/ioutil"
 	"path/filepath"
@@ -20,7 +21,9 @@ func OpenFileUploader(Uploader *MagicCapKernelStandards.Uploader) {
 	}
 	b, err := ioutil.ReadFile(fp)
 	if err != nil {
-		dialog.Message("%s", err.Error()).Error()
+		mainthread.ExecMainThread(func() {
+			dialog.Message("%s", err.Error()).Error()
+		})
 		return
 	}
 	url, ok := Upload(b, filepath.Base(fp), &fp, Uploader)

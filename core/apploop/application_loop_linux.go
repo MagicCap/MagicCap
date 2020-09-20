@@ -12,9 +12,6 @@ import (
 	"github.com/gotk3/gotk3/gtk"
 )
 
-// mainApplication is the initalised application.
-var mainApplication *gtk.Application
-
 // appID is the ID of the application.
 var appID = "org.magiccap.magiccap"
 
@@ -44,6 +41,5 @@ func ApplicationLoopStart(ReadyCallback func()) {
 	})
 
 	// Run the application.
-	mainApplication = application
 	os.Exit(application.Run(nil))
 }

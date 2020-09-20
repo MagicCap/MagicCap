@@ -3,6 +3,8 @@
 
 #include <dispatch/dispatch.h>
 
+void CCallbackHandler(void* func);
+
 void handle_mainthread(void* func) {
     dispatch_async(dispatch_get_main_queue(), ^(void) {
         CCallbackHandler(func);

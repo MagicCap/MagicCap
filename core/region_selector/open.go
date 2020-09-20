@@ -6,6 +6,7 @@ import (
 	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	img "image"
 	"image/draw"
+	"runtime"
 	"sync"
 
 	"github.com/disintegration/imaging"
@@ -23,8 +24,11 @@ type edit struct {
 
 var regionSelectorLock = sync.Mutex{}
 
-// OpenRegionSelector is used to open a native OpenGL region selector (I know OpenGL is painful to write, kill me).
+// OpenRegionSelector is used to open a native region selector.
 func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
+	// Defer calling the Go garbage collector until we're done.
+	defer runtime.GC()
+
 	// Lock the region selector.
 	regionSelectorLock.Lock()
 
@@ -162,12 +166,15 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 
 			if SelectedEditor == "__selector" {
 				// Sets the result.
-				dispatcher.Result = &SelectorResult{
-					Selection:      EditImage(index).SubImage(Rect).(*img.RGBA),
-					Screenshots:    Screenshots,
-					Displays:       Displays,
-					DisplayIndex:   index,
-					TopLeftDisplay: &Rect.Min,
+				Selection := EditImage(index).SubImage(Rect).(*img.RGBA)
+				if len(Selection.Pix) != 0 {
+					dispatcher.Result = &SelectorResult{
+						Selection:      Selection,
+						Screenshots:    Screenshots,
+						Displays:       Displays,
+						DisplayIndex:   index,
+						TopLeftDisplay: &Rect.Min,
+					}
 				}
 
 				// Closes the window.
@@ -281,14 +288,19 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 					Y: y - Rect.Min.Y,
 				}
 			}
-			if ShowMagnifier && Magnifiers[i] == nil {
-				// The magnifier has not been created yet, we should create it.
-				Magnifiers[i] = magnifier.NewMagnifier(renderer, i, Screenshots[i].Bounds().Dx(), Screenshots[i].Bounds().Dy(), DisplayPoint)
-			}
-			if ShowMagnifier && DisplayPoint != nil {
-				// The user is on this display, ensure the magnifier position is correct (but in a goroutine, we don't want to block the draw).
-				m := Magnifiers[i]
-				go m.SetPos(DisplayPoint.X, DisplayPoint.Y)
+
+			// Handle events when the magnifier is shown.
+			if ShowMagnifier {
+				if Magnifiers[i] == nil {
+					// The magnifier has not been created yet, we should create it.
+					Magnifiers[i] = magnifier.NewMagnifier(renderer, i, Screenshots[i].Bounds().Dx(), Screenshots[i].Bounds().Dy(), DisplayPoint)
+				}
+
+				if DisplayPoint != nil {
+					// The user is on this display, ensure the magnifier position is correct (but in a goroutine, we don't want to block the draw).
+					m := Magnifiers[i]
+					go m.SetPos(DisplayPoint.X, DisplayPoint.Y)
+				}
 			}
 
 			// Makes the window the current context.
@@ -303,10 +315,9 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 			}
 
 			// Handles the window.
-			var f *[]byte
+			var f []byte
 			if ShowMagnifier {
-				x := Magnifiers[i].GetFrame()
-				f = &x
+				f = Magnifiers[i].GetFrame()
 			}
 			h := RenderDisplay(DisplayPoint, FirstPosMap[i], i, renderer, x, y, SelectedEditor, ShowEditors, dispatcher.History[i], f)
 			HoveringEditor = h

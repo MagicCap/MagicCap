@@ -4,20 +4,19 @@ import (
 	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	"image"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
 // Magnifier defines the magnifier.
 type Magnifier struct {
-	imgLock sync.Mutex
+	imgLock sync.RWMutex
 	img []byte
 	index int
 	renderer renderers.Renderer
 	pos *image.Point
-	lastPos *image.Point
-	posLock sync.Mutex
-	kill bool
-	killLock sync.Mutex
+	posLock sync.RWMutex
+	kill uintptr
 	originWidth int
 	originHeight int
 }
@@ -34,7 +33,7 @@ func (m *Magnifier) draw(x, y, resultW, resultH, scale int) {
 	WhiteGrid := isImageDarker(b)
 
 	// Draws the grid.
-	b = drawGrid(b, WhiteGrid, scale, resultW, resultH)
+	b = drawGridCached(b, WhiteGrid, scale, resultW, resultH)
 
 	// Lock the image lock.
 	m.imgLock.Lock()
@@ -48,16 +47,14 @@ func (m *Magnifier) draw(x, y, resultW, resultH, scale int) {
 
 // Kill is used to kill the magnifier.
 func (m *Magnifier) Kill() {
-	m.killLock.Lock()
-	m.kill = true
-	m.killLock.Unlock()
+	atomic.StoreUintptr(&m.kill, 1)
 }
 
 // GetFrame is used to get the frame from the magnifier.
 func (m *Magnifier) GetFrame() []byte {
-	m.imgLock.Lock()
+	m.imgLock.RLock()
 	img := m.img
-	m.imgLock.Unlock()
+	m.imgLock.RUnlock()
 	return img
 }
 
@@ -76,46 +73,39 @@ func NewMagnifier(renderer renderers.Renderer, index int, width, height int, Ini
 	m := Magnifier{renderer: renderer, index: index, pos: InitPos}
 	m.originHeight = height
 	m.originWidth = width
+	var lastPos *image.Point
 	d := func() bool {
-		m.posLock.Lock()
-		p := m.pos
-		lp := m.lastPos
-		if p == nil {
-			m.posLock.Unlock()
+		m.posLock.RLock()
+		defer m.posLock.RUnlock()
+		if m.pos == nil {
 			if m.img == nil {
-				m.imgLock.Lock()
 				i := image.NewRGBA(image.Rect(0, 0, 200, 200))
+				m.imgLock.Lock()
 				m.img = i.Pix
 				m.imgLock.Unlock()
 			}
 			return false
 		}
-		if lp != nil && lp.Y == p.Y && lp.X == p.X {
-			m.posLock.Unlock()
+		if lastPos != nil && lastPos.Y == m.pos.Y && lastPos.X == m.pos.X {
 			return false
 		}
-		m.lastPos = p
-		x := p.X
-		y := p.Y
-		m.posLock.Unlock()
-		m.killLock.Lock()
-		if m.kill {
-			m.killLock.Unlock()
+		lastPos = m.pos
+		x := m.pos.X
+		y := m.pos.Y
+		if atomic.LoadUintptr(&m.kill) == 1 {
 			return true
 		}
-		m.killLock.Unlock()
 		m.draw(x, y, 200, 200, 10)
 		return false
 	}
 	d()
-	go func() {
-		for {
-			// Add a 30fps cap to this.
-			time.Sleep(time.Second / 30)
-			if d() {
-				return
-			}
+	duration := time.Second / 30
+	var f func()
+	f = func() {
+		if !d() {
+			time.AfterFunc(duration, f)
 		}
-	}()
+	}
+	time.AfterFunc(duration, f)
 	return &m
 }

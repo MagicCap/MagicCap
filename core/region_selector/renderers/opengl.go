@@ -8,7 +8,14 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/magiccap/MagicCap/core/mainthread"
 	"image"
+	"runtime"
 )
+
+// This is used to define a RGBA image.
+type rgbaImage struct {
+	data []byte
+	w, h int
+}
 
 // This is used to define the OpenGL renderer.
 type openGLRenderer struct {
@@ -18,7 +25,7 @@ type openGLRenderer struct {
 	mouseReleaseCb func(index int, pos image.Rectangle)
 	windows        []*glfw.Window
 	keyCb          func(Release bool, Index, Key int)
-	darkerTextures []*glhf.Texture
+	darkerTextures []*rgbaImage
 	normalTextures []*glhf.Texture
 	shaders        []*glhf.Shader
 }
@@ -92,7 +99,7 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 
 	// Defines all needed OpenGL definitions.
 	r.shaders = make([]*glhf.Shader, len(r.displays))
-	r.darkerTextures = make([]*glhf.Texture, len(r.displays))
+	r.darkerTextures = make([]*rgbaImage, len(r.displays))
 	r.normalTextures = make([]*glhf.Texture, len(r.displays))
 
 	// Make a window on each display.
@@ -103,6 +110,7 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 			// Creates the window.
 			var Window *glfw.Window
 			var err error
+
 			// Creates the OpenGL context.
 			glfw.WindowHint(glfw.ContextVersionMajor, 3)
 			glfw.WindowHint(glfw.ContextVersionMinor, 3)
@@ -118,7 +126,15 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 			glfw.WindowHint(glfw.Resizable, glfw.False)
 
 			// Create the display window.
-			Window, err = glfw.CreateWindow(v.Max.X-v.Min.X, v.Max.Y-v.Min.Y, "MagicCap Region Selector", r.glfwMonitors[i], FirstWindow)
+			monitor := r.glfwMonitors[i]
+			if runtime.GOOS == "linux" {
+				// Apparently Linux tries to do shit with decorations if the monitor isn't nil and the window is visible.
+				// FFS.
+				monitor = nil
+			}
+			width := v.Max.X-v.Min.X
+			height := v.Max.Y-v.Min.Y
+			Window, err = glfw.CreateWindow(width, height, "MagicCap Region Selector", monitor, FirstWindow)
 			if err != nil {
 				sentry.CaptureException(err)
 				panic(err)
@@ -128,6 +144,10 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 			}
 			r.windows[i] = Window
 			Window.MakeContextCurrent()
+			if runtime.GOOS == "linux" {
+				// Set the monitor on Linux.
+				Window.SetMonitor(r.glfwMonitors[i], 0, 0, width, height, 0)
+			}
 
 			// Remember these for later.
 			index := i
@@ -168,12 +188,11 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 			r.shaders[i] = s
 
 			// Creates the texture.
-			r.darkerTextures[i] = glhf.NewTexture(
-				DarkerScreenshots[i].Bounds().Dx(),
-				DarkerScreenshots[i].Bounds().Dy(),
-				true,
-				DarkerScreenshots[i].Pix,
-			)
+			r.darkerTextures[i] = &rgbaImage{
+				data: DarkerScreenshots[i].Pix,
+				w:    DarkerScreenshots[i].Bounds().Dx(),
+				h:    DarkerScreenshots[i].Bounds().Dy(),
+			}
 
 			// Creates the brighter texture.
 			t := glhf.NewTexture(
@@ -224,11 +243,7 @@ func (r *openGLRenderer) GetDarkerTexture(index int) Texture {
 	t := r.darkerTextures[index]
 	var x *glhf.Texture
 	mainthread.ExecMainThread(func() {
-		t.Begin()
-		Width := t.Width()
-		Height := t.Height()
-		x = glhf.NewTexture(Width, Height, true, t.Pixels(0, 0, Width, Height))
-		t.End()
+		x = glhf.NewTexture(t.w, t.h, true, t.data)
 	})
 	return &openGlTexture{texture: x}
 }

@@ -1,12 +1,10 @@
 package regionselector
 
 import (
-	"image"
-	"image/draw"
-
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
+	"image"
 )
 
 // Roboto is the main font which we are using.
@@ -27,7 +25,6 @@ func RenderText(Text string, FontSize int) *image.RGBA {
 	}
 	ad := d.MeasureString(Text)
 	FontImg := image.NewRGBA(image.Rect(0, 0, ad.Ceil()+20, FontSize+(FontSize/2)))
-	draw.Draw(FontImg, FontImg.Rect, image.Black, image.ZP, draw.Src)
 	d.Dst = FontImg
 	d.DrawString(Text)
 

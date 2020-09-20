@@ -43,7 +43,6 @@
                 active: false,
                 debugInfo: `MagicCap Version: ${applicationInfo.version}
 System OS: ${applicationInfo.os.type} ${applicationInfo.os.release} / Platform: ${applicationInfo.platform}
-Installation ID: ${config.o.install_id}
 Config: ${JSON.stringify(safeConfig())}`,
                 copy: "Copy to clipboard",
             }

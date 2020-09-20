@@ -10,33 +10,56 @@ import (
 
 func dashedBorder(RenderedTexture renderers.Texture, x, y, w, h int) {
 	// Premake the top/bottom bit of the border.
-	TopBottomBorder := make([]uint8, 0, w*4)
+	wt4 := w*4
+	TopBottomBorder := make([]uint8, wt4)
 	Index := 0
-	for Index != w {
-		if Index%2 == 0 {
-			TopBottomBorder = append(TopBottomBorder, 0, 0, 0, 255)
+	next := false
+	for Index != wt4 {
+		if next {
+			TopBottomBorder[Index] = 0
+			TopBottomBorder[Index+1] = 0
+			TopBottomBorder[Index+2] = 0
+			TopBottomBorder[Index+3] = 255
 		} else {
-			TopBottomBorder = append(TopBottomBorder, 255, 255, 255, 255)
+			TopBottomBorder[Index] = 255
+			TopBottomBorder[Index+1] = 255
+			TopBottomBorder[Index+2] = 255
+			TopBottomBorder[Index+3] = 255
 		}
-		Index++
+		next = !next
+		Index += 4
 	}
-
-	// Create the rest of the border.
 	RenderedTexture.SetPixels(x, y, w, 1, TopBottomBorder)
 	RenderedTexture.SetPixels(x, y+h-1, w, 1, TopBottomBorder)
+
+	// Create the sides of the border.
+	next = false
 	Index = 0
-	y++
-	for h-2 >= Index {
-		if Index%2 == 0 {
-			RenderedTexture.SetPixels(x, y, 1, 1, []uint8{0, 0, 0, 255})
-			RenderedTexture.SetPixels(x+w-1, y, 1, 1, []uint8{0, 0, 0, 255})
-		} else {
-			RenderedTexture.SetPixels(x, y, 1, 1, []uint8{255, 255, 255, 255})
-			RenderedTexture.SetPixels(x+w-1, y, 1, 1, []uint8{255, 255, 255, 255})
-		}
-		y++
-		Index++
+	if 0 >= h-2 {
+		return
 	}
+	ht4 := (h-2)*4
+	if 0 > ht4 {
+		ht4 = 0
+	}
+	SideBorder := make([]uint8, ht4)
+	for Index != ht4 {
+		if next {
+			SideBorder[Index] = 0
+			SideBorder[Index+1] = 0
+			SideBorder[Index+2] = 0
+			SideBorder[Index+3] = 255
+		} else {
+			SideBorder[Index] = 255
+			SideBorder[Index+1] = 255
+			SideBorder[Index+2] = 255
+			SideBorder[Index+3] = 255
+		}
+		next = !next
+		Index += 4
+	}
+	RenderedTexture.SetPixels(x, y, 1, h-2, SideBorder)
+	RenderedTexture.SetPixels(x+(w-1), y, 1, h-2, SideBorder)
 }
 
 // RenderDisplay is used to render the display.
@@ -44,7 +67,7 @@ func RenderDisplay(
 	DisplayPoint *image.Point, FirstPos *image.Point,
 	index int, renderer renderers.Renderer,
 	RawX int, RawY int, SelectedKey string, ShowEditors bool,
-	History []*edit, MagnifierFrame *[]byte,
+	History []*edit, MagnifierFrame []byte,
 ) string {
 	// Create a copy of the darker texture.
 	RenderedTexture := renderer.GetDarkerTexture(index)
@@ -103,6 +126,7 @@ func RenderDisplay(
 					RenderedTexture.SetPixels(v.p.X, v.p.Y, v.r.Rect.Dx(), v.r.Rect.Dy(), v.r.Pix)
 				}
 
+				// Create the dashed border.
 				dashedBorder(RenderedTexture, Left, Top, w, h)
 			}
 		}
@@ -197,8 +221,39 @@ func RenderDisplay(
 		}
 
 		// Draw the magnifier if there is enough space and it is enabled.
+		infoPos := uint8(0)
 		if MagnifierFrame != nil {
-			RenderedTexture.SetPixels(DisplayPoint.X+10, DisplayPoint.Y+50, 200, 200, *MagnifierFrame)
+			f := func() {
+				IdealX := Width >= DisplayPoint.X+210
+				IdealY := Height >= DisplayPoint.Y+250
+				if IdealX && IdealY {
+					// This is the ideal condition.
+					RenderedTexture.SetPixels(DisplayPoint.X+10, DisplayPoint.Y+50, 200, 200, MagnifierFrame)
+				} else {
+					// Get the left side Y.
+					LeftSideY := DisplayPoint.Y-250
+
+					// If X is ideal, try to handle the Y.
+					if IdealX {
+						// Try to use the top.
+						if LeftSideY > 0 && Height >= LeftSideY {
+							RenderedTexture.SetPixels(DisplayPoint.X+10, DisplayPoint.Y-250, 200, 200, MagnifierFrame)
+							infoPos = 1
+							return
+						}
+					}
+
+					// Find the ideal X position.
+					if IdealY {
+						RenderedTexture.SetPixels(DisplayPoint.X-210, DisplayPoint.Y+50, 200, 200, MagnifierFrame)
+						infoPos = 2
+					} else {
+						RenderedTexture.SetPixels(DisplayPoint.X-210, DisplayPoint.Y-250, 200, 200, MagnifierFrame)
+						infoPos = 3
+					}
+				}
+			}
+			f()
 		}
 
 		// Draw the X/Y font texture.
@@ -206,11 +261,23 @@ func RenderDisplay(
 			DisplayString := "X: " + strconv.Itoa(RawX) + " | Y: " + strconv.Itoa(RawY)
 			FontImg := RenderText(DisplayString, 20)
 			X := FontImg.Bounds().Dx()
-			LeftOffset := 0
 			if MagnifierFrame != nil {
-				LeftOffset = 100 - (X / 2)
+				LeftOffset := 100 - (X / 2)
+				switch infoPos {
+				case 0:
+					// Bottom right
+					RenderedTexture.SetPixels(DisplayPoint.X+10+LeftOffset, DisplayPoint.Y+10, X, FontImg.Bounds().Dy(), FontImg.Pix)
+				case 1:
+					// Top right
+					RenderedTexture.SetPixels(DisplayPoint.X+10+LeftOffset, DisplayPoint.Y-40, X, FontImg.Bounds().Dy(), FontImg.Pix)
+				case 2:
+					// Bottom left
+					RenderedTexture.SetPixels(DisplayPoint.X-160-LeftOffset, DisplayPoint.Y+10, X, FontImg.Bounds().Dy(), FontImg.Pix)
+				case 3:
+					// Top left
+					RenderedTexture.SetPixels(DisplayPoint.X-160-LeftOffset, DisplayPoint.Y-40, X, FontImg.Bounds().Dy(), FontImg.Pix)
+				}
 			}
-			RenderedTexture.SetPixels(DisplayPoint.X+10+LeftOffset, DisplayPoint.Y+10, X, FontImg.Bounds().Dy(), FontImg.Pix)
 		}
 	}
 

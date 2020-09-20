@@ -164,7 +164,7 @@ func OpenSaveDialog(Body map[string]string) {
 		// Ignore this and return.
 		return
 	}
-	_ = ioutil.WriteFile(fp, []byte(Data), 0600)
+	_ = ioutil.WriteFile(fp, []byte(Data), 0666)
 }
 
 // ReplaceCapturesRoute is used to replace all of the captures with new values.

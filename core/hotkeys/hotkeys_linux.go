@@ -123,6 +123,9 @@ func handleKeyDown(ev hook.Event) {
 		if Keychar[0] == 0 {
 			// Sets the keychar to the English value.
 			switch v {
+			case 65515:
+				Keychar = "Super"
+				break
 			case 65506, 65505:
 				Keychar = "Shift"
 				break

@@ -94,10 +94,6 @@
                 const c = {} as any
                 for (const x in config.o) c[x] = config.o[x]
 
-                // Clean install specific items
-                if("ffmpeg_path" in c) delete c.ffmpeg_path
-                if("install_id" in c) delete c.install_id
-
                 // Convert to save format
                 const data = this.encode("CONFIG", c)
 
@@ -173,10 +169,6 @@
                         case "==BEGIN MAGICCAP CONFIG==": {
                             warning = "This WILL overwrite ALL values in your MagicCap config to match the configuration file. Do you want to continue?"
                             action = async () => {
-                                // Clean install specific items
-                                if("ffmpeg_path" in data) delete data.ffmpeg_path
-                                if("install_id" in data) delete data.install_id
-
                                 // Apply
                                 for (const key in data) config.o[key] = data[key]
                                 await config.save()
@@ -249,10 +241,7 @@
                 ).then(async response => {
                     switch (response) {
                         case 0: {
-                            config.o = {
-                                install_id: config.o.install_id,
-                                ffmpeg_path: config.o.ffmpeg_path,
-                            }
+                            config.o = {}
                             await config.save()
                             break
                         }

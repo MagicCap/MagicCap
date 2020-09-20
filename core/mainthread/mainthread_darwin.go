@@ -6,7 +6,7 @@
 package mainthread
 
 /*
-#cgo CFLAGS: -x objective-c
+#cgo CFLAGS: -x objective-c -O3
 #include <stdlib.h>
 #include "mainthread_darwin.h"
 */
@@ -18,7 +18,7 @@ import (
 )
 
 type cb struct {
-	channel chan bool
+	channel  chan struct{}
 	function func()
 }
 
@@ -32,7 +32,7 @@ func CCallbackHandler(CPtr unsafe.Pointer) {
 	cb.function()
 
 	// Mark it as done in the wait group.
-	cb.channel <- true
+	cb.channel <- struct{}{}
 
 	// De-reference the pointer.
 	pointer.Unref(CPtr)
@@ -42,7 +42,7 @@ func CCallbackHandler(CPtr unsafe.Pointer) {
 func ExecMainThread(Function func()) {
 	// Create the callback handler.
 	cbh := &cb{
-		channel:  make(chan bool),
+		channel:  make(chan struct{}),
 		function: Function,
 	}
 
