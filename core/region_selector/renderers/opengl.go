@@ -146,7 +146,12 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 			Window.MakeContextCurrent()
 			if runtime.GOOS == "linux" {
 				// Set the monitor on Linux.
-				Window.SetMonitor(r.glfwMonitors[i], 0, 0, width, height, 0)
+
+				// Get the refresh rate first. This stops the screen going black with some GPU's.
+				refreshRate := r.glfwMonitors[i].GetVideoMode().RefreshRate
+
+				// Set the monitor.
+				Window.SetMonitor(r.glfwMonitors[i], 0, 0, width, height, refreshRate)
 			}
 
 			// Remember these for later.
