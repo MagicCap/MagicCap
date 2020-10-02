@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"container/list"
 	gif "github.com/jakemakesstuff/faster-image-gif"
+	"github.com/magiccap/MagicCap/core/threadsafescreenshot"
 	"image"
 	"image/color/palette"
 	"image/draw"
@@ -11,7 +12,6 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/kbinani/screenshot"
 )
 
 func gifEncoder(wg *sync.WaitGroup, Images *list.List, fps int) []byte {
@@ -79,7 +79,7 @@ func NewGIFCapture(Rect *image.Rectangle, StopChan chan bool) []byte {
 				wg.Add(1)
 
 				// Take the screenshot.
-				s, err := screenshot.CaptureRect(*Rect)
+				s, err := threadsafescreenshot.CaptureRect(*Rect)
 				if err != nil {
 					sentry.CaptureException(err)
 					panic(err)

@@ -9,13 +9,12 @@ import (
 	"github.com/magiccap/MagicCap/core/notifications"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"github.com/magiccap/MagicCap/core/region_selector/renderers"
+	"github.com/magiccap/MagicCap/core/threadsafescreenshot"
 	"github.com/magiccap/MagicCap/core/utils"
 	"math/rand"
 	"os"
 	"path"
 	"time"
-
-	"github.com/kbinani/screenshot"
 
 	"github.com/hackebrot/turtle"
 
@@ -85,7 +84,7 @@ func Start() {
 		}()
 
 		// Take a 1x1 screenshot to ensure that it is ok and the permissions dialog pops up.
-		_, err = screenshot.Capture(1, 1, 1, 1)
+		_, err = threadsafescreenshot.GetCapture(1, 1, 1, 1)
 		if err != nil {
 			sentry.CaptureException(err)
 			panic(err)

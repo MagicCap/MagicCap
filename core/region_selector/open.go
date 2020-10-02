@@ -4,6 +4,7 @@ import (
 	"github.com/magiccap/MagicCap/core/editors"
 	"github.com/magiccap/MagicCap/core/magnifier"
 	"github.com/magiccap/MagicCap/core/region_selector/renderers"
+	"github.com/magiccap/MagicCap/core/threadsafescreenshot"
 	img "image"
 	"image/draw"
 	"runtime"
@@ -12,7 +13,6 @@ import (
 	"github.com/disintegration/imaging"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-vgo/robotgo"
-	"github.com/kbinani/screenshot"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
 	_ "github.com/magiccap/MagicCap/core/editors"
 )
@@ -45,7 +45,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	for i, v := range Displays {
 		go func(index int, rect img.Rectangle) {
 			// Takes the screenshot.
-			Screenshot, err := screenshot.CaptureRect(rect)
+			Screenshot, err := threadsafescreenshot.CaptureRect(rect)
 			if err != nil {
 				sentry.CaptureException(err)
 				panic(err)
