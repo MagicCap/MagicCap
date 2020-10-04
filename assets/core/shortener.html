@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Shortener</title>
+        <style>inline_styling</style>
+    </head>
+    <body>
+        <script>
+            // This is designed to be legacy (it is written by hand, I don't see any reason to minify this one thing).
+
+            // This function is designed to show the main screen.
+            function showMainMenu() {
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <input class="input" type="text" placeholder="URL" id="in">
+                        <br><br>
+                        <a class="button" href="javascript:getShort()" id="submit">Get Shortened Link</a>
+                    </div>
+                `;
+                document.getElementById("in").onkeyup = function(e) {
+                    if (e.keyCode === 13) {
+                        getShort();
+                    }
+                };
+            }
+
+            // This function is used to render the result.
+            function renderResult(res) {
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        ${res}
+                        <br>
+                        <a class="button" href="javascript:showMainMenu()">Return to Main Menu</a>
+                    </div>
+                `;
+            }
+
+            // This function is used to get the shortened link.
+            function getShort() {
+                var submit = document.getElementById("submit");
+                var input = document.getElementById("in");
+                submit.classList.add("is-loading");
+                var text = input.value;
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", `https://s.magiccap.me/add?url=${encodeURIComponent(text)}`);
+                xhr.onerror = function() {
+                    renderResult("<h4 class=\"subtitle is-4\">A connection error occurred.</h4>");
+                };
+                xhr.onload = function() {
+                    if (xhr.status !== 200) {
+                        renderResult("<h4 class=\"subtitle is-4\">The request to get the URL failed.</h4>");
+                        return;
+                    }
+                    renderResult(`<h4 class="subtitle is-4">${xhr.responseText}</h4>`);
+                };
+                xhr.send();
+            }
+
+            // Shows the main menu.
+            showMainMenu();
+        </script>
+    </body>
+</html>

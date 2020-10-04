@@ -1,3 +1,0 @@
-# ffmpeg.js:15
-msgid "In order for GIF capture to work, MagicCap has to download FFMpeg. Shall I start the download process?"
-msgstr ""

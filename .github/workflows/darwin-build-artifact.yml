@@ -1,0 +1,32 @@
+name: Create unsigned macOS build artifact
+
+on:
+  - push
+
+jobs:
+  build:
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Read .nvmrc
+      run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+      id: nvm
+
+    - name: Use Node.js (.nvmrc)
+      uses: actions/setup-node@v1
+      with:
+        node-version: "${{ steps.nvm.outputs.NVMRC }}"
+
+    - name: Install PCRE
+      run: brew install pcre
+
+    - name: Build application
+      run: ./mac_build.sh
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: magiccap-darwin
+        path: magiccap-darwin

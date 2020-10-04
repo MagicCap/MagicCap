@@ -1,0 +1,26 @@
+name: Create Linux build artifact
+
+on:
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Update apt
+      run: sudo apt update
+
+    - name: Install needed apt deps
+      run: sudo apt install libglfw3-dev libxi-dev libxkbcommon-dev libxtst-dev libpng-dev libwebkit2gtk-4.0-dev libxkbcommon-dev libxkbcommon-x11-dev libappindicator3-dev
+
+    - name: Run the Linux build script
+      run: ./linux_build_local.sh
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: magiccap-linux
+        path: magiccap-linux

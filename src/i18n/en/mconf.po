@@ -1,7 +1,0 @@
-# mconf.js:10
-msgid "This version of MagicCap cannot read the config file given."
-msgstr ""
-
-# mconf.js:14
-msgid "MagicCap couldn't parse the config file."
-msgstr ""

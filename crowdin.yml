@@ -1,6 +1,0 @@
-files: [
- {
-  "source" : "/magiccap/i18n/en/**/*.po",
-  "translation" : "/magiccap/i18n/%two_letters_code%/**/%original_file_name%"
- }
-]
