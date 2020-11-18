@@ -11,7 +11,7 @@ import (
 // ExecMainThread is used to execute a function on the main thread.
 func ExecMainThread(Function func()) {
 	ret := make(chan struct{})
-	glib.IdleAdd(func() {
+	go glib.IdleAdd(func() {
 		Function()
 		ret <- struct{}{}
 	})

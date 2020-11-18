@@ -12,8 +12,6 @@ package mainthread
 */
 import "C"
 import (
-	"github.com/mattn/go-pointer"
-	"github.com/petermattis/fastcgo"
 	"unsafe"
 )
 
@@ -26,16 +24,13 @@ type cb struct {
 //export CCallbackHandler
 func CCallbackHandler(CPtr unsafe.Pointer) {
 	// Get the callback from the pointer.
-	cb := pointer.Restore(CPtr).(*cb)
+	cb := (*cb)(CPtr)
 
 	// Call the function.
 	cb.function()
 
 	// Mark it as done in the wait group.
 	cb.channel <- struct{}{}
-
-	// De-reference the pointer.
-	pointer.Unref(CPtr)
 }
 
 // ExecMainThread is used to execute a function on the main thread.
@@ -47,8 +42,11 @@ func ExecMainThread(Function func()) {
 	}
 
 	// Call the C async function with the pointer.
-	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(pointer.Save(cbh))), 0, 0, 0)
+	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(cbh))), 0, 0, 0)
 
 	// Wait for the function to be complete.
 	<-cbh.channel
+
+	// Do not GC this whatever you do!
+	runtime.KeepAlive(cbh)
 }
