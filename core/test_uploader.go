@@ -5,7 +5,7 @@ package core
 
 import (
 	"github.com/jakemakesstuff/structuredhttp"
-	"github.com/magiccap/MagicCap/core/utils"
+	coreAssets "github.com/magiccap/MagicCap/assets/core"
 	"time"
 )
 
@@ -17,7 +17,7 @@ func TestUploader(UploaderName string) error {
 	for _, v := range Uploader.ConfigOptions {
 		IsolatedConfig[v.Value] = ConfigItems[v.Value]
 	}
-	url, err := Uploader.Upload(IsolatedConfig, utils.MustBytes(CoreAssets, "test_image.png"), "test.png")
+	url, err := Uploader.Upload(IsolatedConfig, coreAssets.TestImage, "test.png")
 	if err != nil {
 		return err
 	}

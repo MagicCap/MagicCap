@@ -11,7 +11,7 @@ require (
 	github.com/antchfx/xpath v1.1.4 // indirect
 	github.com/aws/aws-sdk-go v1.28.8 // indirect
 	github.com/dawidd6/go-appindicator v0.0.0-20190913173241-21b44adc5189
-	github.com/denisbrodbeck/machineid v1.0.1
+	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/disintegration/gift v1.2.1
 	github.com/disintegration/imaging v1.6.2
 	github.com/esiqveland/notify v0.9.2-0.20200215122350-1b5447e242c7
@@ -23,7 +23,6 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200707082815-5321531c36a2
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
 	github.com/go-vgo/robotgo v0.0.0-20200123154043-e7ab665c511e
-	github.com/gobuffalo/packr/v2 v2.5.1
 	github.com/godbus/dbus/v5 v5.0.3
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
@@ -38,13 +37,13 @@ require (
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
 	github.com/magiccap/magiccap-uploaders-kernel v0.0.0-20191226225326-6af75d79a3ff
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
-	github.com/mattn/go-pointer v0.0.0-20171114154726-1d30dc4b6f28
+	github.com/mattn/go-pointer v0.0.0-20171114154726-1d30dc4b6f28 // indirect
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
-	github.com/petermattis/fastcgo v0.0.0-20170816164731-e33892440abb
+	github.com/petermattis/fastcgo v0.0.0-20170816164731-e33892440abb // indirect
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/robotn/gohook v0.0.0-20200111152647-5bfaedadd9dd
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
-	github.com/stretchr/testify v1.4.0
+	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/valyala/fasthttp v1.8.0
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 	gopkg.in/ajg/form.v1 v1.5.1 // indirect

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/disintegration/imaging"
 	"github.com/golang/freetype"
+	"github.com/magiccap/MagicCap/assets/editor"
 	"github.com/magiccap/MagicCap/core/editors"
 	"image"
 	"image/color"
@@ -43,7 +44,7 @@ func PrerenderEditorElements(FontBytes []byte) {
 	sort.Strings(editorsOrdered)
 
 	// Pre-render the selector icon.
-	p, err := png.Decode(bytes.NewReader(editors.SelectorIcon))
+	p, err := png.Decode(bytes.NewReader(editor.Crosshair))
 	if err != nil {
 		panic(err)
 	}

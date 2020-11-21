@@ -5,9 +5,15 @@ package core
 
 import (
 	"encoding/json"
+	"github.com/magiccap/MagicCap/config/dist"
+	"github.com/magiccap/MagicCap/config/src/css"
+	"github.com/magiccap/MagicCap/config/src/css/bulmaswatch/darkly"
+	bwDefault "github.com/magiccap/MagicCap/config/src/css/bulmaswatch/default"
+	"github.com/magiccap/MagicCap/config/src/css/components"
+	faCss "github.com/magiccap/MagicCap/config/src/css/fontawesome-free/css"
+	"github.com/magiccap/MagicCap/config/src/css/fontawesome-free/webfonts"
 	"github.com/magiccap/MagicCap/core/clipboard"
 	"github.com/magiccap/MagicCap/core/mainthread"
-	"github.com/magiccap/MagicCap/core/utils"
 	"io/ioutil"
 	"net"
 	"runtime"
@@ -19,7 +25,6 @@ import (
 	"github.com/pkg/browser"
 	"github.com/sqweek/dialog"
 
-	"github.com/gobuffalo/packr/v2"
 	"github.com/matishsiao/goInfo"
 	"github.com/valyala/fasthttp"
 )
@@ -28,21 +33,14 @@ var (
 	// ConfigWindow defines the config window.
 	ConfigWindow *webview.Webview
 
-	// CSS defines the box containing CSS.
-	CSS = packr.New("css", "../config/src/css")
-
-	// Dist defines the folder containing the build.
-	Dist = packr.New("dist", "../config/dist")
-
 	// Changes defines if there has been any changes since the capture UI opened.
 	Changes *int64
 
 	// CSSBase defines the base for all CSS.
-	CSSBase = utils.MustString(CSS, "components/base.css") + "\n" + utils.MustString(CSS, "components/button.css") + "\n" + utils.MustString(CSS, 
-		"components/docs.css") + "\n" + utils.MustString(CSS, "components/inputs.css") + "\n" + utils.MustString(CSS, 
-		"components/markdown.css") + "\n" + utils.MustString(CSS, "components/menu.css") + "\n" + utils.MustString(CSS, 
-		"components/modal.css") + utils.MustString(CSS, "components/scroll.css") + "\n" + utils.MustString(CSS, 
-		"components/table.css") + "\n" + utils.MustString(CSS, "components/tooltip.css")
+	CSSBase = string(components.Base) + "\n" + string(components.Button) + "\n" + string(components.Docs) + "\n" +
+		string(components.Inputs) + "\n" + string(components.Markdown) + "\n" + string(components.Menu) + "\n" +
+		string(components.Modal) + string(components.Scroll) + "\n" + string(components.Table) + "\n" +
+		string(components.Tooltip)
 )
 
 // GetCSS is used to bundle all of the CSS.
@@ -51,16 +49,20 @@ func GetCSS() string {
 	if !ok {
 		Theme = false
 	}
-	ThemeString := "light"
-	BulmaswatchString := "default"
-	if !Theme {
-		ThemeString = "dark"
-		BulmaswatchString = "darkly"
+	var res string
+	if Theme {
+		res = string(bwDefault.BulmaswatchMin)
+	} else {
+		res = string(darkly.BulmaswatchMin)
 	}
-	res := utils.MustString(CSS, "bulmaswatch/" + BulmaswatchString + "/bulmaswatch.min.css")
+
 	res += "\n" + CSSBase
-	res += "\n" + utils.MustString(CSS, "fontawesome-free/css/all.min.css")
-	res += "\n" + utils.MustString(CSS, ThemeString+".css")
+	res += "\n" + string(faCss.AllMin)
+	if Theme {
+		res += "\n" + string(css.Light)
+	} else {
+		res += "\n" + string(css.Dark)
+	}
 	return res
 }
 
@@ -208,17 +210,17 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	case "/":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "text/html; charset=UTF-8")
-		ctx.Response.SetBody(utils.MustBytes(Dist, "index.html"))
+		ctx.Response.SetBody(dist.Index)
 		break
 	case "/mount.js":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/javascript; charset=UTF-8")
-		ctx.Response.SetBody(utils.MustBytes(Dist, "mount.js"))
+		ctx.Response.SetBody(dist.Mount)
 		break
 	case "/mount.js.map":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
-		ctx.Response.SetBody(utils.MustBytes(Dist, "mount.js.map"))
+		ctx.Response.SetBody(dist.MountJs)
 		break
 	case "/css":
 		ctx.Response.SetStatusCode(200)
@@ -321,10 +323,10 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 
 	// Handles /webfonts and not found.
 	default:
-		if Path[:9] == "/webfonts" {
-			Item := Path[9:]
+		if Path[:10] == "/webfonts/" {
+			Item := Path[10:]
 			ctx.Response.SetStatusCode(200)
-			ctx.Response.SetBody(utils.MustBytes(CSS, "fontawesome-free/webfonts" + Item))
+			ctx.Response.SetBody(webfonts.Data[Item])
 		} else {
 			ctx.Response.SetStatusCode(404)
 			ctx.Response.SetBody([]byte("Not found."))

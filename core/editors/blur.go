@@ -2,7 +2,7 @@ package editors
 
 import (
 	"github.com/disintegration/gift"
-	"github.com/magiccap/MagicCap/core/utils"
+	"github.com/magiccap/MagicCap/assets/editor"
 	"image"
 )
 
@@ -10,7 +10,7 @@ func init() {
 	Editors["blur"] = &Editor{
 		Name:        "Blur",
 		Description: "Allows you to blur a image.",
-		Icon:        utils.MustBytes(EditorAssets, "blur.png"),
+		Icon:        editor.Blur,
 		Apply: func(Region *image.RGBA, _ [3]uint8) *image.RGBA {
 			g := gift.New(
 				gift.GaussianBlur(20),

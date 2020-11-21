@@ -7,13 +7,14 @@ import (
 	"bytes"
 	"github.com/getsentry/sentry-go"
 	"github.com/h2non/filetype"
+	coreAssets "github.com/magiccap/MagicCap/assets/core"
+	"github.com/magiccap/MagicCap/config/src/css/bulmaswatch/darkly"
 	"github.com/magiccap/MagicCap/core/clipboard"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
 	"github.com/magiccap/MagicCap/core/mainthread"
 	"github.com/magiccap/MagicCap/core/notifications"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"github.com/magiccap/MagicCap/core/tempicon"
-	"github.com/magiccap/MagicCap/core/utils"
 	"github.com/magiccap/MagicCap/core/webview"
 	"github.com/sqweek/dialog"
 	"golang.org/x/image/tiff"
@@ -33,8 +34,7 @@ var (
 
 // ShowShort shows the shortener screen.
 func ShowShort() {
-	HTML := strings.Replace(utils.MustString(CoreAssets, "shortener.html"), "inline_styling", utils.MustString(
-		CSS, "bulmaswatch/darkly/bulmaswatch.min.css"), 1)
+	HTML := strings.Replace(string(coreAssets.Shortener), "inline_styling", string(darkly.BulmaswatchMin), 1)
 	URL := `data:text/html,` + url.PathEscape(HTML)
 	var s *webview.Webview
 	mainthread.ExecMainThread(func() {
@@ -128,10 +128,10 @@ func RunGIFCapture() {
 	channel := make(chan bool)
 	var t *tempicon.TempIcon
 	mainthread.ExecMainThread(func() {
-		t = tempicon.InitTempIcon(utils.MustBytes(CoreAssets, "stop.png"), func() {
+		t = tempicon.InitTempIcon(coreAssets.Stop, func() {
 			t.CloseIcon()
 			channel <- true
-			t = tempicon.InitTempIcon(utils.MustBytes(CoreAssets, "cog.png"), nil, "")
+			t = tempicon.InitTempIcon(coreAssets.Cog, nil, "")
 		}, "Stop GIF Capture")
 	})
 	b := NewGIFCapture(&r.Selection.Rect, channel)
