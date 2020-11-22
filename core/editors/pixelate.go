@@ -10,7 +10,7 @@ func init() {
 	Editors["pixelate"] = &Editor{
 		Name:        "Pixelate",
 		Description: "Allows you to pixelate a image.",
-		Icon:        editor.Pixelate,
+		Icon:        editor.Pixelate(),
 		Apply: func(Region *image.RGBA, _ [3]uint8) *image.RGBA {
 			g := gift.New(
 				gift.Pixelate(10),

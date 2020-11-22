@@ -10,7 +10,7 @@ func init() {
 	Editors["hollowRectangle"] = &Editor{
 		Name:        "Hollow Rectangle",
 		Description: "Draws a hollow rectangle on the screen.",
-		Icon:        editor.HollowRectangle,
+		Icon:        editor.HollowRectangle(),
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			// Gets the first/last block line.
 			X := Region.Rect.Dx()

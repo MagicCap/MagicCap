@@ -5,13 +5,7 @@ npm i
 npm run build
 cd ..
 go get
-CURRENT_CWD=$(pwd)
-cd ..
-go get github.com/gobuffalo/packr/v2/packr2
-cd $CURRENT_CWD
 cd assets
-go run .
+go run build_assets.go
 cd ..
-PATH=$PATH:$HOME/go/bin packr2
-go build -o ./magiccap-darwin .
-PATH=$PATH:$HOME/go/bin packr2 clean
+go build -o magiccap-darwin .

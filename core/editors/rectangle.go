@@ -9,7 +9,7 @@ func init() {
 	Editors["rectangle"] = &Editor{
 		Name:        "Rectangle",
 		Description: "Draws a rectangle on the screen.",
-		Icon:        editor.Rectangle,
+		Icon:        editor.Rectangle(),
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			i := image.NewRGBA(Region.Rect)
 			Y := 0

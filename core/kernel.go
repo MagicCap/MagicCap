@@ -58,7 +58,7 @@ func LoadUploadersKernel() {
 	// Gets the uploader kernel.
 	if _, err := os.Stat(path.Join(ConfigPath, "kernel.json")); err != nil {
 		// Grab the cached copy of the kernel.
-		b := coreAssets.Kernel
+		b := coreAssets.Kernel()
 		err := ioutil.WriteFile(path.Join(ConfigPath, "kernel.json"), b, 0666)
 		if err != nil {
 			sentry.CaptureException(err)

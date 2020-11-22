@@ -34,7 +34,7 @@ var (
 
 // ShowShort shows the shortener screen.
 func ShowShort() {
-	HTML := strings.Replace(string(coreAssets.Shortener), "inline_styling", string(darkly.BulmaswatchMin), 1)
+	HTML := strings.Replace(string(coreAssets.Shortener()), "inline_styling", string(darkly.BulmaswatchMin()), 1)
 	URL := `data:text/html,` + url.PathEscape(HTML)
 	var s *webview.Webview
 	mainthread.ExecMainThread(func() {
@@ -128,10 +128,10 @@ func RunGIFCapture() {
 	channel := make(chan bool)
 	var t *tempicon.TempIcon
 	mainthread.ExecMainThread(func() {
-		t = tempicon.InitTempIcon(coreAssets.Stop, func() {
+		t = tempicon.InitTempIcon(coreAssets.Stop(), func() {
 			t.CloseIcon()
 			channel <- true
-			t = tempicon.InitTempIcon(coreAssets.Cog, nil, "")
+			t = tempicon.InitTempIcon(coreAssets.Cog(), nil, "")
 		}, "Stop GIF Capture")
 	})
 	b := NewGIFCapture(&r.Selection.Rect, channel)

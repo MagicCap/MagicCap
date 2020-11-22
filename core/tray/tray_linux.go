@@ -155,7 +155,7 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 
 	// HACK: We can't pass bytes to appindicator, so temp save the icon and load it.
 	// After 10 seconds we delete it. The application will be loaded by then anyway (I would've thought it'd crash if it hung for 10 seconds).
-	Icon := taskbar.Icon
+	Icon := taskbar.Icon()
 	TempDir, err := ioutil.TempDir(os.Getenv("TMPDIR"), "magiccap_icon")
 	if err != nil {
 		panic(err)

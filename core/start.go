@@ -93,7 +93,7 @@ func Start() {
 		LoadUploadersKernel()
 
 		// Pre-render the editor elements.
-		regionselector.PrerenderEditorElements(coreAssets.RobotoLight)
+		regionselector.PrerenderEditorElements(coreAssets.RobotoLight())
 
 		// Loads the SQLite3 DB.
 		LoadDatabase()

@@ -37,10 +37,10 @@ var (
 	Changes *int64
 
 	// CSSBase defines the base for all CSS.
-	CSSBase = string(components.Base) + "\n" + string(components.Button) + "\n" + string(components.Docs) + "\n" +
-		string(components.Inputs) + "\n" + string(components.Markdown) + "\n" + string(components.Menu) + "\n" +
-		string(components.Modal) + string(components.Scroll) + "\n" + string(components.Table) + "\n" +
-		string(components.Tooltip)
+	CSSBase = string(components.Base()) + "\n" + string(components.Button()) + "\n" + string(components.Docs()) + "\n" +
+		string(components.Inputs()) + "\n" + string(components.Markdown()) + "\n" + string(components.Menu()) + "\n" +
+		string(components.Modal()) + string(components.Scroll()) + "\n" + string(components.Table()) + "\n" +
+		string(components.Tooltip())
 )
 
 // GetCSS is used to bundle all of the CSS.
@@ -51,17 +51,17 @@ func GetCSS() string {
 	}
 	var res string
 	if Theme {
-		res = string(bwDefault.BulmaswatchMin)
+		res = string(bwDefault.BulmaswatchMin())
 	} else {
-		res = string(darkly.BulmaswatchMin)
+		res = string(darkly.BulmaswatchMin())
 	}
 
 	res += "\n" + CSSBase
-	res += "\n" + string(faCss.AllMin)
+	res += "\n" + string(faCss.AllMin())
 	if Theme {
-		res += "\n" + string(css.Light)
+		res += "\n" + string(css.Light())
 	} else {
-		res += "\n" + string(css.Dark)
+		res += "\n" + string(css.Dark())
 	}
 	return res
 }
@@ -210,17 +210,17 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 	case "/":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "text/html; charset=UTF-8")
-		ctx.Response.SetBody(dist.Index)
+		ctx.Response.SetBody(dist.Index())
 		break
 	case "/mount.js":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/javascript; charset=UTF-8")
-		ctx.Response.SetBody(dist.Mount)
+		ctx.Response.SetBody(dist.Mount())
 		break
 	case "/mount.js.map":
 		ctx.Response.SetStatusCode(200)
 		ctx.Response.Header.Set("Content-Type", "application/json; charset=UTF-8")
-		ctx.Response.SetBody(dist.MountJs)
+		ctx.Response.SetBody(dist.MountJs())
 		break
 	case "/css":
 		ctx.Response.SetStatusCode(200)

@@ -16,6 +16,8 @@ import (
 	"unicode"
 )
 
+const lowerHex = "0123456789abcdef"
+
 var (
 	underscore = regexp.MustCompile("[a-zA-Z]_[a-zA-Z]")
 	dash = regexp.MustCompile("[a-zA-Z]-[a-zA-Z]")
@@ -125,8 +127,9 @@ func main() {
 			if final == "default" {
 				final = "defaultAssets"
 			}
-			gofile := "package " + final + "\n\n"
-			gofile += `import (
+			gofile := `package ` + final + `
+
+import (
 	"bytes"
 	"compress/gzip"
 	"io/ioutil"
@@ -160,15 +163,20 @@ func decompress(b []byte) []byte {
 				if err != nil {
 					panic(err)
 				}
-				b := buf.Bytes()
-				x := make([]string, len(b))
-				for i, v := range b {
-					x[i] = strconv.Itoa(int(v))
+				w.Close()
+				newBuf := bytes.Buffer{}
+				_, _ = newBuf.WriteString("[]byte(\"")
+				x := []byte(`\x00`)
+				for _, v := range buf.Bytes() {
+					x[2] = lowerHex[v/16]
+					x[3] = lowerHex[v%16]
+					_, _ = newBuf.Write(x)
 				}
+				_, _ = newBuf.WriteString("\")")
 				if genMap {
-					gofile += "\t\"" + filename + "\": decompress([]byte{" + strings.Join(x, ", ") + "}),\n"
+					gofile += "\t\"" + filename + "\": decompress(" + newBuf.String() + "),\n"
 				} else {
-					gofile += "var " + filename + " = decompress([]byte{" + strings.Join(x, ", ") + "})\n"
+					gofile += "func " + filename + "() []byte { return decompress(" + newBuf.String() + ") }\n"
 				}
 			}
 			if genMap {

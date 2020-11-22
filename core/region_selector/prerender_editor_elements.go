@@ -44,7 +44,7 @@ func PrerenderEditorElements(FontBytes []byte) {
 	sort.Strings(editorsOrdered)
 
 	// Pre-render the selector icon.
-	p, err := png.Decode(bytes.NewReader(editor.Crosshair))
+	p, err := png.Decode(bytes.NewReader(editor.Crosshair()))
 	if err != nil {
 		panic(err)
 	}

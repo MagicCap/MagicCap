@@ -10,7 +10,7 @@ func init() {
 	Editors["hollowCircle"] = &Editor{
 		Name:        "Hollow Circle",
 		Description: "Draws a hollow circle on the screen.",
-		Icon:        editor.HollowCircle,
+		Icon:        editor.HollowCircle(),
 		Apply: func(Region *image.RGBA, RGB [3]uint8) *image.RGBA {
 			// Creates the image.
 			img := image.NewRGBA(Region.Bounds())
