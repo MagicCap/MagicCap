@@ -8,12 +8,9 @@ import (
 	"github.com/gotk3/gotk3/glib"
 )
 
-// ExecMainThread is used to execute a function on the main thread.
-func ExecMainThread(Function func()) {
-	ret := make(chan struct{})
+// This is used to execute a function on the main thread. This does not implement any queue system.
+func execMainThread(Function func()) {
 	go glib.IdleAdd(func() {
 		Function()
-		ret <- struct{}{}
 	})
-	<-ret
 }

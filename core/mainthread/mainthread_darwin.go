@@ -23,30 +23,18 @@ type cb struct {
 // CCallbackHandler is a function which can be called from C to dispatch the callback.
 //export CCallbackHandler
 func CCallbackHandler(CPtr unsafe.Pointer) {
-	// Get the callback from the pointer.
-	cb := (*cb)(CPtr)
-
 	// Call the function.
-	cb.function()
-
-	// Mark it as done in the wait group.
-	cb.channel <- struct{}{}
+	(func())(CPtr)()
 }
 
-// ExecMainThread is used to execute a function on the main thread.
-func ExecMainThread(Function func()) {
-	// Create the callback handler.
-	cbh := &cb{
-		channel:  make(chan struct{}),
-		function: Function,
-	}
-
+// This is used to execute a function on the main thread. This does not implement any queue system.
+func execMainThread(Function func()) {
 	// Call the C async function with the pointer.
-	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(cbh))), 0, 0, 0)
+	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(Function))), 0, 0, 0)
 
 	// Wait for the function to be complete.
 	<-cbh.channel
 
 	// Do not GC this whatever you do!
-	runtime.KeepAlive(cbh)
+	runtime.KeepAlive(Function)
 }
