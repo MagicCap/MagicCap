@@ -10,7 +10,6 @@ import (
 	"runtime"
 	"sync"
 
-	"github.com/disintegration/imaging"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-vgo/robotgo"
 	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
@@ -26,9 +25,6 @@ var regionSelectorLock = sync.Mutex{}
 
 // OpenRegionSelector is used to open a native region selector.
 func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
-	// Defer calling the Go garbage collector until we're done.
-	defer runtime.GC()
-
 	// Lock the region selector.
 	regionSelectorLock.Lock()
 
@@ -51,17 +47,21 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 				panic(err)
 			}
 
-			// Creates a darker version of the screenshot.
-			Darker := imaging.AdjustBrightness(Screenshot, -15)
-
 			// Locks the screenshot lock.
 			ScreenshotsLock.Lock()
 
 			// Adds the screenshots to the arrays.
 			Screenshots[index] = Screenshot
-			i := img.NewRGBA(Darker.Rect)
-			draw.Draw(i, i.Rect, Darker, img.Point{X: 0, Y: 0}, draw.Over)
-			DarkerScreenshots[index] = i
+			x := img.NewRGBA(Screenshot.Rect)
+			for i, v := range Screenshot.Pix {
+				switch i%4 {
+				case 0, 1, 2:
+					x.Pix[i] = uint8(float64(v) / 1.6)
+				case 3:
+					x.Pix[i] = v
+				}
+			}
+			DarkerScreenshots[index] = x
 
 			// Adds one to the screenshot length.
 			ScreenshotLen++
@@ -74,6 +74,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 		}(i, v)
 	}
 	wg.Wait()
+	runtime.GC()
 
 
 	// Defines the magnifier for each display.
@@ -347,6 +348,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 		}
 		regionSelectorLock.Unlock()
 		KillMagnifiers()
+		runtime.GC()
 		return &SelectorResult{
 			Selection:    EditImage(Display),
 			Screenshots:  Screenshots,
@@ -363,11 +365,13 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	if dispatcher.Result != nil {
 		regionSelectorLock.Unlock()
 		KillMagnifiers()
+		runtime.GC()
 		return dispatcher.Result
 	}
 
 	// Return null.
 	regionSelectorLock.Unlock()
 	KillMagnifiers()
+	runtime.GC()
 	return nil
 }

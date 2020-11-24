@@ -26,11 +26,12 @@ func addToStack(f func()) {
 		prev:     stack,
 		function: f,
 	}
-	stackLen++
-	if stackLen == 1 {
+	old := stackLen
+	stackLen = old + 1
+	stackLock.Unlock()
+	if old == 0 {
 		newStackChan <- struct{}{}
 	}
-	stackLock.Unlock()
 }
 
 // Defines the stack handler.
