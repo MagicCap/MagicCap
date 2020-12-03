@@ -195,7 +195,7 @@ func FileExtExpander(ext string) string {
 
 func makeSavePath() string {
 	SavePath := path.Join(HomeDir, "Pictures", "MagicCap")
-	err := os.MkdirAll(SavePath, 0666)
+	err := os.MkdirAll(SavePath, 0777)
 	if err != nil {
 		sentry.CaptureException(err)
 		panic(err)

@@ -50,7 +50,7 @@ func Start() {
 		notifications.NotificationInit()
 
 		// Make the MagicCap internal directory.
-		_ = os.MkdirAll(ConfigPath, 0666)
+		_ = os.MkdirAll(ConfigPath, 0777)
 
 		// Handle the random seed.
 		rand.Seed(time.Now().UnixNano())
