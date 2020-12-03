@@ -80,7 +80,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile("./core/kernel.json", b, 0666)
+	err = ioutil.WriteFile("./assets/core/kernel.json", b, 0666)
 	if err != nil {
 		panic(err)
 	}
