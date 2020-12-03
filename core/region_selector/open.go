@@ -1,7 +1,11 @@
 package regionselector
 
 import (
+	"github.com/getsentry/sentry-go"
+	"github.com/go-vgo/robotgo"
+	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
 	"github.com/magiccap/MagicCap/core/editors"
+	_ "github.com/magiccap/MagicCap/core/editors"
 	"github.com/magiccap/MagicCap/core/magnifier"
 	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	"github.com/magiccap/MagicCap/core/threadsafescreenshot"
@@ -9,11 +13,8 @@ import (
 	"image/draw"
 	"runtime"
 	"sync"
-
-	"github.com/getsentry/sentry-go"
-	"github.com/go-vgo/robotgo"
-	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
-	_ "github.com/magiccap/MagicCap/core/editors"
+	"sync/atomic"
+	"time"
 )
 
 type edit struct {
@@ -105,7 +106,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	HoveringEditor := ""
 
 	// Defines the last display the mouse was on.
-	LastMouseDisplay := -1
+	LastMouseDisplay := int64(-1)
 
 	// Applies edits to a image.
 	EditImage := func(index int) *img.RGBA {
@@ -232,7 +233,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 					KeysDownLock.RUnlock()
 					ReleasedCount = 0
 					KeysDownLock.Lock()
-					KeyUpHandler(renderer, KeysDown, LastMouseDisplay, &dispatcher)
+					KeyUpHandler(renderer, KeysDown, (int)(atomic.LoadInt64(&LastMouseDisplay)), &dispatcher)
 					KeysDown = make([]int, 0)
 					KeysDownLock.Unlock()
 				} else {
@@ -251,39 +252,61 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	// Initialise the renderer.
 	renderer.Init(Displays, DarkerScreenshots, Screenshots)
 
+	// Defines the loop to handle input updates.
+	MouseMovedDisplayPtr := uintptr(0)
+	KillSwitch := uintptr(0)
+	MouseX := int64(-9223372036854775807)
+	MouseY := int64(-9223372036854775807)
+	go func() {
+		// Defines the previous X/Y.
+		previousX := -9223372036854775807
+		previousY := -9223372036854775807
+
+		// Loop getting the mouse position.
+		for atomic.LoadUintptr(&KillSwitch) == 0 {
+			x, y := robotgo.GetMousePos()
+			if x != previousX || y != previousY {
+				// The position has changed. Has the display?
+				lastDisplay := (int)(atomic.LoadInt64(&LastMouseDisplay))
+				for i, Rect := range Displays {
+					if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
+						if lastDisplay != i {
+							// The last display the mouse was on was not i.
+							// This means that the mouse moved display.
+							// We do this in another loop so that we can enforce it across all displays in the loop below.
+							atomic.StoreInt64(&LastMouseDisplay, int64(i))
+							atomic.StoreUintptr(&MouseMovedDisplayPtr, 1)
+						}
+						break
+					}
+				}
+				atomic.StoreInt64(&MouseX, (int64)(x))
+				atomic.StoreInt64(&MouseY, (int64)(y))
+			}
+
+			// Handles polling for renderer events.
+			renderer.PollEvents()
+
+			// Sleep for 2ms (500fps).
+			time.Sleep(time.Millisecond * 2)
+		}
+	}()
+
 	// Handles events in the window.
 	FirstTick := true
 	for {
-		// Gets the mouse position.
-		x, y := robotgo.GetMousePos()
-
 		// Defines if the mouse moved displays during the process.
-		MouseMovedDisplay := false
-		for i, Rect := range Displays {
-			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
-				if LastMouseDisplay != i {
-					// The last display the mouse was on was not i.
-					// This means that the mouse moved display.
-					// We do this in another loop so that we can enforce it across all displays in the loop below.
-					LastMouseDisplay = i
-					MouseMovedDisplay = true
-				}
-				break
-			}
-		}
-
-		// Handles polling for events.
-		renderer.PollEvents()
+		MouseMovedDisplay := atomic.SwapUintptr(&MouseMovedDisplayPtr, 0) == 1
+		x := (int)(atomic.LoadInt64(&MouseX))
+		y := (int)(atomic.LoadInt64(&MouseY))
 
 		ShouldBreakOuter := false
-		for i := range Displays {
-			// Get the rectangle for this display.
-			Rect := Displays[i]
-
+		lastDisplay := (int)(atomic.LoadInt64(&LastMouseDisplay))
+		for i, Rect := range Displays {
 			// Gets the point relative to the display.
 			// If DisplayPoint is nil, the point is not on this display.
 			var DisplayPoint *img.Point
-			if LastMouseDisplay == i {
+			if lastDisplay == i {
 				DisplayPoint = &img.Point{
 					X: x - Rect.Min.X,
 					Y: y - Rect.Min.Y,
@@ -310,7 +333,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 				break
 			}
 
-			// Don't bother drawing if this is not the current display.
+			// Don't bother drawing if this is the same as last frame.
 			if DisplayPoint == nil && !FirstTick && !MouseMovedDisplay {
 				continue
 			}
@@ -322,10 +345,14 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 			}
 			h := RenderDisplay(DisplayPoint, FirstPosMap[i], i, renderer, x, y, SelectedEditor, ShowEditors, dispatcher.History[i], f)
 			HoveringEditor = h
+
+			// Sleep for 2ms (500fps).
+			time.Sleep(time.Millisecond * 2)
 		}
 
-		// Handles the outer for loops.
+		// Handles the outer for loops and set the kill switch.
 		if ShouldBreakOuter {
+			atomic.StoreUintptr(&KillSwitch, 1)
 			break
 		}
 

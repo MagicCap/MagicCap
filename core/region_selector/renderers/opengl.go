@@ -245,22 +245,24 @@ func (t *openGlTexture) GetWidthHeight() (int, int) {
 
 // GetDarkerTexture is used to get the darker texture.
 func (r *openGLRenderer) GetDarkerTexture(index int) Texture {
-	t := r.darkerTextures[index]
 	var x *glhf.Texture
 	mainthread.ExecMainThread(func() {
+		t := r.darkerTextures[index]
 		x = glhf.NewTexture(t.w, t.h, true, t.data)
+		runtime.GC()
 	})
 	return &openGlTexture{texture: x}
 }
 
 // GetNormalTexturePixels is used to get the normal texture pixels.
 func (r *openGLRenderer) GetNormalTexturePixels(index, Left, Top, W, H int) []uint8 {
-	t := r.normalTextures[index]
 	var x []uint8
 	mainthread.ExecMainThread(func() {
+		t := r.normalTextures[index]
 		t.Begin()
 		x = t.Pixels(Left, Top, W, H)
 		t.End()
+		runtime.GC()
 	})
 	return x
 }
@@ -269,8 +271,11 @@ func (r *openGLRenderer) GetNormalTexturePixels(index, Left, Top, W, H int) []ui
 func (r *openGLRenderer) RenderTexture(index int, t Texture) {
 	glt := t.(*openGlTexture).texture
 	mainthread.ExecMainThread(func() {
+		// Get the window.
+		window := r.windows[index]
+
 		// Set the focus of the window.
-		r.windows[index].MakeContextCurrent()
+		window.MakeContextCurrent()
 
 		// Create the vertex slice.
 		slice := glhf.MakeVertexSlice(r.shaders[index], 6, 6)
@@ -289,17 +294,23 @@ func (r *openGLRenderer) RenderTexture(index int, t Texture) {
 		// Clear the window.
 		glhf.Clear(1, 1, 1, 1)
 
+		// Get the shader.
+		shader := r.shaders[index]
+
 		// Render everything.
-		r.shaders[index].Begin()
+		shader.Begin()
 		glt.Begin()
 		slice.Begin()
 		slice.Draw()
 		slice.End()
-		r.shaders[index].End()
+		shader.End()
 		glt.End()
 
 		// Swap the buffer.
-		r.windows[index].SwapBuffers()
+		window.SwapBuffers()
+
+		// Run GC.
+		runtime.GC()
 	})
 }
 
