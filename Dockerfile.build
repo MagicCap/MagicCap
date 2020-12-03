@@ -11,8 +11,7 @@ WORKDIR /var/magiccap
 RUN apk add glfw-dev git gcc glib-dev pcre libc-dev libxi-dev libxkbcommon-dev libxtst-dev libpng-dev cairo-dev gtk+3.0-dev webkit2gtk-dev
 RUN apk add --repository=http://nl.alpinelinux.org/alpine/edge/community libappindicator-dev
 COPY --from=0 /var/magiccap .
-RUN go get
-RUN cd assets && go run build_assets.go && cd ..
+RUN go generate
 
 # Set the command to build to the MagicCap mount.
 CMD go build -o /var/magiccap-mount/magiccap-linux

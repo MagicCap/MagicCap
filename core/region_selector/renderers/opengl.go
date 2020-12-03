@@ -28,6 +28,7 @@ type openGLRenderer struct {
 	darkerTextures []*rgbaImage
 	normalTextures []*glhf.Texture
 	shaders        []*glhf.Shader
+	slices		   []*glhf.VertexSlice
 }
 
 // ShouldClose is used to say windows should close.
@@ -46,6 +47,15 @@ func (r *openGLRenderer) DestroyAll() {
 		for _, v := range r.windows {
 			v.MakeContextCurrent()
 			v.Destroy()
+		}
+		for _, v := range r.normalTextures {
+			v.Delete()
+		}
+		for _, v := range r.shaders {
+			v.Delete()
+		}
+		for _, v := range r.slices {
+			v.Delete()
 		}
 	})
 }
@@ -99,6 +109,7 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 
 	// Defines all needed OpenGL definitions.
 	r.shaders = make([]*glhf.Shader, len(r.displays))
+	r.slices = make([]*glhf.VertexSlice, len(r.displays))
 	r.darkerTextures = make([]*rgbaImage, len(r.displays))
 	r.normalTextures = make([]*glhf.Texture, len(r.displays))
 
@@ -191,6 +202,19 @@ func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Scr
 				panic(err)
 			}
 			r.shaders[i] = s
+			slice := glhf.MakeVertexSlice(s, 6, 6)
+			slice.Begin()
+			slice.SetVertexData([]float32{
+				-1, -1, 0, 1,
+				+1, -1, 1, 1,
+				+1, +1, 1, 0,
+
+				-1, -1, 0, 1,
+				+1, +1, 1, 0,
+				-1, +1, 0, 0,
+			})
+			slice.End()
+			r.slices[i] = slice
 
 			// Creates the texture.
 			r.darkerTextures[i] = &rgbaImage{
@@ -258,6 +282,13 @@ func (r *openGLRenderer) GetDarkerTexture(index int) Texture {
 func (r *openGLRenderer) GetNormalTexturePixels(index, Left, Top, W, H int) []uint8 {
 	var x []uint8
 	mainthread.ExecMainThread(func() {
+		defer func() {
+			// If it panics here, we should return an array the size it's expecting.
+			// This isn't ideal, but it shouldn't happen much (maybe 1 or 2 times before it syncs) so it's not a huge deal.
+			if recover() != nil {
+				x = make([]uint8, (W*H)*4)
+			}
+		}()
 		t := r.normalTextures[index]
 		t.Begin()
 		x = t.Pixels(Left, Top, W, H)
@@ -277,25 +308,14 @@ func (r *openGLRenderer) RenderTexture(index int, t Texture) {
 		// Set the focus of the window.
 		window.MakeContextCurrent()
 
-		// Create the vertex slice.
-		slice := glhf.MakeVertexSlice(r.shaders[index], 6, 6)
-		slice.Begin()
-		slice.SetVertexData([]float32{
-			-1, -1, 0, 1,
-			+1, -1, 1, 1,
-			+1, +1, 1, 0,
-
-			-1, -1, 0, 1,
-			+1, +1, 1, 0,
-			-1, +1, 0, 0,
-		})
-		slice.End()
-
 		// Clear the window.
 		glhf.Clear(1, 1, 1, 1)
 
 		// Get the shader.
 		shader := r.shaders[index]
+
+		// Get the slice.
+		slice := r.slices[index]
 
 		// Render everything.
 		shader.Begin()

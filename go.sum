@@ -15,6 +15,8 @@ github.com/MagicCap/MASShortcut v0.0.0-20200430165135-1c251561be6f h1:HFj/T1xTMm
 github.com/MagicCap/MASShortcut v0.0.0-20200430165135-1c251561be6f/go.mod h1:0XG85HDuvl2EdLIOBniSCa3bGVAfedPW7WZKcdHJ1cA=
 github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9 h1:nEIOJB6160OncBL5J11GD7nsIONiE5rZ+QIQvZ8y51c=
 github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9/go.mod h1:NqPBduErg0xjNr0f3R8zMrSK7kiuVvX/1Ruwba+moh8=
+github.com/MagicCap/glhf v0.0.0-20201203162943-df72526ed07f h1:DuHhig5h/f9ZwuT/MFuE3+lcfWW1hI66zkOIIXKWDFc=
+github.com/MagicCap/glhf v0.0.0-20201203162943-df72526ed07f/go.mod h1:NqPBduErg0xjNr0f3R8zMrSK7kiuVvX/1Ruwba+moh8=
 github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a h1:fXK2KsfnkBV9Nh+9SKzHchYjuE9s0vI20JG1mbtEAcc=
 github.com/ProtonMail/go-autostart v0.0.0-20181114175602-c5272053443a/go.mod h1:oTGdE7/DlWIr23G0IKW3OXK9wZ5Hw1GGiaJFccTvZi4=
 github.com/Shopify/goreferrer v0.0.0-20181106222321-ec9c9a553398/go.mod h1:a1uqRtAwp2Xwc6WNPJEufxJ7fx3npB4UV/JOLmbu5I0=

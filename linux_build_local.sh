@@ -5,7 +5,5 @@ npm i
 npm run build
 cd ..
 go get
-cd assets
-go run build_assets.go
-cd ..
+go generate
 go build -o magiccap-linux .

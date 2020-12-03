@@ -190,9 +190,9 @@ func decompress(b []byte) []byte {
 	}
 
 	// Process the assets folder.
-	processFolder(".")
+	processFolder("./assets")
 
 	// Process the config.
-	processFolder("../config/src/css")
-	processFolder("../config/dist")
+	processFolder("./config/src/css")
+	processFolder("./config/dist")
 }

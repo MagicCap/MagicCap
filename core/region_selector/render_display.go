@@ -115,7 +115,6 @@ func RenderDisplay(
 				// Write the pixels to the render.
 				Pixels := renderer.GetNormalTexturePixels(index, Left, Top, w, h)
 				if len(Pixels) == 0 {
-					// In this season of "Why the fuck is this a bug?"
 					return HoveringEditor
 				}
 				RenderedTexture.SetPixels(Left, Top, w, h, Pixels)
