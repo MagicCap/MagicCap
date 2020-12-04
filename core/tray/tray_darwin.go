@@ -12,7 +12,6 @@ package tray
 #include "tray_darwin.h"
 */
 import "C"
-import "github.com/magiccap/MagicCap/assets/taskbar"
 
 // ConfiguredHandlers are all of the handlers in use.
 var ConfiguredHandlers map[string]func()
@@ -35,7 +34,8 @@ func InitTray(Uploaders []string, Slugs []string, Handlers map[string]func()) {
 		SlugsC[i] = C.CString(Slugs[i])
 		i++
 	}
-	CIcon := C.CBytes(taskbar.Icon)
+	Icon := taskbar.Icon()
+	CIcon := C.CBytes(Icon)
 	defer C.free(CIcon)
 	C.InitTray(&Names[0], &SlugsC[0], C.int(len(Uploaders)), (*C.uchar)(CIcon), C.ulong(len(Icon)))
 }
