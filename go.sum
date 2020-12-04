@@ -166,6 +166,8 @@ github.com/iris-contrib/blackfriday v2.0.0+incompatible/go.mod h1:UzZ2bDEoaSGPbk
 github.com/iris-contrib/go.uuid v2.0.0+incompatible/go.mod h1:iz2lgM/1UnEf1kP0L/+fafWORmlnuysV2EMP8MW+qe0=
 github.com/iris-contrib/i18n v0.0.0-20171121225848-987a633949d0/go.mod h1:pMCz62A0xJL6I+umB2YTlFRwWXaDFA0jy+5HzGiJjqI=
 github.com/iris-contrib/schema v0.0.1/go.mod h1:urYA3uvUNG1TIIjOSCzHr9/LmbQo8LrOcOqfqxa4hXw=
+github.com/jakemakesstuff/fastcgo v0.0.0-20170816164731-e33892440abb h1:EXlKGi70gwLiSRn46DnkMuK69rMph+ez7kwhltFl9IY=
+github.com/jakemakesstuff/fastcgo v0.0.0-20170816164731-e33892440abb/go.mod h1:HRdu+8HiE4MsI+NE2Ojmj5SS+jm24ooVdhjv5Riprm4=
 github.com/jakemakesstuff/faster-image-gif v0.0.0-20200612115959-2a0059e61d9f h1:EFeUO1n3684X+wULNxL3WxAZQY5BCinJfb/oV6Fqu7w=
 github.com/jakemakesstuff/faster-image-gif v0.0.0-20200612115959-2a0059e61d9f/go.mod h1:yTeXTzYRVD9Au7RTFpeDjrf6rUjmgw4Hb2xozziJAMA=
 github.com/jakemakesstuff/structuredhttp v0.0.0-20191023151727-a270b4cc8e22 h1:MIfWmSEF7FgWKYyDYLjfVYXx7dpVrTSuLBqaNHT+TRs=

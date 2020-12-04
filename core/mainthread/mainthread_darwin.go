@@ -12,9 +12,9 @@ package mainthread
 */
 import "C"
 import (
+	"github.com/jakemakesstuff/fastcgo"
 	"runtime"
 	"unsafe"
-	"github.com/magiccap/fastcgo"
 )
 
 // CCallbackHandler is a function which can be called from C to dispatch the callback.
