@@ -3,7 +3,7 @@ package regionselector
 import (
 	"github.com/getsentry/sentry-go"
 	"github.com/go-vgo/robotgo"
-	displaymanagement "github.com/magiccap/MagicCap/core/display_management"
+	"github.com/kbinani/screenshot"
 	"github.com/magiccap/MagicCap/core/editors"
 	_ "github.com/magiccap/MagicCap/core/editors"
 	"github.com/magiccap/MagicCap/core/magnifier"
@@ -29,20 +29,20 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	// Lock the region selector.
 	regionSelectorLock.Lock()
 
-	// Gets all of the displays.
-	Displays := displaymanagement.GetActiveDisplaysOrdered()
+	// Get the number of displays.
+	displayNum := screenshot.NumActiveDisplays()
 
 	// Multi-thread getting all of the displays and making all of the images darker.
 	ScreenshotLen := 0
-	Screenshots := make([]*img.RGBA, len(Displays))
-	DarkerScreenshots := make([]*img.RGBA, len(Displays))
+	Screenshots := make([]*img.RGBA, displayNum)
+	DarkerScreenshots := make([]*img.RGBA, displayNum)
 	ScreenshotsLock := sync.Mutex{}
 	wg := sync.WaitGroup{}
-	wg.Add(len(Displays))
-	for i, v := range Displays {
-		go func(index int, rect img.Rectangle) {
+	wg.Add(displayNum)
+	for i := 0; i < displayNum; i++ {
+		go func(index int) {
 			// Takes the screenshot.
-			Screenshot, err := threadsafescreenshot.CaptureRect(rect)
+			Screenshot, err := threadsafescreenshot.CaptureRect(screenshot.GetDisplayBounds(index))
 			if err != nil {
 				sentry.CaptureException(err)
 				panic(err)
@@ -72,14 +72,13 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 
 			// Sets this task to done.
 			wg.Done()
-		}(i, v)
+		}(i)
 	}
 	wg.Wait()
 	runtime.GC()
 
-
 	// Defines the magnifier for each display.
-	Magnifiers := make([]*magnifier.Magnifier, len(Displays))
+	Magnifiers := make([]*magnifier.Magnifier, displayNum)
 
 	// Kills all of the magnifiers.
 	KillMagnifiers := func() {
@@ -121,6 +120,9 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 
 	// Defines the renderer.
 	renderer := renderers.OSRenderer()
+
+	// Defines all of the display rectangles.
+	var Displays []img.Rectangle
 
 	// Set the mouse press callbacks.
 	renderer.SetMousePressCallback(func(index int, pos img.Rectangle) {
@@ -250,7 +252,10 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	})
 
 	// Initialise the renderer.
-	renderer.Init(Displays, DarkerScreenshots, Screenshots)
+	renderer.Init(DarkerScreenshots, Screenshots)
+
+	// Get all the display rectangles.
+	Displays = renderer.GetDisplayRectangles()
 
 	// Defines the loop to handle input updates.
 	MouseMovedDisplayPtr := uintptr(0)

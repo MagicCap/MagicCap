@@ -5,21 +5,19 @@
 package webview
 
 import (
-	"sync"
-
 	webkit "github.com/andre-hub/go-webkit2"
 	"github.com/gotk3/gotk3/gtk"
 )
 
 // Webview defines the webview handler.
 type Webview struct {
-	window *gtk.Window
-	wg     *sync.WaitGroup
+	window	   *gtk.Window
+	windowChan chan struct{}
 }
 
 // Wait is used to wait for a webview. This is blocking and should NOT be ran in the main thread.
 func (w *Webview) Wait() {
-	w.wg.Wait()
+	<-w.windowChan
 }
 
 // Exit is used to exit the window. This needs to be ran in the main thread.
@@ -55,12 +53,11 @@ func NewWebview(URL string, Title string, Width int, Height int, Resizable bool,
 	win.SetResizable(Resizable)
 
 	// Create a wait group for the view.
-	wg := sync.WaitGroup{}
-	wg.Add(1)
+	channel := make(chan struct{})
 
 	// Mark as done when the window is destroyed.
 	win.Connect("destroy", func() {
-		wg.Done()
+		channel <- struct{}{}
 	})
 
 	// Create the webview, set the URL and associate it with the window.
@@ -76,5 +73,5 @@ func NewWebview(URL string, Title string, Width int, Height int, Resizable bool,
 	win.Present()
 
 	// Return the Webview struct.
-	return &Webview{wg: &wg, window: win}
+	return &Webview{windowChan: channel, window: win}
 }

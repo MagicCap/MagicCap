@@ -37,7 +37,7 @@ func RestartTrayProcess(ColdBoot bool) {
 	// Create the tray.
 	Callbacks := map[string]func(){
 		"quit":       Exit,
-		"pref":       OpenPreferences,
+		"pref":       func() { OpenPreferences(false) },
 		"fullscreen": RunFullscreenCapture,
 		"screen":     RunScreenCapture,
 		"gif":        RunGIFCapture,

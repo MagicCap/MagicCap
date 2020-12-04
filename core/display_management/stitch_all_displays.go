@@ -11,7 +11,7 @@ import (
 // StitchAllDisplays is used to stitch all of the displays together.
 func StitchAllDisplays() *image.NRGBA {
 	// Gets the images/displays.
-	AllDisplays := GetActiveDisplaysOrdered()
+	AllDisplays := GetActiveDisplays()
 	Images := CaptureAllDisplays(AllDisplays)
 
 	// Get the min/max X/Y.

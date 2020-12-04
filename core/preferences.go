@@ -5,6 +5,7 @@ package core
 
 import (
 	"encoding/json"
+	"github.com/getsentry/sentry-go"
 	"github.com/magiccap/MagicCap/config/dist"
 	"github.com/magiccap/MagicCap/config/src/css"
 	"github.com/magiccap/MagicCap/config/src/css/bulmaswatch/darkly"
@@ -14,16 +15,14 @@ import (
 	"github.com/magiccap/MagicCap/config/src/css/fontawesome-free/webfonts"
 	"github.com/magiccap/MagicCap/core/clipboard"
 	"github.com/magiccap/MagicCap/core/mainthread"
+	"github.com/magiccap/MagicCap/core/webview"
+	"github.com/pkg/browser"
+	"github.com/sqweek/dialog"
 	"io/ioutil"
 	"net"
 	"runtime"
 	"strconv"
 	"strings"
-
-	"github.com/getsentry/sentry-go"
-	"github.com/magiccap/MagicCap/core/webview"
-	"github.com/pkg/browser"
-	"github.com/sqweek/dialog"
 
 	"github.com/matishsiao/goInfo"
 	"github.com/valyala/fasthttp"
@@ -317,9 +316,9 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.SetBody(j)
 		break
 	case "/restart":
-		ConfigWindow.Exit()
-		ConfigWindow = nil
-		OpenPreferences()
+		ctx.Response.SetStatusCode(204)
+		go OpenPreferences(true)
+		break
 
 	// Handles /webfonts and not found.
 	default:
@@ -335,11 +334,15 @@ func ConfigHTTPHandler(ctx *fasthttp.RequestCtx) {
 }
 
 // OpenPreferences opens the preferences.
-func OpenPreferences() {
+func OpenPreferences(Reboot bool) {
 	// Only allow a single instance of the config.
 	if ConfigWindow != nil {
-		mainthread.ExecMainThread(ConfigWindow.Focus)
-		return
+		if Reboot {
+			mainthread.ExecMainThread(ConfigWindow.Exit)
+		} else {
+			mainthread.ExecMainThread(ConfigWindow.Focus)
+			return
+		}
 	}
 
 	// Create a socket.
@@ -350,9 +353,9 @@ func OpenPreferences() {
 	}
 
 	// Start the fasthttp server.
+	server := fasthttp.Server{Handler: ConfigHTTPHandler}
 	go func() {
-		err := fasthttp.Serve(ln, ConfigHTTPHandler)
-		if err != nil {
+		if err := server.Serve(ln); err != nil {
 			sentry.CaptureException(err)
 			panic(err)
 		}
@@ -377,8 +380,8 @@ func OpenPreferences() {
 	// Null-ify the config window.
 	ConfigWindow = nil
 
-	// Kill the socket.
-	err = ln.Close()
+	// Kill the server.
+	err = server.Shutdown()
 	if err != nil {
 		sentry.CaptureException(err)
 		panic(err)

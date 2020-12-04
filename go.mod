@@ -44,7 +44,7 @@ require (
 	github.com/robotn/gohook v0.0.0-20200111152647-5bfaedadd9dd
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
 	github.com/stretchr/testify v1.4.0 // indirect
-	github.com/valyala/fasthttp v1.8.0
+	github.com/valyala/fasthttp v1.17.0
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 	gopkg.in/ajg/form.v1 v1.5.1 // indirect
 )

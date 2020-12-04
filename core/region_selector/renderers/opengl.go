@@ -1,11 +1,11 @@
 package renderers
 
 import (
-	"errors"
 	"github.com/MagicCap/glhf"
 	"github.com/getsentry/sentry-go"
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/kbinani/screenshot"
 	"github.com/magiccap/MagicCap/core/mainthread"
 	"image"
 	"runtime"
@@ -80,38 +80,41 @@ func (r *openGLRenderer) PollEvents() {
 	mainthread.ExecMainThread(glfw.PollEvents)
 }
 
-// Init is used to initialise the renderer.
-func (r *openGLRenderer) Init(Displays []image.Rectangle, DarkerScreenshots, Screenshots []*image.RGBA) {
-	// Set displays.
-	r.displays = Displays
-
-	// Remap the monitors to the order of the "displays" array.
-	var GLFWMonitorsUnordered []*glfw.Monitor
-	mainthread.ExecMainThread(func() {
-		GLFWMonitorsUnordered = glfw.GetMonitors()
-	})
-	r.glfwMonitors = make([]*glfw.Monitor, len(GLFWMonitorsUnordered))
-	for _, Monitor := range GLFWMonitorsUnordered {
-		x, y := Monitor.GetPos()
-		Matches := false
-		for i, v := range Displays {
-			if v.Bounds().Min.X == x && v.Bounds().Min.Y == y {
-				// This is the correct display.
-				r.glfwMonitors[i] = Monitor
-				Matches = true
-				break
-			}
-		}
-		if !Matches {
-			panic(errors.New("cannot find matching glfw display"))
-		}
+// Get the display rectangles.
+func (r *openGLRenderer) getRectangles() []image.Rectangle {
+	displays := make([]image.Rectangle, len(r.glfwMonitors))
+	for i, v := range r.glfwMonitors {
+		x, y := v.GetPos()
+		sq := screenshot.GetDisplayBounds(i)
+		displays[i] = image.Rect(x, y, x + sq.Dx(), y + sq.Dy())
 	}
+	return displays
+}
+
+// GetDisplayRectangles is used to get the display rectangles.
+func (r *openGLRenderer) GetDisplayRectangles() []image.Rectangle {
+	x := make([]image.Rectangle, len(r.displays))
+	for i, v := range r.displays {
+		x[i] = v
+	}
+	return x
+}
+
+// Init is used to initialise the renderer.
+func (r *openGLRenderer) Init(DarkerScreenshots, Screenshots []*image.RGBA) {
+	// Remap the monitors to the order of the "displays" array.
+	mainthread.ExecMainThread(func() {
+		r.glfwMonitors = glfw.GetMonitors()
+	})
+
+	// Get the display rectangles.
+	r.displays = r.getRectangles()
 
 	// Defines all needed OpenGL definitions.
-	r.shaders = make([]*glhf.Shader, len(r.displays))
-	r.slices = make([]*glhf.VertexSlice, len(r.displays))
-	r.darkerTextures = make([]*rgbaImage, len(r.displays))
-	r.normalTextures = make([]*glhf.Texture, len(r.displays))
+	r.shaders = make([]*glhf.Shader, len(r.glfwMonitors))
+	r.slices = make([]*glhf.VertexSlice, len(r.glfwMonitors))
+	r.darkerTextures = make([]*rgbaImage, len(r.glfwMonitors))
+	r.normalTextures = make([]*glhf.Texture, len(r.glfwMonitors))
 
 	// Make a window on each display.
 	r.windows = make([]*glfw.Window, len(r.glfwMonitors))

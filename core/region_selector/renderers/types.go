@@ -11,7 +11,8 @@ type Renderer interface {
 	SetMousePressCallback(Function func(index int, pos image.Rectangle))
 	SetMouseReleaseCallback(Function func(index int, pos image.Rectangle))
 	PollEvents()
-	Init(Displays []image.Rectangle, DarkerScreenshots, Screenshots []*image.RGBA)
+	Init(DarkerScreenshots, Screenshots []*image.RGBA)
+	GetDisplayRectangles() []image.Rectangle
 	GetDarkerTexture(index int) Texture
 	GetNormalTexturePixels(index, Left, Top, W, H int) []uint8
 	RenderTexture(index int, t Texture)
