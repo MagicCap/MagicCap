@@ -19,12 +19,8 @@ import (
 
 // CCallbackHandler is a function which can be called from C to dispatch the callback.
 //export CCallbackHandler
-func CCallbackHandler(CPtr unsafe.Pointer, WaitChan unsafe.Pointer) {
-	// Call the function.
-	(func())(CPtr)()
-
-	// Stop waiting.
-	<-WaitChan
+func CCallbackHandler(CPtr unsafe.Pointer) {
+	(*(*func())(CPtr))()
 }
 
 // This is used to execute a function on the main thread. This does not implement any queue system.
@@ -33,12 +29,15 @@ func execMainThread(Function func()) {
 	waitChan := make(chan struct{})
 
 	// Call the C async function with the pointer.
-	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(Function))), uint64(uintptr(unsafe.Pointer(waitChan))), 0, 0)
+	f := func() {
+		Function()
+		waitChan <- struct{}{}
+	}
+	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(&f))), 0, 0, 0)
 
 	// Wait for the function to be complete.
 	<-waitChan
 
 	// Do not GC this whatever you do!
-	runtime.KeepAlive(Function)
-	runtime.KeepAlive(waitChan)
+	runtime.KeepAlive(f)
 }

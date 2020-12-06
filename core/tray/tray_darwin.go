@@ -12,6 +12,7 @@ package tray
 #include "tray_darwin.h"
 */
 import "C"
+import "github.com/magiccap/MagicCap/assets/taskbar"
 
 // ConfiguredHandlers are all of the handlers in use.
 var ConfiguredHandlers map[string]func()
