@@ -27,7 +27,10 @@ func SingleInstance(Lockfile string, SecondInstanceLaunched func()) {
 	}
 	go func() {
 		for {
-			if _, err := l.Accept(); err != nil {
+			if socket, err := l.Accept(); err == nil {
+				// Close the socket.
+				_ = socket.Close()
+			} else {
 				// Ermmmmm, I guess we should give up?
 				return
 			}
