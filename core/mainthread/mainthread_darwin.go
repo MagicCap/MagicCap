@@ -25,19 +25,22 @@ func CCallbackHandler(CPtr unsafe.Pointer) {
 
 // This is used to execute a function on the main thread. This does not implement any queue system.
 func execMainThread(Function func()) {
-	// The channel for the wait.
-	waitChan := make(chan struct{})
+	// We need to wait in another go-routine. If we don't do this, we will hit an issue with GC.
+	go func() {
+		// The channel for the wait.
+		waitChan := make(chan struct{})
 
-	// Call the C async function with the pointer.
-	f := func() {
-		Function()
-		waitChan <- struct{}{}
-	}
-	fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(&f))), 0, 0, 0)
+		// Call the C async function with the pointer.
+		f := func() {
+			Function()
+			waitChan <- struct{}{}
+		}
+		fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(&f))), 0, 0, 0)
 
-	// Wait for the function to be complete.
-	<-waitChan
+		// Wait for the function to be complete.
+		<-waitChan
 
-	// Do not GC this whatever you do!
-	runtime.KeepAlive(f)
+		// Do not GC this whatever you do!
+		runtime.KeepAlive(f)
+	}()
 }

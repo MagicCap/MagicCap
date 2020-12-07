@@ -2,13 +2,13 @@ package regionselector
 
 import (
 	"github.com/magiccap/MagicCap/core/editors"
-	"github.com/magiccap/MagicCap/core/region_selector/renderers"
+	"github.com/magiccap/MagicCap/core/region_selector/renderers/types"
 	"image"
 	"strconv"
 	"sync"
 )
 
-func dashedBorder(RenderedTexture renderers.Texture, x, y, w, h int) {
+func dashedBorder(RenderedTexture types.Texture, x, y, w, h int) {
 	// Premake the top/bottom bit of the border.
 	wt4 := w*4
 	TopBottomBorder := make([]uint8, wt4)
@@ -65,7 +65,7 @@ func dashedBorder(RenderedTexture renderers.Texture, x, y, w, h int) {
 // RenderDisplay is used to render the display.
 func RenderDisplay(
 	DisplayPoint *image.Point, FirstPos *image.Point,
-	index int, renderer renderers.Renderer,
+	index int, renderer types.Renderer,
 	RawX int, RawY int, SelectedKey string, ShowEditors bool,
 	History []*edit, MagnifierFrame []byte,
 ) string {

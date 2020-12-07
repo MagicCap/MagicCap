@@ -1,7 +1,7 @@
 package magnifier
 
 import (
-	"github.com/magiccap/MagicCap/core/region_selector/renderers"
+	"github.com/magiccap/MagicCap/core/region_selector/renderers/types"
 	"image"
 	"sync"
 	"sync/atomic"
@@ -10,14 +10,14 @@ import (
 
 // Magnifier defines the magnifier.
 type Magnifier struct {
-	imgLock sync.RWMutex
-	img []byte
-	index int
-	renderer renderers.Renderer
-	pos *image.Point
-	posLock sync.RWMutex
-	kill uintptr
-	originWidth int
+	imgLock      sync.RWMutex
+	img          []byte
+	index        int
+	renderer     types.Renderer
+	pos          *image.Point
+	posLock      sync.RWMutex
+	kill         uintptr
+	originWidth  int
 	originHeight int
 }
 
@@ -69,7 +69,7 @@ func (m *Magnifier) SetPos(x, y int) {
 }
 
 // NewMagnifier is used to create a new version of the magnifier.
-func NewMagnifier(renderer renderers.Renderer, index int, width, height int, InitPos *image.Point) *Magnifier {
+func NewMagnifier(renderer types.Renderer, index int, width, height int, InitPos *image.Point) *Magnifier {
 	m := Magnifier{renderer: renderer, index: index, pos: InitPos}
 	m.originHeight = height
 	m.originWidth = width

@@ -2,11 +2,11 @@ package regionselector
 
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
-	"github.com/magiccap/MagicCap/core/region_selector/renderers"
+	"github.com/magiccap/MagicCap/core/region_selector/renderers/types"
 )
 
 // KeyUpHandler is the key up handler.
-func KeyUpHandler(renderer renderers.Renderer, keys []int, CurrentDisplay int, dispatcher *EventDispatcher) {
+func KeyUpHandler(renderer types.Renderer, keys []int, CurrentDisplay int, dispatcher *EventDispatcher) {
 	// Handles 1 key gestures.
 	if len(keys) == 1 {
 		// TODO: We should probably move away from glfw here.

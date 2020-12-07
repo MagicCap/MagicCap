@@ -1,4 +1,4 @@
-package renderers
+package opengl
 
 var vertexShader = `
 #version 330 core

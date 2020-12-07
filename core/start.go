@@ -10,6 +10,7 @@ import (
 	"github.com/magiccap/MagicCap/core/notifications"
 	regionselector "github.com/magiccap/MagicCap/core/region_selector"
 	"github.com/magiccap/MagicCap/core/region_selector/renderers"
+	"github.com/magiccap/MagicCap/core/singleinstance"
 	"github.com/magiccap/MagicCap/core/threadsafescreenshot"
 	"math/rand"
 	"os"
@@ -51,6 +52,11 @@ func Start() {
 
 		// Make the MagicCap internal directory.
 		_ = os.MkdirAll(ConfigPath, 0777)
+
+		// Try acquiring the single instance lock.
+		singleinstance.SingleInstance(path.Join(ConfigPath, "instance.lock"), func() {
+			OpenPreferences(false)
+		})
 
 		// Handle the random seed.
 		rand.Seed(time.Now().UnixNano())

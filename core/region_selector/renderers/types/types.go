@@ -1,4 +1,4 @@
-package renderers
+package types
 
 import "image"
 
