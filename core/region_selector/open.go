@@ -55,7 +55,7 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 			Screenshots[index] = Screenshot
 			x := img.NewRGBA(Screenshot.Rect)
 			for i, v := range Screenshot.Pix {
-				switch i%4 {
+				switch i % 4 {
 				case 0, 1, 2:
 					x.Pix[i] = uint8(float64(v) / 1.6)
 				case 3:

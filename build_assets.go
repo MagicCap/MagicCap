@@ -20,8 +20,8 @@ const lowerHex = "0123456789abcdef"
 
 var (
 	underscore = regexp.MustCompile("[a-zA-Z]_[a-zA-Z]")
-	dash = regexp.MustCompile("[a-zA-Z]-[a-zA-Z]")
-	dot = regexp.MustCompile("[a-zA-Z]\\.[a-zA-Z]")
+	dash       = regexp.MustCompile("[a-zA-Z]-[a-zA-Z]")
+	dot        = regexp.MustCompile("[a-zA-Z]\\.[a-zA-Z]")
 )
 
 func neatenFilename(name string) string {
@@ -74,7 +74,7 @@ func main() {
 		panic(err)
 	}
 	if resp.StatusCode != 200 {
-		panic(errors.New("Returned the status "+strconv.Itoa(resp.StatusCode)))
+		panic(errors.New("Returned the status " + strconv.Itoa(resp.StatusCode)))
 	}
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

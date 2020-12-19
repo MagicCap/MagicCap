@@ -37,6 +37,29 @@ func MigrateFrom2() {
 			ConfigItems["uploader_type"] = "imgur"
 			UpdateConfig()
 		}
+	}, func() {
+		_, ok := ConfigItems["update_bits"].(float64)
+		if !ok {
+			// We need to migrate the configuration to support this.
+			var bits float64
+			defer func() {
+				// Deploy the changes.
+				ConfigItems["update_bits"] = bits
+				UpdateConfig()
+			}()
+			allowUpdates, ok := ConfigItems["autoupdate_on"].(bool)
+			if ok && !allowUpdates {
+				// This was switched off. Return.
+				return
+			}
+			bits = 1
+			betaUpdates, _ := ConfigItems["beta_channel"].(bool)
+			if betaUpdates {
+				// Switch the bit for the beta update channel on.
+				bits = 3
+			}
+			ConfigItems["update_bits"] = bits
+		}
 	})
 
 	// Moves ~/magiccap.db to ~/.magiccap/magiccap.db

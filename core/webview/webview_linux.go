@@ -11,7 +11,7 @@ import (
 
 // Webview defines the webview handler.
 type Webview struct {
-	window	   *gtk.Window
+	window     *gtk.Window
 	windowChan chan struct{}
 }
 

@@ -12,6 +12,7 @@ import (
 	"github.com/magiccap/MagicCap/core/region_selector/renderers"
 	"github.com/magiccap/MagicCap/core/singleinstance"
 	"github.com/magiccap/MagicCap/core/threadsafescreenshot"
+	"github.com/magiccap/MagicCap/core/updater"
 	"math/rand"
 	"os"
 	"path"
@@ -103,6 +104,13 @@ func Start() {
 
 		// Loads the SQLite3 DB.
 		LoadDatabase()
+
+		// Manage updates.
+		if updater.CurrentUpdater != nil {
+			// Make the update server aware of the current bits.
+			updater.CurrentUpdater.SetUpdateBits(uint8(ConfigItems["update_bits"].(float64)))
+		}
+		updater.UpdateFound = HandleUpdateNotification
 
 		// Loads the hotkeys.
 		LoadHotkeys()

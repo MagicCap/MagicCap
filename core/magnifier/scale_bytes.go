@@ -10,7 +10,7 @@ func scaleBytes(origin []byte, scale, currentHeight int) []byte {
 	ol := len(origin)
 	for i := 0; i < ol; i += 4 {
 		// Get the delta.
-		ScaledBlock := i*scale
+		ScaledBlock := i * scale
 
 		// Whilst under scale, add to the array.
 		for x := 0; x < scale; x++ {
@@ -23,11 +23,11 @@ func scaleBytes(origin []byte, scale, currentHeight int) []byte {
 	}
 
 	// From here, we want to multiply by the scale again. We want to go by rows now.
-	RowCount := spvLen/currentHeight
+	RowCount := spvLen / currentHeight
 	CurrentIndex := 0
 	for i := 0; i < currentHeight; i++ {
-		PastPixels := RowCount*i
-		Row := ScaledPixelsVertical[PastPixels:PastPixels+RowCount]
+		PastPixels := RowCount * i
+		Row := ScaledPixelsVertical[PastPixels : PastPixels+RowCount]
 		for x := 0; x < scale; x++ {
 			for r := 0; r < RowCount; r++ {
 				ScaledPixels[CurrentIndex] = Row[r]

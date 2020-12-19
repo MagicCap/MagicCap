@@ -7,7 +7,7 @@ func appendToRows(Array, ToAppend []byte, Repeat int, Append bool, Rows int) []b
 	NewArray := make([]byte, 0, len(Array)+(len(ToAppend)*Repeat*Rows))
 
 	// Get the length of each row.
-	RowLen := len(Array)/Rows
+	RowLen := len(Array) / Rows
 
 	// Keep appending until the lengths are correct.
 	x := make([]byte, RowLen)

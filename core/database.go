@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
+	"github.com/magiccap/MagicCap/core/updater"
 
 	// Needed for SQLite3 support.
 	_ "github.com/mattn/go-sqlite3"
@@ -149,6 +150,9 @@ func UpdateConfig() {
 	LoginStartLast, _ = ConfigItems["open_login"].(bool)
 	if OldLoginValue != LoginStartLast {
 		EditStartupValue(LoginStartLast)
+	}
+	if updater.CurrentUpdater != nil {
+		updater.CurrentUpdater.SetUpdateBits(uint8(ConfigItems["update_bits"].(float64)))
 	}
 	RestartTrayProcess(false)
 	ManageHotkeysEdit()

@@ -10,7 +10,7 @@ import (
 
 func dashedBorder(RenderedTexture types.Texture, x, y, w, h int) {
 	// Premake the top/bottom bit of the border.
-	wt4 := w*4
+	wt4 := w * 4
 	TopBottomBorder := make([]uint8, wt4)
 	Index := 0
 	next := false
@@ -38,7 +38,7 @@ func dashedBorder(RenderedTexture types.Texture, x, y, w, h int) {
 	if 0 >= h-2 {
 		return
 	}
-	ht4 := (h-2)*4
+	ht4 := (h - 2) * 4
 	if 0 > ht4 {
 		ht4 = 0
 	}
@@ -180,7 +180,7 @@ func RenderDisplay(
 			}
 
 			// Render the description if it's needed.
-			if DisplayPoint.Y >= 20 && 70 >= DisplayPoint.Y && DisplayPoint.X >= InitOffset && InitOffset + editorTopBar.Bounds().Dx() >= DisplayPoint.X {
+			if DisplayPoint.Y >= 20 && 70 >= DisplayPoint.Y && DisplayPoint.X >= InitOffset && InitOffset+editorTopBar.Bounds().Dx() >= DisplayPoint.X {
 				// Do not show the X/Y.
 				ShowXY = false
 
@@ -230,7 +230,7 @@ func RenderDisplay(
 					RenderedTexture.SetPixels(DisplayPoint.X+10, DisplayPoint.Y+50, 200, 200, MagnifierFrame)
 				} else {
 					// Get the left side Y.
-					LeftSideY := DisplayPoint.Y-250
+					LeftSideY := DisplayPoint.Y - 250
 
 					// If X is ideal, try to handle the Y.
 					if IdealX {

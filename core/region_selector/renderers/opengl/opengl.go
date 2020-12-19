@@ -29,7 +29,7 @@ type OpenGLRenderer struct {
 	darkerTextures []*rgbaImage
 	normalTextures []*glhf.Texture
 	shaders        []*glhf.Shader
-	slices		   []*glhf.VertexSlice
+	slices         []*glhf.VertexSlice
 }
 
 // ShouldClose is used to say windows should close.
@@ -87,7 +87,7 @@ func (r *OpenGLRenderer) getRectangles() []image.Rectangle {
 	for i, v := range r.glfwMonitors {
 		x, y := v.GetPos()
 		sq := screenshot.GetDisplayBounds(i)
-		displays[i] = image.Rect(x, y, x + sq.Dx(), y + sq.Dy())
+		displays[i] = image.Rect(x, y, x+sq.Dx(), y+sq.Dy())
 	}
 	return displays
 }
@@ -147,8 +147,8 @@ func (r *OpenGLRenderer) Init(DarkerScreenshots, Screenshots []*image.RGBA) {
 				// FFS.
 				monitor = nil
 			}
-			width := v.Max.X-v.Min.X
-			height := v.Max.Y-v.Min.Y
+			width := v.Max.X - v.Min.X
+			height := v.Max.Y - v.Min.Y
 			Window, err = glfw.CreateWindow(width, height, "MagicCap Region Selector", monitor, FirstWindow)
 			if err != nil {
 				sentry.CaptureException(err)

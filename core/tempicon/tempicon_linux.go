@@ -16,12 +16,12 @@ import (
 
 // Defines the lock and current indicator.
 var (
-	currentIndicator *appindicator.Indicator
+	currentIndicator     *appindicator.Indicator
 	currentIndicatorLock = sync.Mutex{}
 )
 
 // TempIcon is the structure which is used for a temp icon.
-type TempIcon struct {}
+type TempIcon struct{}
 
 // CloseIcon is used to close the icon.
 func (t *TempIcon) CloseIcon() {

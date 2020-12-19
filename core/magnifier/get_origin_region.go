@@ -3,8 +3,8 @@ package magnifier
 // Used to get the region from the origin texture. Put a black outline in the event it doesn't fit.
 func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 	// Get the left/top of the texture.
-	left := x-(w/2)
-	top := y-(h/2)
+	left := x - (w / 2)
+	top := y - (h / 2)
 
 	// Will be set as the resulting bytes from the main thread.
 	var b []byte
@@ -28,7 +28,7 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 			LeftAdd += left * -1
 		} else if RightOverflow {
 			// We should subtract the origin width from left+w to get how much it is over by.
-			OverBy := (left+w) - m.originWidth
+			OverBy := (left + w) - m.originWidth
 
 			// Now we know how much it is over by, we should remove this from the width.
 			WidthAdd -= OverBy
@@ -42,14 +42,14 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 			TopAdd = top * -1
 		} else if BottomOverFlow {
 			// We should subtract the origin height from top+h to get how much it is over by.
-			OverBy := (top+h) - m.originHeight
+			OverBy := (top + h) - m.originHeight
 
 			// Now we know how much it is over by, we should remove this from the height.
 			HeightAdd -= OverBy
 		}
 
 		// Get the relevant pixels from the display.
-		DisplayPixelsW := w+WidthAdd
+		DisplayPixelsW := w + WidthAdd
 		b = m.renderer.GetNormalTexturePixels(m.index, left+LeftAdd, top+TopAdd, DisplayPixelsW, h+HeightAdd)
 
 		// Ok, step 2. We now need to handle processing these bytes in various ways to add "blackness" where there is missing content.
@@ -118,7 +118,7 @@ func (m *Magnifier) getOriginRegion(w, h, x, y int) []byte {
 			b = appendToRows(b, black, LeftAdd, false, h)
 		} else if RightOverflow {
 			// For each row, we need to add a bunch of 4 byte blocks to the end of it ([0 0 0 255]).
-			b = appendToRows(b, black, WidthAdd * -1, true, h)
+			b = appendToRows(b, black, WidthAdd*-1, true, h)
 		}
 	}
 

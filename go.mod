@@ -9,7 +9,7 @@ require (
 	github.com/andre-hub/go-webkit2 v0.0.0-20180415141131-4c31e287aa11
 	github.com/antchfx/xmlquery v1.2.3 // indirect
 	github.com/antchfx/xpath v1.1.4 // indirect
-	github.com/aws/aws-sdk-go v1.28.8 // indirect
+	github.com/aws/aws-sdk-go v1.28.8
 	github.com/dawidd6/go-appindicator v0.0.0-20190913173241-21b44adc5189
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
 	github.com/disintegration/gift v1.2.1

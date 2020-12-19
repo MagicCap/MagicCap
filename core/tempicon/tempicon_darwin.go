@@ -35,7 +35,7 @@ func CTempIconCallbackHandler(CallbackID C.int) {
 // TempIcon is the structure which is used for a temp icon.
 type TempIcon struct {
 	CallbackID int
-	CIcon *C.NSStatusItem
+	CIcon      *C.NSStatusItem
 }
 
 // CloseIcon is used to close the icon.

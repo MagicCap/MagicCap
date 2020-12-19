@@ -16,9 +16,9 @@ import (
 var (
 	prerenderedDescriptions = map[string]*image.RGBA{}
 	preloadedIcons          = map[string]image.Image{}
-	editorsOrdered 	        []string
+	editorsOrdered          []string
 	editorTopBar            *image.RGBA
-	SelectedItemRender 		[]byte
+	SelectedItemRender      []byte
 )
 
 // PrerenderEditorElements is used to pre-render editor elements.

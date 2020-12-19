@@ -15,7 +15,7 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 		}
 		Tasks <- true
 	}()
-	XMidpoint := (w*4)/2
+	XMidpoint := (w * 4) / 2
 	CrosshairRowLeft := make([]byte, XMidpoint-(every*4))
 	CrosshairRowRight := make([]byte, XMidpoint)
 	go func() {
@@ -35,15 +35,15 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 	}
 
 	// Get the height midpoint start/end.
-	HMidpointStart := (h/2)-every
-	HMidpointEnd := HMidpointStart+every
+	HMidpointStart := (h / 2) - every
+	HMidpointEnd := HMidpointStart + every
 
 	// Draw the rows/columns.
 	ReallignedArray := make([]byte, 0, len(b))
 	rc := 0
 	for i := 0; i < h; i++ {
 		// Get the current index.
-		CurrentIndex := i*w*4
+		CurrentIndex := i * w * 4
 
 		// Get the width endpoint start.
 		WEndpointStart := (w / 2) - (every / 2) - 1
@@ -68,7 +68,7 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 		}
 
 		// Get the row.
-		Row := b[CurrentIndex:CurrentIndex+len(GridRow)]
+		Row := b[CurrentIndex : CurrentIndex+len(GridRow)]
 
 		// Handle the columns.
 		WEndpointEnd := WEndpointStart + (every / 2)
@@ -76,7 +76,7 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 		for x := 0; x < w; x++ {
 			if (x+1)%every == 0 {
 				// Handle setting this pixel to the expected color.
-				StartPos := x*4
+				StartPos := x * 4
 				if white {
 					Row[StartPos] = 255
 					Row[StartPos+1] = 255
@@ -89,7 +89,7 @@ func drawGrid(b []byte, white bool, every, w, h int) []byte {
 				Row[StartPos+3] = 255
 			} else if x >= WEndpointStart && WEndpointEnd >= x {
 				// Handle the white pixel placement.
-				StartPos := x*4
+				StartPos := x * 4
 				Row[StartPos] = 255
 				Row[StartPos+1] = 255
 				Row[StartPos+2] = 255
@@ -116,8 +116,8 @@ type cacheInfo struct {
 
 // Handles the grid cache. We basically expect a 100% cache hit rate unless the size changes.
 var (
-	whiteGridCache = map[cacheInfo][]byte{}
-	blackGridCache = map[cacheInfo][]byte{}
+	whiteGridCache     = map[cacheInfo][]byte{}
+	blackGridCache     = map[cacheInfo][]byte{}
 	whiteGridCacheLock = sync.RWMutex{}
 	blackGridCacheLock = sync.RWMutex{}
 )
@@ -139,12 +139,12 @@ func init() {
 		w:     200,
 		h:     200,
 		every: 10,
-	}] = drawGrid(filled1, true,10,200, 200)
+	}] = drawGrid(filled1, true, 10, 200, 200)
 	blackGridCache[cacheInfo{
 		w:     200,
 		h:     200,
 		every: 10,
-	}] = drawGrid(filled2, false,10,200, 200)
+	}] = drawGrid(filled2, false, 10, 200, 200)
 	whiteGridCacheLock.Unlock()
 	blackGridCacheLock.Unlock()
 }

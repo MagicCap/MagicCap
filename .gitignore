@@ -15,3 +15,5 @@ magiccap-linux
 application_bundle.zip
 magiccap-bundled
 assets_gen.go
+binary_file_gen.go
+magiccap-darwin-autoupdater

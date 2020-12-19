@@ -15,12 +15,12 @@ func init() {
 			// Gets the first/last block line.
 			X := Region.Rect.Dx()
 			Y := Region.Rect.Dy()
-			RowSize := X*4
+			RowSize := X * 4
 			FirstBlockLine := RowSize
 			if Y >= 4 {
 				FirstBlockLine *= 2
 			}
-			ArrSize := (X*Y)*4
+			ArrSize := (X * Y) * 4
 			LastBlockLine := ArrSize - FirstBlockLine
 
 			// Creates the image.
@@ -41,7 +41,7 @@ func init() {
 					x = 0
 				}
 			}
-			x = ArrSize-1
+			x = ArrSize - 1
 			y := 3
 			for x != LastBlockLine {
 				img.Pix[x] = ByteMap[y]
@@ -55,14 +55,14 @@ func init() {
 			// Draws the left and right of the hollow rectangle.
 			for i := 0; i < Y; i++ {
 				// Get the start of the row.
-				RowStart := i*RowSize
+				RowStart := i * RowSize
 
 				// Set the left/right side.
 				img.Pix[RowStart] = RGB[0]
 				img.Pix[RowStart+1] = RGB[1]
 				img.Pix[RowStart+2] = RGB[2]
 				img.Pix[RowStart+3] = 255
-				RightSideStart := RowStart+(RowSize-4)
+				RightSideStart := RowStart + (RowSize - 4)
 				img.Pix[RightSideStart] = RGB[0]
 				img.Pix[RightSideStart+1] = RGB[1]
 				img.Pix[RightSideStart+2] = RGB[2]
