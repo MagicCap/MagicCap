@@ -1,7 +1,6 @@
 // +build darwin
 // This code is a part of MagicCap which is a MPL-2.0 licensed project.
 // Copyright (C) Jake Gealer <jake@gealer.email> 2020.
-// TODO: After a shortcut refresh, shortcuts break, I assume that's here.
 
 package hotkeys
 
@@ -117,9 +116,7 @@ func LoadHotkey(Keys string, Callback func()) {
 			ModifiersInt |= 1 << 18
 		} else if v == "command" || v == "cmd" {
 			ModifiersInt |= 1 << 20
-		} else if v == "altgr" || v == "alt" {
-			ModifiersInt |= 1 << 19
-		} else if v == "option" {
+		} else if v == "altgr" || v == "alt" || v == "option" {
 			ModifiersInt |= 1 << 19
 		} else if v == "shift" {
 			ModifiersInt |= 1 << 17

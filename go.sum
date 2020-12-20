@@ -13,6 +13,12 @@ github.com/Joker/hpp v1.0.0/go.mod h1:8x5n+M1Hp5hC0g8okX3sR3vFQwynaX/UgSOM9MeBKz
 github.com/Joker/jade v1.0.1-0.20190614124447-d475f43051e7/go.mod h1:6E6s8o2AE4KhCrqr6GRJjdC/gNfTdxkIXvuGZZda2VM=
 github.com/MagicCap/MASShortcut v0.0.0-20200430165135-1c251561be6f h1:HFj/T1xTMmyzQD9IYdgO/WbDA9Oh1ik4aEc3xTPBueM=
 github.com/MagicCap/MASShortcut v0.0.0-20200430165135-1c251561be6f/go.mod h1:0XG85HDuvl2EdLIOBniSCa3bGVAfedPW7WZKcdHJ1cA=
+github.com/MagicCap/MASShortcut v0.0.0-20201220200231-f964b6d81ac6 h1:4XnEM1+d+E+YYHsJQ98RaoIubCmc/W8JveI0U25vpW4=
+github.com/MagicCap/MASShortcut v0.0.0-20201220200231-f964b6d81ac6/go.mod h1:0XG85HDuvl2EdLIOBniSCa3bGVAfedPW7WZKcdHJ1cA=
+github.com/MagicCap/MASShortcut v0.0.0-20201220202835-fb28e52552cb h1:In5aYV+CWoa0Cb1xSYWiIZphgps84g41vB29+A6w218=
+github.com/MagicCap/MASShortcut v0.0.0-20201220202835-fb28e52552cb/go.mod h1:0XG85HDuvl2EdLIOBniSCa3bGVAfedPW7WZKcdHJ1cA=
+github.com/MagicCap/MASShortcut v0.0.0-20201220203038-aa7328e749d9 h1:f7m5GGgFkienfe/CJCiv+gB+QbBXeLKAz3cC7+8nesw=
+github.com/MagicCap/MASShortcut v0.0.0-20201220203038-aa7328e749d9/go.mod h1:0XG85HDuvl2EdLIOBniSCa3bGVAfedPW7WZKcdHJ1cA=
 github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9 h1:nEIOJB6160OncBL5J11GD7nsIONiE5rZ+QIQvZ8y51c=
 github.com/MagicCap/glhf v0.0.0-20200403121310-08b0fb2f6ac9/go.mod h1:NqPBduErg0xjNr0f3R8zMrSK7kiuVvX/1Ruwba+moh8=
 github.com/MagicCap/glhf v0.0.0-20201203162943-df72526ed07f h1:DuHhig5h/f9ZwuT/MFuE3+lcfWW1hI66zkOIIXKWDFc=

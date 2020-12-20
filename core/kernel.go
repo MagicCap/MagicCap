@@ -99,7 +99,7 @@ func LoadUploadersKernel() {
 
 	// Start a thread to wait 10 mins and pull.
 	go func() {
-		for true {
+		for {
 			// Sleep for 10 mins.
 			time.Sleep(10 * time.Minute)
 
@@ -121,8 +121,7 @@ func LoadUploadersKernel() {
 				sentry.CaptureException(err)
 				panic(err)
 			}
-			// RestartTrayProcess(false)
-			// TODO: Allow the tray process to be rebooted. The reason this is not possible right now is because it relates to the tray bug.
+			RestartTrayProcess(false)
 		}
 	}()
 }
