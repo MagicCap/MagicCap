@@ -21,6 +21,9 @@ import (
 	"time"
 )
 
+// Initialises random.
+var random = rand.NewSource(time.Now().UnixNano())
+
 // HomeDir defines the home directory.
 var HomeDir, _ = os.UserHomeDir()
 
@@ -282,8 +285,7 @@ func main() {
 	_ = os.MkdirAll(UpdaterPath, 0777)
 
 	// Make the updater socket.
-	rand.NewSource(time.Now().UnixNano())
-	sockPath = path.Join(UpdaterPath, strconv.Itoa(rand.Int())+".sock")
+	sockPath = path.Join(UpdaterPath, strconv.Itoa(int(random.Int63()))+".sock")
 	var err error
 	sock, err = net.Listen("unix", sockPath)
 	if err != nil {

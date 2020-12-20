@@ -54,12 +54,12 @@ func (u Updater) handleInbound() {
 		if b[0] == 2 {
 			// This is a new update.
 			var update UpdateInfo
-			if err := json.Unmarshal(b[len(b)-1:], &update); err == nil {
+			if err := json.Unmarshal(b[1:], &update); err == nil {
 				if UpdateFound != nil {
 					go UpdateFound(&update)
 				}
 			} else {
-				println("Failed to decode update.")
+				println("Failed to decode update: " + err.Error())
 			}
 		}
 	}
