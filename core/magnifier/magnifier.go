@@ -33,7 +33,7 @@ func (m *Magnifier) draw(x, y, resultW, resultH, scale int) {
 	WhiteGrid := isImageDarker(b)
 
 	// Draws the grid.
-	b = drawGridCached(b, WhiteGrid, scale, resultW, resultH)
+	drawGridCached(b, WhiteGrid, scale, resultW, resultH)
 
 	// Lock the image lock.
 	m.imgLock.Lock()

@@ -2,111 +2,65 @@ package magnifier
 
 import "sync"
 
-// Draw the grid.
-func drawGrid(b []byte, white bool, every, w, h int) []byte {
-	// Create the grid column.
-	GridRow := make([]byte, w*4)
-	Tasks := make(chan bool)
-	go func() {
-		for i := range GridRow {
-			if white || (i+1)%4 == 0 {
-				GridRow[i] = 255
+func drawGrid(b []byte, white bool, every, w, h int) {
+	// Set the X/Y position of the pixel.
+	// Y is -1 because 0 % w == 0 so that check will return true on first run.
+	x := 0
+	y := -1
+
+	// Get the width and height divided by 2.
+	wd2 := w/2
+	hd2 := h/2
+
+	// Get the start and end where the Y bar will be.
+	yBarStart := wd2 - every
+	yBarEnd := yBarStart + every
+
+	// Get the start and end where the X bar will be.
+	xBarStart := hd2 - every
+	xBarEnd := xBarStart + every
+
+	// Iterate through each pixel.
+	bytesIndex := 0
+	for pixelIndex := 0; pixelIndex < w*h; pixelIndex++ {
+		// If pixelIndex mod w equals 0, it means we hit the end of a row.
+		// This means we should add 1 to Y and X should reset.
+		if pixelIndex % w == 0 {
+			x = 0
+			y++
+		}
+
+		if x >= yBarStart && yBarEnd >= x {
+			// This is where the Y bar should be.
+			// However, there is the intersection which we should ignore.
+			// In that instance we do want to get here still though so we can jump out the if easily.
+			if y > xBarEnd || xBarStart > y {
+				b[bytesIndex] = 255
+				b[bytesIndex+1] = 255
+				b[bytesIndex+2] = 255
 			}
-		}
-		Tasks <- true
-	}()
-	XMidpoint := (w * 4) / 2
-	CrosshairRowLeft := make([]byte, XMidpoint-(every*4))
-	CrosshairRowRight := make([]byte, XMidpoint)
-	go func() {
-		for i := range CrosshairRowLeft {
-			CrosshairRowLeft[i] = 255
-		}
-		Tasks <- true
-	}()
-	go func() {
-		for i := range CrosshairRowRight {
-			CrosshairRowRight[i] = 255
-		}
-		Tasks <- true
-	}()
-	for i := 0; i < 3; i++ {
-		<-Tasks
-	}
-
-	// Get the height midpoint start/end.
-	HMidpointStart := (h / 2) - every
-	HMidpointEnd := HMidpointStart + every
-
-	// Draw the rows/columns.
-	ReallignedArray := make([]byte, 0, len(b))
-	rc := 0
-	for i := 0; i < h; i++ {
-		// Get the current index.
-		CurrentIndex := i * w * 4
-
-		// Get the width endpoint start.
-		WEndpointStart := (w / 2) - (every / 2) - 1
-
-		if i >= HMidpointStart && HMidpointEnd >= i {
-			// This is in the horizontal midpoint.
-			// We need to run some logic here to handle showing the current pixel.
-			ReallignedArray = append(ReallignedArray, CrosshairRowLeft...)
-			WEndpointMemStart := WEndpointStart * 4
-			WEndpointMemEnd := WEndpointMemStart + (every * 4)
-			ReallignedArray = append(ReallignedArray, b[CurrentIndex+WEndpointMemStart:CurrentIndex+WEndpointMemEnd]...)
-			ReallignedArray = append(ReallignedArray, CrosshairRowRight...)
-			rc++
-			continue
-		}
-
-		// If rows complete mod every is 0, insert rows here.
-		if rc%every == 0 {
-			ReallignedArray = append(ReallignedArray, GridRow...)
-			rc++
-			continue
-		}
-
-		// Get the row.
-		Row := b[CurrentIndex : CurrentIndex+len(GridRow)]
-
-		// Handle the columns.
-		WEndpointEnd := WEndpointStart + (every / 2)
-		WEndpointStart -= every / 2
-		for x := 0; x < w; x++ {
-			if (x+1)%every == 0 {
-				// Handle setting this pixel to the expected color.
-				StartPos := x * 4
-				if white {
-					Row[StartPos] = 255
-					Row[StartPos+1] = 255
-					Row[StartPos+2] = 255
-				} else {
-					Row[StartPos] = 0
-					Row[StartPos+1] = 0
-					Row[StartPos+2] = 0
-				}
-				Row[StartPos+3] = 255
-			} else if x >= WEndpointStart && WEndpointEnd >= x {
-				// Handle the white pixel placement.
-				StartPos := x * 4
-				Row[StartPos] = 255
-				Row[StartPos+1] = 255
-				Row[StartPos+2] = 255
-				Row[StartPos+3] = 255
+		} else if y >= xBarStart && xBarEnd >= y {
+			// We should paint the bar. The intersection doesn't matter here because that's handled above.
+			b[bytesIndex] = 255
+			b[bytesIndex+1] = 255
+			b[bytesIndex+2] = 255
+		} else if (y != 0 && y % every == 0) || (x != 0 && x % every == 0) {
+			// We should paint the correct color here.
+			c := uint8(0)
+			if white {
+				c = 255
 			}
+			b[bytesIndex] = c
+			b[bytesIndex+1] = c
+			b[bytesIndex+2] = c
 		}
 
-		// Append the row.
-		ReallignedArray = append(ReallignedArray, Row...)
+		// Add 1 to X.
+		x++
 
-		// Add 1 to rows complete.
-		rc++
+		// Add 4 to the bytes index (adding 4 because RGBA).
+		bytesIndex += 4
 	}
-	b = ReallignedArray
-
-	// Return the bytes.
-	return b
 }
 
 // Defines the information for the grid cache.
@@ -135,16 +89,18 @@ func init() {
 		filled1[i] = magicByte
 		filled2[i] = magicByte
 	}
+	drawGrid(filled1, true, 10, 200, 200)
+	drawGrid(filled2, false, 10, 200, 200)
 	whiteGridCache[cacheInfo{
 		w:     200,
 		h:     200,
 		every: 10,
-	}] = drawGrid(filled1, true, 10, 200, 200)
+	}] = filled1
 	blackGridCache[cacheInfo{
 		w:     200,
 		h:     200,
 		every: 10,
-	}] = drawGrid(filled2, false, 10, 200, 200)
+	}] = filled2
 	whiteGridCacheLock.Unlock()
 	blackGridCacheLock.Unlock()
 }
@@ -175,7 +131,7 @@ func drawGridCached(b []byte, white bool, every, w, h int) []byte {
 		for i := range cached {
 			cached[i] = magicByte
 		}
-		cached = drawGrid(cached, white, every, w, h)
+		drawGrid(cached, white, every, w, h)
 		if white {
 			whiteGridCacheLock.Lock()
 			whiteGridCache[cacheInfo{
