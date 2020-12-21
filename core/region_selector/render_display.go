@@ -155,12 +155,13 @@ func RenderDisplay(
 
 		// This only happens if we should be letting the user select a editor.
 		ShowXY := true
+		var InitOffset int
 		if ShowEditors {
 			// Draw the top bar.
 			RenderedTexture.SetPixels((Width/2)-(editorTopBar.Bounds().Dx()/2), 20, editorTopBar.Bounds().Dx(), editorTopBar.Bounds().Dy(), editorTopBar.Pix)
 
 			// Set the initial offset.
-			InitOffset := (Width / 2) - (editorTopBar.Bounds().Dx() / 2)
+			InitOffset = (Width / 2) - (editorTopBar.Bounds().Dx() / 2)
 
 			// Draw the selected item affect.
 			if SelectedKey == "__selector" {
@@ -176,36 +177,6 @@ func RenderDisplay(
 						break
 					}
 					SelectedOffset += 100
-				}
-			}
-
-			// Render the description if it's needed.
-			if DisplayPoint.Y >= 20 && 70 >= DisplayPoint.Y && DisplayPoint.X >= InitOffset && InitOffset+editorTopBar.Bounds().Dx() >= DisplayPoint.X {
-				// Do not show the X/Y.
-				ShowXY = false
-
-				// Get X relative to the top bar.
-				RelativeX := DisplayPoint.X - InitOffset
-
-				// Try to get the relevant editor.
-				Editor := RelativeX / 100
-				if len(editorsOrdered) >= Editor {
-					// Set the label X position.
-					LabelX := InitOffset + (Editor * 100)
-
-					// Set the label Y position.
-					LabelY := 75
-
-					// Create the label.
-					Description := "The tool used to select what you wish to screenshot."
-					if Editor == 0 {
-						HoveringEditor = "__selector"
-					} else {
-						HoveringEditor = editorsOrdered[Editor-1]
-						Description = editors.Editors[HoveringEditor].Description
-					}
-					img := RenderText(Description, 20)
-					RenderedTexture.SetPixels(LabelX, LabelY, img.Rect.Dx(), img.Rect.Dy(), img.Pix)
 				}
 			}
 
@@ -253,6 +224,38 @@ func RenderDisplay(
 				}
 			}
 			f()
+		}
+
+		// Render the description if it's needed.
+		if ShowEditors {
+			if DisplayPoint.Y >= 20 && 70 >= DisplayPoint.Y && DisplayPoint.X >= InitOffset && InitOffset+editorTopBar.Bounds().Dx() >= DisplayPoint.X {
+				// Do not show the X/Y.
+				ShowXY = false
+
+				// Get X relative to the top bar.
+				RelativeX := DisplayPoint.X - InitOffset
+
+				// Try to get the relevant editor.
+				Editor := RelativeX / 100
+				if len(editorsOrdered) >= Editor {
+					// Set the label X position.
+					LabelX := InitOffset + (Editor * 100)
+
+					// Set the label Y position.
+					LabelY := 75
+
+					// Create the label.
+					Description := "The tool used to select what you wish to screenshot."
+					if Editor == 0 {
+						HoveringEditor = "__selector"
+					} else {
+						HoveringEditor = editorsOrdered[Editor-1]
+						Description = editors.Editors[HoveringEditor].Description
+					}
+					img := RenderText(Description, 20)
+					RenderedTexture.SetPixels(LabelX, LabelY, img.Rect.Dx(), img.Rect.Dy(), img.Pix)
+				}
+			}
 		}
 
 		// Draw the X/Y font texture.
