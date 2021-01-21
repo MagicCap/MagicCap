@@ -42,6 +42,7 @@ MagicCap supports the following uploaders (this list will expand over time):
 - Ultrashare
 - S3 (Amazon and other S3-compatible providers)
 - ShareX (upload only)
+- pays.host
 
 # Credit
 The following people have done a ton to help in the creation of MagicCap. If you have done something to help and want your name here, feel free to make a pull request. This is in alphabetical order, not the order of the work people have done:
