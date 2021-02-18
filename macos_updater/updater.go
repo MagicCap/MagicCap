@@ -2,6 +2,45 @@ package main
 
 //go:generate go run generate_binary_file.go
 
+/*
+#cgo CFLAGS: -x objective-c
+#cgo LDFLAGS: -framework Cocoa
+#include <Cocoa/Cocoa.h>
+
+// Used to start the application. Is a Obj-C implementation since Go's fork function caused some problems with some Apple API's (it uses the POSIX compliant fork function).
+int start_application(char* path, int path_len, char* updater_sock, int updater_sock_len) {
+	// Create the task.
+	NSTask* task = [[NSTask alloc] init];
+
+	// Set the path.
+	NSString* pathstr = [[NSString alloc] initWithBytes:path length:path_len encoding:NSUTF8StringEncoding];
+	[task setLaunchPath:pathstr];
+
+	// Set the env variables.
+	NSString* sockstr = [[NSString alloc] initWithBytes:updater_sock length:updater_sock_len encoding:NSUTF8StringEncoding];
+	NSMutableDictionary* env = [[[NSProcessInfo processInfo] environment] mutableCopy];
+	[env setValue:sockstr forKey:@"UPDATE_SOCK"];
+	[task setEnvironment:env];
+
+	// Set the application arguments.
+	NSMutableArray* arr = [[[NSProcessInfo processInfo] arguments] mutableCopy];
+	[arr removeObjectAtIndex:0];
+	[task setArguments:arr];
+
+	// Liftoff!
+	[task launch];
+
+	// Release all unused memory!
+	[pathstr release];
+	[sockstr release];
+	[env release];
+	[arr release];
+
+	// Return the process ID.
+	return [task processIdentifier];
+}
+*/
+import "C"
 import (
 	"bytes"
 	"compress/gzip"
@@ -19,7 +58,19 @@ import (
 	"sync/atomic"
 	"syscall"
 	"time"
+	"unsafe"
 )
+
+// Starts the application with NSTask.
+func startApplication(path, updaterSock string) int {
+	cpath := C.CString(path)
+	defer C.free(unsafe.Pointer(cpath))
+	pathLen := C.int(len(path))
+	csock := C.CString(updaterSock)
+	defer C.free(unsafe.Pointer(csock))
+	sockLen := C.int(len(updaterSock))
+	return int(C.start_application(cpath, pathLen, csock, sockLen))
+}
 
 // Initialises random.
 var random = rand.NewSource(time.Now().UnixNano())
@@ -87,23 +138,7 @@ func forkBinary() {
 			panic(err)
 		}
 	}
-	currentPath, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	pid, err = syscall.ForkExec(path.Join(UpdaterPath, "binary"), os.Args[1:], &syscall.ProcAttr{
-		Env: append(os.Environ(), "UPDATE_SOCK="+sockPath),
-		Dir: currentPath,
-		Sys: new(syscall.SysProcAttr),
-		Files: []uintptr{
-			uintptr(syscall.Stdin),
-			uintptr(syscall.Stdout),
-			uintptr(syscall.Stderr),
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
+	pid = startApplication(path.Join(UpdaterPath, "binary"), sockPath)
 	go handleProcessWatching()
 }
 
