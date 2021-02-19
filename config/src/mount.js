@@ -1,6 +1,3 @@
-// Import the browser polyfill.
-import "babel-polyfill"
-
 // Imports vue.
 import Vue from "vue"
 
