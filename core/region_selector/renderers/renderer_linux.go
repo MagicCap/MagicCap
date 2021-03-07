@@ -9,5 +9,5 @@ import (
 
 // OSRenderer defines the current renderer.
 func OSRenderer() types.Renderer {
-	return &opengl.OpenGLRenderer{}
+	return &opengl.Renderer{}
 }

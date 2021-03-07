@@ -7,13 +7,14 @@ import (
 	"compress/gzip"
 	"crypto/sha512"
 	"io/ioutil"
+	"os"
 )
 
 const lowerHex = "0123456789abcdef"
 
 func main() {
-	// Get the magiccap-darwin binary.
-	b, err := ioutil.ReadFile("../magiccap-darwin")
+	// Get the magiccap-darwin-<arch> binary.
+	b, err := ioutil.ReadFile("../magiccap-darwin-" + os.Getenv("ARCH"))
 	if err != nil {
 		panic(err)
 	}

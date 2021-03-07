@@ -43,7 +43,7 @@ func Start() {
 	// Initialise the application loop in the main thread.
 	apploop.ApplicationLoopStart(func() {
 		// Boot message.
-		println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2020.")
+		println("MagicCap " + Version + " - Copyright (C) MagicCap Development Team 2018-2021.")
 
 		// Initialises the renderer.
 		renderers.RendererInit()

@@ -19,11 +19,12 @@ type rgbaImage struct {
 }
 
 // This is used to define the OpenGL renderer.
-type OpenGLRenderer struct {
+type Renderer struct {
 	glfwMonitors   []*glfw.Monitor
 	displays       []image.Rectangle
-	mousePressCb   func(index int, pos image.Rectangle)
-	mouseReleaseCb func(index int, pos image.Rectangle)
+	mousePressCb   func(relX, relY, index int, pos image.Rectangle)
+	mouseReleaseCb func(relX, relY, index int, pos image.Rectangle)
+	posChangeCb    func(x, y int)
 	windows        []*glfw.Window
 	keyCb          func(Release bool, Index, Key int)
 	darkerTextures []*rgbaImage
@@ -33,17 +34,17 @@ type OpenGLRenderer struct {
 }
 
 // ShouldClose is used to say windows should close.
-func (r *OpenGLRenderer) ShouldClose() {
+func (r *Renderer) ShouldClose() {
 	r.windows[0].SetShouldClose(true)
 }
 
 // WindowShouldClose is used to check if a window should close.
-func (r *OpenGLRenderer) WindowShouldClose(index int) bool {
+func (r *Renderer) WindowShouldClose(index int) bool {
 	return r.windows[index].ShouldClose()
 }
 
 // DestroyAll is used to destroy all of the windows.
-func (r *OpenGLRenderer) DestroyAll() {
+func (r *Renderer) DestroyAll() {
 	mainthread.ExecMainThread(func() {
 		for _, v := range r.windows {
 			v.MakeContextCurrent()
@@ -62,27 +63,27 @@ func (r *OpenGLRenderer) DestroyAll() {
 }
 
 // SetKeyCallback is used to handle key callbacks.
-func (r *OpenGLRenderer) SetKeyCallback(Function func(Release bool, index, key int)) {
+func (r *Renderer) SetKeyCallback(Function func(Release bool, index, key int)) {
 	r.keyCb = Function
 }
 
 // SetMousePressCallback is used to set a mouse callback for when it is pressed.
-func (r *OpenGLRenderer) SetMousePressCallback(Function func(index int, pos image.Rectangle)) {
+func (r *Renderer) SetMousePressCallback(Function func(relX, relY, index int, pos image.Rectangle)) {
 	r.mousePressCb = Function
 }
 
 // SetMouseReleaseCallback is used to set a mouse callback for when it is released.
-func (r *OpenGLRenderer) SetMouseReleaseCallback(Function func(index int, pos image.Rectangle)) {
+func (r *Renderer) SetMouseReleaseCallback(Function func(relX, relY, index int, pos image.Rectangle)) {
 	r.mouseReleaseCb = Function
 }
 
 // PollEvents is used to poll for events.
-func (r *OpenGLRenderer) PollEvents() {
+func (r *Renderer) PollEvents() {
 	mainthread.ExecMainThread(glfw.PollEvents)
 }
 
 // Get the display rectangles.
-func (r *OpenGLRenderer) getRectangles() []image.Rectangle {
+func (r *Renderer) getRectangles() []image.Rectangle {
 	displays := make([]image.Rectangle, len(r.glfwMonitors))
 	for i, v := range r.glfwMonitors {
 		x, y := v.GetPos()
@@ -93,7 +94,7 @@ func (r *OpenGLRenderer) getRectangles() []image.Rectangle {
 }
 
 // GetDisplayRectangles is used to get the display rectangles.
-func (r *OpenGLRenderer) GetDisplayRectangles() []image.Rectangle {
+func (r *Renderer) GetDisplayRectangles() []image.Rectangle {
 	x := make([]image.Rectangle, len(r.displays))
 	for i, v := range r.displays {
 		x[i] = v
@@ -102,7 +103,7 @@ func (r *OpenGLRenderer) GetDisplayRectangles() []image.Rectangle {
 }
 
 // Init is used to initialise the renderer.
-func (r *OpenGLRenderer) Init(DarkerScreenshots, Screenshots []*image.RGBA) {
+func (r *Renderer) Init(DarkerScreenshots, Screenshots []*image.RGBA) (int64, int64) {
 	// Remap the monitors to the order of the "displays" array.
 	mainthread.ExecMainThread(func() {
 		r.glfwMonitors = glfw.GetMonitors()
@@ -120,6 +121,8 @@ func (r *OpenGLRenderer) Init(DarkerScreenshots, Screenshots []*image.RGBA) {
 	// Make a window on each display.
 	r.windows = make([]*glfw.Window, len(r.glfwMonitors))
 	var FirstWindow *glfw.Window
+	var x int64
+	var y int64
 	mainthread.ExecMainThread(func() {
 		for i, v := range r.displays {
 			// Creates the window.
@@ -174,20 +177,30 @@ func (r *OpenGLRenderer) Init(DarkerScreenshots, Screenshots []*image.RGBA) {
 			DisplayPos := v
 
 			// Sets the mouse button handler.
-			Window.SetMouseButtonCallback(func(_ *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
+			Window.SetMouseButtonCallback(func(w *glfw.Window, button glfw.MouseButton, action glfw.Action, _ glfw.ModifierKey) {
 				if button != glfw.MouseButton1 {
 					return
 				}
 
 				if action == glfw.Press {
 					if r.mousePressCb != nil {
-						r.mousePressCb(index, DisplayPos)
+						x, y := w.GetCursorPos()
+						r.mousePressCb(int(x), int(y), index, DisplayPos)
 					}
 				} else if action == glfw.Release {
 					if r.mouseReleaseCb != nil {
-						r.mouseReleaseCb(index, DisplayPos)
+						x, y := w.GetCursorPos()
+						r.mouseReleaseCb(int(x), int(y), index, DisplayPos)
 					}
 				}
+			})
+
+			// Sets the mouse movement handler.
+			Window.SetCursorPosCallback(func(w *glfw.Window, relX float64, relY float64) {
+				wX, wY := w.GetPos()
+				x := int(relX) + wX
+				y := int(relY) + wY
+				r.posChangeCb(x, y)
 			})
 
 			// Sets the key handler.
@@ -236,7 +249,40 @@ func (r *OpenGLRenderer) Init(DarkerScreenshots, Screenshots []*image.RGBA) {
 			)
 			r.normalTextures[i] = t
 		}
+
+		// Manage firing the initial cursor callback.
+		for _, v := range r.windows {
+			// Get the cursor position relative to the window.
+			relX, relY := v.GetCursorPos()
+
+			// If either are negative, continue on!
+			// Since it is relative to the display, this would mean it is another screen.
+			if 0 > relX || 0 > relY {
+				continue
+			}
+
+			// Essentially the relative looks like this on a 1080p display:
+			// ---------- <- Right here would be X: +1.91..., Y: +0.00
+			// |        |
+			// ---------- <- Right here would be X: +1.91..., Y: +1.07...
+			// The first thing we should do is get the int for this.
+			actualX := int64(relX)
+			actualY := int64(relY)
+
+			// Get the monitor position.
+			monitorX, monitorY := v.GetPos()
+
+			// Use this to calculate the actual X and Y.
+			x = int64(monitorX) + actualX
+			y = int64(monitorY) + actualY
+
+			// We are done, break here.
+			break
+		}
 	})
+
+	// Return the initial co-ordinates. We're ready here!
+	return x, y
 }
 
 type openGlTexture struct {
@@ -272,7 +318,7 @@ func (t *openGlTexture) GetWidthHeight() (int, int) {
 }
 
 // GetDarkerTexture is used to get the darker texture.
-func (r *OpenGLRenderer) GetDarkerTexture(index int) types.Texture {
+func (r *Renderer) GetDarkerTexture(index int) types.Texture {
 	var x *glhf.Texture
 	mainthread.ExecMainThread(func() {
 		t := r.darkerTextures[index]
@@ -283,7 +329,7 @@ func (r *OpenGLRenderer) GetDarkerTexture(index int) types.Texture {
 }
 
 // GetNormalTexturePixels is used to get the normal texture pixels.
-func (r *OpenGLRenderer) GetNormalTexturePixels(index, Left, Top, W, H int) []uint8 {
+func (r *Renderer) GetNormalTexturePixels(index, Left, Top, W, H int) []uint8 {
 	var x []uint8
 	mainthread.ExecMainThread(func() {
 		defer func() {
@@ -303,7 +349,7 @@ func (r *OpenGLRenderer) GetNormalTexturePixels(index, Left, Top, W, H int) []ui
 }
 
 // RenderTexture is used to render a texture to the screen.
-func (r *OpenGLRenderer) RenderTexture(index int, t types.Texture) {
+func (r *Renderer) RenderTexture(index int, t types.Texture) {
 	glt := t.(*openGlTexture).texture
 	mainthread.ExecMainThread(func() {
 		// Get the window.
@@ -339,7 +385,7 @@ func (r *OpenGLRenderer) RenderTexture(index int, t types.Texture) {
 }
 
 // RendererInit is used to initialise the renderer.
-func (OpenGLRenderer) RendererInit() {
+func (Renderer) RendererInit() {
 	err := glfw.Init()
 	if err != nil {
 		panic(err)
@@ -348,4 +394,10 @@ func (OpenGLRenderer) RendererInit() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// SetPositionChange is used to set the event handler used to handle position changes.
+// It is also initially fired when we find out the position.
+func (r *Renderer) SetPositionChange(Function func(x, y int)) {
+	r.posChangeCb = Function
 }

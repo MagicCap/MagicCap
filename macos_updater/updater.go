@@ -54,6 +54,7 @@ import (
 	"os"
 	"os/signal"
 	"path"
+	"runtime"
 	"strconv"
 	"sync/atomic"
 	"syscall"
@@ -250,7 +251,7 @@ func manageUpdateConnection(conn net.Conn) {
 						// If update bits isn't 0, we'll proceed.
 						if updateBits != 0 {
 							// Make a request for the hashes.
-							res, err := http.Get("https://cdn.magiccap.org/darwin_hashes.json")
+							res, err := http.Get("https://cdn.magiccap.org/darwin_" + runtime.GOARCH + "_hashes.json")
 							if err == nil {
 								// Check if the status code is 200.
 								if res.StatusCode == 200 {

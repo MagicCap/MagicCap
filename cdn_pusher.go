@@ -16,6 +16,7 @@ import (
 	"strings"
 )
 
+// Expect a variable or panic.
 func envMust(name string) string {
 	x := os.Getenv(name)
 	if x == "" {
@@ -24,24 +25,10 @@ func envMust(name string) string {
 	return x
 }
 
-// UpdateMetadata defines the update metadata JSON.
-type UpdateMetadata struct {
-	Hash    string `json:"h"`
-	Channel uint8  `json:"c"`
-}
-
-func main() {
-	// Get the variables.
-	Version := envMust("VERSION")
-	Changelogs := envMust("CHANGELOGS")
-	SecretAccessKey := envMust("AWS_SECRET_ACCESS_KEY")
-	Bucket := envMust("S3_BUCKET")
-	AccessKeyID := envMust("AWS_ACCESS_KEY_ID")
-	Region := envMust("S3_REGION")
-	Endpoint := envMust("S3_ENDPOINT")
-
+// Uploads a binary to the CDN. Returns the hash.
+func uploadBinary(path, bucket, version, changelogs string, svc *s3.S3) string {
 	// Get the magiccap-darwin binary.
-	binary, err := ioutil.ReadFile("./magiccap-darwin")
+	binary, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
@@ -51,21 +38,12 @@ func main() {
 	hash.Write(binary)
 	sum := base64.StdEncoding.EncodeToString(hash.Sum(nil))
 
-	// Create the S3 session.
-	StaticCredential := credentials.NewStaticCredentials(AccessKeyID, SecretAccessKey, "")
-	s3sess := session.Must(session.NewSession(&aws.Config{
-		Endpoint:    &Endpoint,
-		Credentials: StaticCredential,
-		Region:      &Region,
-	}))
-	svc := s3.New(s3sess)
-
 	// Store the binary.
 	l := int64(len(binary))
 	Key := "updates/binary/" + sum
 	MimeType := "application/octet-stream"
 	if _, err := svc.PutObject(&s3.PutObjectInput{
-		Bucket:             &Bucket,
+		Bucket:             &bucket,
 		Key:                &Key,
 		ContentType:        &MimeType,
 		Body:               bytes.NewReader(binary),
@@ -81,8 +59,8 @@ func main() {
 	updateInfo := map[string]string{
 		"hash":      sum,
 		"name":      "MagicCap",
-		"version":   Version,
-		"changelog": Changelogs,
+		"version":   version,
+		"changelog": changelogs,
 	}
 	b, err := json.Marshal(updateInfo)
 	if err != nil {
@@ -91,7 +69,7 @@ func main() {
 	l = int64(len(b))
 	Key = "updates/" + sum + ".json"
 	if _, err := svc.PutObject(&s3.PutObjectInput{
-		Bucket:             &Bucket,
+		Bucket:             &bucket,
 		Key:                &Key,
 		ContentType:        &MimeType,
 		Body:               bytes.NewReader(b),
@@ -102,11 +80,16 @@ func main() {
 		panic(err)
 	}
 
-	// Get the darwin hashes.
-	Key = "darwin_hashes.json"
+	// Return the hash.
+	return sum
+}
+
+// Updates the hashes file.
+func updateHashesFile(key, sum, bucket, version string, svc *s3.S3) {
+	// Get the hashes.
 	result, err := svc.GetObject(&s3.GetObjectInput{
-		Bucket: &Bucket,
-		Key:    &Key,
+		Bucket: &bucket,
+		Key:    &key,
 	})
 	var metadatas []*UpdateMetadata
 	if err == nil {
@@ -127,11 +110,11 @@ func main() {
 
 	// Get the update channel.
 	var channel uint8
-	if strings.Contains(Version, "b") {
+	if strings.Contains(version, "b") {
 		// | Alpha (4) | Beta (2) | Stable (1) |
 		// |     0     |    1     |      0     |
 		channel = 2
-	} else if strings.Contains(Version, "a") {
+	} else if strings.Contains(version, "a") {
 		// | Alpha (4) | Beta (2) | Stable (1) |
 		// |     1     |    0     |      0     |
 		channel = 4
@@ -146,15 +129,16 @@ func main() {
 		Hash:    sum,
 		Channel: channel,
 	})
-	b, err = json.Marshal(metadatas)
+	b, err := json.Marshal(metadatas)
 	if err != nil {
 		panic(err)
 	}
-	l = int64(len(b))
+	l := int64(len(b))
+	mime := "application/json"
 	if _, err := svc.PutObject(&s3.PutObjectInput{
-		Bucket:             &Bucket,
-		Key:                &Key,
-		ContentType:        &MimeType,
+		Bucket:             &bucket,
+		Key:                &key,
+		ContentType:        &mime,
 		Body:               bytes.NewReader(b),
 		ACL:                aws.String("public-read"),
 		ContentLength:      &l,
@@ -162,4 +146,42 @@ func main() {
 	}); err != nil {
 		panic(err)
 	}
+}
+
+// UpdateMetadata defines the update metadata JSON.
+type UpdateMetadata struct {
+	Hash    string `json:"h"`
+	Channel uint8  `json:"c"`
+}
+
+func main() {
+	// Get the variables.
+	Version := envMust("VERSION")
+	Changelogs := envMust("CHANGELOGS")
+	SecretAccessKey := envMust("AWS_SECRET_ACCESS_KEY")
+	Bucket := envMust("S3_BUCKET")
+	AccessKeyID := envMust("AWS_ACCESS_KEY_ID")
+	Region := envMust("S3_REGION")
+	Endpoint := envMust("S3_ENDPOINT")
+
+	// Create the S3 session.
+	StaticCredential := credentials.NewStaticCredentials(AccessKeyID, SecretAccessKey, "")
+	s3sess := session.Must(session.NewSession(&aws.Config{
+		Endpoint:    &Endpoint,
+		Credentials: StaticCredential,
+		Region:      &Region,
+	}))
+	svc := s3.New(s3sess)
+
+	// Uploads the magiccap-darwin-amd64 binary and changelogs.
+	sum := uploadBinary("./magiccap-darwin-amd64", Bucket, Version, Changelogs, svc)
+
+	// Update the amd64 hashes json.
+	updateHashesFile("darwin_amd64_hashes.json", sum, Bucket, Version, svc)
+
+	// Uploads the magiccap-darwin-arm64 binary and changelogs.
+	sum = uploadBinary("./magiccap-darwin-arm64", Bucket, Version, Changelogs, svc)
+
+	// Update the arm64 hashes json.
+	updateHashesFile("darwin_arm64_hashes.json", sum, Bucket, Version, svc)
 }

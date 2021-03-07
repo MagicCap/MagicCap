@@ -10,3 +10,7 @@ void handle_mainthread(void* func) {
         CCallbackHandler(func);
     });
 }
+
+void uint_to_mainthread(uint64_t addr) {
+    handle_mainthread((void*)(addr));
+}

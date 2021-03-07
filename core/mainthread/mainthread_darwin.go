@@ -5,23 +5,9 @@
 
 package mainthread
 
-/*
-#cgo CFLAGS: -x objective-c -O3
-#include <stdlib.h>
-#include "mainthread_darwin.h"
-*/
-import "C"
 import (
-	"github.com/jakemakesstuff/fastcgo"
 	"runtime"
-	"unsafe"
 )
-
-// CCallbackHandler is a function which can be called from C to dispatch the callback.
-//export CCallbackHandler
-func CCallbackHandler(CPtr unsafe.Pointer) {
-	(*(*func())(CPtr))()
-}
 
 // This is used to execute a function on the main thread. This does not implement any queue system.
 func execMainThread(Function func()) {
@@ -35,7 +21,7 @@ func execMainThread(Function func()) {
 			Function()
 			waitChan <- struct{}{}
 		}
-		fastcgo.UnsafeCall4(C.handle_mainthread, uint64(uintptr(unsafe.Pointer(&f))), 0, 0, 0)
+		cCall(f)
 
 		// Wait for the function to be complete.
 		<-waitChan

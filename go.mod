@@ -15,9 +15,8 @@ require (
 	github.com/gen2brain/shm v0.0.0-20191025110947-b09d223a76f1 // indirect
 	github.com/getsentry/sentry-go v0.4.0
 	github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7
-	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200707082815-5321531c36a2
+	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210305161652-cc9ff087dd9f
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
-	github.com/go-vgo/robotgo v0.0.0-20200123154043-e7ab665c511e
 	github.com/godbus/dbus/v5 v5.0.3
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.1.1
@@ -29,12 +28,13 @@ require (
 	github.com/jakemakesstuff/faster-image-gif v0.0.0-20200612115959-2a0059e61d9f
 	github.com/jakemakesstuff/structuredhttp v0.0.0-20200614104234-f8e4b2aebe68
 	github.com/kbinani/screenshot v0.0.0-20191211154542-3a185f1ce18f
+	github.com/lxn/win v0.0.0-20210218163916-a377121e959e // indirect
 	github.com/magiccap/magiccap-uploaders-kernel v0.0.0-20200911222609-0c710349b7e8
 	github.com/matishsiao/goInfo v0.0.0-20170803142006-617e6440957e
 	github.com/mattn/go-sqlite3 v2.0.2+incompatible
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
-	github.com/robotn/gohook v0.0.0-20200111152647-5bfaedadd9dd
+	github.com/robotn/gohook v0.30.5
 	github.com/sqweek/dialog v0.0.0-20190728103509-6254ed5b0d3c
 	github.com/valyala/fasthttp v1.17.0
-	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
+	golang.org/x/image v0.0.0-20201208152932-35266b937fa6
 )

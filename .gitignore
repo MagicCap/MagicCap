@@ -10,10 +10,13 @@ selector/dist/mount.js.map
 cmake-build-debug
 assets/core/kernel.json
 MagicCap.app/
-magiccap-darwin
+magiccap-darwin-amd64
+magiccap-darwin-arm64
 magiccap-linux
 application_bundle.zip
 magiccap-bundled
 assets_gen.go
 binary_file_gen.go
 magiccap-darwin-autoupdater
+magiccap-darwin-autoupdater-amd64
+magiccap-darwin-autoupdater-arm64

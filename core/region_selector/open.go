@@ -2,7 +2,6 @@ package regionselector
 
 import (
 	"github.com/getsentry/sentry-go"
-	"github.com/go-vgo/robotgo"
 	"github.com/kbinani/screenshot"
 	"github.com/magiccap/MagicCap/core/editors"
 	_ "github.com/magiccap/MagicCap/core/editors"
@@ -125,24 +124,20 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	var Displays []img.Rectangle
 
 	// Set the mouse press callbacks.
-	renderer.SetMousePressCallback(func(index int, pos img.Rectangle) {
-		x, y := robotgo.GetMousePos()
-
+	renderer.SetMousePressCallback(func(relX, relY, index int, pos img.Rectangle) {
 		if HoveringEditor != "" {
 			// Ignore this! This is in the editor.
 			return
 		}
 		FirstPosMap[index] = &img.Point{
-			X: x - pos.Min.X,
-			Y: y - pos.Min.Y,
+			X: relX,
+			Y: relY,
 		}
 		dispatcher.EscapeHandler = func() {
 			FirstPosMap[index] = nil
 		}
 	})
-	renderer.SetMouseReleaseCallback(func(index int, pos img.Rectangle) {
-		x, y := robotgo.GetMousePos()
-
+	renderer.SetMouseReleaseCallback(func(relX, relY, index int, pos img.Rectangle) {
 		if HoveringEditor != "" {
 			// Handle selecting a editor.
 			SelectedEditor = HoveringEditor
@@ -158,8 +153,8 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 		if FirstPosCpy != nil {
 			// Get the result from here.
 			EndResult := &img.Point{
-				X: x - pos.Min.X,
-				Y: y - pos.Min.Y,
+				X: relX,
+				Y: relY,
 			}
 
 			// Get the rectangle.
@@ -251,51 +246,37 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 		}
 	})
 
+	// Defines the loop to handle input updates.
+	MouseMovedDisplayPtr := uintptr(1)
+	KillSwitch := uintptr(0)
+	var MouseX int64
+	var MouseY int64
+	renderer.SetPositionChange(func(x, y int) {
+		// The position has changed. Has the display?
+		lastDisplay := (int)(atomic.LoadInt64(&LastMouseDisplay))
+		for i, Rect := range Displays {
+			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
+				if lastDisplay != i {
+					// The last display the mouse was on was not i.
+					// This means that the mouse moved display.
+					// We do this in another loop so that we can enforce it across all displays in the loop below.
+					atomic.StoreInt64(&LastMouseDisplay, int64(i))
+					atomic.StoreUintptr(&MouseMovedDisplayPtr, 1)
+				}
+				break
+			}
+		}
+		atomic.StoreInt64(&MouseX, (int64)(x))
+		atomic.StoreInt64(&MouseY, (int64)(y))
+	})
+
 	// Initialise the renderer.
-	renderer.Init(DarkerScreenshots, Screenshots)
+	unatomicX, unatomicY := renderer.Init(DarkerScreenshots, Screenshots)
+	atomic.StoreInt64(&MouseX, unatomicX)
+	atomic.StoreInt64(&MouseY, unatomicY)
 
 	// Get all the display rectangles.
 	Displays = renderer.GetDisplayRectangles()
-
-	// Defines the loop to handle input updates.
-	MouseMovedDisplayPtr := uintptr(0)
-	KillSwitch := uintptr(0)
-	MouseX := int64(-9223372036854775807)
-	MouseY := int64(-9223372036854775807)
-	go func() {
-		// Defines the previous X/Y.
-		previousX := -9223372036854775807
-		previousY := -9223372036854775807
-
-		// Loop getting the mouse position.
-		for atomic.LoadUintptr(&KillSwitch) == 0 {
-			x, y := robotgo.GetMousePos()
-			if x != previousX || y != previousY {
-				// The position has changed. Has the display?
-				lastDisplay := (int)(atomic.LoadInt64(&LastMouseDisplay))
-				for i, Rect := range Displays {
-					if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
-						if lastDisplay != i {
-							// The last display the mouse was on was not i.
-							// This means that the mouse moved display.
-							// We do this in another loop so that we can enforce it across all displays in the loop below.
-							atomic.StoreInt64(&LastMouseDisplay, int64(i))
-							atomic.StoreUintptr(&MouseMovedDisplayPtr, 1)
-						}
-						break
-					}
-				}
-				atomic.StoreInt64(&MouseX, (int64)(x))
-				atomic.StoreInt64(&MouseY, (int64)(y))
-			}
-
-			// Handles polling for renderer events.
-			renderer.PollEvents()
-
-			// Sleep for 2ms (500fps).
-			time.Sleep(time.Millisecond * 2)
-		}
-	}()
 
 	// Handles events in the window.
 	FirstTick := true
@@ -371,7 +352,8 @@ func OpenRegionSelector(ShowEditors, ShowMagnifier bool) *SelectorResult {
 	// Handles the "F" key being pressed.
 	if dispatcher.ShouldFullscreenCapture {
 		Display := 0
-		x, y := robotgo.GetMousePos()
+		x := int(atomic.LoadInt64(&MouseX))
+		y := int(atomic.LoadInt64(&MouseY))
 		for i, Rect := range Displays {
 			if x >= Rect.Min.X && Rect.Max.X >= x && y >= Rect.Min.Y && Rect.Max.Y >= y {
 				Display = i

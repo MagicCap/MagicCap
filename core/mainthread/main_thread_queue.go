@@ -6,30 +6,25 @@ import (
 )
 
 // Defines a stack item.
-type stackItem struct {
-	prev     *stackItem
-	function func()
-}
+type stackItem func() stackItem
 
 // Defines the stack.
 var (
-	stack        *stackItem
+	stack        stackItem
 	newStackChan = make(chan struct{})
-	stackLen     = 0
 	stackLock    = sync.Mutex{}
 )
 
 // Add to the stack.
 func addToStack(f func()) {
 	stackLock.Lock()
-	stack = &stackItem{
-		prev:     stack,
-		function: f,
+	oldStack := stack
+	stack = func() stackItem {
+		f()
+		return oldStack
 	}
-	old := stackLen
-	stackLen = old + 1
 	stackLock.Unlock()
-	if old == 0 {
+	if oldStack == nil {
 		newStackChan <- struct{}{}
 	}
 }
@@ -46,25 +41,16 @@ func init() {
 				// Lock the stack.
 				stackLock.Lock()
 
-				// Make an array of functions.
-				a := make([]func(), stackLen)
-
-				// Add all the functions to the array.
-				for i := stackLen - 1; i != -1; i-- {
-					a[i] = stack.function
-					stack = stack.prev
-				}
-
-				// Reset the stack length.
-				stackLen = 0
+				// Make the stack nil and grab the old stack value.
+				oldStack := stack
+				stack = nil
 
 				// Unlock the stack.
 				stackLock.Unlock()
 
-				// Run in the main thread.
+				// Run all the things in the main thread.
 				execMainThread(func() {
-					for _, v := range a {
-						v()
+					for s := oldStack; s != nil; s = s() {
 					}
 				})
 			})
@@ -73,6 +59,7 @@ func init() {
 }
 
 // ExecMainThread is used to execute functions on the main thread.
+// The function will block until it was executed.
 func ExecMainThread(Function func()) {
 	ret := make(chan struct{})
 	addToStack(func() {
